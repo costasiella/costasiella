@@ -122,7 +122,7 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
         classes = graphene.Int(required=True, default_value=1)
         subscription_unit = graphene.String(required=True)
         reconciliation_classes = graphene.Int(required=False, default_value=0)
-        credit_validity = graphene.Int(required=False, default_value=0)
+        credit_accumulation_days = graphene.Int(required=False, default_value=0)
         unlimited = graphene.Boolean(required=True, default_value=False)
         terms_and_conditions = graphene.String(required=False, default_value="")
         registration_fee = graphene.Decimal(required=False, default_value=0)
@@ -152,7 +152,7 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
             classes=input['classes'],
             subscription_unit=input['subscription_unit'],
             reconciliation_classes=input['reconciliation_classes'],
-            credit_validity=input['credit_validity'],
+            credit_accumulation_days=input['credit_accumulation_days'],
             unlimited=input['unlimited'],
             terms_and_conditions=input['terms_and_conditions'],
             registration_fee=input['registration_fee'],
@@ -176,23 +176,23 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
 class UpdateOrganizationSubscription(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        display_public = graphene.Boolean(required=True, default_value=True)
-        display_shop = graphene.Boolean(required=True, default_value=True)
-        name = graphene.String(required=True)
-        description = graphene.String(required=False, default_value="")
-        sort_order = graphene.Int(required=True, default_value=1)
-        min_duration = graphene.Int(required=True, default_value=1)
-        classes = graphene.Int(required=True, default_value=1)
-        subscription_unit = graphene.String(required=True)
-        reconciliation_classes = graphene.Int(required=False, default_value=0)
-        credit_validity = graphene.Int(required=False, default_value=0)
-        unlimited = graphene.Boolean(required=True, default_value=False)
-        terms_and_conditions = graphene.String(required=False, default_value="")
-        registration_fee = graphene.Decimal(required=False, default_value=0)
-        organization_membership = graphene.ID(required=False, default_value="")
-        quick_stats_amount = graphene.Decimal(required=False, default_value=0)
-        finance_glaccount = graphene.ID(required=False, default_value="")
-        finance_costcenter = graphene.ID(required=False, default_value="")   
+        display_public = graphene.Boolean(required=False)
+        display_shop = graphene.Boolean(required=False)
+        name = graphene.String(required=False)
+        description = graphene.String(required=False)
+        sort_order = graphene.Int(required=False)
+        min_duration = graphene.Int(required=False)
+        classes = graphene.Int(required=False)
+        subscription_unit = graphene.String(required=False)
+        reconciliation_classes = graphene.Int(required=False)
+        credit_accumulation_days = graphene.Int(required=False)
+        unlimited = graphene.Boolean(required=False)
+        terms_and_conditions = graphene.String(required=False)
+        registration_fee = graphene.Decimal(required=False)
+        organization_membership = graphene.ID(required=False)
+        quick_stats_amount = graphene.Decimal(required=False)
+        finance_glaccount = graphene.ID(required=False)
+        finance_costcenter = graphene.ID(required=False)
 
     organization_subscription = graphene.Field(OrganizationSubscriptionNode)
 
@@ -208,20 +208,47 @@ class UpdateOrganizationSubscription(graphene.relay.ClientIDMutation):
 
         result = validate_create_update_input(input, update=True)
 
-        subscription.display_public=input['display_public']
-        subscription.display_shop=input['display_shop']
-        subscription.name=input['name']
-        subscription.description=input['description']
-        subscription.sort_order=input['sort_order']
-        subscription.min_duration=input['min_duration']
-        subscription.classes=input['classes']
-        subscription.subscription_unit=input['subscription_unit']
-        subscription.reconciliation_classes=input['reconciliation_classes']
-        subscription.credit_validity=input['credit_validity']
-        subscription.unlimited=input['unlimited']
-        subscription.terms_and_conditions=input['terms_and_conditions']
-        subscription.registration_fee=input['registration_fee']      
-        subscription.quick_stats_amount=input['quick_stats_amount']
+        if 'display_public' in input:
+            subscription.display_public = input['display_public']
+
+        if 'display_shop' in input:
+            subscription.display_shop = input['display_shop']
+
+        if 'name' in input:
+            subscription.name = input['name']
+
+        if 'description' in input:
+            subscription.description = input['description']
+
+        if 'sort_order' in input:
+            subscription.sort_order = input['sort_order']
+
+        if 'min_duration' in input:
+            subscription.min_duration = input['min_duration']
+
+        if 'classes' in input:
+            subscription.classes = input['classes']
+
+        if 'subscription_unit' in input:
+            subscription.subscription_unit = input['subscription_unit']
+
+        if 'reconciliation_classes' in input:
+            subscription.reconciliation_classes=input['reconciliation_classes']
+
+        if 'credit_accumulation_days' in input:
+            subscription.credit_accumulation_days = input['credit_accumulation_days']
+
+        if 'unlimited' in input:
+            subscription.unlimited = input['unlimited']
+
+        if 'terms_and_conditions' in input:
+            subscription.terms_and_conditions = input['terms_and_conditions']
+
+        if 'registration_fee' in input:
+            subscription.registration_fee = input['registration_fee']
+
+        if 'quick_stats_amount' in input:
+            subscription.quick_stats_amount = input['quick_stats_amount']
 
         if 'organization_membership' in result:
             subscription.organization_membership = result['organization_membership']
