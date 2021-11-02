@@ -40,6 +40,7 @@ def convert_json_field_to_string(field, registry=None):
 class UserType(DjangoObjectType):
     account_id = graphene.ID()
     has_reached_trial_limit = graphene.Boolean()
+    url_image_thumbnail_small = graphene.String()
 
     class Meta:
         model = get_user_model()
@@ -49,6 +50,12 @@ class UserType(DjangoObjectType):
 
     def resolve_has_reached_trial_limit(self, info):
         return self.has_reached_trial_limit()
+    
+    def resolve_url_image_thumbnail_small(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
+        else:
+            return ''
 
 
 class AccountNodeInterface(graphene.Interface):
