@@ -53,6 +53,16 @@ class GQLAccount(TransactionTestCase):
             }
         }
 
+        with open(os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_image.txt"), 'r') as input_file:
+            input_image = input_file.read().replace("\n", "")
+
+            self.variables_update_image = {
+                "input": {
+                    "imageFileName": "test_image.jpg",
+                    "image": input_image
+                }
+            }
+
         self.variables_update_active = {
             "input": {
                 "isActive": False
@@ -125,6 +135,8 @@ class GQLAccount(TransactionTestCase):
         firstName
         lastName
         email
+        urlImage
+        urlImageThumbnailSmall
       }
     }
   }
@@ -388,6 +400,29 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['updateAccount']['account']['lastName'], variables['input']['lastName'])
         self.assertEqual(data['updateAccount']['account']['email'], variables['input']['email'])
 
+    def test_update_account_image(self):
+        """ Update account image """
+        query = self.account_update_mutation
+
+        email = f.AllAuthEmailAddress.create()
+        account = email.user
+        variables = self.variables_update_image
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Check that an image url is generated
+        self.assertEqual("d/media/account/test_image" in data['updateAccount']['account']['urlImage'], True)
+
+        # Check that the image field was set in the model
+        account = models.Account.objects.last()
+        self.assertNotEqual(account.image, None)
+
 
     def test_update_account_anon_user(self):
         """ Don't allow updating accounts for non-logged in users """
@@ -465,7 +500,6 @@ class GQLAccount(TransactionTestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
 
 
@@ -562,7 +596,6 @@ class GQLAccount(TransactionTestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['deleteAccount']['ok'], True)
 
 
