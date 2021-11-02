@@ -1056,6 +1056,10 @@ class Command(BaseCommand):
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
+            os_file = None
+            if record.get('picture', None):
+                os_file = os.path.join(self.os_media_root, record['picture'])
+
             try:
                 account = m.Account(
                     is_active=not self._web2py_bool_to_python(record['trashed']), # We need to invert this
@@ -1081,6 +1085,19 @@ class Command(BaseCommand):
                     organization_language=self.school_languages_map.get(record['school_languages_id'], None),
                 )
                 account.save()
+
+                # Try to import picture
+                try:
+                    with open(os_file, 'rb') as fh:
+                        # Get the content of the file, we also need to close the content file
+                        with ContentFile(fh.read()) as file_content:
+                            # Set the media attribute of the article, but under an other path/filename
+                            account.image.save(record['picture'], file_content)
+                except FileNotFoundError:
+                    logging.error("Could not locate auth_user picture: %s" % os_file)
+                except TypeError:
+                    pass
+
                 # Create allauth email
                 account.create_allauth_email()
 

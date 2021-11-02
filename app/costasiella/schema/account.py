@@ -50,7 +50,7 @@ class UserType(DjangoObjectType):
 
     def resolve_has_reached_trial_limit(self, info):
         return self.has_reached_trial_limit()
-    
+
     def resolve_url_image_thumbnail_small(self, info):
         if self.image:
             return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
