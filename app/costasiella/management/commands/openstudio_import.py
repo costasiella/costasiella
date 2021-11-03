@@ -634,7 +634,6 @@ class Command(BaseCommand):
                 display_public=self._web2py_bool_to_python(record['publiccard']),
                 display_shop=self._web2py_bool_to_python(record['publiccard']),
                 trial_pass=self._web2py_bool_to_python(record['trialcard']),
-                trial_times=record['trialtimes'] or 0,
                 name=record['name'],
                 description=record['description'] or "",
                 price=record['price'],
@@ -675,7 +674,7 @@ class Command(BaseCommand):
             record = {k.lower(): v for k, v in record.items()}
             organization_classpass_group = m.OrganizationClasspassGroup(
                 name=record['name'],
-                description=record['description'],
+                description=record['description'] or "",
             )
             organization_classpass_group.save()
             records_imported += 1
@@ -2378,6 +2377,11 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 records_imported += 1
 
                 id_map[record['id']] = finance_invoice_group_default
+            except AttributeError as e:
+                logging.error("Import error for invoice group default: %s: %s" % (
+                    record['id'],
+                    e
+                ))
             except django.db.utils.IntegrityError as e:
                 logging.error("Import error for invoice group default: %s: %s" % (
                     record['id'],
