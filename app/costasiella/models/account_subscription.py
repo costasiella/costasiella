@@ -102,11 +102,9 @@ class AccountSubscription(models.Model):
             billable_days=period_days
         )
 
-    def create_credits_for_month(self, year, month):
-        # Calculate number of credits to give:
-        # Total days (Add 1, when subtracted it's one day less)
+    def _calculate_credits_for_month(self, year, month):
+        """ Calculate number of credits for a given month """
         from ..dudes import DateToolsDude
-        from .account_subscription_credit import AccountSubscriptionCredit
 
         date_dude = DateToolsDude()
 
@@ -124,6 +122,15 @@ class AccountSubscription(models.Model):
             weeks_in_month = round(total_days.days / float(7), 1)
             credits_to_add = round((weeks_in_month * (classes or 0)) * percent, 1)
 
+        return credits_to_add
+
+
+    def create_credits_for_month(self, year, month):
+        # Calculate number of credits to give:
+        # Total days (Add 1, when subtracted it's one day less)
+        from .account_subscription_credit import AccountSubscriptionCredit
+
+        credits_to_add = self._calculate_credits_for_month(year, month)
         # print("Credits to add: %s" % credits_to_add)
 
         account_subscription_credit = AccountSubscriptionCredit(

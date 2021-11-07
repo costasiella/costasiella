@@ -47,6 +47,9 @@ urlpatterns = [
         template_name="email_verfied.html"),
          name="email_verified"
          ),
+    path('d/export/account_data/<str:token>',
+         views.export_account_data,
+         name="export_account_data"),
     path('d/export/finance_payment_batch/csv/<str:node_id>',
          views.export_csv_finance_payment_batch,
          name="export_csv_finance_payment_batch"),

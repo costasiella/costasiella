@@ -60,7 +60,6 @@ class GQLOrganizationClasspass(TestCase):
                 "displayPublic": True,
                 "displayShop": True,
                 "trialPass": True,
-                "trialTimes": 1,
                 "name": "Trial pass",
                 "description": "Description",
                 "price": "15",
@@ -81,7 +80,6 @@ class GQLOrganizationClasspass(TestCase):
                 "displayPublic": True,
                 "displayShop": True,
                 "trialPass": True,
-                "trialTimes": 1,
                 "name": "Updated classpass",
                 "description": "Description",
                 "price": "125" ,
@@ -119,7 +117,6 @@ class GQLOrganizationClasspass(TestCase):
           displayPublic
           displayShop
           trialPass
-          trialTimes
           name
           description
           price
@@ -160,7 +157,6 @@ class GQLOrganizationClasspass(TestCase):
       displayPublic
       displayShop
       trialPass
-      trialTimes
       name
       description
       price
@@ -264,7 +260,6 @@ class GQLOrganizationClasspass(TestCase):
         displayPublic
         displayShop
         trialPass
-        trialTimes
         name
         description
         price
@@ -303,7 +298,6 @@ class GQLOrganizationClasspass(TestCase):
         displayPublic
         displayShop
         trialPass
-        trialTimes
         name
         description
         price
@@ -364,7 +358,6 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['displayPublic'], classpass.display_public)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['displayShop'], classpass.display_shop)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['trialPass'], classpass.trial_pass)
-        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['trialTimes'], classpass.trial_times)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['name'], classpass.name)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['description'], classpass.description)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['price'],
@@ -623,9 +616,6 @@ class GQLOrganizationClasspass(TestCase):
         # Only test the trial specific fields, the other fields are tested in the regular create test
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['trialPass'],
                          variables['input']['trialPass'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['trialTimes'],
-                         variables['input']['trialTimes'])
-
 
     def test_create_classpasses_anon_user(self):
         """ Don't allow creating classpasses for non-logged in users """
@@ -712,8 +702,6 @@ class GQLOrganizationClasspass(TestCase):
                          variables['input']['displayShop'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['trialPass'],
                          variables['input']['trialPass'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['trialTimes'],
-                         variables['input']['trialTimes'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['archived'], False)
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['name'],
                          variables['input']['name'])

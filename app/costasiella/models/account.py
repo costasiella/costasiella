@@ -2,6 +2,7 @@ from django.utils.translation import gettext as _
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from sorl.thumbnail import ImageField
 
 from allauth.account.models import EmailAddress
 from .organization_discovery import OrganizationDiscovery
@@ -54,6 +55,7 @@ class Account(AbstractUser):
     organization_language = models.ForeignKey(
         OrganizationLanguage, null=True, on_delete=models.SET_NULL, related_name="accounts"
     )
+    image = ImageField(upload_to='account', default=None)
     mollie_customer_id = models.CharField(max_length=255, default="", editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -94,3 +96,22 @@ class Account(AbstractUser):
         account_teacher_profile.save()
 
         return account_teacher_profile
+
+    def has_reached_trial_limit(self):
+        """
+        True if trial limit has been reached, otherwise false
+        :return: boolean
+        """
+        from ..dudes import SystemSettingDude
+        from .account_classpass import AccountClasspass
+
+        system_setting_dude = SystemSettingDude()
+        trial_pass_limit = system_setting_dude.get("workflow_trial_pass_limit") or 1
+        trial_pass_limit = int(trial_pass_limit)
+
+        count_trial_passes = AccountClasspass.objects.filter(
+            account=self,
+            organization_classpass__trial_pass=True
+        ).count()
+
+        return count_trial_passes >= trial_pass_limit

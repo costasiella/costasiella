@@ -53,6 +53,16 @@ class GQLAccount(TransactionTestCase):
             }
         }
 
+        with open(os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_image.txt"), 'r') as input_file:
+            input_image = input_file.read().replace("\n", "")
+
+            self.variables_update_image = {
+                "input": {
+                    "imageFileName": "test_image.jpg",
+                    "image": input_image
+                }
+            }
+
         self.variables_update_active = {
             "input": {
                 "isActive": False
@@ -85,6 +95,7 @@ class GQLAccount(TransactionTestCase):
           organizationLanguage {
             id
           }
+          hasReachedTrialLimit
         }
       }
     }
@@ -124,6 +135,8 @@ class GQLAccount(TransactionTestCase):
         firstName
         lastName
         email
+        urlImage
+        urlImageThumbnailSmall
       }
     }
   }
@@ -171,6 +184,26 @@ class GQLAccount(TransactionTestCase):
                          to_global_id('OrganizationDiscoveryNode', account.organization_discovery.id))
         self.assertEqual(data['accounts']['edges'][0]['node']['organizationLanguage']['id'],
                          to_global_id('OrganizationLanguageNode', account.organization_language.id))
+
+    def test_query_has_reached_trial_limit(self):
+        """ Query list of accounts and check if trial limit field works """
+        query = self.accounts_query
+        account_classpass = f.AccountClasspassFactory.create()
+        account_classpass.organization_classpass.trial_pass = True
+        account_classpass.organization_classpass.save()
+        account = account_classpass.account
+
+        setting = models.SystemSetting(
+            setting="workflow_trial_pass_limit",
+            value="1"
+        )
+        setting.save()
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_list)
+        data = executed.get('data')
+
+        self.assertEqual(len(data['accounts']['edges']), 1) # Ensure the Admin super use isn't listed
+        self.assertEqual(data['accounts']['edges'][0]['node']['hasReachedTrialLimit'], True)
 
     def test_query_permission_denied(self):
         """ Query list of accounts - check permission denied """
@@ -367,6 +400,29 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['updateAccount']['account']['lastName'], variables['input']['lastName'])
         self.assertEqual(data['updateAccount']['account']['email'], variables['input']['email'])
 
+    def test_update_account_image(self):
+        """ Update account image """
+        query = self.account_update_mutation
+
+        email = f.AllAuthEmailAddress.create()
+        account = email.user
+        variables = self.variables_update_image
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Check that an image url is generated
+        self.assertEqual("d/media/account/test_image" in data['updateAccount']['account']['urlImage'], True)
+
+        # Check that the image field was set in the model
+        account = models.Account.objects.last()
+        self.assertNotEqual(account.image, None)
+
 
     def test_update_account_anon_user(self):
         """ Don't allow updating accounts for non-logged in users """
@@ -444,7 +500,6 @@ class GQLAccount(TransactionTestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
 
 
@@ -541,7 +596,6 @@ class GQLAccount(TransactionTestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['deleteAccount']['ok'], True)
 
 

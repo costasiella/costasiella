@@ -2,6 +2,7 @@
 Django settings for development
 """
 import sys
+from os import path
 from app.settings.common import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -16,27 +17,30 @@ if len(sys.argv) >= 1:
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Media files (User uploads)
+# Media root
 # https://docs.djangoproject.com/en/2.1/topics/files/
+MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media")
 if 'GITHUB_WORKFLOW' in os.environ:
     MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media_test")
 
-## Email settings for development
-# Console
-# Uncomment below to print emails to the terminal
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Orphaned files cleanup
+ORPHANED_APPS_MEDIABASE_DIRS = {
+    'costasiella': {
+        'root': MEDIA_ROOT,  # MEDIA_ROOT => default location(s) of your uploaded items e.g. /var/www/mediabase
+        'skip': (               # optional iterable of subfolders to preserve, e.g. sorl.thumbnail cache
+            path.join(MEDIA_ROOT, 'cache'),
+        ),
+        'exclude': ('.gitignore',) # optional iterable of files to preserve
+    }
+}
 
-## Media root
-MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media")
-
-# SMTP
-# Uncomment below to send emails using smtp
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'localhost'
-# EMAIL_USE_TLS = False
-# EMAIL_PORT = 2525
-# EMAIL_HOST_USER = None
-# EMAIL_HOST_PASSWORD = None
+# GraphQL JWT settings with long expiration. Uncomment during development if useful for graphiQL auth for example.
+# GRAPHQL_JWT = {
+#     'JWT_VERIFY_EXPIRATION': True,
+#     'JWT_EXPIRATION_DELTA': timedelta(minutes=240),  # Default = 5 minutes
+#     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),  # Default = 7 days
+#     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
+# }
 
 # Django-defender & celery use
 DEFENDER_REDIS_URL = 'redis://localhost:6379/0'

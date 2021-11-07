@@ -27,7 +27,7 @@ class OrganizationSubscription(models.Model):
     classes = models.PositiveIntegerField()
     subscription_unit = models.CharField(max_length=10, choices=SUBSCRIPTION_UNITS, default="WEEK")
     reconciliation_classes = models.PositiveSmallIntegerField(default=0)
-    credit_validity = models.PositiveIntegerField(default=1)
+    credit_accumulation_days = models.PositiveIntegerField(default=31)
     unlimited = models.BooleanField(default=False)
     terms_and_conditions = models.TextField()
     registration_fee = models.DecimalField(max_digits=20, decimal_places=2)

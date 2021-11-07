@@ -1,8 +1,10 @@
 import datetime
 
 from celery import shared_task
+from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.db.models import Q
+from django.db import models
+from django.db.models import Q, Sum
 
 from .....models import AccountSubscription, AccountSubscriptionCredit
 from .....dudes import DateToolsDude
@@ -72,65 +74,63 @@ def account_subscription_credits_add_for_month(year, month):
 
     # Calculate number of credits to give
 
-# def add_credits(self, year, month):
-#     """
-#         Add subscription credits for month
-#     """
-#     from .os_customers import Customers
-#
-#     T = current.T
-#     db = current.db
-#
-#     first_day = datetime.date(year, month, 1)
-#     last_day = get_last_day_month(first_day)
-#
-#     # Get list of bookable classes for each customer, based on recurring reservations
-#
-#     self.add_credits_reservations = self._get_customers_list_classes_recurring_reservations(year, month)
-#     # Get list of total credits balance for each customer
-#     customers = Customers()
-#     self.add_credits_balance = customers.get_credits_balance(first_day, include_reconciliation_classes=True)
-#
-#     customers_credits_added = 0
-#
-#     rows = self.add_credits_get_subscription_rows_month(year, month)
-#
-#     for row in rows:
-#         if row.customers_subscriptions_credits.id:
-#             continue
-#         if row.customers_subscriptions_paused.id:
-#             continue
-#         if row.school_subscriptions.Classes == 0 or row.school_subscriptions.Classes is None:
-#             continue
-#         if row.school_subscriptions.SubscriptionUnit is None:
-#             # Don't do anything if this subscription already got credits for this month or is paused
-#             # or has no classes or subscription unit defined
-#             continue
-#
-#         # calculate number of credits
-#         # only add partial credits if startdate != first day, add full credits if startdate < first day
-#         if row.customers_subscriptions.Startdate <= first_day:
-#             p_start = first_day
-#         else:
-#             p_start = row.customers_subscriptions.Startdate
-#
-#         if row.customers_subscriptions.Enddate is None or row.customers_subscriptions.Enddate >= last_day:
-#             p_end = last_day
-#         else:
-#             p_end = row.customers_subscriptions.Enddate
-#
-#         self.add_subscription_credits_month(
-#             row.customers_subscriptions.id,
-#             row.customers_subscriptions.auth_customer_id,
-#             year,
-#             month,
-#             p_start,
-#             p_end,
-#             row.school_subscriptions.Classes,
-#             row.school_subscriptions.SubscriptionUnit,
-#         )
-#
-#         # Increase counter
-#         customers_credits_added += 1
-#
-#     return customers_credits_added or 0
+
+@shared_task
+def account_subscription_credits_expire():
+    """
+    Expire all credits that are over the accumulation limit today.
+    Credits are expired by creating a "SUB" mutation for the excessive amount.
+    :return: String - result of task executed
+    """
+    now = timezone.now()
+    today = now.date()
+    # Go over all subscriptions that are still valid today
+    # Ref: https://docs.djangoproject.com/en/3.2/topics/db/aggregation/#filtering-on-annotation
+    add_mutations = Sum("credits__mutation_amount", filter=Q(credits__mutation_type="ADD"))
+    sub_mutations = Sum("credits__mutation_amount", filter=Q(credits__mutation_type="SUB"))
+    account_subscriptions = AccountSubscription.objects.exclude(
+        date_end__lt=today
+    ).annotate(
+        total_added=add_mutations,
+        total_used=sub_mutations
+    )
+
+    subscriptions_with_expired_credits = 0
+    for account_subscription in account_subscriptions:
+        if account_subscription.organization_subscription.unlimited:
+            # Don't do anything for unlimited subscriptions
+            continue
+
+        # Calculate total of credits
+        total_added = account_subscription.total_added or 0
+        total_used = account_subscription.total_used or 0
+        total_credits = total_added - total_used
+
+        # Calculate maximum accumulation
+        accumulation_period = account_subscription.organization_subscription.credit_accumulation_days
+        total_in_accumulation_period = 0
+        qs = AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription,
+            mutation_type="ADD",
+            created_at__gte=(today-datetime.timedelta(days=accumulation_period))
+        )
+
+        for subscription_credit in qs:
+            total_in_accumulation_period += subscription_credit.mutation_amount
+
+        # Check if the total is over the maximum accumulation (expired)
+        expired_credits = total_credits - total_in_accumulation_period
+        if expired_credits:
+            # If so, expire the surplus credits
+            account_subscription_credit = AccountSubscriptionCredit(
+                account_subscription=account_subscription,
+                mutation_type="SUB",
+                mutation_amount=expired_credits,
+                description=_("Credit expiration")
+            )
+            account_subscription_credit.save()
+
+            subscriptions_with_expired_credits += 1
+
+    return _("Expired credits for %s subscriptions") % subscriptions_with_expired_credits
+

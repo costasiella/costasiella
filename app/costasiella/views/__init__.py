@@ -1,7 +1,11 @@
 # CSRF token
 from .csrf_token import csrf
 
+# All auth views
 from .cs_allauth import CSEmailVerifiedView, CSEmailVerificationSentView, CSPasswordResetView, CSSignUpView
+
+# GDPR Account data export
+from .account.export_account_data import export_account_data
 
 # Document exports
 from .organization_document import privacy_policy, terms_and_conditions

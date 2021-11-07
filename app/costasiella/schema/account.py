@@ -15,6 +15,8 @@ from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
+from sorl.thumbnail import get_thumbnail
+
 from allauth.account.models import EmailAddress
 from ..models import AccountBankAccount, AccountTeacherProfile, OrganizationDiscovery, OrganizationLanguage
 
@@ -24,7 +26,8 @@ from ..modules.gql_tools import require_login, \
     require_login_and_one_of_permissions, \
     require_login_and_one_of_permission_or_own_account, \
     get_rid, \
-    get_error_code
+    get_error_code, \
+    get_content_file_from_base64_str
 
 from ..modules.encrypted_fields import EncryptedTextField
 
@@ -36,12 +39,30 @@ def convert_json_field_to_string(field, registry=None):
 
 class UserType(DjangoObjectType):
     account_id = graphene.ID()
+    has_reached_trial_limit = graphene.Boolean()
+    url_image_thumbnail_small = graphene.String()
 
     class Meta:
         model = get_user_model()
 
     def resolve_account_id(self, info):
         return to_global_id("AccountNode", info.context.user.id)
+
+    def resolve_has_reached_trial_limit(self, info):
+        return self.has_reached_trial_limit()
+
+    def resolve_url_image_thumbnail_small(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
+        else:
+            return ''
+
+
+class AccountNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    has_reached_trial_limit = graphene.Boolean()
+    url_image = graphene.String()
+    url_image_thumbnail_small = graphene.String()
 
 
 class AccountNode(DjangoObjectType):
@@ -57,17 +78,32 @@ class AccountNode(DjangoObjectType):
             'teacher': ['exact'],
             'employee': ['exact'],
         }
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, AccountNodeInterface,)
+
+    def resolve_has_reached_trial_limit(self, info):
+        return self.has_reached_trial_limit()
+
+    def resolve_url_image(self, info):
+        if self.image:
+            return self.image.url
+        else:
+            return ''
+
+    def resolve_url_image_thumbnail_small(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
+        else:
+            return ''
 
     @classmethod
-    def get_node(self, info, id):
+    def get_node(cls, info, id):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
             'costasiella.view_account',
             'costasiella.view_selfcheckin'
         ])
 
-        return self._meta.model.objects.get(id=id)
+        return cls._meta.model.objects.get(id=id)
 
 
 class GroupNode(DjangoObjectType):
@@ -189,6 +225,12 @@ def validate_create_update_input(account, input, update=False):
     """ 
     result = {}
 
+    if update:
+        # Check that image and image_file_name are both present in case one is set
+        if 'image' in input or 'image_file_name' in input:
+            if not (input.get('image', None) and input.get('image_file_name', None)):
+                raise Exception(_('When setting "image" or "imageFileName", both fields need to be present and set'))
+
     # verify email unique
     if 'email' in input:
         query_set = get_user_model().objects.filter(
@@ -255,6 +297,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         key_number = graphene.String(required=False)
         organization_discovery = graphene.ID(required=False)
         organization_language = graphene.ID(required=False)
+        image = graphene.String(required=False)
+        image_file_name = graphene.String(required=False)
 
     account = graphene.Field(AccountNode)
 
@@ -325,6 +369,10 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             account.organization_discovery = result['organization_discovery']
         if 'organization_language' in result:
             account.organization_language = result['organization_language']
+
+        if 'image' in input:
+            account.image = get_content_file_from_base64_str(data_str=input['image'],
+                                                             file_name=input['image_file_name'])
 
         account.save()
 

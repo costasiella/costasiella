@@ -18,6 +18,9 @@ from .. import schema
 
 class GQLAccountSubscriptionPause(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+
+    fixtures = ['system_setting.json']
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
@@ -307,6 +310,60 @@ class GQLAccountSubscriptionPause(TestCase):
             data['createAccountSubscriptionPause']['accountSubscriptionPause']['description'],
             variables['input']['description']
         )
+
+    def test_create_subscription_pause_raises_exception_when_min_duration_not_reached(self):
+        """
+        Exception when pause is too short
+        :return:
+        """
+        query = self.subscription_pause_create_mutation
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        variables = self.variables_create
+        variables['input']['accountSubscription'] = to_global_id(
+            'AccountSubscriptionNode', account_subscription.id
+        )
+
+        system_setting = models.SystemSetting.objects.get(setting="workflow_subscription_pauses_min_duration_in_days")
+        system_setting.value = "100"
+        system_setting.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], "A pause should be at least 100 day(s)")
+
+    def test_create_subscription_pause_raises_exception_when_over_max_pauses(self):
+        """
+        Exception when pause is too short
+        :return:
+        """
+        query = self.subscription_pause_create_mutation
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        variables = self.variables_create
+        variables['input']['accountSubscription'] = to_global_id(
+            'AccountSubscriptionNode', account_subscription.id
+        )
+
+        system_setting = models.SystemSetting.objects.get(setting="workflow_subscription_pauses_max_pauses_in_year")
+        system_setting.value = "0"
+        system_setting.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], "Maximum number of pauses reached for year 2019")
 
     def test_create_subscription_anon_user(self):
         """ Don't allow creating account subscription pause for non-logged in users """

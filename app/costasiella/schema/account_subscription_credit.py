@@ -178,8 +178,32 @@ class CreateAccountSubscriptionCreditForMonth(graphene.relay.ClientIDMutation):
         return CreateAccountSubscriptionCreditForMonth(ok=ok)
 
 
+class ExpireAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
+    # class Input:
+        # year = graphene.Int()
+        # month = graphene.Int()
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        from costasiella.tasks import account_subscription_credits_expire
+
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_accountsubscriptioncredit')
+
+        # year = input['year']
+        # month = input['month']
+
+        task = account_subscription_credits_expire.delay()
+        ok = True
+
+        return ExpireAccountSubscriptionCredit(ok=ok)
+
+
 class AccountSubscriptionCreditMutation(graphene.ObjectType):
     create_account_subscription_credit = CreateAccountSubscriptionCredit.Field()
     create_account_subscription_credit_for_month = CreateAccountSubscriptionCreditForMonth.Field()
+    expire_account_subscription_credit = ExpireAccountSubscriptionCredit.Field()
     delete_account_subscription_credit = DeleteAccountSubscriptionCredit.Field()
     update_account_subscription_credit = UpdateAccountSubscriptionCredit.Field()
