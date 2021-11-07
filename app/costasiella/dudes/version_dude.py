@@ -21,7 +21,7 @@ class VersionDude:
         except SystemSetting.DoesNotExist:
             self.version_patch_obj = SystemSetting.objects.create(
                 setting=self.setting_version_patch,
-                value="2"
+                value="0"
             )
 
         self.version = self.version_obj.value
@@ -30,7 +30,7 @@ class VersionDude:
     @staticmethod
     def get_latest_version():
         return {
-            "version": "0.3",
+            "version": "2021.01",
             "version_patch": "0"
         }
 
