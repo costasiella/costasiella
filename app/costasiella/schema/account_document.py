@@ -44,11 +44,14 @@ class AccountDocumentQuery(graphene.ObjectType):
     account_documents = DjangoFilterConnectionField(AccountDocumentNode)
     account_document = graphene.relay.Node.Field(AccountDocumentNode)
 
-    def resolve_account_documents(self, info, **kwargs):
+    def resolve_account_documents(self, info, account, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountdocument')
 
-        return AccountDocument.objects.all.order_by('-description')
+        rid = get_rid(account)
+        account_id = rid.id
+
+        return AccountDocument.objects.filter(account=account_id).order_by('-description')
 
 
 class CreateAccountDocument(graphene.relay.ClientIDMutation):
