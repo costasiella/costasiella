@@ -1,7 +1,7 @@
 from django.http import Http404, HttpResponse
 from django.utils.translation import gettext as _
 
-from ..dudes.version_dude import VersionDude
+from ..dudes import PermissionDude, VersionDude
 
 
 def update(request):
@@ -21,6 +21,9 @@ def update(request):
 
     # Set latest version
     new_version = version_dude.update_version()
+    # Ensure default permissions are in place
+    permission_dude = PermissionDude()
+    permission_dude.verify_system_permissions()
 
     return HttpResponse(
         _("Updated database to version: %s.%s" % (new_version['version'], new_version['version_patch']))

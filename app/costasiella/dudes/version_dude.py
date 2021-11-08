@@ -1,4 +1,4 @@
-from ..models import SystemSetting
+
 
 
 class VersionDude:
@@ -6,6 +6,8 @@ class VersionDude:
         """
         Fetch current version from SysSettings
         """
+        from ..models import SystemSetting
+
         self.setting_version = "system_version"
         self.setting_version_patch = "system_version_patch"
 

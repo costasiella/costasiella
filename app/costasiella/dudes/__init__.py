@@ -12,6 +12,10 @@ from .mail_dude import MailDude
 
 from .mollie_dude import MollieDude
 
+from .permission_dude import PermissionDude
+
 from .sales_dude import SalesDude
 
 from .system_setting_dude import SystemSettingDude
+
+from .version_dude import VersionDude
