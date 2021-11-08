@@ -63,7 +63,7 @@ class CreateFinanceInvoicePaymentLink(graphene.Mutation):
         mollie.set_api_key(mollie_api_key)
         
         # Invoice information
-        amount = finance_invoice.total
+        amount = finance_invoice.balance
         description = _("Invoice #") + str(finance_invoice.invoice_number)
         
         # Gather mollie payment info
