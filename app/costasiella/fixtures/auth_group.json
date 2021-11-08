@@ -1,0 +1,16 @@
+[
+  {
+    "model": "auth.Group",
+    "fields": {
+      "id": 100,
+      "name": "Admins"
+    }
+  },
+  {
+    "model": "auth.Group",
+    "fields": {
+      "id": 99,
+      "name": "Self check-in"
+    }
+  }
+]
