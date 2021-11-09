@@ -12,7 +12,7 @@ class OrganizationClasstype(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     url_website = models.URLField()
-    image = ImageField(upload_to='organization_classtype_images', default=None)
+    image = ImageField(upload_to='organization_classtype', default=None)
 
     def __str__(self):
         return self.name

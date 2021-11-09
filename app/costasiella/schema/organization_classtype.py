@@ -136,6 +136,7 @@ class UpdateOrganizationClasstype(graphene.relay.ClientIDMutation):
         return UpdateOrganizationClasstype(organization_classtype=classtype)
 
 
+#TODO: update this to use image=get_content_file_from_base64_str(data_str=input['image'], file_name=input['image_file_name'])
 class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
