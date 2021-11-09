@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.conf import settings
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -17,13 +18,13 @@ m = Messages()
 
 class AccountDocumentNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
-    url_document = graphene.String()
+    url_protected_document = graphene.String()
 
 
 class AccountDocumentNode(DjangoObjectType):
-    def resolve_url_document(self, info):
+    def resolve_url_protected_document(self, info):
         if self.document:
-            return self.document.url
+            return self.document.url.replace(settings.MEDIA_URL, settings.MEDIA_PROTECTED_URL)
         else:
             return ''
     
@@ -68,9 +69,14 @@ class CreateAccountDocument(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_accountdocument')
 
+        rid = get_rid(input['account'])
+        account = Account.objects.get(id=rid.id)
+        if not account:
+            raise Exception('Invalid Account ID!')
+
         account_document = AccountDocument(
-            account = Account.objects.get(id=100),
-            description = input['ddescription'],
+            account = account,
+            description = input['description'],
             document = get_content_file_from_base64_str(data_str=input['document'],
                                                         file_name=input['document_file_name'])
         )
