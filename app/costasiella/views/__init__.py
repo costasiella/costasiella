@@ -24,6 +24,9 @@ from .insight.export_insight_subscriptions_sold import export_excel_insight_subs
 # Mollie
 from .integration.mollie_webhook import mollie_webhook
 
+# Protected static files
+from .serve_protected_file import serve_protected_file
+
 # Setup
 from .setup import setup
 

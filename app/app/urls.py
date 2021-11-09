@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -73,4 +73,10 @@ urlpatterns = [
     path('d/mollie/webhook/', csrf_exempt(views.mollie_webhook), name="mollie_webhook"),
     path('d/update/', views.update, name="update"),
     path('d/setup/', views.setup, name="setup"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Development only
+    re_path(r'^%s(?P<path>.*)/(?P<token>.*)$' % settings.MEDIA_PROTECTED_URL[1:],
+            views.serve_protected_file, {'document_root': settings.MEDIA_ROOT})
+]
+
+# Static files through Django dev server for development environment
+if settings.DEBUG:
+    urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
