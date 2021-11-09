@@ -189,6 +189,7 @@ STATICFILES_DIRS = [
 # Media files (User uploads)
 # https://docs.djangoproject.com/en/2.1/topics/files/
 MEDIA_URL = '/d/media/'
+MEDIA_PROTECTED_URL = '/d/media_protected/'
 
 # Graphene settings
 
