@@ -11,7 +11,7 @@ from .helpers import model_string
 class AccountDocument(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="documents")
     description = models.CharField(max_length=255, default="")
-    document = models.FileField(upload_to='organization_document', default=None)
+    document = models.FileField(upload_to='account_document', default=None)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
