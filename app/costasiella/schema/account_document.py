@@ -55,6 +55,28 @@ class AccountDocumentQuery(graphene.ObjectType):
         return AccountDocument.objects.filter(account=account_id).order_by('-description')
 
 
+def validate_create_input(input):
+    """
+    Validate input
+    """
+    result = {}
+
+    if 'document' in input or 'document_file_name' in input:
+        if not (input.get('document', None) and input.get('document_file_name', None)):
+            raise Exception(_('When setting "document" or "documentFileName", both fields need to be present and set'))
+
+    # Check account
+    if 'account' in input:
+        if input['account']:
+            rid = get_rid(input['account'])
+            account = Account.objects.get(id=rid.id)
+            result['account'] = account
+            if not account:
+                raise Exception('Invalid Account ID!')
+
+    return result
+
+
 class CreateAccountDocument(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
@@ -69,11 +91,8 @@ class CreateAccountDocument(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_accountdocument')
 
-        rid = get_rid(input['account'])
-        account = Account.objects.get(id=rid.id)
-        if not account:
-            raise Exception('Invalid Account ID!')
-
+        result = validate_create_input(input)
+        
         account_document = AccountDocument(
             account = account,
             description = input['description'],
