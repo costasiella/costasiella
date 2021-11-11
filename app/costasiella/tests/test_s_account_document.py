@@ -49,16 +49,16 @@ class GQLAccountDocument(TestCase):
 
             self.variables_create = {
                 "input": {
-                  "account": to_global_id("AccountNode", self.account_document.account.id)
+                  "account": to_global_id("AccountNode", self.account_document.account.id),
                   "description": "test_image.jpg",
-                  "imageFileName": "test_image.jpg",
-                  "image": input_image
+                  "documentFileName": "test_image.jpg",
+                  "document": input_image
                 }
             }
 
             self.variables_update = {
                 "input": {
-                    "id": to_global_id("AccountDocumentNode", self.account_document.id)
+                    "id": to_global_id("AccountDocumentNode", self.account_document.id),
                     "description": "new description here",
                 }
             }
@@ -159,238 +159,235 @@ class GQLAccountDocument(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-            data['scheduleEventMedias']['edges'][0]['node']['id'],
-            to_global_id('ScheduleEventMediaNode', self.account_document.id)
+            data['accountDocuments']['edges'][0]['node']['id'],
+            to_global_id('AccountDocumentNode', self.account_document.id)
         )
-        self.assertEqual(data['scheduleEventMedias']['edges'][0]['node']['sortOrder'],
-                         self.account_document.sort_order)
-        self.assertEqual(data['scheduleEventMedias']['edges'][0]['node']['description'],
+        self.assertEqual(data['accountDocuments']['edges'][0]['node']['description'],
                          self.account_document.description)
-        self.assertNotEqual(data['scheduleEventMedias']['edges'][0]['node']['urlImage'], False)
-        self.assertNotEqual(data['scheduleEventMedias']['edges'][0]['node']['urlImageThumbnailSmall'], False)
+        self.assertNotEqual(data['accountDocuments']['edges'][0]['node']['urlProtectedDocument'], False)
 
     ##
     # No permission tests are required in this test, as there are no permission checks in the schema.
     # The listing of these documents is public, so users also don't need to be logged in.
     ##
 
-    def test_query_one(self):
-        """ Query one schedule event media """
-        query = self.account_document_query
-
-        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
-        data = executed.get('data')
-
-        self.assertEqual(data['scheduleEventMedia']['id'], self.variables_query_one['id'])
-
-    def test_create_account_document(self):
-        """ Create schedule event media """
-        query = self.account_document_create_mutation
-        variables = self.variables_create
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=variables
-        )
-        data = executed.get('data')
-
-        self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-                         variables['input']['sortOrder'])
-        self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['description'],
-                         variables['input']['description'])
-        self.assertNotEqual(data['createScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
-
-        account_document = models.ScheduleEventMedia.objects.last()
-        self.assertNotEqual(account_document.image, None)
-
-    def test_create_account_document_anon_user(self):
-        """ Don't allow creating schedule event media for non-logged in users """
-        query = self.account_document_create_mutation
-        variables = self.variables_create
-
-        executed = execute_test_client_api_query(
-            query,
-            self.anon_user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_create_account_document_permission_granted(self):
-        """ Allow creating schedule event media for users with permissions """
-        query = self.account_document_create_mutation
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_add)
-        user.user_permissions.add(permission)
-        user.save()
-
-        variables = self.variables_create
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-                         variables['input']['sortOrder'])
-
-    def test_create_account_document_permission_denied(self):
-        """ Check create schedule event media permission denied error message """
-        query = self.account_document_create_mutation
-        variables = self.variables_create
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_update_account_document(self):
-        """ Update schedule event media """
-        query = self.account_document_update_mutation
-        variables = self.variables_update
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=variables
-        )
-
-        data = executed.get('data')
-        self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-                         variables['input']['sortOrder'])
-        self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['description'],
-                         variables['input']['description'])
-        self.assertNotEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
-
-        account_document = models.ScheduleEventMedia.objects.last()
-        self.assertNotEqual(account_document.image, None)
-
-    def test_update_account_document_anon_user(self):
-        """ Don't allow updating schedule event media for non-logged in users """
-        query = self.account_document_update_mutation
-        variables = self.variables_update
-
-        executed = execute_test_client_api_query(
-            query,
-            self.anon_user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_update_account_document_permission_granted(self):
-        """ Allow updating schedule event media for users with permissions """
-        query = self.account_document_update_mutation
-        variables = self.variables_update
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_change)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-                         variables['input']['sortOrder'])
-
-    def test_update_account_document_permission_denied(self):
-        """ Check update schedule event media permission denied error message """
-        query = self.account_document_update_mutation
-        variables = self.variables_update
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_delete_account_document(self):
-        """ Delete a schedule event media """
-        query = self.account_document_delete_mutation
-        variables = self.variables_delete
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=variables
-        )
-        data = executed.get('data')
-
-        self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-
-        exists = models.OrganizationDocument.objects.exists()
-        self.assertEqual(exists, False)
-
-    def test_delete_account_document_anon_user(self):
-        """ Delete a schedule event media """
-        query = self.account_document_delete_mutation
-        variables = self.variables_delete
-
-        executed = execute_test_client_api_query(
-            query,
-            self.anon_user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_delete_account_document_permission_granted(self):
-        """ Allow deleting schedule event medias for users with permissions """
-        query = self.account_document_delete_mutation
-        variables = self.variables_delete
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_delete)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-
-    def test_delete_account_document_permission_denied(self):
-        """ Check delete schedule event media permission denied error message """
-        query = self.account_document_delete_mutation
-        variables = self.variables_delete
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    # def test_query_one(self):
+    #     """ Query one schedule event media """
+    #     query = self.account_document_query
+    #
+    #     executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(data['scheduleEventMedia']['id'], self.variables_query_one['id'])
+    #
+    # def test_create_account_document(self):
+    #     """ Create schedule event media """
+    #     query = self.account_document_create_mutation
+    #     variables = self.variables_create
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
+    #                      variables['input']['sortOrder'])
+    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['description'],
+    #                      variables['input']['description'])
+    #     self.assertNotEqual(data['createScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
+    #
+    #     account_document = models.ScheduleEventMedia.objects.last()
+    #     self.assertNotEqual(account_document.image, None)
+    #
+    # def test_create_account_document_anon_user(self):
+    #     """ Don't allow creating schedule event media for non-logged in users """
+    #     query = self.account_document_create_mutation
+    #     variables = self.variables_create
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.anon_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #
+    # def test_create_account_document_permission_granted(self):
+    #     """ Allow creating schedule event media for users with permissions """
+    #     query = self.account_document_create_mutation
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_add)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #
+    #     variables = self.variables_create
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
+    #                      variables['input']['sortOrder'])
+    #
+    # def test_create_account_document_permission_denied(self):
+    #     """ Check create schedule event media permission denied error message """
+    #     query = self.account_document_create_mutation
+    #     variables = self.variables_create
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #
+    # def test_update_account_document(self):
+    #     """ Update schedule event media """
+    #     query = self.account_document_update_mutation
+    #     variables = self.variables_update
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=variables
+    #     )
+    #
+    #     data = executed.get('data')
+    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
+    #                      variables['input']['sortOrder'])
+    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['description'],
+    #                      variables['input']['description'])
+    #     self.assertNotEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
+    #
+    #     account_document = models.ScheduleEventMedia.objects.last()
+    #     self.assertNotEqual(account_document.image, None)
+    #
+    # def test_update_account_document_anon_user(self):
+    #     """ Don't allow updating schedule event media for non-logged in users """
+    #     query = self.account_document_update_mutation
+    #     variables = self.variables_update
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.anon_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #
+    # def test_update_account_document_permission_granted(self):
+    #     """ Allow updating schedule event media for users with permissions """
+    #     query = self.account_document_update_mutation
+    #     variables = self.variables_update
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_change)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
+    #                      variables['input']['sortOrder'])
+    #
+    # def test_update_account_document_permission_denied(self):
+    #     """ Check update schedule event media permission denied error message """
+    #     query = self.account_document_update_mutation
+    #     variables = self.variables_update
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #
+    # def test_delete_account_document(self):
+    #     """ Delete a schedule event media """
+    #     query = self.account_document_delete_mutation
+    #     variables = self.variables_delete
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
+    #
+    #     exists = models.OrganizationDocument.objects.exists()
+    #     self.assertEqual(exists, False)
+    #
+    # def test_delete_account_document_anon_user(self):
+    #     """ Delete a schedule event media """
+    #     query = self.account_document_delete_mutation
+    #     variables = self.variables_delete
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.anon_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #
+    # def test_delete_account_document_permission_granted(self):
+    #     """ Allow deleting schedule event medias for users with permissions """
+    #     query = self.account_document_delete_mutation
+    #     variables = self.variables_delete
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_delete)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
+    #
+    # def test_delete_account_document_permission_denied(self):
+    #     """ Check delete schedule event media permission denied error message """
+    #     query = self.account_document_delete_mutation
+    #     variables = self.variables_delete
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')

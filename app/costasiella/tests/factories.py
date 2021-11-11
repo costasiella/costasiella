@@ -484,7 +484,7 @@ class AccountDocumentFactory(factory.DjangoModelFactory):
     description = "Test file"
     # https://factoryboy.readthedocs.io/en/latest/orms.html
     # Refer to the part "Extra Fields (class dactory.django.FileField)"
-    image = factory.django.FileField(
+    document = factory.django.FileField(
         from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_image.jpg"),
     )
 
