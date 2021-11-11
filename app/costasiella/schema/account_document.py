@@ -92,7 +92,7 @@ class CreateAccountDocument(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_accountdocument')
 
         result = validate_create_input(input)
-        
+
         account_document = AccountDocument(
             account = account,
             description = input['description'],

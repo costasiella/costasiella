@@ -8,7 +8,7 @@ from graphql import GraphQLError
 import validators
 
 from ..models import OrganizationClasstype
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login_and_permission, get_rid, get_content_file_from_base64_str
 from ..modules.messages import Messages
 
 from sorl.thumbnail import get_thumbnail
@@ -136,11 +136,23 @@ class UpdateOrganizationClasstype(graphene.relay.ClientIDMutation):
         return UpdateOrganizationClasstype(organization_classtype=classtype)
 
 
-#TODO: update this to use image=get_content_file_from_base64_str(data_str=input['image'], file_name=input['image_file_name'])
+def validate_update_image_input(input):
+    """
+    Validate input
+    """
+    result = {}
+
+    if 'image' in input or 'image_file_name' in input:
+        if not (input.get('image', None) and input.get('image_file_name', None)):
+            raise Exception(_('When setting "image" or "imageFileName", both fields need to be present and set'))
+
+    return result
+
 class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         image = graphene.String(required=True)
+        image_file_name = graphene.String(required=True)
 
     organization_classtype = graphene.Field(OrganizationClasstypeNode)
 
@@ -149,35 +161,15 @@ class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_organizationclasstype')
 
-        import base64
-        from django.core.files.base import ContentFile
-
-        def base64_file(data, name=None):
-            _format, _img_str = data.split(';base64,')
-            _name, ext = _format.split('/')
-            if not name:
-                name = _name.split(":")[-1]
-            return ContentFile(base64.b64decode(_img_str), name='{}.{}'.format(name, ext))
-
+        result = validate_update_image_input(input)
         rid = get_rid(input['id'])
         classtype = OrganizationClasstype.objects.filter(id=rid.id).first()
         if not classtype:
             raise Exception('Invalid Organization Classtype ID!')
 
-        b64_enc_image = input['image']
-        # print(b64_enc_image)
-        (image_type, image_file) = b64_enc_image.split(',')
-        # print(image_type)
-
-        classtype.image = base64_file(data=b64_enc_image)
+        classtype.image=get_content_file_from_base64_str(data_str=input['image'], file_name=input['image_file_name'])
         classtype.save()
-
-        print('new image')
-        img = classtype.image
-        print(img.name)
-        print(img.path)
-        print(img.url)
-
+        
         return UpdateOrganizationClasstype(organization_classtype=classtype)
 
 
