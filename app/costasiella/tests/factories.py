@@ -476,6 +476,19 @@ class TeacherProfileFactory(factory.DjangoModelFactory):
     events = True
 
 
+class AccountDocumentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountDocument
+
+    account = factory.SubFactory(RegularUserFactory)
+    description = "Test file"
+    # https://factoryboy.readthedocs.io/en/latest/orms.html
+    # Refer to the part "Extra Fields (class dactory.django.FileField)"
+    document = factory.django.FileField(
+        from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_image.jpg"),
+    )
+
+
 class BusinessB2BFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Business

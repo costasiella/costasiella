@@ -2,7 +2,6 @@ from django.db import models
 from sorl.thumbnail import ImageField
 
 from .helpers import model_string
-
 from .schedule_event import ScheduleEvent
 
 

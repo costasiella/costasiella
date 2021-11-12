@@ -135,7 +135,6 @@ class GQLAccount(TransactionTestCase):
         firstName
         lastName
         email
-        urlImage
         urlImageThumbnailSmall
       }
     }
@@ -417,7 +416,7 @@ class GQLAccount(TransactionTestCase):
         data = executed.get('data')
 
         # Check that an image url is generated
-        self.assertEqual("d/media/account/test_image" in data['updateAccount']['account']['urlImage'], True)
+        self.assertEqual("d/media/" in data['updateAccount']['account']['urlImageThumbnailSmall'], True)
 
         # Check that the image field was set in the model
         account = models.Account.objects.last()

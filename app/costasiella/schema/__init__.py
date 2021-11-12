@@ -6,6 +6,7 @@ from .account_accepted_document import AccountAcceptedDocumentQuery
 from .account_bank_account import AccountBankAccountQuery, AccountBankAccountMutation
 from .account_bank_account_mandate import AccountBankAccountMandateQuery, AccountBankAccountMandateMutation
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
+from .account_document import AccountDocumentQuery, AccountDocumentMutation
 from .account_finance_payment_batch_category_item import \
     AccountFinancePaymentBatchCategoryItemQuery,\
     AccountFinancePaymentBatchCategoryItemMutation
@@ -96,6 +97,7 @@ class Query(AccountQuery,
             AccountBankAccountQuery,
             AccountBankAccountMandateQuery,
             AccountClasspassQuery,
+            AccountDocumentQuery,
             AccountFinancePaymentBatchCategoryItemQuery,
             AccountMembershipQuery,
             AccountNoteQuery,
@@ -172,6 +174,7 @@ class Mutation(AccountMutation,
                AccountBankAccountMutation,
                AccountBankAccountMandateMutation,
                AccountClasspassMutation,
+               AccountDocumentMutation,
                AccountFinancePaymentBatchCategoryItemMutation,
                AccountMembershipMutation,
                AccountNoteMutation,

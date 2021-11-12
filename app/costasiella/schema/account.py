@@ -61,7 +61,7 @@ class UserType(DjangoObjectType):
 class AccountNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     has_reached_trial_limit = graphene.Boolean()
-    url_image = graphene.String()
+    # url_image = graphene.String()
     url_image_thumbnail_small = graphene.String()
 
 
@@ -83,11 +83,12 @@ class AccountNode(DjangoObjectType):
     def resolve_has_reached_trial_limit(self, info):
         return self.has_reached_trial_limit()
 
-    def resolve_url_image(self, info):
-        if self.image:
-            return self.image.url
-        else:
-            return ''
+    #TODO: Replace by protected url like account document, in case there's a use for the full res image.
+    # def resolve_url_image(self, info):
+    #     if self.image:
+    #         return self.image.url
+    #     else:
+    #         return ''
 
     def resolve_url_image_thumbnail_small(self, info):
         if self.image:

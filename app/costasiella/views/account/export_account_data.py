@@ -1,5 +1,9 @@
 import io
+import openpyxl
+from calendar import timegm
+from datetime import datetime
 
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.shortcuts import redirect, render
@@ -7,20 +11,7 @@ from django.http import Http404, StreamingHttpResponse, FileResponse
 from django.db.models import Q
 from django.template.loader import get_template, render_to_string
 
-import openpyxl
-
-# from django.template.loader import render_to_string
-# rendered = render_to_string('my_template.html', {'foo': 'bar'})
-
 from ...models import Account, AccountSubscriptionCredit, AccountTeacherProfile
-
-
-from calendar import timegm
-from datetime import datetime
-
-import django
-from django.contrib.auth import get_user_model
-from django.utils.translation import gettext as _
 
 # Django-graphql-jwt imports begin
 from ...modules.graphql_jwt_tools import get_user_by_token

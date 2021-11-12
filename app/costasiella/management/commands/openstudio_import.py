@@ -127,6 +127,7 @@ class Command(BaseCommand):
         self.customers_subscriptions_blocks_map = None
         self.customers_subscriptions_pauses_map = None
         self.customers_notes_map = None
+        self.customers_documents_map = None
         self.customers_payment_info_map = None
         self.customers_payment_info_mandates_map = None
         self.classes_map = None
@@ -382,6 +383,7 @@ class Command(BaseCommand):
         self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
         self.customers_subscriptions_pauses_map = self._import_customers_subscriptions_pauses()
         self.customers_notes_map = self._import_customers_notes()
+        self.customers_documents_map = self._import_customers_documents()
         self.customers_payment_info_map = self._import_customers_payment_info()
         self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
         self.classes_map = self._import_classes()
@@ -1431,10 +1433,62 @@ class Command(BaseCommand):
 
         return id_map
 
+    def _import_customers_documents(self):
+        """
+        Fetch customers documents info and import it in Costasiella
+        :return:
+        """
+        query = "SELECT * from customers_documents"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            os_file = None
+            if record.get('documentfile', None):
+                os_file = os.path.join(self.os_media_root, record['documentfile'])
+
+            account = self.auth_user_map.get(record['auth_customer_id'], None)
+            if not account:
+                logging.error("Import customer document for user id: %s" % (
+                    record['auth_customer_id'],
+                ))
+                continue
+
+            account_document = m.AccountDocument(
+                account = account,
+                description=record['description'] or "",
+            )
+            try:
+                with open(os_file, 'rb') as fh:
+                    # Get the content of the file, we also need to close the content file
+                    with ContentFile(fh.read()) as file_content:
+                        # Set the media attribute of the article, but under an other path/filename
+                        account_document.document.save(record['documentfile'], file_content)
+            except FileNotFoundError:
+                logging.error("Could not locate customer document: %s" % os_file)
+                account_document.description = account_document.description = " (File not found)"
+            except TypeError:
+                pass
+
+            account_document.save()
+
+            records_imported += 1
+
+            id_map[record['id']] = account_document
+
+        log_message = "Import account documents: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
     def _import_customers_payment_info(self):
         """
         Fetch customers payment info and import it in Costasiella.
-        :param cursor: MySQL db cursor
         :return: None
         """
         query = "SELECT * FROM customers_payment_info"
