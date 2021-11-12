@@ -183,9 +183,8 @@ class GQLAccountDocument(TestCase):
 
         self.assertEqual(errors[0]['message'], "Not logged in!")
 
-
     def test_query_one(self):
-        """ Query one schedule event media """
+        """ Query one account document """
         query = self.account_document_query
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
@@ -194,6 +193,40 @@ class GQLAccountDocument(TestCase):
         self.assertEqual(data['accountDocument']['id'], self.variables_query_one['id'])
         self.assertEqual(data['accountDocument']['description'], self.account_document.description)
         self.assertNotEqual(data['accountDocument']['urlProtectedDocument'], False)
+
+    def test_query_one_permission_granted(self):
+        """ Query one account document with user having permissions """
+        query = self.account_document_query
+        user = self.account_document.account
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_one)
+        data = executed.get('data')
+
+        self.assertEqual(data['accountDocument']['id'], self.variables_query_one['id'])
+        self.assertEqual(data['accountDocument']['description'], self.account_document.description)
+        self.assertNotEqual(data['accountDocument']['urlProtectedDocument'], False)
+
+    def test_query_one_permission_denied(self):
+        """ Query one account document - permission denied """
+        query = self.account_document_query
+        user = self.account_document.account
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_one)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], "Permission denied!")
+
+    def test_query_one_anon_user(self):
+        """ Query one account document - not logged in """
+        query = self.account_document_query
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_one)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], "Not logged in!")
     #
     # def test_create_account_document(self):
     #     """ Create schedule event media """
