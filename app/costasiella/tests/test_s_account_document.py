@@ -307,79 +307,72 @@ class GQLAccountDocument(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_account_document(self):
-    #     """ Update account document """
-    #     query = self.account_document_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['description'],
-    #                      variables['input']['description'])
-    #     self.assertNotEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
-    #
-    #     account_document = models.ScheduleEventMedia.objects.last()
-    #     self.assertNotEqual(account_document.image, None)
-    #
-    # def test_update_account_document_anon_user(self):
-    #     """ Don't allow updating account document for non-logged in users """
-    #     query = self.account_document_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_account_document_permission_granted(self):
-    #     """ Allow updating account document for users with permissions """
-    #     query = self.account_document_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #
-    # def test_update_account_document_permission_denied(self):
-    #     """ Check update account document permission denied error message """
-    #     query = self.account_document_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_update_account_document(self):
+        """ Update account document """
+        query = self.account_document_update_mutation
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(data['updateAccountDocument']['accountDocument']['description'],
+                         variables['input']['description'])
+
+    def test_update_account_document_anon_user(self):
+        """ Don't allow updating account document for non-logged in users """
+        query = self.account_document_update_mutation
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_account_document_permission_granted(self):
+        """ Allow updating account document for users with permissions """
+        query = self.account_document_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = self.account_document.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateAccountDocument']['accountDocument']['description'],
+                         variables['input']['description'])
+
+    def test_update_account_document_permission_denied(self):
+        """ Check update account document permission denied error message """
+        query = self.account_document_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = self.account_document.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
     # def test_delete_account_document(self):
     #     """ Delete a account document """
     #     query = self.account_document_delete_mutation
