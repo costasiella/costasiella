@@ -373,69 +373,67 @@ class GQLAccountDocument(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    # def test_delete_account_document(self):
-    #     """ Delete a account document """
-    #     query = self.account_document_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-    #
-    #     exists = models.OrganizationDocument.objects.exists()
-    #     self.assertEqual(exists, False)
-    #
-    # def test_delete_account_document_anon_user(self):
-    #     """ Delete a account document """
-    #     query = self.account_document_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_account_document_permission_granted(self):
-    #     """ Allow deleting schedule event medias for users with permissions """
-    #     query = self.account_document_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-    #
-    # def test_delete_account_document_permission_denied(self):
-    #     """ Check delete account document permission denied error message """
-    #     query = self.account_document_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    def test_delete_account_document(self):
+        """ Delete a account document """
+        query = self.account_document_delete_mutation
+        variables = self.variables_delete
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['deleteAccountDocument']['ok'], True)
+
+        exists = models.OrganizationDocument.objects.exists()
+        self.assertEqual(exists, False)
+
+    def test_delete_account_document_anon_user(self):
+        """ Delete a account document """
+        query = self.account_document_delete_mutation
+        variables = self.variables_delete
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_account_document_permission_granted(self):
+        """ Allow deleting schedule event medias for users with permissions """
+        query = self.account_document_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = self.account_document.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountDocument']['ok'], True)
+
+    def test_delete_account_document_permission_denied(self):
+        """ Check delete account document permission denied error message """
+        query = self.account_document_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = self.account_document.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
