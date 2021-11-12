@@ -105,6 +105,11 @@ class GQLAccountDocument(TestCase):
     createAccountDocument(input: $input) {
       accountDocument{
         id
+        account {
+            id
+        }
+        description
+        urlProtectedDocument
       }
     }
   }
@@ -115,6 +120,11 @@ class GQLAccountDocument(TestCase):
     updateAccountDocument(input: $input) {
       accountDocument{
         id
+        account {
+            id
+        }
+        description
+        urlProtectedDocument
       }
     }
   }
@@ -227,82 +237,79 @@ class GQLAccountDocument(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], "Not logged in!")
-    #
-    # def test_create_account_document(self):
-    #     """ Create schedule event media """
-    #     query = self.account_document_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['description'],
-    #                      variables['input']['description'])
-    #     self.assertNotEqual(data['createScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
-    #
-    #     account_document = models.ScheduleEventMedia.objects.last()
-    #     self.assertNotEqual(account_document.image, None)
-    #
-    # def test_create_account_document_anon_user(self):
-    #     """ Don't allow creating schedule event media for non-logged in users """
-    #     query = self.account_document_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_account_document_permission_granted(self):
-    #     """ Allow creating schedule event media for users with permissions """
-    #     query = self.account_document_create_mutation
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #
-    # def test_create_account_document_permission_denied(self):
-    #     """ Check create schedule event media permission denied error message """
-    #     query = self.account_document_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_create_account_document(self):
+        """ Create account document """
+        query = self.account_document_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['createAccountDocument']['accountDocument']['description'],
+                         variables['input']['description'])
+        self.assertNotEqual(data['createAccountDocument']['accountDocument']['urlProtectedDocument'], "")
+
+        account_document = models.AccountDocument.objects.last()
+        self.assertNotEqual(account_document.document, None)
+
+    def test_create_account_document_anon_user(self):
+        """ Don't allow creating account document for non-logged in users """
+        query = self.account_document_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_account_document_permission_granted(self):
+        """ Allow creating account document for users with permissions """
+        query = self.account_document_create_mutation
+
+        # Create regular user
+        user = self.account_document.account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createAccountDocument']['accountDocument']['description'],
+                         variables['input']['description'])
+
+    def test_create_account_document_permission_denied(self):
+        """ Check create account document permission denied error message """
+        query = self.account_document_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = self.account_document.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_update_account_document(self):
-    #     """ Update schedule event media """
+    #     """ Update account document """
     #     query = self.account_document_update_mutation
     #     variables = self.variables_update
     #
@@ -323,7 +330,7 @@ class GQLAccountDocument(TestCase):
     #     self.assertNotEqual(account_document.image, None)
     #
     # def test_update_account_document_anon_user(self):
-    #     """ Don't allow updating schedule event media for non-logged in users """
+    #     """ Don't allow updating account document for non-logged in users """
     #     query = self.account_document_update_mutation
     #     variables = self.variables_update
     #
@@ -337,7 +344,7 @@ class GQLAccountDocument(TestCase):
     #     self.assertEqual(errors[0]['message'], 'Not logged in!')
     #
     # def test_update_account_document_permission_granted(self):
-    #     """ Allow updating schedule event media for users with permissions """
+    #     """ Allow updating account document for users with permissions """
     #     query = self.account_document_update_mutation
     #     variables = self.variables_update
     #
@@ -357,7 +364,7 @@ class GQLAccountDocument(TestCase):
     #                      variables['input']['sortOrder'])
     #
     # def test_update_account_document_permission_denied(self):
-    #     """ Check update schedule event media permission denied error message """
+    #     """ Check update account document permission denied error message """
     #     query = self.account_document_update_mutation
     #     variables = self.variables_update
     #
@@ -374,7 +381,7 @@ class GQLAccountDocument(TestCase):
     #     self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_delete_account_document(self):
-    #     """ Delete a schedule event media """
+    #     """ Delete a account document """
     #     query = self.account_document_delete_mutation
     #     variables = self.variables_delete
     #
@@ -391,7 +398,7 @@ class GQLAccountDocument(TestCase):
     #     self.assertEqual(exists, False)
     #
     # def test_delete_account_document_anon_user(self):
-    #     """ Delete a schedule event media """
+    #     """ Delete a account document """
     #     query = self.account_document_delete_mutation
     #     variables = self.variables_delete
     #
@@ -424,7 +431,7 @@ class GQLAccountDocument(TestCase):
     #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
     #
     # def test_delete_account_document_permission_denied(self):
-    #     """ Check delete schedule event media permission denied error message """
+    #     """ Check delete account document permission denied error message """
     #     query = self.account_document_delete_mutation
     #     variables = self.variables_delete
     #

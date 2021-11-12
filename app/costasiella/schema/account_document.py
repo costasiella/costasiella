@@ -94,7 +94,7 @@ class CreateAccountDocument(graphene.relay.ClientIDMutation):
         result = validate_create_input(input)
 
         account_document = AccountDocument(
-            account = account,
+            account = result['account'],
             description = input['description'],
             document = get_content_file_from_base64_str(data_str=input['document'],
                                                         file_name=input['document_file_name'])
