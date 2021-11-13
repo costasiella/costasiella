@@ -3,35 +3,35 @@
     "model": "costasiella.SystemSetting",
     "fields": {
       "setting": "workflow_class_book_days_advance",
-      "value": 31
+      "value": "31"
     }
   },
   {
     "model": "costasiella.SystemSetting",
     "fields": {
       "setting": "workflow_class_cancel_until",
-      "value": 24
+      "value": "24"
     }
   },
   {
     "model": "costasiella.SystemSetting",
     "fields": {
       "setting": "workflow_subscription_pauses_min_duration_in_days",
-      "value": 1
+      "value": "1"
     }
   },
   {
     "model": "costasiella.SystemSetting",
     "fields": {
       "setting": "workflow_subscription_pauses_max_pauses_in_year",
-      "value": 1
+      "value": "1"
     }
   },
   {
     "model": "costasiella.SystemSetting",
     "fields": {
       "setting": "workflow_trial_pass_limit",
-      "value": 1
+      "value": "1"
     }
   }
 ]
