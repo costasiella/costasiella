@@ -7,7 +7,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import Account, AccountBankAccount
-from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, require_permission, get_rid
 from ..modules.messages import Messages
 from ..dudes.system_setting_dude import SystemSettingDude
 
@@ -124,12 +124,16 @@ class UpdateAccountBankAccount(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_accountbankaccount')
-    
+        require_login(user)
+
         rid = get_rid(input['id'])
         account_bank_account = AccountBankAccount.objects.filter(id=rid.id).first()
         if not account_bank_account:
             raise Exception('Invalid Account Bank Account ID!')
+
+        # Allow users to update their own bank account without additional permissions
+        if not user.id == account_bank_account.account.id:
+            require_permission(user, 'costasiella.change_accountbankaccount')
 
         result = validate_create_update_input(input, update=True)
         
