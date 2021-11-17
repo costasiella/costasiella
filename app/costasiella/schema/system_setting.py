@@ -55,7 +55,7 @@ def validate_update_input(input):
             'DIRECTDEBIT',
             'MOLLIE'
         ]
-        if input['setting'] not in valid_payment_methods:
+        if input['value'] not in valid_payment_methods:
             raise Exception(_("Valid payment methods are 'DIRECTDEBIT' and 'MOLLIE'"))
 
 
@@ -71,6 +71,7 @@ class UpdateSystemSetting(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_systemsetting')
 
+        print(input)
         validate_update_input(input)
 
         qs = SystemSetting.objects.filter(setting=input['setting'])
