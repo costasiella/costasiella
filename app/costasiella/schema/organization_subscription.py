@@ -10,6 +10,7 @@ from graphql import GraphQLError
 import datetime
 import validators
 
+from ..dudes import SystemSettingDude
 from ..models import OrganizationSubscription, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
@@ -26,7 +27,6 @@ def validate_create_update_input(input, update=False):
     result = {}
     
     if not len(input['name']):
-        print('validation error found')
         raise GraphQLError(_('Name is required'))
 
     # Check OrganizationMembership
@@ -65,6 +65,7 @@ class OrganizationSubscriptionNodeInterface(graphene.Interface):
     subscription_unit_display = graphene.String()
     price_today = graphene.Decimal()
     price_today_display = graphene.String()
+    shop_payment_method = graphene.String()
 
 
 class OrganizationSubscriptionNode(DjangoObjectType):   
@@ -86,6 +87,13 @@ class OrganizationSubscriptionNode(DjangoObjectType):
 
         return self.get_price_on_date(today)
 
+    def resolve_shop_payment_method(self, info):
+        setting_dude = SystemSettingDude()
+        payment_method = setting_dude.get('workflow_shop_subscription_payment_method')
+        if not payment_method:
+            payment_method = 'MOLLIE'
+
+        return payment_method
 
     @classmethod
     def get_node(self, info, id):
