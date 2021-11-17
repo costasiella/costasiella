@@ -8,6 +8,7 @@ from graphql import GraphQLError
 
 import validators
 
+from ..dudes import SystemSettingDude
 from ..models import Account, AccountSubscription, AccountSubscriptionCredit, \
                      FinancePaymentMethod, OrganizationSubscription
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
@@ -108,10 +109,20 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_accountsubscription')
+        system_setting_dude = SystemSettingDude()
+        shop_payment_method = system_setting_dude.get("workflow_shop_subscription_payment_method") or "MOLLIE"
 
         # Validate input
         result = validate_create_update_input(input, update=False)
+
+        if shop_payment_method == "DIRECTDEBIT":
+            require_login(user)
+            # Allow users to create subscriptions for themselves only
+            if not user.id == result['account'].id:
+                require_permission(user, 'costasiella.change_accountbankaccount')
+        else:
+            # Any online payment should go through orders instead
+            require_login_and_permission(user, 'costasiella.add_accountsubscription')
 
         account_subscription = AccountSubscription(
             account=result['account'],
