@@ -39,11 +39,15 @@ def convert_json_field_to_string(field, registry=None):
 
 class UserType(DjangoObjectType):
     account_id = graphene.ID()
+    has_bank_account_info = graphene.Boolean()
     has_reached_trial_limit = graphene.Boolean()
     url_image_thumbnail_small = graphene.String()
 
     class Meta:
         model = get_user_model()
+
+    def resolve_has_bank_account_info(self, info):
+        return self.has_bank_account_info()
 
     def resolve_account_id(self, info):
         return to_global_id("AccountNode", info.context.user.id)

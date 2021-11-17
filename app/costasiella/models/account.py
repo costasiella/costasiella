@@ -97,6 +97,23 @@ class Account(AbstractUser):
 
         return account_teacher_profile
 
+    def has_bank_account_info(self):
+        """
+        True if at least account holder & number are filled for the accounts' bank account
+        :return: boolean
+        """
+        from .account_bank_account import AccountBankAccount
+
+        account_bank_accounts = AccountBankAccount.objects.filter(account=self)
+
+        has_info = False
+        if account_bank_accounts.exists():
+            account_bank_account = account_bank_accounts.first()
+            if account_bank_account.number and account_bank_account.holder:
+                has_info = True
+
+        return has_info
+
     def has_reached_trial_limit(self):
         """
         True if trial limit has been reached, otherwise false
