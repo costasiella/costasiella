@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from django.db.models import Sum
 
 import graphene
@@ -17,7 +18,7 @@ from ..modules.messages import Messages
 m = Messages()
 
 
-def validate_create_update_input(input, update=False):
+def validate_create_update_input(user, input, update=False):
     """
     Validate input
     """ 
@@ -31,6 +32,12 @@ def validate_create_update_input(input, update=False):
         result['account'] = account
         if not account:
             raise Exception(_('Invalid Account ID!'))
+
+        # If user doesn't have permissions to create a subscription, date has to be >= today
+        if not user.has_perm('costasiella.add_accountsubscription'):
+            today = timezone.now().date()
+            if input['date_start'] < today:
+                raise Exception(_("Subscription can't start in the past"))
 
     # Fetch & check organization subscription
     rid = get_rid(input['organization_subscription'])
@@ -112,7 +119,7 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         shop_payment_method = system_setting_dude.get("workflow_shop_subscription_payment_method") or "MOLLIE"
 
         # Validate input
-        result = validate_create_update_input(input, update=False)
+        result = validate_create_update_input(user, input, update=False)
 
         if shop_payment_method == "DIRECTDEBIT":
             require_login(user)
@@ -171,7 +178,7 @@ class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
         if not account_subscription:
             raise Exception('Invalid Account Subscription ID!')
 
-        result = validate_create_update_input(input, update=True)
+        result = validate_create_update_input(user, input, update=True)
 
         account_subscription.organization_subscription=result['organization_subscription']
         account_subscription.date_start=input['date_start']
