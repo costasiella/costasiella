@@ -102,7 +102,6 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         note = graphene.String(required=False, default_value="")
-        registration_fee_paid = graphene.Boolean(required=False, default_value=False)        
 
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
@@ -129,9 +128,6 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             organization_subscription=result['organization_subscription'],
             date_start=input['date_start'], 
         )
-
-        if 'registration_fee_paid' in input:
-            account_subscription.registration_fee_paid = input['registration_fee_paid']
 
         if 'date_end' in input:
             if input['date_end']: # check if date_end actually has a value
