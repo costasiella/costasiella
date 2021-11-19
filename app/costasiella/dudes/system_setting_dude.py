@@ -19,7 +19,7 @@ class SystemSettingDude:
 
     def set(self, setting, value):
         """
-        Return a setting if found, otherwise return None
+        Set value for setting
         :return:
         """
         from ..models import SystemSetting
@@ -30,5 +30,23 @@ class SystemSettingDude:
                 setting=setting,
                 value=value
             )
+        system_setting.value = value
+
+        system_setting.save()
+
+    def safe_set(self, setting, value):
+        """
+        Set a value for setting if not found.
+        :return:
+        """
+        from ..models import SystemSetting
+
+        system_setting = self.get(setting)
+        if not system_setting:
+            system_setting = SystemSetting(
+                setting=setting,
+                value=value
+            )
+            system_setting.value = value
 
         system_setting.save()
