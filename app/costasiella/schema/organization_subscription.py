@@ -10,7 +10,7 @@ from graphql import GraphQLError
 import datetime
 import validators
 
-from ..dudes import SystemSettingDude
+from ..dudes import DateToolsDude, SystemSettingDude
 from ..models import OrganizationSubscription, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
@@ -65,6 +65,10 @@ class OrganizationSubscriptionNodeInterface(graphene.Interface):
     subscription_unit_display = graphene.String()
     price_today = graphene.Decimal()
     price_today_display = graphene.String()
+    price_first_month = graphene.Decimal()
+    price_first_month_display = graphene.String()
+    account_registration_fee = graphene.Decimal()
+    account_registration_fee_display = graphene.String()
     shop_payment_method = graphene.String()
 
 
@@ -86,6 +90,27 @@ class OrganizationSubscriptionNode(DjangoObjectType):
         today = timezone.now().date()
 
         return self.get_price_on_date(today)
+
+    def resolve_price_first_month(self, info):
+        today = timezone.now().date()
+
+        return self.get_price_first_month(today)
+
+    def resolve_price_first_month_display(self, info):
+        today = timezone.now().date()
+
+        return self.get_price_first_month(today, display=True)
+
+    def resolve_account_registration_fee(self, info):
+        if not info.context.user:
+            return None
+
+        pass
+
+    def resolve_account_registration_fee_display(self, info):
+        if not info.context.user:
+            return None
+        pass
 
     def resolve_shop_payment_method(self, info):
         setting_dude = SystemSettingDude()
