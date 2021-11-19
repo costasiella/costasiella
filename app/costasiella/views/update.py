@@ -1,7 +1,7 @@
 from django.http import Http404, HttpResponse
 from django.utils.translation import gettext as _
 
-from ..dudes import PermissionDude, VersionDude
+from ..dudes import PermissionDude, SystemSettingDude, VersionDude
 
 
 def update(request):
@@ -19,6 +19,9 @@ def update(request):
     if current_version <= 0.2:
         print('updating to 0.2')
 
+    if current_version < 2021.02:
+        _update_to_2021_02()
+
     # Set latest version
     new_version = version_dude.update_version()
     # Ensure default permissions are in place
@@ -28,3 +31,16 @@ def update(request):
     return HttpResponse(
         _("Updated database to version: %s.%s" % (new_version['version'], new_version['version_patch']))
     )
+
+
+    def _update_to_2021_02():
+        """
+        Update to 2021.02
+        :return:
+        """
+        # Set default value for 'workflow_shop_subscription_payment_method' if not already set
+        setting_dude = SystemSettingDude()
+        setting_dude.safe_set(
+            'workflow_shop_subscription_payment_method',
+            'MOLLIE'
+        )
