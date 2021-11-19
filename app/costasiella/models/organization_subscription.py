@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from django.db.models import Q
 
 from django.db import models
@@ -49,7 +50,6 @@ class OrganizationSubscription(models.Model):
         )
 
         if query_set.exists():
-            # TODO: take VAT rate into consideration (in case of EX. ; add it before returning value)
             subscription_price = query_set.first()
             price = subscription_price.price
 
@@ -61,6 +61,7 @@ class OrganizationSubscription(models.Model):
                 if finance_tax_rate.rate_type == "EX":
                     percentage = (finance_tax_rate.percentage / 100)
                     price = round(float(price) * float(1 + percentage), 2)
+                    # No need to do anything for included tax rates here, a user will see the correct price
 
             if display:
                 return display_float_as_amount(price)
@@ -68,6 +69,33 @@ class OrganizationSubscription(models.Model):
                 return price
         else:
             return None
+
+    def get_price_first_month(self, date, display=False):
+        """
+        Return the price for the first month, looking from date.
+        :param date: Datetime.date
+        :param display: Format returned value as string with currency symbol
+        :return: Price (str or int)
+        """
+        date_tools_dude = DateToolsDude()
+
+        today = timezone.now().date()
+        first_day_month = datetime.date(today.year, toay.month, 1)
+        last_day_month = date_tools_dude.get_last_day_month(first_day_month)
+        month_days = (last_day_month - first_day_month).days + 1
+        billable_days = month_days - today.day
+
+        subscription_price = self.get_price_on_date(today)
+        if subscription_price:
+            price_first_month = round(((float(billable_days) / float(month_days)) * float(subscription_price)), 2)
+
+            if display:
+                return display_float_as_amount(price)
+            else:
+                return price_first_month
+        else:
+            return None
+
 
     def get_finance_tax_rate_on_date(self, date, display=False):
         query_set = self.organizationsubscriptionprice_set.filter(
