@@ -10,6 +10,5 @@ class CSSignUpView(SignupView):
 
         context = super(SignupView, self).get_context_data(**kwargs)
         context["organization"] = organization
-        print(context)
 
         return context
