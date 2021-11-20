@@ -11,7 +11,8 @@ import datetime
 import validators
 
 from ..dudes import DateToolsDude, SystemSettingDude
-from ..models import OrganizationSubscription, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
+from ..models import OrganizationSubscription, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate
+from ..modules.finance_tools import display_float_as_amount
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.validity_tools import display_subscription_unit
@@ -105,12 +106,15 @@ class OrganizationSubscriptionNode(DjangoObjectType):
         if not info.context.user:
             return None
 
-        pass
+        account = info.context.user
+        return self.get_account_registration_fee(account)
 
     def resolve_account_registration_fee_display(self, info):
         if not info.context.user:
             return None
-        pass
+
+        account = info.context.user
+        return display_float_as_amount(self.get_account_registration_fee(account))
 
     def resolve_shop_payment_method(self, info):
         setting_dude = SystemSettingDude()

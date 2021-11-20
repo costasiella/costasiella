@@ -132,3 +132,20 @@ class Account(AbstractUser):
         ).count()
 
         return count_trial_passes >= trial_pass_limit
+
+    def has_paid_subscription_registration_fee(self):
+        """
+        Check if this account has ever paid a registration fee
+        :return: boolean
+        """
+        from .account_subscription import AccountSubscription
+
+        qs = AccountSubscription.objects.filter(
+            account=self,
+            registration_fee_paid=True
+        )
+        has_paid_registration_fee = False
+        if qs.exists():
+            has_paid_registration_fee = True
+
+        return  has_paid_registration_fee

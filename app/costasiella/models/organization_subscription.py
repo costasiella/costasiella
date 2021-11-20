@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db.models import Q
@@ -77,10 +79,12 @@ class OrganizationSubscription(models.Model):
         :param display: Format returned value as string with currency symbol
         :return: Price (str or int)
         """
+        from ..dudes import DateToolsDude
+
         date_tools_dude = DateToolsDude()
 
         today = timezone.now().date()
-        first_day_month = datetime.date(today.year, toay.month, 1)
+        first_day_month = datetime.date(today.year, today.month, 1)
         last_day_month = date_tools_dude.get_last_day_month(first_day_month)
         month_days = (last_day_month - first_day_month).days + 1
         billable_days = month_days - today.day
@@ -119,3 +123,15 @@ class OrganizationSubscription(models.Model):
             # field_values.append(str(getattr(self, field.name, '')))
         field_values.append("--------")
         return '\n'.join(field_values)
+
+    def get_account_registration_fee(self, account):
+        """
+        Return registration fee for account if not yet paid, else 0
+        :param account: Account object
+        :return: amount of registration fee to be paid
+        """
+        account_registration_fee = 0
+        if self.registration_fee and not account.has_paid_subscription_registration_fee():
+            account_registration_fee = self.registration_fee
+
+        return account_registration_fee
