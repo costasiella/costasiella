@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 
 from django.utils.translation import gettext as _
 from django.utils import timezone
@@ -94,7 +95,7 @@ class OrganizationSubscription(models.Model):
             price_first_month = round(((float(billable_days) / float(month_days)) * float(subscription_price)), 2)
 
             if display:
-                return display_float_as_amount(price)
+                return display_float_as_amount(price_first_month)
             else:
                 return price_first_month
         else:
@@ -130,7 +131,7 @@ class OrganizationSubscription(models.Model):
         :param account: Account object
         :return: amount of registration fee to be paid
         """
-        account_registration_fee = 0
+        account_registration_fee = Decimal(0)
         if self.registration_fee and not account.has_paid_subscription_registration_fee():
             account_registration_fee = self.registration_fee
 
