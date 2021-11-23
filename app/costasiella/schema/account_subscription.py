@@ -125,7 +125,7 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             require_login(user)
             # Allow users to create subscriptions for themselves only
             if not user.id == result['account'].id:
-                require_permission(user, 'costasiella.change_accountbankaccount')
+                require_permission(user, 'costasiella.add_accountsubscription')
         else:
             # Any online payment should go through orders instead
             require_login_and_permission(user, 'costasiella.add_accountsubscription')
@@ -143,8 +143,13 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         if 'note' in input:
             account_subscription.note = input['note']
 
-        if 'finance_payment_method' in result:
-            account_subscription.finance_payment_method = result['finance_payment_method']
+        if shop_payment_method == "DIRECTDEBIT" and user == result['account']:
+            # Payment method should always start as direct debit
+            finance_payment_method = FinancePaymentMethod.objects.get(id=103)
+            account_subscription.finance_payment_method = finance_payment_method
+        else:
+            if 'finance_payment_method' in result:
+                account_subscription.finance_payment_method = result['finance_payment_method']
 
         account_subscription.save()
 
