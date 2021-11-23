@@ -3,6 +3,7 @@ import graphql
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
+from django.utils import timezone
 from django.test import TestCase
 from graphene.test import Client
 
@@ -113,6 +114,8 @@ class GQLOrganizationSubscription(TestCase):
           unlimited
           termsAndConditions
           registrationFee
+          accountRegistrationFee
+          priceFirstMonth
           organizationMembership {
             id
             name
@@ -151,6 +154,8 @@ class GQLOrganizationSubscription(TestCase):
       unlimited
       termsAndConditions
       registrationFee
+      accountRegistrationFee
+      priceFirstMonth
       organizationMembership {
         id
         name
@@ -306,6 +311,8 @@ class GQLOrganizationSubscription(TestCase):
 
     def test_query(self):
         """ Query list of subscriptions """
+        today = timezone.now().date()
+
         query = self.subscriptions_query
         subscription = f.OrganizationSubscriptionFactory.create()
         variables = {
@@ -328,6 +335,11 @@ class GQLOrganizationSubscription(TestCase):
           data['organizationSubscriptions']['edges'][0]['node']['subscriptionUnitDisplay'], 
           display_subscription_unit(subscription.subscription_unit)
         )
+        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['accountRegistrationFee'],
+                         format(subscription.registration_fee, '.2f'))
+        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['priceFirstMonth'],
+                         subscription.get_price_first_month(today))
+                         # format(subscription.get_price_first_month(today), ".2f"))
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['reconciliationClasses'],
                          subscription.reconciliation_classes)
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['creditAccumulationDays'],
@@ -359,7 +371,7 @@ class GQLOrganizationSubscription(TestCase):
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        # Public class only
+        # Public subscriptions only
         non_public_found = False
         for item in data['organizationSubscriptions']['edges']:
             if not item['node']['displayPublic']:
@@ -440,7 +452,6 @@ class GQLOrganizationSubscription(TestCase):
         # Now query single subscriptions and check
         executed = execute_test_client_api_query(self.subscription_query, self.admin_user, variables=variables)
         data = executed.get('data')
-
         self.assertEqual(data['organizationSubscription']['archived'], subscription.archived)
         self.assertEqual(data['organizationSubscription']['displayPublic'], subscription.display_public)
         self.assertEqual(data['organizationSubscription']['displayShop'], subscription.display_shop)
@@ -458,8 +469,10 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['organizationSubscription']['creditAccumulationDays'],
                          subscription.credit_accumulation_days)
         self.assertEqual(data['organizationSubscription']['unlimited'], subscription.unlimited)
-        self.assertEqual(data['organizationSubscription']['organizationMembership']['id'], 
-          to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
+        self.assertEqual(data['organizationSubscription']['accountRegistrationFee'],
+                         format(subscription.registration_fee, ".2f"))
+        # self.assertEqual(data['organizationSubscription']['organizationMembership']['id'],
+        #   to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
         self.assertEqual(data['organizationSubscription']['quickStatsAmount'],
                          format(subscription.quick_stats_amount, ".2f"))
         self.assertEqual(data['organizationSubscription']['financeGlaccount']['id'], 
@@ -691,9 +704,6 @@ class GQLOrganizationSubscription(TestCase):
             user, 
             variables=variables
         )
-        # print("###############")
-        # print(executed)
-
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
