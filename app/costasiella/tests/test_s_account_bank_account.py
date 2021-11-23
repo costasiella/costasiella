@@ -284,6 +284,25 @@ class GQLAccountBankAccount(TestCase):
         query = self.account_bank_account_update_mutation
         account_bank_account = f.AccountBankAccountFactory.create()
         organization_account_bank_account = f.OrganizationClasspassFactory.create()
+        teacher = f.TeacherFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
+
+        user = account_bank_account.account
+
+        executed = execute_test_client_api_query(
+            query,
+            teacher,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_account_bank_account_allowed_own_account(self):
+        """ Check update account_bank_account permission denied error message """
+        query = self.account_bank_account_update_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        organization_account_bank_account = f.OrganizationClasspassFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
 
@@ -294,5 +313,8 @@ class GQLAccountBankAccount(TestCase):
             user,
             variables=variables
         )
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateAccountBankAccount']['accountBankAccount']['number'],
+          variables['input']['number']
+        )
