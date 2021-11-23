@@ -179,6 +179,67 @@ class GQLSystemSetting(TestCase):
         self.assertEqual(qs.first().setting, variables['input']['setting'])
         self.assertEqual(qs.first().value, variables['input']['value'])
 
+    def test_update_setting_workflow_shop_subscription_payment_method_invalid_value(self):
+        """ Update a setting already existing """
+        query = self.setting_update_mutation
+        setting = f.SystemSettingFinanceCurrencyFactory.create()
+        variables = {
+            'input': {
+                'setting': 'workflow_shop_subscription_payment_method',
+                'value': "BLABLA"
+            }
+        }
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], "Valid payment methods are 'DIRECTDEBIT' and 'MOLLIE'")
+
+    def test_update_setting_workflow_shop_subscription_payment_method_mollie(self):
+        """ Update a setting already existing """
+        query = self.setting_update_mutation
+        setting = f.SystemSettingFinanceCurrencyFactory.create()
+        variables = {
+            'input': {
+                'setting': 'workflow_shop_subscription_payment_method',
+                'value': "MOLLIE"
+            }
+        }
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        # Check return value from schema
+        self.assertEqual(data['updateSystemSetting']['systemSetting']['setting'], variables['input']['setting'])
+        self.assertEqual(data['updateSystemSetting']['systemSetting']['value'], variables['input']['value'])
+
+    def test_update_setting_workflow_shop_subscription_payment_method_directdebit(self):
+        """ Update a setting already existing """
+        query = self.setting_update_mutation
+        setting = f.SystemSettingFinanceCurrencyFactory.create()
+        variables = {
+            'input': {
+                'setting': 'workflow_shop_subscription_payment_method',
+                'value': "DIRECTDEBIT"
+            }
+        }
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        # Check return value from schema
+        self.assertEqual(data['updateSystemSetting']['systemSetting']['setting'], variables['input']['setting'])
+        self.assertEqual(data['updateSystemSetting']['systemSetting']['value'], variables['input']['value'])
+
     def test_create_update_setting_anon_user(self):
         """ Create a level with anonymous user, check error message """
         query = self.setting_update_mutation
