@@ -12,7 +12,7 @@ import validators
 from ..dudes import SystemSettingDude
 from ..models import Account, AccountSubscription, AccountSubscriptionCredit, \
                      FinancePaymentMethod, OrganizationSubscription
-from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, require_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
