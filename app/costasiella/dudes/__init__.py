@@ -7,6 +7,7 @@ from .date_tools_dude import DateToolsDude
 
 from .insight_account_classpasses_dude import InsightAccountClasspassesDude
 from .insight_account_subscriptions_dude import InsightAccountSubscriptionsDude
+from .insight_class_attendance_dude import InsightClassAttendanceDude
 from .insight_revenue_dude import InsightRevenueDude
 
 from .mail_dude import MailDude
