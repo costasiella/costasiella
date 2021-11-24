@@ -76,9 +76,6 @@ class InsightClasspassesQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightclasspassessold')
 
-        print('############ resolve')
-        print(locals())
-
         account_classpasses_sold = AccountClasspassesSoldType()
         account_classpasses_sold.year = year
 
@@ -90,9 +87,6 @@ class InsightClasspassesQuery(graphene.ObjectType):
                                                     year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightclasspassesactive')
-
-        print('############ resolve')
-        print(locals())
 
         account_classpasses_active = AccountClasspassesActiveType()
         account_classpasses_active.year = year
