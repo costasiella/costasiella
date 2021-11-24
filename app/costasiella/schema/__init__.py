@@ -46,6 +46,7 @@ from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .insight_classpasses import InsightClasspassesQuery
 from .insight_subscriptions import InsightSubscriptionsQuery
+from .insight_revenue import InsightRevenueQuery
 
 from .organization import OrganizationQuery, OrganizationMutation
 from .organization_announcement import OrganizationAnnouncementQuery, OrganizationAnnouncementMutation
@@ -127,6 +128,7 @@ class Query(AccountQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
             InsightClasspassesQuery,
+            InsightRevenueQuery,
             InsightSubscriptionsQuery,
             OrganizationQuery,
             OrganizationAnnouncementQuery,
