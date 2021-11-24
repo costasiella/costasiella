@@ -13,20 +13,12 @@ class InsightRevenueDude:
         """
         from ..models import FinanceInvoice
 
-        # sums = FinanceOrderItem.objects.filter(finance_order=self).aggregate(Sum('subtotal'), Sum('tax'), Sum('total'))
-        #
-        # self.subtotal = sums['subtotal__sum'] or 0
-        # self.tax = sums['tax__sum'] or 0
-        # self.total = sums['total__sum'] or 0
-
         sums = FinanceInvoice.objects.filter(
             ~(Q(status='CANCELLED') | Q(status='DRAFT')),
             date_sent__gte=date_from,
             date_sent__lte=date_until,
 
         ).aggregate(Sum('total'), Sum('subtotal'), Sum('tax'))
-
-        print(sums)
 
         return sums
 
