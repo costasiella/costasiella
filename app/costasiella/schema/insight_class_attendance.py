@@ -11,7 +11,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..dudes import Insight
+from ..dudes import InsightClassAttendanceDude
 from ..models import ScheduleItem
 
 from ..modules.gql_tools import get_rid, require_login_and_permission
@@ -19,41 +19,42 @@ from ..modules.gql_tools import get_rid, require_login_and_permission
 
 class ClassAttendanceYearCountType(graphene.ObjectType):
     description = graphene.String()
-    data = graphene.List(graphene.Decimal)
+    data = graphene.List(graphene.Int)
     year = graphene.Int()
     schedule_item = graphene.ID()
 
     def resolve_description(self, info):
-        return _("revenue_total")
+        return _("class_attendance_year_count")
 
     def resolve_data(self, info):       
-        insight_revenue_dude = InsightRevenueDude()
+        insight_class_attendance_dude = InsightClassAttendanceDude()
         year = self.year
         if not year:
             year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_total_year(self.year)
-        amounts = []
-        for month in data:
-            amounts.append(data[month])
+        data = insight_class_attendance_dude.get_attendance_count_recurring_class_year(self.schedule_item, self.year)
+        counts = []
+        for week in data:
+            counts.append(data[week])
 
-        return amounts
+        return counts
 
 
-class InsightRevenueQuery(graphene.ObjectType):
-    insight_class_attendance_count_year = graphene.Field(RevenueTotalType,
+class InsightClassAttendanceQuery(graphene.ObjectType):
+    insight_class_attendance_count_year = graphene.Field(ClassAttendanceYearCountType,
                                                          year=graphene.Int(),
                                                          schedule_item=graphene.ID())
 
-
-    def resolve_insight_revenue_total(self,
-                                      info,
-                                      year=graphene.Int(required=True, default_value=timezone.now().year),
-                                      schedule_item=graphene.ID(required=True)):
+    def resolve_insight_class_attendance_count_year(
+            self,
+            info,
+            year=graphene.Int(required=True, default_value=timezone.now().year),
+            schedule_item=graphene.ID(required=True)
+    ):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitemattendance')
 
-        rid = get_rid(input['schedule_item'])
+        rid = get_rid(schedule_item)
         schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
         if not schedule_item:
             raise Exception('Invalid ScheduleItem ID!')

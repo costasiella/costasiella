@@ -32,8 +32,7 @@ class DateToolsDude:
         delta = datetime.timedelta(fourth_jan.isoweekday() - 1)
         return fourth_jan - delta
 
-    @staticmethod
-    def iso_to_gregorian(iso_year, iso_week, iso_weekday):
+    def iso_to_gregorian(self, iso_year, iso_week, iso_weekday):
         """
         Gregorian calendar date for the given ISO year, week and day
         :param iso_year: int
@@ -43,6 +42,6 @@ class DateToolsDude:
         """
         iso_year = int(iso_year)
         iso_week = int(iso_week)
-        year_start = iso_year_start(iso_year)
+        year_start = self.iso_year_start(iso_year)
 
         return year_start + datetime.timedelta(days=iso_weekday-1, weeks=iso_week-1)

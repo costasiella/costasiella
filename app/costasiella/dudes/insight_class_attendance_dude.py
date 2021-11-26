@@ -1,6 +1,5 @@
 import datetime
 import calendar
-from decimal import Decimal
 
 from django.utils.translation import gettext as _
 from django.db.models import Q, Sum
@@ -14,7 +13,7 @@ class InsightClassAttendanceDude:
         from ..models import ScheduleItemAttendance
 
         count = ScheduleItemAttendance.objects.filter(
-            ~Q(status='CANCELLED'),
+            ~Q(booking_status='CANCELLED'),
             schedule_item=schedule_item,
             date=date
         ).count()
@@ -51,6 +50,7 @@ class InsightClassAttendanceDude:
             data[week] = attendance
 
             # Continue the loop
+            week += 1
             date += delta_one_week
 
         return data
