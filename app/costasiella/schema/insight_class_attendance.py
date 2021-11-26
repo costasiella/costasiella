@@ -19,20 +19,34 @@ from ..modules.gql_tools import get_rid, require_login_and_permission
 
 class ClassAttendanceYearCountType(graphene.ObjectType):
     description = graphene.String()
-    data = graphene.List(graphene.Int)
+    data_current = graphene.List(graphene.Int)
+    data_previous = graphene.List(graphene.Int)
     year = graphene.Int()
     schedule_item = graphene.ID()
 
     def resolve_description(self, info):
         return _("class_attendance_year_count")
 
-    def resolve_data(self, info):       
+    def resolve_data_current(self, info):
         insight_class_attendance_dude = InsightClassAttendanceDude()
         year = self.year
         if not year:
             year = timezone.now().year
 
         data = insight_class_attendance_dude.get_attendance_count_recurring_class_year(self.schedule_item, self.year)
+        counts = []
+        for week in data:
+            counts.append(data[week])
+
+        return counts
+
+    def resolve_data_previous(self, info):
+        insight_class_attendance_dude = InsightClassAttendanceDude()
+        year = self.year
+        if not year:
+            year = timezone.now().year
+
+        data = insight_class_attendance_dude.get_attendance_count_recurring_class_year(self.schedule_item, self.year-1)
         counts = []
         for week in data:
             counts.append(data[week])
