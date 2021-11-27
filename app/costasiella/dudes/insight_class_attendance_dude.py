@@ -34,7 +34,9 @@ class InsightClassAttendanceDude:
 
         iso_weekday = schedule_item.frequency_interval
         next_year = datetime.date(year + 1, 1, 1)
-        first_weekday_in_year = date_tools_dude.get_first_day_of_week_of_year(year, iso_weekday)
+        first_weekday_in_year = date_tools_dude.get_first_isoweekday_in_first_week_of_year(year, iso_weekday)
+        print("FIRST WEEKDAY IN YEAR")
+        print(first_weekday_in_year)
         delta_one_week = datetime.timedelta(days=7)
 
         data = OrderedDict()
