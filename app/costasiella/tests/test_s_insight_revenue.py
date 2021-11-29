@@ -21,7 +21,7 @@ from ..modules.validity_tools import display_validity_unit
 from graphql_relay import to_global_id
 
 
-class GQLInsightSubscriptions(TestCase):
+class GQLInsightRevenue(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
