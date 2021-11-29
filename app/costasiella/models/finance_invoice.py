@@ -113,7 +113,7 @@ class FinanceInvoice(models.Model):
         self.finance_invoice_group.save()
 
     def save(self, *args, **kwargs):
-        if self.pk is None: # We know this is object creation when there is no pk yet.
+        if self.pk is None: # We know this is object creation when there is no pk / id yet.
             # Get relation info
             self._set_relation_info()
 
