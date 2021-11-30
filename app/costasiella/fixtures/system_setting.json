@@ -23,6 +23,13 @@
   {
     "model": "costasiella.SystemSetting",
     "fields": {
+      "setting": "workflow_shop_subscription_payment_method",
+      "value": "MOLLIE"
+    }
+  },
+  {
+    "model": "costasiella.SystemSetting",
+    "fields": {
       "setting": "workflow_subscription_pauses_max_pauses_in_year",
       "value": "1"
     }

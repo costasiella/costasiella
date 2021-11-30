@@ -399,6 +399,26 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['updateAccount']['account']['lastName'], variables['input']['lastName'])
         self.assertEqual(data['updateAccount']['account']['email'], variables['input']['email'])
 
+    def test_update_account_permission_own(self):
+        """ A user can update their own account """
+        query = self.account_update_mutation
+
+        email = f.AllAuthEmailAddress.create()
+        account = email.user
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            account,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['updateAccount']['account']['firstName'], variables['input']['firstName'])
+        self.assertEqual(data['updateAccount']['account']['lastName'], variables['input']['lastName'])
+        self.assertEqual(data['updateAccount']['account']['email'], variables['input']['email'])
+
     def test_update_account_image(self):
         """ Update account image """
         query = self.account_update_mutation

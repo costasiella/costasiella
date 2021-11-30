@@ -26,6 +26,7 @@ django-defender==0.8.0
 django-filter==2.4.0
 django-graphiql==0.4.4
 django-graphql-jwt==0.3.1
+django-recaptcha==2.0.6
 django-timezone-field==4.0
 django-webpack-loader==0.6.0
 et-xmlfile==1.0.1

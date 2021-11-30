@@ -12,12 +12,15 @@ from django.contrib.auth.models import AnonymousUser, Permission
 
 from . import factories as f
 from .helpers import execute_test_client_api_query
+from ..dudes import SystemSettingDude
 from .. import models
 from .. import schema
 
 
 class GQLAccountSubscription(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    fixtures = ['finance_payment_methods.json']
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
@@ -30,10 +33,9 @@ class GQLAccountSubscription(TestCase):
 
         self.variables_create = {
             "input": {
-                "dateStart": "2019-01-01",
-                "dateEnd": "2019-12-31",
-                "note": "creation note",
-                "registrationFeePaid": True
+                "dateStart": "2025-01-01",
+                "dateEnd": "2025-12-31",
+                "note": "creation note"
             }
         }
 
@@ -410,7 +412,6 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
         self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
         self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-        self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
 
     def test_create_subscription_anon_user(self):
         """ Don't allow creating account subscriptions for non-logged in users """
@@ -462,8 +463,101 @@ class GQLAccountSubscription(TestCase):
             variables['input']['organizationSubscription']
         )
 
+    def test_create_subscription_user_shop_direct_debit(self):
+        """ Allow users to create subscriptions for their own account """
+        system_settings_dude = SystemSettingDude()
+        system_settings_dude.set(
+            "workflow_shop_subscription_payment_method",
+            "DIRECTDEBIT"
+        )
+
+        finance_payment_method = models.FinancePaymentMethod.objects.get(id=103)
+
+        query = self.subscription_create_mutation
+
+        account = f.RegularUserFactory.create()
+        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode',
+                                                                      organization_subscription.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            account,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
+            variables['input']['organizationSubscription']
+        )
+        self.assertEqual(
+            data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
+            to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+        )
+
+    def test_create_subscription_user_shop_direct_debit_cant_start_in_past(self):
+        """ Allow users to create subscriptions for their own account """
+        system_settings_dude = SystemSettingDude()
+        system_settings_dude.set(
+            "workflow_shop_subscription_payment_method",
+            "DIRECTDEBIT"
+        )
+
+        query = self.subscription_create_mutation
+
+        account = f.RegularUserFactory.create()
+        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode',
+                                                                      organization_subscription.id)
+        variables['input']['dateStart'] = '2019-01-01'
+
+        executed = execute_test_client_api_query(
+            query,
+            account,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], "Subscription can't start in the past")
+
+    def test_create_subscription_user_shop_direct_debit_cant_create_for_other_user(self):
+        """ Allow users to create subscriptions for their own account, not others """
+        system_settings_dude = SystemSettingDude()
+        system_settings_dude.set(
+            "workflow_shop_subscription_payment_method",
+            "DIRECTDEBIT"
+        )
+
+        query = self.subscription_create_mutation
+
+        account = f.RegularUserFactory.create()
+        teacher = f.TeacherFactory.create()
+        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode',
+                                                                      organization_subscription.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            teacher,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], "Permission denied!")
+
     def test_create_subscription_permission_denied(self):
         """ Check create subscription permission denied error message """
+        system_settings_dude = SystemSettingDude()
+        system_settings_dude.set(
+            "workflow_shop_subscription_payment_method",
+            "MOLLIE"
+        )
+
         query = self.subscription_create_mutation
         account = f.RegularUserFactory.create()
         organization_subscription = f.OrganizationSubscriptionFactory.create()

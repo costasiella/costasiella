@@ -10,7 +10,9 @@ from graphql import GraphQLError
 import datetime
 import validators
 
-from ..models import OrganizationSubscription, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
+from ..dudes import DateToolsDude, SystemSettingDude
+from ..models import OrganizationSubscription, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate
+from ..modules.finance_tools import display_float_as_amount
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.validity_tools import display_subscription_unit
@@ -26,7 +28,6 @@ def validate_create_update_input(input, update=False):
     result = {}
     
     if not len(input['name']):
-        print('validation error found')
         raise GraphQLError(_('Name is required'))
 
     # Check OrganizationMembership
@@ -65,6 +66,11 @@ class OrganizationSubscriptionNodeInterface(graphene.Interface):
     subscription_unit_display = graphene.String()
     price_today = graphene.Decimal()
     price_today_display = graphene.String()
+    price_first_month = graphene.Decimal()
+    price_first_month_display = graphene.String()
+    account_registration_fee = graphene.Decimal()
+    account_registration_fee_display = graphene.String()
+    shop_payment_method = graphene.String()
 
 
 class OrganizationSubscriptionNode(DjangoObjectType):   
@@ -86,6 +92,37 @@ class OrganizationSubscriptionNode(DjangoObjectType):
 
         return self.get_price_on_date(today)
 
+    def resolve_price_first_month(self, info):
+        today = timezone.now().date()
+
+        return self.get_price_first_month(today)
+
+    def resolve_price_first_month_display(self, info):
+        today = timezone.now().date()
+
+        return self.get_price_first_month(today, display=True)
+
+    def resolve_account_registration_fee(self, info):
+        if not info.context.user:
+            return None
+
+        account = info.context.user
+        return self.get_account_registration_fee(account)
+
+    def resolve_account_registration_fee_display(self, info):
+        if not info.context.user:
+            return None
+
+        account = info.context.user
+        return display_float_as_amount(self.get_account_registration_fee(account))
+
+    def resolve_shop_payment_method(self, info):
+        setting_dude = SystemSettingDude()
+        payment_method = setting_dude.get('workflow_shop_subscription_payment_method')
+        if not payment_method:
+            payment_method = 'MOLLIE'
+
+        return payment_method
 
     @classmethod
     def get_node(self, info, id):

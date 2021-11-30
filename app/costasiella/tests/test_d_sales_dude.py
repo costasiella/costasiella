@@ -69,3 +69,30 @@ class TestDudeSalesDude(TestCase):
             organization_classpass=organization_classpass,
             date_start=datetime.date.today(), note="", create_invoice=True
         )
+
+    def test_sell_schedule_event_ticket_add_schedule_item_attendances(self):
+        """ Are all schedule item attendances added? """
+        from ..dudes.sales_dude import SalesDude
+
+        account = f.RegularUserFactory.create()
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+            schedule_event=schedule_event_ticket.schedule_event
+        )
+        schedule_event_ticket_schedule_item = f.ScheduleEventTicketScheduleItemIncludedFactory.create(
+            schedule_item=schedule_event_activity,
+            schedule_event_ticket=schedule_event_ticket
+        )
+
+        sales_dude = SalesDude()
+        sales_result = sales_dude.sell_schedule_event_ticket(
+            account,
+            schedule_event_ticket,
+            create_invoice=False
+        )
+        account_schedule_event_ticket = sales_result['account_schedule_event_ticket']
+
+        # Check a schedule item has been added
+        schedule_item_attendance = models.ScheduleItemAttendance.objects.last()
+        self.assertEqual(schedule_item_attendance.account_schedule_event_ticket, account_schedule_event_ticket)
+        self.assertEqual(schedule_item_attendance.schedule_item, schedule_event_activity)

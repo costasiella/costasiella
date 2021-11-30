@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'captcha',
     'graphene_django',
     'sorl.thumbnail',
     'corsheaders',
@@ -237,6 +238,13 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = False  # Log in users after password reset instead of showing a "done" page.
 
+# Recaptcha settings
+ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
+RECAPTCHA_PUBLIC_KEY = '6LdrS0UdAAAAAC80ljwGI70bjhI2VE5PL7grpriJ'
+RECAPTCHA_PRIVATE_KEY = '6LdrS0UdAAAAACLiq4k8r6i4bfvCCC_afKKd0YRW'
+RECAPTCHA_REQUIRED_SCORE = 0.85
+
+
 # Allow Base64 encoded uploads of up to 10MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 # 5242880 (5MB)
@@ -266,10 +274,17 @@ DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH = 191
 ##
 # Cors setttings
 ##
-# CORS_ALLOW_ALL_ORIGINS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "my57",
+    "my57:3000"
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-#CORS_ALLOWED_ORIGINS = [
-    # add your website domain here in case you'd like your website to be able to access the graphQL API
-    # "http://example.com",
-    # "http://www.example.com",
-#]
+# CORS_ALLOWED_ORIGINS = [
+#     # add your website domain here in case you'd like your website to be able to access the graphQL API
+#     "http://my57:3000"
+#     # "http://example.com",
+#     # "http://www.example.com",
+# ]

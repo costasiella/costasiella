@@ -15,25 +15,44 @@
 <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
     {% csrf_token %}
     {{ form.non_field_errors }}
+    {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    
     <div class="form-group">
         <label class="form-label">{% trans "First name" %}</label>
         {{ form.first_name|addcss:"form-control" }}
         <i class="ik ik-user"></i>
-        {{ form.first_name.errors }}
+        <small class="text-red">
+          {{ form.first_name.errors }}
+        </small>
     </div>
     <div class="form-group">
         <label class="form-label">{% trans "Last name" %}</label>
         {{ form.last_name|addcss:"form-control" }}
-        {{ form.last_name.errors }}
+        <small class="text-red">
+          {{ form.last_name.errors }}
+        </small>
     </div>
     <div class="form-group">
         <label class="form-label">{% trans "Email" %}</label>
         {{ form.email|addcss:"form-control" }}
-        {{ form.email.errors }}
+        <small class="text-red">
+          {{ form.email.errors }}
+        </small>
     </div>
     <div class="form-group">
         <label class="form-label">{% trans "Password" %}</label>
         <input type="password" name="password1" placeholder={% trans "Password" %} required="" id="id_password1" class="form-control">
+        <small class="text-red">
+          {{ form.password1.errors }}
+        </small>
+    </div>
+    <div class="form-group">
+        <small class="text-red">
+          {{ form.captcha.errors.as_text }}
+        </small>
+        {{ form.captcha }}
     </div>
 
     <div class="row">

@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from django.db.models import Sum
 
 import graphene
@@ -8,15 +9,16 @@ from graphql import GraphQLError
 
 import validators
 
+from ..dudes import SystemSettingDude
 from ..models import Account, AccountSubscription, AccountSubscriptionCredit, \
                      FinancePaymentMethod, OrganizationSubscription
-from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, require_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
 
 
-def validate_create_update_input(input, update=False):
+def validate_create_update_input(user, input, update=False):
     """
     Validate input
     """ 
@@ -30,6 +32,12 @@ def validate_create_update_input(input, update=False):
         result['account'] = account
         if not account:
             raise Exception(_('Invalid Account ID!'))
+
+        # If user doesn't have permissions to create a subscription, date has to be >= today
+        if not user.has_perm('costasiella.add_accountsubscription'):
+            today = timezone.now().date()
+            if input['date_start'] < today:
+                raise Exception(_("Subscription can't start in the past"))
 
     # Fetch & check organization subscription
     rid = get_rid(input['organization_subscription'])
@@ -101,26 +109,32 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         note = graphene.String(required=False, default_value="")
-        registration_fee_paid = graphene.Boolean(required=False, default_value=False)        
 
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_accountsubscription')
+        system_setting_dude = SystemSettingDude()
+        shop_payment_method = system_setting_dude.get("workflow_shop_subscription_payment_method") or "MOLLIE"
 
         # Validate input
-        result = validate_create_update_input(input, update=False)
+        result = validate_create_update_input(user, input, update=False)
+
+        if shop_payment_method == "DIRECTDEBIT":
+            require_login(user)
+            # Allow users to create subscriptions for themselves only
+            if not user.id == result['account'].id:
+                require_permission(user, 'costasiella.add_accountsubscription')
+        else:
+            # Any online payment should go through orders instead
+            require_login_and_permission(user, 'costasiella.add_accountsubscription')
 
         account_subscription = AccountSubscription(
             account=result['account'],
             organization_subscription=result['organization_subscription'],
             date_start=input['date_start'], 
         )
-
-        if 'registration_fee_paid' in input:
-            account_subscription.registration_fee_paid = input['registration_fee_paid']
 
         if 'date_end' in input:
             if input['date_end']: # check if date_end actually has a value
@@ -129,8 +143,13 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         if 'note' in input:
             account_subscription.note = input['note']
 
-        if 'finance_payment_method' in result:
-            account_subscription.finance_payment_method = result['finance_payment_method']
+        if shop_payment_method == "DIRECTDEBIT" and user == result['account']:
+            # Payment method should always start as direct debit
+            finance_payment_method = FinancePaymentMethod.objects.get(id=103)
+            account_subscription.finance_payment_method = finance_payment_method
+        else:
+            if 'finance_payment_method' in result:
+                account_subscription.finance_payment_method = result['finance_payment_method']
 
         account_subscription.save()
 
@@ -164,7 +183,7 @@ class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
         if not account_subscription:
             raise Exception('Invalid Account Subscription ID!')
 
-        result = validate_create_update_input(input, update=True)
+        result = validate_create_update_input(user, input, update=True)
 
         account_subscription.organization_subscription=result['organization_subscription']
         account_subscription.date_start=input['date_start']

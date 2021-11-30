@@ -46,6 +46,19 @@ class SystemSettingQuery(graphene.ObjectType):
         return SystemSetting.objects.all()
 
 
+def validate_update_input(input):
+    """
+    Validate input for settings that can only be set to specific values
+    """
+    if input['setting'] == 'workflow_shop_subscription_payment_method':
+        valid_payment_methods = [
+            'DIRECTDEBIT',
+            'MOLLIE'
+        ]
+        if input['value'] not in valid_payment_methods:
+            raise Exception(_("Valid payment methods are 'DIRECTDEBIT' and 'MOLLIE'"))
+
+
 class UpdateSystemSetting(graphene.relay.ClientIDMutation):
     class Input:
         setting = graphene.String(required=True)
@@ -57,6 +70,9 @@ class UpdateSystemSetting(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_systemsetting')
+
+        print(input)
+        validate_update_input(input)
 
         qs = SystemSetting.objects.filter(setting=input['setting'])
         if not qs.exists():

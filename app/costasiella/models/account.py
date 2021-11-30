@@ -27,6 +27,7 @@ class Account(AbstractUser):
             ('view_insightclasspassessold', _("Can view insight classpasses sold")),
             ('view_insightsubscriptionsactive', _("Can view insight subscriptions active")),
             ('view_insightsubscriptionssold', _("Can view insight subscriptions sold")),
+            ('view_insightrevenue', _("Can view insight subscriptions sold")),
             ('view_selfcheckin', _("Can use the selfcheckin feature")),
         ]
 
@@ -97,6 +98,23 @@ class Account(AbstractUser):
 
         return account_teacher_profile
 
+    def has_bank_account_info(self):
+        """
+        True if at least account holder & number are filled for the accounts' bank account
+        :return: boolean
+        """
+        from .account_bank_account import AccountBankAccount
+
+        account_bank_accounts = AccountBankAccount.objects.filter(account=self)
+
+        has_info = False
+        if account_bank_accounts.exists():
+            account_bank_account = account_bank_accounts.first()
+            if account_bank_account.number and account_bank_account.holder:
+                has_info = True
+
+        return has_info
+
     def has_reached_trial_limit(self):
         """
         True if trial limit has been reached, otherwise false
@@ -115,3 +133,20 @@ class Account(AbstractUser):
         ).count()
 
         return count_trial_passes >= trial_pass_limit
+
+    def has_paid_subscription_registration_fee(self):
+        """
+        Check if this account has ever paid a registration fee
+        :return: boolean
+        """
+        from .account_subscription import AccountSubscription
+
+        qs = AccountSubscription.objects.filter(
+            account=self,
+            registration_fee_paid=True
+        )
+        has_paid_registration_fee = False
+        if qs.exists():
+            has_paid_registration_fee = True
+
+        return  has_paid_registration_fee
