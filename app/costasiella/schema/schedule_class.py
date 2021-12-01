@@ -657,9 +657,9 @@ class ScheduleClassQuery(graphene.ObjectType):
         date_from=graphene.types.datetime.Date(), 
         date_until=graphene.types.datetime.Date(),
         order_by=graphene.String(),
-        organization_classtype=graphene.String(),
-        organization_level=graphene.String(),
-        organization_location=graphene.String(),
+        organization_classtype=graphene.ID(),
+        organization_level=graphene.ID(),
+        organization_location=graphene.ID(),
         public_only=graphene.Boolean(),
         attendance_count_type=graphene.String(),
     )
