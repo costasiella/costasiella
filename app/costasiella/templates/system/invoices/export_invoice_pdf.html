@@ -242,18 +242,21 @@
     </table>
 
     <!-- Don't forget the terms and footer -->
-
     {% if invoice.terms %}
         <div id="terms" class="clear grey">
             <span id="terms-header" class="bold">TERMS AND CONDITIONS</span>
-            {{ invoice.terms }}
+            {% autoescape off %}
+				{{ invoice.terms }}
+			{% endautoescape %}
         </div>
     {% endif %}
 
     {% if invoice.footer %}
         <footer class="clear">
             <div class="footer-inner">
-                {{ invoice.footer }}
+				{% autoescape off %}
+					{{ invoice.footer }}
+				{% endautoescape %}
             </div>
         </footer>
     {% endif %}
