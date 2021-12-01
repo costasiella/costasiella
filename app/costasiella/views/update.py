@@ -36,7 +36,7 @@ def update(request):
     def _update_to_2021_02():
         """
         Update to 2021.02
-        :return:
+        :return: None
         """
         # Set default value for 'workflow_shop_subscription_payment_method' if not already set
         setting_dude = SystemSettingDude()
