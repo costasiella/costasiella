@@ -44,7 +44,10 @@ class FinanceInvoiceItem(models.Model):
     description = models.TextField(default="")
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.SET_NULL, null=True)
+    finance_tax_rate = models.ForeignKey(FinanceTaxRate,
+                                         on_delete=models.SET_NULL,
+                                         null=True,
+                                         related_name="invoice_items")
     subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     tax = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
