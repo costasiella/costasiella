@@ -76,7 +76,7 @@ class InsightFinanceTaxRateSummaryQuery(graphene.ObjectType):
             date_end=graphene.types.datetime.Date(required=True)
     ):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_financetaxrate')
+        require_login_and_permission(user, 'costasiella.view_insightfinancetaxratesummary')
 
         validate_input(date_start, date_end)
 
