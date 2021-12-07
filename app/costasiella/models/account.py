@@ -29,7 +29,7 @@ class Account(AbstractUser):
             ('view_insightrevenue', _("Can view insight subscriptions sold")),
             ('view_insightsubscriptionsactive', _("Can view insight subscriptions active")),
             ('view_insightsubscriptionssold', _("Can view insight subscriptions sold")),
-            ('view_insighttrialcards', _("Can view insight trial cards")),
+            ('view_insighttrialpasses', _("Can view insight trial passes")),
             ('view_selfcheckin', _("Can use the selfcheckin feature")),
         ]
 
