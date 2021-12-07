@@ -25,6 +25,7 @@ class Account(AbstractUser):
             ('view_insight', _("Can view insight menu")),
             ('view_insightclasspassesactive', _("Can view insight classpasses active")),
             ('view_insightclasspassessold', _("Can view insight classpasses sold")),
+            ('view_insightfinancetaxratesummary', _("Can view insight finance tax rates summary")),
             ('view_insightsubscriptionsactive', _("Can view insight subscriptions active")),
             ('view_insightsubscriptionssold', _("Can view insight subscriptions sold")),
             ('view_insightrevenue', _("Can view insight subscriptions sold")),
