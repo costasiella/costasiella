@@ -49,7 +49,13 @@ class AccountClasspassInterface(graphene.Interface):
 class AccountClasspassNode(DjangoObjectType):   
     class Meta:
         model = AccountClasspass
-        filter_fields = ['account', 'date_start', 'date_end']
+        # filter_fields = ['account', 'date_start', 'date_end', 'organization_classpass__trial_pass']
+        filter_fields = {
+            'account': ['exact'],
+            'date_start': ['exact', 'lte', 'gte'],
+            'date_end': ['exact', 'lte', 'gte'],
+            'organization_classpass__trial_pass': ['exact']
+        }
         interfaces = (graphene.relay.Node, AccountClasspassInterface, )
 
     def resolve_classes_remaining_display(self, info):
