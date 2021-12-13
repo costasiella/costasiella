@@ -96,11 +96,16 @@ class AccountClasspassQuery(graphene.ObjectType):
         if user.has_perm('costasiella.view_accountclasspass') and 'account' in kwargs:
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
+            qs = AccountClasspass.objects.filter(account=account_id)
+        elif user.has_perm('costasiella.view_accountclasspass'):
+            qs = AccountClasspass.objects.all()
         else:
+            # A safeguard that ensures users without permission can only query their own classpasses
             account_id = user.id
+            qs = AccountClasspass.objects.filter(account=account_id)
 
         # Allow user to specify account
-        return AccountClasspass.objects.filter(account=account_id).order_by('-date_start')
+        return qs.order_by('-date_start')
 
 
 class CreateAccountClasspass(graphene.relay.ClientIDMutation):
