@@ -60,11 +60,11 @@
   },
   {
     "model": "costasiella.SystemMailTemplate",
-    "pk": 11000,
+    "pk": 110000,
     "fields": {
-      "name": "trialpass_follow_up",
-      "subject": "Trialpass follow up",
-      "title": "Trialpass follow up",
+      "name": "trialpass_followup",
+      "subject": "Trialpass followup",
+      "title": "Trialpass followup",
       "description": "",
       "content": "Dear {account.first_name}, <br><br> -- Please replace this text with your own to follow up on trial passes. --",
       "comments": ""
