@@ -31,7 +31,7 @@ Please refer to the manual found [here](https://costasiella-docs.readthedocs.io/
 In case you'd like to see improvements in the feature set provided by OpenStudio, please open an issue where you describe your idea in detail. 
 
 *Code*
-Any and all help coding is greatly appreciated, please use the [contact form](https://www.openstudioproject.com/contact/) on the OpenStudio website to get in touch. Perhaps you could tell a bit about yourself, your experience in other projects, if any and which languages and frameworks you're most comfortable with or would like to learn. 
+Any and all help coding is greatly appreciated, please use the [contact form](https://www.costasiella.com/contact/) on the Costasiella website to get in touch. Perhaps you could tell a bit about yourself, your experience in other projects, if any and which languages and frameworks you're most comfortable with or would like to learn. 
 
 ## Technology overview
 
