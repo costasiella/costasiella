@@ -16,6 +16,7 @@ class MailDude:
         self.account = account
         self.email_template = email_template
         self.kwargs = kwargs
+        self.kwargs['account'] = self.account
 
     def send(self):
         """
