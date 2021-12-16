@@ -1,6 +1,7 @@
 from django.http import Http404, HttpResponse
 from django.utils.translation import gettext as _
 
+from ..models import SystemMailTemplate
 from ..dudes import PermissionDude, SystemSettingDude, VersionDude
 
 
@@ -22,6 +23,9 @@ def update(request):
     if current_version < 2021.02:
         _update_to_2021_02()
 
+    if current_version < 2021.03:
+        _update_to_2021_03()
+
     # Set latest version
     new_version = version_dude.update_version()
     # Ensure default permissions are in place
@@ -33,14 +37,31 @@ def update(request):
     )
 
 
-    def _update_to_2021_02():
-        """
-        Update to 2021.02
-        :return: None
-        """
-        # Set default value for 'workflow_shop_subscription_payment_method' if not already set
-        setting_dude = SystemSettingDude()
-        setting_dude.safe_set(
-            'workflow_shop_subscription_payment_method',
-            'MOLLIE'
-        )
+def _update_to_2021_02():
+    """
+    Update to 2021.02
+    :return: None
+    """
+    # Set default value for 'workflow_shop_subscription_payment_method' if not already set
+    setting_dude = SystemSettingDude()
+    setting_dude.safe_set(
+        'workflow_shop_subscription_payment_method',
+        'MOLLIE'
+    )
+
+
+def _update_to_2021_03():
+    """
+    Update to 2021.03
+    :return: None
+    """
+    system_mail_template = SystemMailTemplate(
+        id=110000,
+        name="trialpass_followup",
+        subject="Trialpass followup",
+        title="Trialpass followup",
+        description="",
+        content="Dear {{account.first_name}}, <br><br> -- Please replace this text with your own to follow up on trial passes. --",
+        comments=""
+    )
+    system_mail_template.save()
