@@ -5,4 +5,4 @@ cd /opt/app
 
 # Collect static files
 echo "Start celery beat"
-celery -A app beat -l info
+celery -A app beat -S django -l info
