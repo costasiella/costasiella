@@ -19,7 +19,8 @@ def account_trialpass_followup():
     date_dude = DateToolsDude()
 
     today = timezone.now().date()
-    yesterday = today = datetime.timedelta(days=1)
+    yesterday = today - datetime.timedelta(days=1)
+    print(yesterday)
 
     schedule_item_attendances = ScheduleItemAttendance.objects.filter(
         date=yesterday,
