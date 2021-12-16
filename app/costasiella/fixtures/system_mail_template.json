@@ -66,7 +66,7 @@
       "subject": "Trialpass followup",
       "title": "Trialpass followup",
       "description": "",
-      "content": "Dear {account.first_name}, <br><br> -- Please replace this text with your own to follow up on trial passes. --",
+      "content": "Dear {{account.first_name}}, <br><br> -- Please replace this text with your own to follow up on trial passes. --",
       "comments": ""
     }
   }
