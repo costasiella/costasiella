@@ -17,6 +17,7 @@ class MailTemplateDude:
         """
         :param email_template: field "name" in SystemMailTemplate model
         :param kwargs: one or more of
+        - account
         - finance_order
         """
         self.email_template = email_template
@@ -329,6 +330,7 @@ class MailTemplateDude:
 
         :return:
         """
+        from ..models import SystemMailTemplate
         # Check if we have the required arguments, if not raise an exception
         account = self.kwargs.get('account', None)
         if account is None:
