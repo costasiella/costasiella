@@ -45,7 +45,8 @@ class ScheduleItem(models.Model):
     SCHEDULE_ITEM_TYPES = (
         ('CLASS', _("Class")),
         ('EVENT_ACTIVITY', _("Event Activity")),
-        ('APPOINTMENT', _("Appointment"))
+        ('APPOINTMENT', _("Appointment")),
+        ('SHIFT', _("Shift")),
     )
 
     FREQUENCY_TYPES = get_schedule_item_frequency_types()
