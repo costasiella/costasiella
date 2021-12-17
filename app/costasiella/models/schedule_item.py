@@ -6,6 +6,7 @@ from .account import Account
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
+from .organization_shift import OrganizationShift
 from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_subscription_group import OrganizationSubscriptionGroup
 from .schedule_event import ScheduleEvent
@@ -71,6 +72,7 @@ class ScheduleItem(models.Model):
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)
+    organization_shift = models.ForeignKey(OrganizationShift, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255, null=True)
     spaces = models.IntegerField(null=True, default=0,
                                  help_text="Total spaces for this class.")

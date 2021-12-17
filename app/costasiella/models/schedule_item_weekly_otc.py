@@ -6,6 +6,7 @@ from .account import Account
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
+from .organization_shift import OrganizationShift
 from .schedule_item import ScheduleItem
 
 from .choices.teacher_roles import get_teacher_roles
@@ -37,6 +38,7 @@ class ScheduleItemWeeklyOTC(models.Model):
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.SET_NULL, null=True)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.SET_NULL, null=True)
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)   
+    organization_shift = models.ForeignKey(OrganizationShift, on_delete=models.SET_NULL, null=True)
     time_start = models.TimeField(null=True)
     time_end = models.TimeField(null=True)
     spaces = models.IntegerField(null=True, default=0,

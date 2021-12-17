@@ -67,6 +67,7 @@ from .schedule_event_ticket import ScheduleEventTicket
 from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItem
 from .schedule_item import ScheduleItem
 from .schedule_item_attendance import ScheduleItemAttendance
+from .schedule_item_employee import ScheduleItemEmployee
 from .schedule_item_teacher import ScheduleItemTeacher
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailable
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroup
