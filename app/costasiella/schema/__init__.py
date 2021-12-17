@@ -67,7 +67,8 @@ from .organization_location import OrganizationLocationQuery, OrganizationLocati
 from .organization_location_room import OrganizationLocationRoomQuery, OrganizationLocationRoomMutation
 from .organization_language import OrganizationLanguageQuery, OrganizationLanguageMutation
 from .organization_level import OrganizationLevelQuery, OrganizationLevelMutation
-from .organization_membership import OrganizationMembershipQuery, OrganizationMembershipMutation
+# from .organization_membership import OrganizationMembershipQuery, OrganizationMembershipMutation
+from .organization_shift import OrganizationShiftQuery, OrganizationShiftMutation
 from .organization_subscription import OrganizationSubscriptionQuery, OrganizationSubscriptionMutation
 from .organization_subscription_group import OrganizationSubscriptionGroupQuery, OrganizationSubscriptionGroupMutation
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscriptionMutation
@@ -149,7 +150,7 @@ class Query(AccountQuery,
             OrganizationLocationRoomQuery,
             OrganizationLanguageQuery,
             OrganizationLevelQuery, 
-            OrganizationMembershipQuery,
+            OrganizationShiftQuery,
             OrganizationSubscriptionQuery,
             OrganizationSubscriptionGroupQuery,
             OrganizationSubscriptionPriceQuery,
@@ -224,7 +225,7 @@ class Mutation(AccountMutation,
                OrganizationLocationMutation,
                OrganizationLocationRoomMutation,
                OrganizationLevelMutation,
-               OrganizationMembershipMutation, 
+               OrganizationShiftMutation,
                OrganizationSubscriptionMutation, 
                OrganizationSubscriptionGroupMutation, 
                OrganizationSubscriptionGroupSubscriptionMutation, 
