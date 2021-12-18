@@ -36,3 +36,5 @@ app/\.idea/
 *.sh~
 
 Dockerfile~
+
+app/celerybeat-schedule

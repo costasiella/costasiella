@@ -28,7 +28,8 @@ class ScheduleItemAttendance(models.Model):
 
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
-    account_classpass = models.ForeignKey(AccountClasspass, on_delete=models.CASCADE, null=True)
+    account_classpass = models.ForeignKey(AccountClasspass, on_delete=models.CASCADE, null=True,
+                                          related_name="classes")
     account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.CASCADE, null=True)
     account_schedule_event_ticket = models.ForeignKey(AccountScheduleEventTicket, on_delete=models.CASCADE, null=True)
     finance_invoice_item = models.ForeignKey(FinanceInvoiceItem, on_delete=models.SET_NULL, null=True)

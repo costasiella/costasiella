@@ -49,7 +49,13 @@ class AccountClasspassInterface(graphene.Interface):
 class AccountClasspassNode(DjangoObjectType):   
     class Meta:
         model = AccountClasspass
-        filter_fields = ['account', 'date_start', 'date_end']
+        # filter_fields = ['account', 'date_start', 'date_end', 'organization_classpass__trial_pass']
+        filter_fields = {
+            'account': ['exact'],
+            'date_start': ['exact', 'lte', 'gte'],
+            'date_end': ['exact', 'lte', 'gte'],
+            'organization_classpass__trial_pass': ['exact']
+        }
         interfaces = (graphene.relay.Node, AccountClasspassInterface, )
 
     def resolve_classes_remaining_display(self, info):
@@ -90,11 +96,16 @@ class AccountClasspassQuery(graphene.ObjectType):
         if user.has_perm('costasiella.view_accountclasspass') and 'account' in kwargs:
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
+            qs = AccountClasspass.objects.filter(account=account_id)
+        elif user.has_perm('costasiella.view_accountclasspass'):
+            qs = AccountClasspass.objects.all()
         else:
+            # A safeguard that ensures users without permission can only query their own classpasses
             account_id = user.id
+            qs = AccountClasspass.objects.filter(account=account_id)
 
         # Allow user to specify account
-        return AccountClasspass.objects.filter(account=account_id).order_by('-date_start')
+        return qs.order_by('-date_start')
 
 
 class CreateAccountClasspass(graphene.relay.ClientIDMutation):

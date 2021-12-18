@@ -17,6 +17,7 @@ class MailTemplateDude:
         """
         :param email_template: field "name" in SystemMailTemplate model
         :param kwargs: one or more of
+        - account
         - finance_order
         """
         self.email_template = email_template
@@ -50,6 +51,7 @@ class MailTemplateDude:
             "event_info_mail": self._render_event_info_mail,
             "order_received": self._render_template_order_received,
             "recurring_payment_failed": self._render_template_recurring_payment_failed,
+            "trialpass_followup": self._render_template_triaplass_followup,
         }
 
         func = functions.get(self.email_template, lambda: None)
@@ -109,11 +111,6 @@ class MailTemplateDude:
         )
         if qs.exists:
             schedule_item_weekly_otc = qs.first()
-
-        print("##############")
-        print(schedule_item)
-        print(schedule_item_weekly_otc)
-        print(date)
 
         # Fetch template
         mail_template = SystemMailTemplate.objects.get(pk=30000)
@@ -316,6 +313,34 @@ class MailTemplateDude:
         link_profile_invoices = "https://%s/#/shop/account/invoices" % system_hostname
         content_context = Context({
             "link_profile_invoices": link_profile_invoices
+        })
+        content_template = Template(mail_template.content)
+        content = content_template.render(content_context)
+
+        return dict(
+            subject=mail_template.subject,
+            title=mail_template.title,
+            description=mail_template.description,
+            content=content,
+            comments=mail_template.comments
+        )
+
+    def _render_template_triaplass_followup(self):
+        """
+
+        :return:
+        """
+        from ..models import SystemMailTemplate
+        # Check if we have the required arguments, if not raise an exception
+        account = self.kwargs.get('account', None)
+        if account is None:
+            raise Exception(_("account is a required parameter for the trialpass_followup template render function"))
+
+        # Fetch template
+        mail_template = SystemMailTemplate.objects.get(pk=110000)
+
+        content_context = Context({
+            "account": account
         })
         content_template = Template(mail_template.content)
         content = content_template.render(content_context)
