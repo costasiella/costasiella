@@ -30,7 +30,7 @@ from .schedule_item import ScheduleItemNode
 m = Messages()
 
 
-def _get_resolve_classes_filter_query(self):
+def _get_resolve_shifts_filter_query(self):
     """
         Returns the filter query for the schedule
     """
@@ -74,7 +74,7 @@ def _get_resolve_classes_filter_query(self):
 
 
 # ScheduleClassType
-class ScheduleClassType(graphene.ObjectType):
+class ScheduleShiftType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
     frequency_type = graphene.String()
     date = graphene.types.datetime.Date()
@@ -83,42 +83,21 @@ class ScheduleClassType(graphene.ObjectType):
     status = graphene.String()
     description = graphene.String()
     account = graphene.Field(AccountNode)
-    role = graphene.String()
     account_2 = graphene.Field(AccountNode)
-    role_2 = graphene.String()
     organization_location_room = graphene.Field(OrganizationLocationRoomNode)
     organization_classtype = graphene.Field(OrganizationClasstypeNode)
-    organization_level = graphene.Field(OrganizationLevelNode)
     time_start = graphene.types.datetime.Time()
     time_end = graphene.types.datetime.Time()
-    display_public = graphene.Boolean()
-    info_mail_content = graphene.String()
-    available_spaces_online = graphene.Int()
-    available_spaces_total = graphene.Int()
-    booking_open_on = graphene.types.datetime.Date()
-    booking_status = graphene.String()
-    url_booking = graphene.String()
 
 
-# ScheduleClassDayType
-class ScheduleClassesDayType(graphene.ObjectType):
+class ScheduleShiftsDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
-    booking_open_on = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
-    filter_id_organization_classtype = graphene.String()
-    filter_id_organization_level = graphene.String()
+    filter_id_organization_shift = graphene.String()
     filter_id_organization_location = graphene.String()
-    public_only = graphene.Boolean()
-    classes = graphene.List(ScheduleClassType)
+    shifts = graphene.List(ScheduleShiftType)
     attendance_count_type = graphene.String()
-
-    def resolve_booking_open_on(self, info=None):
-        """
-            Returns False if no booking limit is defined, otherwise it returns the date from which
-            bookings for this class will be accepted.
-        """
-        return calculate_booking_open_on(self.date)
 
     def resolve_iso_week_day(self, info):
         return self.date.isoweekday()
@@ -126,27 +105,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
     def resolve_order_by(self, info):       
         return self.order_by
 
-    def resolve_classes(self, info):
-        def _get_attendance_count_sql():
-            """
-
-            :return:
-            """
-            attendance_count_sql = """( SELECT COUNT(csia.id) as count_sia 
-                    FROM costasiella_scheduleitemattendance csia 
-                    WHERE csia.schedule_item_id = csi.id AND
-                          csia.date = %(class_date)s AND """
-
-            if self.attendance_count_type == "ATTENDING":
-                attendance_count_sql += 'csia.booking_status = "ATTENDING" )'
-            if self.attendance_count_type == "BOOKED":
-                attendance_count_sql += 'csia.booking_status = "BOOKED" )'
-            if self.attendance_count_type == "ATTENDING_AND_BOOKED":
-                attendance_count_sql += 'csia.booking_status != "CANCELLED" )'
-
-            attendance_count_sql += " AS count_attendance"
-
-            return attendance_count_sql
+    def resolve_shifts(self, info):
 
         def _get_where_query():
             """
@@ -163,23 +122,16 @@ class ScheduleClassesDayType(graphene.ObjectType):
             #                     THEN clt.auth_teacher_id2  \
             #                     ELSE cotc.auth_teacher_id2 END) = '
             #     where += str(self.filter_id_teacher) + ') '
-            if self.filter_id_organization_classtype:
-                where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
-                                THEN csi.organization_classtype_id  \
-                                ELSE csiotc.organization_classtype_id END) = '
+            if self.filter_id_organization_shift:
+                where += 'AND (CASE WHEN csiotc.organization_shift_id IS NULL \
+                                THEN csi.organization_shift_id  \
+                                ELSE csiotc.organization_shift_id END) = '
                 where += '%(filter_id_organization_classtype)s '
             if self.filter_id_organization_location:
                 where += 'AND (CASE WHEN csiotc.organization_location_id IS NULL \
                                 THEN csi_olr.organization_location_id  \
                                 ELSE csiotc.organization_location_id END) = '
                 where += '%(filter_id_organization_location)s '
-            if self.filter_id_organization_level:
-                where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
-                                THEN csi.organization_level_id  \
-                                ELSE csiotc.organization_level_id END) = '
-                where += '%(filter_id_organization_level)s '
-            if self.public_only:
-                where += "AND csi.display_public = 1 "
                 # where += "AND sl.AllowAPI = 'T' "
                 # where += "AND sct.AllowAPI = 'T' "
             # if self.filter_starttime_from:
@@ -230,14 +182,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
                      THEN csiotc.organization_location_room_id
                      ELSE csi.organization_location_room_id
                      END AS organization_location_room_id,
-                CASE WHEN csiotc.organization_classtype_id IS NOT NULL
-                     THEN csiotc.organization_classtype_id
-                     ELSE csi.organization_classtype_id
-                     END AS organization_classtype_id,
-                CASE WHEN csiotc.organization_level_id IS NOT NULL
-                     THEN csiotc.organization_level_id
-                     ELSE csi.organization_level_id
-                     END AS organization_level_id,
+                CASE WHEN csiotc.organization_shift_id IS NOT NULL
+                     THEN csiotc.organization_shift_id
+                     ELSE csi.organization_shift_id
+                     END AS organization_shift_id,
                 CASE WHEN csiotc.time_start IS NOT NULL
                      THEN csiotc.time_start
                      ELSE csi.time_start
@@ -246,45 +194,22 @@ class ScheduleClassesDayType(graphene.ObjectType):
                      THEN csiotc.time_end
                      ELSE csi.time_end
                      END AS time_end,
-                csi.display_public,
                CASE     
                     WHEN csiotc.status = "OPEN"
                         THEN NULL
                     WHEN csiotc.account_id IS NOT NULL
                         THEN csiotc.account_id
-                    ELSE csia.account_id
+                    ELSE csit.account_id
                     END AS account_id,
-               CASE 
-                    WHEN csiotc.status = "OPEN"
-                        THEN NULL
-                    WHEN csiotc.account_id IS NOT NULL
-                        THEN csiotc.role
-                    ELSE csia.role
-                    END AS role,
                CASE 
                     WHEN csiotc.status = "OPEN"
                         THEN NULL
                     WHEN csiotc.account_2_id IS NOT NULL
                         THEN csiotc.account_2_id
-                    ELSE csia.account_2_id
+                    ELSE csit.account_2_id
                     END AS account_2_id,
-               CASE WHEN csiotc.status = "OPEN"
-                        THEN NULL
-                    WHEN csiotc.account_2_id IS NOT NULL
-                        THEN csiotc.role_2
-                    ELSE csia.role_2
-                    END AS role_2,
                coho.id AS organization_holiday_id,
                coho.name AS organization_holiday_name,
-               CASE WHEN csiotc.spaces IS NOT NULL
-                     THEN csiotc.spaces
-                     ELSE csi.spaces
-                     END AS spaces,
-               CASE WHEN csiotc.walk_in_spaces IS NOT NULL
-                     THEN csiotc.walk_in_spaces
-                     ELSE csi.walk_in_spaces
-                     END AS walk_in_spaces,
-               {attendance_count_sql}
             FROM costasiella_scheduleitem csi
             LEFT JOIN costasiella_organizationlocationroom csi_olr ON csi.organization_location_room_id = csi_olr.id
             LEFT JOIN costasiella_organizationlocation csi_ol ON csi_olr.organization_location_id = csi_ol.id
@@ -296,22 +221,17 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     otc.status,
                     otc.description,
                     otc.account_id,
-                    otc.role,
                     otc.account_2_id,
-                    otc.role_2,
                     otc.organization_location_room_id,
-                    otc.organization_classtype_id,
-                    otc.organization_level_id,
+                    otc.organization_shift_id,
                     otc.time_start,
                     otc.time_end,
-                    otc.spaces,
-                    otc.walk_in_spaces,
                     otc_olr.organization_location_id,
                     otc_ol.name as organization_location_name
                   FROM costasiella_scheduleitemweeklyotc otc 
                   LEFT JOIN costasiella_organizationlocationroom otc_olr ON otc.organization_location_room_id = otc_olr.id
                   LEFT JOIN costasiella_organizationlocation otc_ol ON otc_olr.organization_location_id = otc_ol.id
-                  WHERE date = %(class_date)s 
+                  WHERE date = %(shift_date)s 
                 ) csiotc
                 ON csi.id = csiotc.schedule_item_id
             LEFT JOIN
@@ -322,31 +242,31 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     role,
                     account_2_id,
                     role_2
-                FROM costasiella_scheduleitemaccount
-                WHERE date_start <= %(class_date)s AND (
-                      date_end >= %(class_date)s OR date_end IS NULL)
+                FROM costasiella_scheduleitememployee
+                WHERE date_start <= %(shift_date)s AND (
+                      date_end >= %(shift_date)s OR date_end IS NULL)
                 ORDER BY date_start
                 LIMIT 2
-                ) csia
-                ON csia.schedule_item_id = csi.id
+                ) csit
+                ON csit.schedule_item_id = csi.id
             LEFT JOIN
                 ( SELECT coh.id, coh.name, cohl.organization_location_id
                   FROM costasiella_organizationholiday coh
                   LEFT JOIN
                     costasiella_organizationholidaylocation cohl
                     ON cohl.organization_holiday_id = coh.id
-                  WHERE coh.date_start <= %(class_date)s AND
-                        coh.date_end >= %(class_date)s) coho
+                  WHERE coh.date_start <= %(shift_date)s AND
+                        coh.date_end >= %(shift_date)s) coho
                 ON coho.organization_location_id = csi_ol.id
             WHERE csi.schedule_item_type = "CLASS" 
                 AND (
                         /* Selection on specific days /*
-                        (csi.frequency_type = "SPECIFIC" AND csi.date_start = %(class_date)s ) OR
+                        (csi.frequency_type = "SPECIFIC" AND csi.date_start = %(shift_date)s ) OR
                         /* Weekly selection */
                         ( csi.frequency_type = "WEEKLY" AND 
                           csi.frequency_interval = %(iso_week_day)s AND 
-                          csi.date_start <= %(class_date)s AND
-                         (csi.date_end >= %(class_date)s OR csi.date_end IS NULL)
+                          csi.date_start <= %(shift_date)s AND
+                         (csi.date_end >= %(shift_date)s OR csi.date_end IS NULL)
                         )            
                     )
                 {where_sql}
@@ -363,10 +283,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
         ## 
         # At this time 27 Aug 2019, params don't seem to be working from a dictionary
         # https://docs.djangoproject.com/en/3.0/topics/db/sql/
-        # the query should be formatted using %(class_date)s 
+        # the query should be formatted using %(shift_date)s 
         ##
         params = {
-            "class_date": str(self.date),
+            "shift_date": str(self.date),
             "iso_week_day": iso_week_day,
             "filter_id_organization_classtype": self.filter_id_organization_classtype,
             "filter_id_organization_location": self.filter_id_organization_location,

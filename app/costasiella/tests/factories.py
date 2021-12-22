@@ -1007,9 +1007,9 @@ class ScheduleEventTicketScheduleItemIncludedFactory(factory.DjangoModelFactory)
     included = True
 
     
-class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
+class ScheduleItemAccountFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.ScheduleItemTeacher
+        model = models.ScheduleItemAccount
 
     schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
     account = factory.SubFactory(TeacherFactory)

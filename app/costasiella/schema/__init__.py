@@ -84,11 +84,11 @@ from .schedule_event_media import ScheduleEventMediaQuery, ScheduleEventMediaMut
 from .schedule_event_ticket import ScheduleEventTicketQuery, ScheduleEventTicketMutation
 from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItemQuery, ScheduleEventTicketScheduleItemMutation
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
+from .schedule_item_account import ScheduleItemAccountQuery, ScheduleItemAccountMutation
 from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemAttendanceMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutation
-from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
 
 from .system_feature_shop import SystemFeatureShopQuery, SystemFeatureShopMutation
@@ -164,11 +164,11 @@ class Query(AccountQuery,
             ScheduleEventTicketQuery,
             ScheduleEventTicketScheduleItemQuery,
             ScheduleItemQuery,
+            ScheduleItemAccountQuery,
             ScheduleItemAttendanceQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemPriceQuery,
-            ScheduleItemTeacherQuery,
             ScheduleItemTeacherAvailableQuery,
             SystemFeatureShopQuery,
             SystemMailTemplateQuery,
@@ -239,11 +239,11 @@ class Mutation(AccountMutation,
                ScheduleEventTicketMutation,
                ScheduleEventTicketScheduleItemMutation,
                ScheduleItemMutation,
+               ScheduleItemAccountMutation,
                ScheduleItemAttendanceMutation,
                ScheduleItemOrganizationClasspassGroupMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
                ScheduleItemPriceMutation,
-               ScheduleItemTeacherMutation,
                ScheduleItemTeacherAvailableMutation,
                SystemFeatureShopMutation,
                SystemMailTemplateMutation,

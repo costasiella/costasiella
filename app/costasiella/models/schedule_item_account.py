@@ -1,15 +1,23 @@
 from django.utils.translation import gettext as _
+
 from django.db import models
+
 
 from .schedule_item import ScheduleItem
 from .account import Account
+from .choices.teacher_roles import get_teacher_roles
 from .helpers import model_string
 
+
 # Create your models here.
-class ScheduleItemEmployee(models.Model):
+class ScheduleItemAccount(models.Model):
+    TEACHER_ROLES = get_teacher_roles()
+
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="employees")
-    account_2 = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, related_name="employees_2")
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    account_2 = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, related_name="account_2")
+    role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
     date_start = models.DateField()
     date_end = models.DateField(default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

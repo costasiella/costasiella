@@ -1850,7 +1850,7 @@ class Command(BaseCommand):
             record = {k.lower(): v for k, v in record.items()}
 
             try:
-                schedule_item_teacher = m.ScheduleItemTeacher(
+                schedule_item_teacher = m.ScheduleItemAccount(
                     schedule_item=self.classes_map.get(record['classes_id'], None),
                     account=self.auth_user_map.get(record['auth_teacher_id'], None),
                     role=self.map_classes_teacher_roles.get(record['teacher_role'], ""),
