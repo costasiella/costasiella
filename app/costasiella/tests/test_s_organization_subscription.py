@@ -33,7 +33,6 @@ class GQLOrganizationSubscription(TestCase):
         self.permission_change = 'change_organizationsubscription'
         self.permission_delete = 'delete_organizationsubscription'
 
-        self.organization_membership = f.OrganizationMembershipFactory.create()
         self.finance_glaccount = f.FinanceGLAccountFactory.create()
         self.finance_costcenter = f.FinanceCostCenterFactory.create()
 
@@ -53,7 +52,6 @@ class GQLOrganizationSubscription(TestCase):
                 "termsAndConditions": "T and C here",
                 "registrationFee": 30,
                 "quickStatsAmount": 12.5,
-                "organizationMembership": to_global_id("OrganizationMembershipNode", self.organization_membership.pk),
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
             }
@@ -75,7 +73,6 @@ class GQLOrganizationSubscription(TestCase):
                 "termsAndConditions": "T and C here",
                 "registrationFee": 30,
                 "quickStatsAmount": 12.5,
-                "organizationMembership": to_global_id("OrganizationMembershipNode", self.organization_membership.pk),
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
             }
@@ -116,10 +113,6 @@ class GQLOrganizationSubscription(TestCase):
           registrationFee
           accountRegistrationFee
           priceFirstMonth
-          organizationMembership {
-            id
-            name
-          }
           quickStatsAmount
           financeGlaccount {
             id 
@@ -156,10 +149,6 @@ class GQLOrganizationSubscription(TestCase):
       registrationFee
       accountRegistrationFee
       priceFirstMonth
-      organizationMembership {
-        id
-        name
-      }
       quickStatsAmount
       financeGlaccount {
         id 
@@ -168,21 +157,6 @@ class GQLOrganizationSubscription(TestCase):
       financeCostcenter {
         id
         name
-      }
-    }
-    organizationMemberships(first: 15, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-        }
       }
     }
     financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
@@ -239,10 +213,6 @@ class GQLOrganizationSubscription(TestCase):
         creditAccumulationDays
         unlimited
         termsAndConditions
-        organizationMembership {
-          id
-          name
-        }
         quickStatsAmount
         financeGlaccount {
           id
@@ -276,10 +246,6 @@ class GQLOrganizationSubscription(TestCase):
         creditAccumulationDays
         unlimited
         termsAndConditions
-        organizationMembership {
-          id
-          name
-        }
         quickStatsAmount
         financeGlaccount {
           id
@@ -345,8 +311,6 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['creditAccumulationDays'],
                          subscription.credit_accumulation_days)
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['unlimited'], subscription.unlimited)
-        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['organizationMembership']['id'], 
-          to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['quickStatsAmount'],
                          format(subscription.quick_stats_amount, ".2f"))
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['financeGlaccount']['id'], 
@@ -471,8 +435,6 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['organizationSubscription']['unlimited'], subscription.unlimited)
         self.assertEqual(data['organizationSubscription']['accountRegistrationFee'],
                          format(subscription.registration_fee, ".2f"))
-        # self.assertEqual(data['organizationSubscription']['organizationMembership']['id'],
-        #   to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
         self.assertEqual(data['organizationSubscription']['quickStatsAmount'],
                          format(subscription.quick_stats_amount, ".2f"))
         self.assertEqual(data['organizationSubscription']['financeGlaccount']['id'], 
@@ -561,7 +523,6 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['reconciliationClasses'], variables['input']['reconciliationClasses'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['creditAccumulationDays'], variables['input']['creditAccumulationDays'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
-        self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['organizationMembership']['id'], variables['input']['organizationMembership'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['quickStatsAmount'],
                          str(variables['input']['quickStatsAmount']))
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
@@ -644,7 +605,6 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['reconciliationClasses'], variables['input']['reconciliationClasses'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['creditAccumulationDays'], variables['input']['creditAccumulationDays'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
-        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['organizationMembership']['id'], variables['input']['organizationMembership'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['quickStatsAmount'],
                          str(variables['input']['quickStatsAmount']))
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
