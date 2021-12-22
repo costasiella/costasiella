@@ -494,7 +494,7 @@ def validate_schedule_shift_create_update_input(input, update=False):
             organization_shift = OrganizationShift.objects.get(id=rid.id)
             result['organization_shift'] = organization_shift
             if not organization_shift:
-                raise Exception(_('Invalid Organization Shift ID!'))                     
+                raise Exception(_('Invalid Organization Shift ID!'))
 
     return result
 
@@ -513,24 +513,20 @@ class CreateScheduleShift(graphene.relay.ClientIDMutation):
     schedule_item = graphene.Field(ScheduleItemNode)
 
     @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
+    def mutate_and_get_payload(cls, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleshift')
 
         print(input)
-
         result = validate_schedule_class_create_update_input(input)
 
         schedule_item = ScheduleItem(
-            schedule_item_type="CLASS", 
+            schedule_item_type="SHIFT",
             frequency_type=input['frequency_type'], 
             frequency_interval=input['frequency_interval'],
             date_start=input['date_start'],
             time_start=input['time_start'],
-            time_end=input['time_end'],   
-            display_public=input['display_public'],
-            spaces=input['spaces'],
-            walk_in_spaces=input['walk_in_spaces']
+            time_end=input['time_end']
         )
 
         # Optional fields
@@ -538,39 +534,28 @@ class CreateScheduleShift(graphene.relay.ClientIDMutation):
         if date_end:
             schedule_item.date_end = date_end
 
-        info_mail_content = input.get('info_mail_content', None)
-        if info_mail_content:
-            schedule_item.info_mail_content = info_mail_content
-
         # Fields requiring additional validation
         if result['organization_location_room']:
             schedule_item.organization_location_room = result['organization_location_room']
 
-        if result['organization_classtype']:
-            schedule_item.organization_classtype = result['organization_classtype']
+        if result['organization_shift']:
+            schedule_item.organization_shift = result['organization_shift']
 
-        if 'organization_level' in result:
-            schedule_item.organization_level = result['organization_level']
-
-        # ALl done, save it :).
+        # All done, save it :).
         schedule_item.save()
 
-        helper = ScheduleItemHelper()
-        helper.add_all_subscription_groups(schedule_item.id)
-        helper.add_all_classpass_groups(schedule_item.id)
-
-        return CreateScheduleClass(schedule_item=schedule_item)
+        return CreateScheduleShift(schedule_item=schedule_item)
 
 
-class UpdateScheduleClass(graphene.relay.ClientIDMutation):
+class UpdateScheduleShift(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        frequency_type = graphene.String(required=True)
-        frequency_interval = graphene.Int(required=True)
-        organization_location_room = graphene.ID(required=True)
-        organization_shift = graphene.ID(required=True)
-        date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
+        frequency_type = graphene.String(required=False)
+        frequency_interval = graphene.Int(required=False)
+        organization_location_room = graphene.ID(required=False)
+        organization_shift = graphene.ID(required=False)
+        date_start = graphene.types.datetime.Date(required=False)
+        date_end = graphene.types.datetime.Date(required=False)
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
 
@@ -591,38 +576,30 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         if schedule_item.frequency_type == "WEEKLY" and input['frequency_type'] == 'SPECIFIC':
             raise Exception('Unable to change weekly class into one time class')
 
-        schedule_item.frequency_type = input['frequency_type']
-        schedule_item.frequency_interval = input['frequency_interval']
-        schedule_item.date_start = input['date_start']
-        schedule_item.time_start = input['time_start']
-        schedule_item.time_end = input['time_end']
+        if 'frequency_type' in input:
+            schedule_item.frequency_type = input['frequency_type']
 
-        # Optional fields
-        date_end = input.get('date_end', None)
-        if date_end:
-            schedule_item.date_end = date_end
+        if 'frequency_interval' in input:
+            schedule_item.frequency_interval = input['frequency_interval']
 
-        if 'display_public' in input:
-            schedule_item.display_public = input['display_public']
+        if 'date_start' in input:
+            schedule_item.date_start = input['date_start']
 
-        if 'spaces' in input:
-            schedule_item.spaces = input['spaces']
+        if 'date_end' in input:
+            schedule_item.date_end = input['date_end']
 
-        if 'walk_in_spaces' in input:
-            schedule_item.walk_in_spaces = input['walk_in_spaces']
+        if 'time_start' in input:
+            schedule_item.time_start = input['time_start']
 
-        if 'info_mail_content' in input:
-            schedule_item.info_mail_content = input['info_mail_content']
+        if 'time_end' in input:
+            schedule_item.time_end = input['time_end']
 
         # Fields requiring additional validation
         if result['organization_location_room']:
             schedule_item.organization_location_room = result['organization_location_room']
 
-        if result['organization_classtype']:
-            schedule_item.organization_classtype = result['organization_classtype']
-
-        if 'organization_level' in result:
-            schedule_item.organization_level = result['organization_level']
+        if result['organization_shift']:
+            schedule_item.organization_shift = result['organization_shift']
 
         # ALl done, save it :).
         schedule_item.save()
@@ -630,7 +607,7 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         return UpdateScheduleClass(schedule_item=schedule_item)
 
 
-class DeleteScheduleClass(graphene.relay.ClientIDMutation):
+class DeleteScheduleShift(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
 
@@ -648,10 +625,10 @@ class DeleteScheduleClass(graphene.relay.ClientIDMutation):
 
         ok = schedule_item.delete()
 
-        return DeleteScheduleClass(ok=ok)
+        return DeleteScheduleShift(ok=ok)
 
 
-class ScheduleClassMutation(graphene.ObjectType):
-    create_schedule_class = CreateScheduleClass.Field()
-    update_schedule_class = UpdateScheduleClass.Field()
-    delete_schedule_class = DeleteScheduleClass.Field()
+class ScheduleShiftMutation(graphene.ObjectType):
+    create_schedule_shift = CreateScheduleShift.Field()
+    update_schedule_shift = UpdateScheduleShift.Field()
+    delete_schedule_shift = DeleteScheduleShift.Field()
