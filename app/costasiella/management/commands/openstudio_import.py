@@ -1850,7 +1850,7 @@ class Command(BaseCommand):
             record = {k.lower(): v for k, v in record.items()}
 
             try:
-                schedule_item_teacher = m.ScheduleItemAccount(
+                schedule_item_account = m.ScheduleItemAccount(
                     schedule_item=self.classes_map.get(record['classes_id'], None),
                     account=self.auth_user_map.get(record['auth_teacher_id'], None),
                     role=self.map_classes_teacher_roles.get(record['teacher_role'], ""),
@@ -1859,10 +1859,10 @@ class Command(BaseCommand):
                     date_start=record['startdate'],
                     date_end=record['enddate']
                 )
-                schedule_item_teacher.save()
+                schedule_item_account.save()
                 records_imported += 1
 
-                id_map[record['id']] = schedule_item_teacher
+                id_map[record['id']] = schedule_item_account
             except django.db.utils.IntegrityError as e:
                 logging.error("Import error for class teacher id: %s: %s" % (
                     record['id'],
