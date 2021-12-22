@@ -97,7 +97,6 @@ class ScheduleShiftsDayType(graphene.ObjectType):
     filter_id_organization_shift = graphene.String()
     filter_id_organization_location = graphene.String()
     shifts = graphene.List(ScheduleShiftType)
-    attendance_count_type = graphene.String()
 
     def resolve_iso_week_day(self, info):
         return self.date.isoweekday()
@@ -199,14 +198,14 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                         THEN NULL
                     WHEN csiotc.account_id IS NOT NULL
                         THEN csiotc.account_id
-                    ELSE csit.account_id
+                    ELSE csia.account_id
                     END AS account_id,
                CASE 
                     WHEN csiotc.status = "OPEN"
                         THEN NULL
                     WHEN csiotc.account_2_id IS NOT NULL
                         THEN csiotc.account_2_id
-                    ELSE csit.account_2_id
+                    ELSE csia.account_2_id
                     END AS account_2_id,
                coho.id AS organization_holiday_id,
                coho.name AS organization_holiday_name,
@@ -239,16 +238,14 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                     id,
                     schedule_item_id,
                     account_id,
-                    role,
                     account_2_id,
-                    role_2
-                FROM costasiella_scheduleitememployee
+                FROM costasiella_scheduleitemaccount
                 WHERE date_start <= %(shift_date)s AND (
                       date_end >= %(shift_date)s OR date_end IS NULL)
                 ORDER BY date_start
                 LIMIT 2
-                ) csit
-                ON csit.schedule_item_id = csi.id
+                ) csia
+                ON csia.schedule_item_id = csi.id
             LEFT JOIN
                 ( SELECT coh.id, coh.name, cohl.organization_location_id
                   FROM costasiella_organizationholiday coh
@@ -288,13 +285,12 @@ class ScheduleShiftsDayType(graphene.ObjectType):
         params = {
             "shift_date": str(self.date),
             "iso_week_day": iso_week_day,
-            "filter_id_organization_classtype": self.filter_id_organization_classtype,
+            "filter_id_organization_shift": self.filter_id_organization_shift,
             "filter_id_organization_location": self.filter_id_organization_location,
-            "filter_id_organization_level": self.filter_id_organization_level,
         }
         schedule_items = ScheduleItem.objects.raw(query, params=params)
 
-        classes_list = []
+        shifts_list = []
         for item in schedule_items:
             # print("#############")
             # print(item)
@@ -317,14 +313,9 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                 holiday = True
                 holiday_name = item.organization_holiday_name
 
-            total_spaces = item.spaces or 0
-            walk_in_spaces = item.walk_in_spaces or 0
-            count_attendance = item.count_attendance or 0
-            available_online_spaces = calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance)
-            booking_open_on = self.resolve_booking_open_on()
             schedule_item_id = to_global_id('ScheduleItemNode', item.pk)
 
-            classes_list.append(
+            shifts_list.append(
                 ScheduleClassType(
                     schedule_item_id=schedule_item_id,
                     date=self.date,
@@ -334,189 +325,15 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                     description=item.description,
                     frequency_type=item.frequency_type,
                     account=item.account,
-                    role=item.role,
                     account_2=item.account_2,
-                    role_2=item.role_2,
                     organization_location_room=item.organization_location_room,
-                    organization_classtype=item.organization_classtype,
-                    organization_level=item.organization_level,
+                    organization_shift=item.organization_shift,
                     time_start=item.time_start,
-                    time_end=item.time_end,
-                    display_public=item.display_public,
-                    available_spaces_online=available_online_spaces,
-                    available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
-                    booking_open_on=booking_open_on,
-                    booking_status=get_booking_status(item, self.date, booking_open_on, available_online_spaces),
-                    url_booking=get_url_booking(info, schedule_item_id, self.date)
+                    time_end=item.time_end
                 )
             )
     
-        return classes_list
-
-
-def get_url_booking(info, schedule_item_id, date):
-    """
-    Get URL pointing to shop booking
-    :param schedule_item_id: global ID of class
-    :param date: datetime.date object of class
-    :return: String - booking url
-    """
-    scheme = info.context.scheme
-    host = info.context.get_host()
-
-    url_booking = "{scheme}://{host}/#/shop/classes/book/{schedule_item_id}/{date}".format(
-        scheme=scheme,
-        host=host,
-        schedule_item_id=schedule_item_id,
-        date=str(date)
-    )
-
-    return url_booking
-
-
-def get_booking_status(schedule_item, date, booking_open_on, available_online_spaces):
-    """
-        :param schedule_item: schedule_item object
-        :return: String: booking status
-    """
-    ## Start test for class booking status
-
-    # https://docs.djangoproject.com/en/3.1/topics/i18n/timezones/#usage
-    local_tz = pytz.timezone(settings.TIME_ZONE)
-    # print(local_tz)
-
-    now = timezone.localtime(timezone.now())
-    # print("#### now ########")
-    # print(now)
-    # print(now.date())
-
-    dt_start = datetime.datetime(date.year,
-                                 date.month,
-                                 date.day,
-                                 int(schedule_item.time_start.hour),
-                                 int(schedule_item.time_start.minute))
-    # print(dt_start)
-    dt_start = local_tz.localize(dt_start)
-    # print(dt_start)
-
-    dt_end = datetime.datetime(date.year,
-                               date.month,
-                               date.day,
-                               int(schedule_item.time_end.hour),
-                               int(schedule_item.time_end.minute))
-    # print(dt_end)
-    dt_end = local_tz.localize(dt_end)
-    # print(dt_end)
-
-    status = "FINISHED"
-    if schedule_item.organization_holiday_id:
-        status = 'HOLIDAY'
-    elif schedule_item.status == "CANCELLED":
-        status = 'CANCELLED'
-    elif dt_start <= now and dt_end >= now:
-        # check start time
-        status = 'ONGOING'
-    elif dt_start >= now:
-        if now.date() < booking_open_on:
-            status = 'NOT_YET_OPEN'
-        else:
-            # check spaces for online bookings
-            if available_online_spaces < 1:
-                status = 'FULL'
-            else:
-                status = 'OK'
-
-    return status
-
-    # dt_end = datetime.datetime(self.date.year,
-    #                            self.date.month,
-    #                            self.date.day,
-    #                            int(row.classes.Endtime.hour),
-    #                            int(row.classes.Endtime.minute))
-    # dt_end = local_tz.localize(dt_end)
-
-    ## End test for class booking status
-
-    # Everything below here in this fn is OpenStudio code to be ported
-    # pytz = current.globalenv['pytz']
-    # TIMEZONE = current.TIMEZONE
-    # NOW_LOCAL = current.NOW_LOCAL
-    # TODAY_LOCAL = current.TODAY_LOCAL
-    #
-    # local_tz = pytz.timezone(TIMEZONE)
-    #
-    # dt_start = datetime.datetime(self.date.year,
-    #                              self.date.month,
-    #                              self.date.day,
-    #                              int(row.classes.Starttime.hour),
-    #                              int(row.classes.Starttime.minute))
-    # dt_start = local_tz.localize(dt_start)
-    # dt_end = datetime.datetime(self.date.year,
-    #                            self.date.month,
-    #                            self.date.day,
-    #                            int(row.classes.Endtime.hour),
-    #                            int(row.classes.Endtime.minute))
-    # dt_end = local_tz.localize(dt_end)
-    #
-    # status = 'finished'
-    # if row.classes_otc.Status == 'cancelled' or row.school_holidays.id:
-    #     status = 'cancelled'
-    # elif dt_start <= NOW_LOCAL and dt_end >= NOW_LOCAL:
-    #     # check start time
-    #     status = 'ongoing'
-    # elif dt_start >= NOW_LOCAL:
-    #     if not self.bookings_open == False and TODAY_LOCAL < self.bookings_open:
-    #         status = 'not_yet_open'
-    #     else:
-    #         # check spaces for online bookings
-    #         spaces = self._get_day_list_booking_spaces(row)
-    #         if spaces < 1:
-    #             status = 'full'
-    #         else:
-    #             status = 'ok'
-    #
-    # return status
-
-
-def calculate_booking_open_on(date):
-    """
-    Calculate when bookings for a class should open
-    :param date: datetime.date
-    :return: date
-    """
-    from ..dudes import SystemSettingDude
-
-    system_setting_dude = SystemSettingDude()
-    workflow_class_book_days_advance = system_setting_dude.get("workflow_class_book_days_advance")
-    if not workflow_class_book_days_advance:
-        # Set a default value of 30 days in advance to open class bookings
-        workflow_class_book_days_advance = 30
-
-    delta = datetime.timedelta(days=int(workflow_class_book_days_advance))
-
-    return date - delta
-
-
-def calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance):
-    # Spaces available for online booking
-    online_spaces = total_spaces - walk_in_spaces
-
-    # Subtract attendance
-    available_spaces_online = online_spaces - count_attendance
-    # Never return negatives, just 0
-    if available_spaces_online < 1:
-        available_spaces_online = 0
-
-    return available_spaces_online
-
-
-def calculate_available_spaces_total(total_spaces, count_attendance):
-    available_spaces_total = total_spaces - count_attendance
-    # Never return negatives, just 0
-    if available_spaces_total < 1:
-        available_spaces_total = 0
-
-    return available_spaces_total
+        return shifts_list
 
 
 def validate_schedule_classes_query_date_input(date_from, 
@@ -570,20 +387,17 @@ def validate_schedule_classes_query_date_input(date_from,
     return result
 
 
-class ScheduleClassQuery(graphene.ObjectType):
-    schedule_class = graphene.Field(ScheduleClassType,
+class ScheduleShiftQuery(graphene.ObjectType):
+    schedule_shift = graphene.Field(ScheduleShiftType,
                                     schedule_item_id=graphene.ID(),
                                     date=graphene.types.datetime.Date())
-    schedule_classes = graphene.List(
-        ScheduleClassesDayType,
+    schedule_shifts = graphene.List(
+        ScheduleShiftsDayType,
         date_from=graphene.types.datetime.Date(), 
         date_until=graphene.types.datetime.Date(),
         order_by=graphene.String(),
-        organization_classtype=graphene.ID(),
-        organization_level=graphene.ID(),
+        organization_shift=graphene.ID(),
         organization_location=graphene.ID(),
-        public_only=graphene.Boolean(),
-        attendance_count_type=graphene.String(),
     )
 
     def resolve_schedule_class(self,
@@ -619,7 +433,6 @@ class ScheduleClassQuery(graphene.ObjectType):
             status=schedule_item.status or "",
             description=schedule_item.description or "",
             account=schedule_item.account,
-            role=schedule_item.role,
             account_2=schedule_item.account_2,
             organization_location_room=schedule_item.organization_location_room,
             organization_classtype=schedule_item.organization_classtype,
