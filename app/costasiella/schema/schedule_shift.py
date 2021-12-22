@@ -316,7 +316,7 @@ class ScheduleShiftsDayType(graphene.ObjectType):
             schedule_item_id = to_global_id('ScheduleItemNode', item.pk)
 
             shifts_list.append(
-                ScheduleClassType(
+                ScheduleShiftType(
                     schedule_item_id=schedule_item_id,
                     date=self.date,
                     status=item.status,
@@ -336,14 +336,12 @@ class ScheduleShiftsDayType(graphene.ObjectType):
         return shifts_list
 
 
-def validate_schedule_classes_query_date_input(date_from, 
-                                               date_until, 
-                                               order_by, 
-                                               organization_classtype,
-                                               organization_level,
-                                               organization_location,
-                                               attendance_count_type,
-                                               ):
+def validate_schedule_shifts_query_date_input(date_from,
+                                              date_until,
+                                              order_by,
+                                              organization_shift,
+                                              organization_location,
+                                              ):
     """
     Check if date_until >= date_start
     Check if delta between dates <= 7 days
@@ -365,24 +363,15 @@ def validate_schedule_classes_query_date_input(date_from,
         if order_by not in sort_options:
             raise Exception(_("orderBy can only be 'location' or 'starttime'"))
 
-    if organization_classtype:
-        rid = get_rid(organization_classtype)
-        organization_classtype_id = rid.id
-        result['organization_classtype_id'] = organization_classtype_id
-
-    if organization_level:
-        rid = get_rid(organization_level)
-        organization_level_id = rid.id
-        result['organization_level_id'] = organization_level_id
+    if organization_shift:
+        rid = get_rid(organization_shift)
+        organization_shift_id = rid.id
+        result['organization_shift_id'] = organization_shift_id
 
     if organization_location:
         rid = get_rid(organization_location)
         organization_location_id = rid.id
         result['organization_location_id'] = organization_location_id
-
-    valid_attendance_count_types = ['ATTENDING', 'BOOKED', 'ATTENDING_AND_BOOKED']
-    if attendance_count_type not in valid_attendance_count_types:
-        raise Exception(_("attendance_count_type should be in ATTENDING, BOOKED or ATTENDING_AND_BOOKED"))
 
     return result
 
@@ -400,12 +389,12 @@ class ScheduleShiftQuery(graphene.ObjectType):
         organization_location=graphene.ID(),
     )
 
-    def resolve_schedule_class(self,
+    def resolve_schedule_shift(self,
                                info,
                                schedule_item_id,
                                date):
         """
-        Resolve schedule class
+        Resolve schedule shift
         :param info:
         :param schedule_item_id:
         :param date:
@@ -419,90 +408,63 @@ class ScheduleShiftQuery(graphene.ObjectType):
         sih = ScheduleItemHelper()
         schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, date)
 
-        booking_open_on = calculate_booking_open_on(date)
-        total_spaces = schedule_item.spaces or 0
-        walk_in_spaces = schedule_item.walk_in_spaces or 0
-        count_attendance = schedule_item.count_attendance or 0
-        available_online_spaces = calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance)
-
-        schedule_class = ScheduleClassType(
+        schedule_shift = ScheduleShiftType(
             date=date,
             schedule_item_id=to_global_id('ScheduleItemNode', schedule_item.pk),
-            display_public=schedule_item.display_public,
             frequency_type=schedule_item.frequency_type,
             status=schedule_item.status or "",
             description=schedule_item.description or "",
             account=schedule_item.account,
             account_2=schedule_item.account_2,
             organization_location_room=schedule_item.organization_location_room,
-            organization_classtype=schedule_item.organization_classtype,
+            organization_shift=schedule_item.organization_shift,
             organization_level=schedule_item.organization_level,
             time_start=schedule_item.time_start,
             time_end=schedule_item.time_end,
-            info_mail_content=schedule_item.info_mail_content,
-            available_spaces_online=available_online_spaces,
-            available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
-            booking_open_on=booking_open_on,
-            booking_status=get_booking_status(schedule_item, date, booking_open_on, available_online_spaces)
         )
 
         return schedule_class
 
-    def resolve_schedule_classes(self, 
-                                 info, 
-                                 date_from=graphene.types.datetime.Date(), 
-                                 date_until=graphene.types.datetime.Date(),
-                                 order_by=None,
-                                 organization_classtype=None,
-                                 organization_level=None,
-                                 organization_location=None,
-                                 public_only=True,
-                                 attendance_count_type="attending_and_booked"
-                                 ):
+    def resolve_schedule_shifts(self,
+                                info,
+                                date_from=graphene.types.datetime.Date(),
+                                date_until=graphene.types.datetime.Date(),
+                                order_by=None,
+                                organization_shift=None,
+                                organization_location=None,
+                                ):
         user = info.context.user
-        print("RESOLVE SCHEDULE CLASSES")
+        print("RESOLVE SCHEDULE SHIFTS")
         print(user)
         user_has_view_permission = check_if_user_has_permission(user, [
-            'costasiella.view_scheduleclass',
-            'costasiella.view_selfcheckin'
+            'costasiella.view_scheduleshift'
         ])
 
         validation_result = validate_schedule_classes_query_date_input(
             date_from, 
             date_until, 
             order_by,
-            organization_classtype,
-            organization_level,
+            organization_shift,
             organization_location,
-            attendance_count_type
         )
 
         delta = datetime.timedelta(days=1)
         date = date_from
         return_list = []
         while date <= date_until:
-            day = ScheduleClassesDayType()
+            day = ScheduleShiftsDayType()
             day.date = date
-            day.attendance_count_type = attendance_count_type
 
             if order_by:
                 day.order_by = order_by
 
-            if 'organization_classtype_id' in validation_result:
-                day.filter_id_organization_classtype = \
-                    validation_result['organization_classtype_id']
-
-            if 'organization_level_id' in validation_result:
-                day.filter_id_organization_level = \
-                    validation_result['organization_level_id']
+            if 'organization_shift_id' in validation_result:
+                day.filter_id_organization_shift = \
+                    validation_result['organization_shift_id']
 
             if 'organization_location_id' in validation_result:
                 day.filter_id_organization_location = \
                     validation_result['organization_location_id']
-
-            day.public_only = True
-            if user_has_view_permission:
-                day.public_only = public_only
 
             return_list.append(day)
             date += delta
@@ -510,7 +472,7 @@ class ScheduleShiftQuery(graphene.ObjectType):
         return return_list
 
 
-def validate_schedule_class_create_update_input(input, update=False):
+def validate_schedule_shift_create_update_input(input, update=False):
     """
     Validate input
     """ 
@@ -525,50 +487,35 @@ def validate_schedule_class_create_update_input(input, update=False):
             if not organization_location_room:
                 raise Exception(_('Invalid Organization Location Room ID!'))            
 
-    # Check OrganizationClasstype
-    if 'organization_classtype' in input:
-        if input['organization_classtype']:
-            rid = get_rid(input['organization_classtype'])
-            organization_classtype = OrganizationClasstype.objects.get(id=rid.id)
-            result['organization_classtype'] = organization_classtype
-            if not organization_classtype:
-                raise Exception(_('Invalid Organization Classtype ID!'))            
-
-    # Check OrganizationLevel
-    if 'organization_level' in input:
-        if input['organization_level']:
-            print('processing')
-            rid = get_rid(input['organization_level'])
-            organization_level = OrganizationLevel.objects.get(id=rid.id)
-            result['organization_level'] = organization_level
-            if not organization_level:
-                raise Exception(_('Invalid Organization Level ID!'))            
+    # Check OrganizationShift
+    if 'organization_shift' in input:
+        if input['organization_shift']:
+            rid = get_rid(input['organization_shift'])
+            organization_shift = OrganizationShift.objects.get(id=rid.id)
+            result['organization_shift'] = organization_shift
+            if not organization_shift:
+                raise Exception(_('Invalid Organization Shift ID!'))                     
 
     return result
 
 
-class CreateScheduleClass(graphene.relay.ClientIDMutation):
+class CreateScheduleShift(graphene.relay.ClientIDMutation):
     class Input:
         frequency_type = graphene.String(required=True)
         frequency_interval = graphene.Int(required=True)
         organization_location_room = graphene.ID(required=True)
-        organization_classtype = graphene.ID(required=True)
-        organization_level = graphene.ID(required=False, default_value=None)
+        organization_shift = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
-        spaces = graphene.types.Int(required=True)
-        walk_in_spaces = graphene.Int(required=True)
-        display_public = graphene.Boolean(required=True, default_value=False)
-        info_mail_content = graphene.String()
 
     schedule_item = graphene.Field(ScheduleItemNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleclass')
+        require_login_and_permission(user, 'costasiella.add_scheduleshift')
 
         print(input)
 
@@ -621,23 +568,18 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         frequency_type = graphene.String(required=True)
         frequency_interval = graphene.Int(required=True)
         organization_location_room = graphene.ID(required=True)
-        organization_classtype = graphene.ID(required=True)
-        organization_level = graphene.ID(required=False, default_value=None)
+        organization_shift = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
-        spaces = graphene.types.Int(required=False)
-        walk_in_spaces = graphene.Int(required=False)
-        display_public = graphene.Boolean(required=False)
-        info_mail_content = graphene.String(default_value="")
 
     schedule_item = graphene.Field(ScheduleItemNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_scheduleclass')
+        require_login_and_permission(user, 'costasiella.change_scheduleshift')
 
         result = validate_schedule_class_create_update_input(input)
         rid = get_rid(input['id'])
@@ -697,7 +639,7 @@ class DeleteScheduleClass(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_scheduleclass')
+        require_login_and_permission(user, 'costasiella.delete_scheduleshift')
 
         rid = get_rid(input['id'])
         schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
