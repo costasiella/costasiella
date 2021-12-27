@@ -21,10 +21,10 @@ class ScheduleItemWeeklyOTC(models.Model):
 
     class Meta:
         permissions = [
-            ('view_scheduleclassweeklyotc', _("Can view schedule class weekly one time change")),
-            ('add_scheduleclassweeklyotc', _("Can add schedule class weekly one time change")),
-            ('change_scheduleclassweeklyotc', _("Can change schedule class weekly one time change")),
-            ('delete_scheduleclassweeklyotc', _("Can delete schedule class weekly one time change")),
+            ('view_scheduleclassweeklyotc', _("Can view schedule class & shift weekly one time changes")),
+            ('add_scheduleclassweeklyotc', _("Can add schedule class & shift weekly one time changes")),
+            ('change_scheduleclassweeklyotc', _("Can change schedule class & shift weekly one time changes")),
+            ('delete_scheduleclassweeklyotc', _("Can delete schedule class & shift weekly one time changes")),
         ]
 
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
