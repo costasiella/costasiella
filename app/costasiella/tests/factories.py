@@ -856,7 +856,22 @@ class SchedulePublicWeeklyClassOTCFactory(factory.DjangoModelFactory):
     organization_level = factory.SelfAttribute('schedule_item.organization_level')
     time_start = datetime.time(11, 0)
     time_end = datetime.time(12, 30)
-    
+
+
+class ScheduleWeeklyShiftFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItem
+
+    schedule_item_type = "SHIFT"
+    frequency_type = "WEEKLY"
+    frequency_interval = 1  # Monday
+    organization_location_room = factory.SubFactory(OrganizationLocationRoomFactory)
+    organization_shift = factory.SubFactory(OrganizationShiftFactory)
+    date_start = datetime.date(2014, 1, 1)
+    date_end = datetime.date(2099, 12, 31)
+    time_start = datetime.time(6, 0)
+    time_end = datetime.time(9, 0)
+
 
 class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
     class Meta:
