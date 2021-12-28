@@ -19,14 +19,6 @@ class ScheduleItemWeeklyOTC(models.Model):
     TEACHER_ROLES = get_teacher_roles()
     STATUSES = get_schedule_item_otc_statuses()
 
-    class Meta:
-        permissions = [
-            ('view_scheduleclassweeklyotc', _("Can view schedule class & shift weekly one time changes")),
-            ('add_scheduleclassweeklyotc', _("Can add schedule class & shift weekly one time changes")),
-            ('change_scheduleclassweeklyotc', _("Can change schedule class & shift weekly one time changes")),
-            ('delete_scheduleclassweeklyotc', _("Can delete schedule class & shift weekly one time changes")),
-        ]
-
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     date = models.DateField()
     status = models.CharField(max_length=255, default="", choices=STATUSES)
