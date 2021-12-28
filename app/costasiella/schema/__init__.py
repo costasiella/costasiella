@@ -77,7 +77,7 @@ from .organization_subscription_price import OrganizationSubscriptionPriceQuery,
 from .schedule_appointment import ScheduleAppointmentQuery, ScheduleAppointmentMutation
 from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
 from .schedule_class_booking_option import ScheduleClassBookingOptionsQuery
-from .schedule_class_weekly_otc import ScheduleClassWeeklyOTCQuery, ScheduleClassWeeklyOTCMutation
+from .schedule_item_weekly_otc import ScheduleItemWeeklyOTCQuery, ScheduleItemWeeklyOTCMutation
 from .schedule_event import ScheduleEventQuery, ScheduleEventMutation
 from .schedule_event_earlybird import ScheduleEventEarlybirdQuery, ScheduleEventEarlybirdMutation
 from .schedule_event_media import ScheduleEventMediaQuery, ScheduleEventMediaMutation
@@ -157,7 +157,6 @@ class Query(AccountQuery,
             ScheduleAppointmentQuery,
             ScheduleClassQuery,
             ScheduleClassBookingOptionsQuery,
-            ScheduleClassWeeklyOTCQuery,
             ScheduleEventQuery,
             ScheduleEventEarlybirdQuery,
             ScheduleEventMediaQuery,
@@ -170,6 +169,7 @@ class Query(AccountQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemPriceQuery,
             ScheduleItemTeacherAvailableQuery,
+            ScheduleItemWeeklyOTCQuery,
             SystemFeatureShopQuery,
             SystemMailTemplateQuery,
             SystemSettingQuery,
@@ -232,7 +232,6 @@ class Mutation(AccountMutation,
                OrganizationSubscriptionPriceMutation, 
                ScheduleAppointmentMutation,
                ScheduleClassMutation,
-               ScheduleClassWeeklyOTCMutation,
                ScheduleEventMutation,
                ScheduleEventEarlybirdMutation,
                ScheduleEventMediaMutation,
@@ -245,6 +244,7 @@ class Mutation(AccountMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
                ScheduleItemPriceMutation,
                ScheduleItemTeacherAvailableMutation,
+               ScheduleItemWeeklyOTCMutation,
                SystemFeatureShopMutation,
                SystemMailTemplateMutation,
                SystemSettingMutation,
