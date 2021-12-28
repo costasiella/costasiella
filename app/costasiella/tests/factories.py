@@ -259,6 +259,14 @@ class OrganizationLevelFactory(factory.DjangoModelFactory):
     name = "First level"
 
 
+class OrganizationShiftFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Organizationshift
+
+    archived = False
+    name = "First shift type"
+
+
 class OrganizationLanguageFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationLanguage
