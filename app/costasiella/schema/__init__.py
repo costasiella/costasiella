@@ -90,6 +90,7 @@ from .schedule_item_organization_classpass_group import ScheduleItemOrganization
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutation
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
+from .schedule_shift import ScheduleShiftQuery, ScheduleShiftMutation
 
 from .system_feature_shop import SystemFeatureShopQuery, SystemFeatureShopMutation
 from .system_mail_template import SystemMailTemplateQuery, SystemMailTemplateMutation
@@ -170,6 +171,7 @@ class Query(AccountQuery,
             ScheduleItemPriceQuery,
             ScheduleItemTeacherAvailableQuery,
             ScheduleItemWeeklyOTCQuery,
+            ScheduleShiftQuery,
             SystemFeatureShopQuery,
             SystemMailTemplateQuery,
             SystemSettingQuery,
@@ -245,6 +247,7 @@ class Mutation(AccountMutation,
                ScheduleItemPriceMutation,
                ScheduleItemTeacherAvailableMutation,
                ScheduleItemWeeklyOTCMutation,
+               ScheduleShiftMutation,
                SystemFeatureShopMutation,
                SystemMailTemplateMutation,
                SystemSettingMutation,
