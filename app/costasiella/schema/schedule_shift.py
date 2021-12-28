@@ -21,8 +21,7 @@ from ..modules.gql_tools import \
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 from .account import AccountNode
-from .organization_classtype import OrganizationClasstypeNode
-from .organization_level import OrganizationLevelNode
+from .organization_shift import OrganizationShiftNode
 from .organization_location_room import OrganizationLocationRoomNode
 from .schedule_item import ScheduleItemNode
 
@@ -85,7 +84,7 @@ class ScheduleShiftType(graphene.ObjectType):
     account = graphene.Field(AccountNode)
     account_2 = graphene.Field(AccountNode)
     organization_location_room = graphene.Field(OrganizationLocationRoomNode)
-    organization_classtype = graphene.Field(OrganizationClasstypeNode)
+    organization_shift = graphene.Field(OrganizationShiftNode)
     time_start = graphene.types.datetime.Time()
     time_end = graphene.types.datetime.Time()
 
@@ -440,7 +439,7 @@ class ScheduleShiftQuery(graphene.ObjectType):
             'costasiella.view_scheduleshift'
         ])
 
-        validation_result = validate_schedule_classes_query_date_input(
+        validation_result = validate_schedule_shifts_query_date_input(
             date_from, 
             date_until, 
             order_by,
