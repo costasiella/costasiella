@@ -261,7 +261,7 @@ class OrganizationLevelFactory(factory.DjangoModelFactory):
 
 class OrganizationShiftFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.Organizationshift
+        model = models.OrganizationShift
 
     archived = False
     name = "First shift type"

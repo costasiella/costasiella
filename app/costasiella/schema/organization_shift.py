@@ -23,9 +23,7 @@ class OrganizationShiftNode(DjangoObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_organizationshift')
         
-        organization_shift = self._meta.model.objects.get(id=id)
-        
-        return organization_shift
+        return self._meta.model.objects.get(id=id)
 
 
 class OrganizationShiftQuery(graphene.ObjectType):
