@@ -264,7 +264,6 @@ class GQLScheduleClass(TestCase):
         variables = {
             'dateFrom': str(a_monday),
             'dateUntil': str(a_monday + datetime.timedelta(days=31)),
-            'attendanceCountType': "ATTENDING_AND_BOOKED"
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
@@ -474,31 +473,16 @@ class GQLScheduleClass(TestCase):
         for day in data['scheduleShifts']:
             for day_class in day['shifts']:
                 self.assertEqual('Second' not in day_class['organizationLocationRoom']['name'], True)
-    #
-    # def test_query_anon_user(self):
-    #     """ Query list of scheduleshifts - anon users can only list public shifts """
-    #     query = self.scheduleshifts_query
-    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_shift.display_public = False
-    #     schedule_shift.save()
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
-    #     data = executed['data']
-    #     for day in data['scheduleShifts']:
-    #         self.assertEqual(len(day['shifts']), 0)
-    #
-    # def test_query_anon_user_list_public_shifts(self):
-    #     """ Query list of scheduleshifts - anon users can only list public shifts """
-    #     query = self.scheduleshifts_query
-    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
-    #     data = executed['data']
-    #     self.assertEqual(
-    #         data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
-    #         to_global_id('ScheduleItemNode', schedule_shift.id)
-    #     )
-    #
+
+    def test_query_anon_user(self):
+        """ Query list of scheduleshifts - anon users can only list public shifts """
+        query = self.scheduleshifts_query
+        schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
     # def test_query_one(self):
     #     """ Query one schedule_shift as admin """
     #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
