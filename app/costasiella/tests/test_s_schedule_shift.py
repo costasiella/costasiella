@@ -259,7 +259,7 @@ class GQLScheduleClass(TestCase):
         """
         query = self.scheduleshifts_query
 
-        schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
+        schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
         a_monday = datetime.date(2019, 6, 17)
         variables = {
             'dateFrom': str(a_monday),
@@ -276,7 +276,7 @@ class GQLScheduleClass(TestCase):
         """ Query list of scheduleshifts """
         query = self.scheduleshifts_query
 
-        schedule_class = f.ScheduleWeeklyShiftFactory.create()
+        schedule_shift = f.ScheduleWeeklyShiftFactory.create()
 
         variables = self.variables_query_list
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
@@ -285,23 +285,23 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['scheduleShifts'][0]['date'], variables['dateFrom'])
         self.assertEqual(
             data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
-            to_global_id('ScheduleItemNode', schedule_class.id)
+            to_global_id('ScheduleItemNode', schedule_shift.id)
         )
         self.assertEqual(
             data['scheduleShifts'][0]['shifts'][0]['organizationShift']['id'],
-            to_global_id('OrganizationShiftNode', schedule_class.organization_shift.id)
+            to_global_id('OrganizationShiftNode', schedule_shift.organization_shift.id)
         )
         self.assertEqual(
             data['scheduleShifts'][0]['shifts'][0]['organizationLocationRoom']['id'],
-            to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id)
+            to_global_id('OrganizationLocationRoomNode', schedule_shift.organization_location_room.id)
         )
         self.assertEqual(
             data['scheduleShifts'][0]['shifts'][0]['timeStart'],
-            str(schedule_class.time_start)
+            str(schedule_shift.time_start)
         )
         self.assertEqual(
             data['scheduleShifts'][0]['shifts'][0]['timeEnd'],
-            str(schedule_class.time_end)
+            str(schedule_shift.time_end)
         )
 
     def test_query_status_cancelled(self):
@@ -312,7 +312,7 @@ class GQLScheduleClass(TestCase):
         schedule_shift_otc.status = 'CANCELLED'
         schedule_shift_otc.description = 'No staff required this day'
         schedule_shift_otc.save()
-        schedule_class = schedule_shift_otc.schedule_item
+        schedule_shift = schedule_shift_otc.schedule_item
 
         variables = self.variables_query_list_status
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
@@ -321,7 +321,7 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['scheduleShifts'][0]['date'], variables['dateFrom'])
         self.assertEqual(
             data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
-            to_global_id('ScheduleItemNode', schedule_class.id)
+            to_global_id('ScheduleItemNode', schedule_shift.id)
         )
         self.assertEqual(
             data['scheduleShifts'][0]['shifts'][0]['status'],
@@ -414,94 +414,73 @@ class GQLScheduleClass(TestCase):
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        print("##############$")
-        print(executed)
-        print(permission)
-        print(user.has_perm(self.permission_view))
-
         # List all scheduleshifts
         self.assertEqual(data['scheduleShifts'][0]['date'], variables['dateFrom'])
         self.assertEqual(
             data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
             to_global_id('ScheduleItemNode', schedule_shift_otc.schedule_item.id)
         )
-    #
-    # def test_query_filter_organization_classtype(self):
-    #     """ Test filtering query by classtype """
-    #     query = self.scheduleshifts_query
-    #
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_class2 = f.ScheduleWeeklyShiftOTCFactory.create()
-    #
-    #     first_classtype = schedule_class.organization_classtype
-    #
-    #     second_classtype = schedule_class2.organization_classtype
-    #     second_classtype.name = "Second classtype"
-    #     second_classtype.save()
-    #
-    #     variables = self.variables_query_list
-    #     variables['organizationClasstype'] = to_global_id('OrganizationClasstypeNode', first_classtype.id)
-    #
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     for day in data['scheduleShifts']:
-    #         for day_class in day['shifts']:
-    #             self.assertEqual('Second' not in day_class['organizationClasstype']['name'], True)
-    #
-    # def test_query_filter_organization_level(self):
-    #     """ Test filtering query by level """
-    #     query = self.scheduleshifts_query
-    #
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_class2 = f.ScheduleWeeklyShiftOTCFactory.create()
-    #
-    #     first_level = schedule_class.organization_level
-    #
-    #     second_level = schedule_class2.organization_level
-    #     second_level.name = "Second level"
-    #     second_level.save()
-    #
-    #     variables = self.variables_query_list
-    #     variables['organizationLevel'] = to_global_id('OrganizationLevelNode', first_level.id)
-    #
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     for day in data['scheduleShifts']:
-    #         for day_class in day['shifts']:
-    #             self.assertEqual('Second' not in day_class['organizationLevel']['name'], True)
-    #
-    # def test_query_filter_organization_location(self):
-    #     """ Test filtering query by location """
-    #     query = self.scheduleshifts_query
-    #
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_class2 = f.ScheduleWeeklyShiftOTCFactory.create()
-    #
-    #     first_location_room = schedule_class.organization_location_room
-    #     first_location = first_location_room.organization_location
-    #
-    #     second_location_room = schedule_class2.organization_location_room
-    #     second_location_room.name = "Second location room"
-    #     second_location_room.save()
-    #     second_location = second_location_room.organization_location
-    #     second_location.name = "Second location"
-    #     second_location.save()
-    #
-    #     variables = self.variables_query_list
-    #     variables['organizationLocation'] = to_global_id('OrganizationLocationNode', first_location.id)
-    #
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     for day in data['scheduleShifts']:
-    #         for day_class in day['shifts']:
-    #             self.assertEqual('Second' not in day_class['organizationLocationRoom']['name'], True)
+
+    def test_query_filter_organization_shift(self):
+        """ Test filtering query by shift """
+        query = self.scheduleshifts_query
+
+        schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+        schedule_shift2 = f.ScheduleWeeklyShiftOTCFactory.create(
+            account=schedule_shift.account,
+            account_2=schedule_shift.account_2
+        )
+
+        first_shift = schedule_shift.organization_shift
+
+        second_shift = schedule_shift2.organization_shift
+        second_shift.name = "Second shift"
+        second_shift.save()
+
+        variables = self.variables_query_list
+        variables['organizationShift'] = to_global_id('OrganizationShiftNode', first_shift.id)
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        for day in data['scheduleShifts']:
+            for day_class in day['shifts']:
+                self.assertEqual('Second' not in day_class['organizationShift']['name'], True)
+
+    def test_query_filter_organization_location(self):
+        """ Test filtering query by location """
+        query = self.scheduleshifts_query
+
+        schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+        schedule_shift2 = f.ScheduleWeeklyShiftOTCFactory.create(
+            account=schedule_shift.account,
+            account_2=schedule_shift.account_2
+        )
+
+        first_location_room = schedule_shift.organization_location_room
+        first_location = first_location_room.organization_location
+
+        second_location_room = schedule_shift2.organization_location_room
+        second_location_room.name = "Second location room"
+        second_location_room.save()
+        second_location = second_location_room.organization_location
+        second_location.name = "Second location"
+        second_location.save()
+
+        variables = self.variables_query_list
+        variables['organizationLocation'] = to_global_id('OrganizationLocationNode', first_location.id)
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        for day in data['scheduleShifts']:
+            for day_class in day['shifts']:
+                self.assertEqual('Second' not in day_class['organizationLocationRoom']['name'], True)
     #
     # def test_query_anon_user(self):
     #     """ Query list of scheduleshifts - anon users can only list public shifts """
     #     query = self.scheduleshifts_query
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_class.display_public = False
-    #     schedule_class.save()
+    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+    #     schedule_shift.display_public = False
+    #     schedule_shift.save()
     #
     #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
     #     data = executed['data']
@@ -511,20 +490,20 @@ class GQLScheduleClass(TestCase):
     # def test_query_anon_user_list_public_shifts(self):
     #     """ Query list of scheduleshifts - anon users can only list public shifts """
     #     query = self.scheduleshifts_query
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
+    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
     #
     #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
     #     data = executed['data']
     #     self.assertEqual(
     #         data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
-    #         to_global_id('ScheduleItemNode', schedule_class.id)
+    #         to_global_id('ScheduleItemNode', schedule_shift.id)
     #     )
     #
     # def test_query_one(self):
-    #     """ Query one schedule_class as admin """
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
+    #     """ Query one schedule_shift as admin """
+    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
     #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
     #         "date": "2014-01-06"
     #     }
     #
@@ -533,28 +512,28 @@ class GQLScheduleClass(TestCase):
     #     data = executed.get('data')
     #
     #     self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
-    #     self.assertEqual(data['scheduleClass']['displayPublic'], schedule_class.display_public)
-    #     self.assertEqual(data['scheduleClass']['frequencyType'], schedule_class.frequency_type)
-    #     self.assertEqual(data['scheduleClass']['timeStart'], str(schedule_class.time_start))
-    #     self.assertEqual(data['scheduleClass']['timeEnd'], str(schedule_class.time_end))
+    #     self.assertEqual(data['scheduleClass']['displayPublic'], schedule_shift.display_public)
+    #     self.assertEqual(data['scheduleClass']['frequencyType'], schedule_shift.frequency_type)
+    #     self.assertEqual(data['scheduleClass']['timeStart'], str(schedule_shift.time_start))
+    #     self.assertEqual(data['scheduleClass']['timeEnd'], str(schedule_shift.time_end))
     #     self.assertEqual(data['scheduleClass']['organizationLocationRoom']['id'],
-    #                      to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id))
+    #                      to_global_id('OrganizationLocationRoomNode', schedule_shift.organization_location_room.id))
     #     self.assertEqual(data['scheduleClass']['organizationClasstype']['id'],
-    #                      to_global_id('OrganizationClasstypeNode', schedule_class.organization_classtype.id))
+    #                      to_global_id('OrganizationClasstypeNode', schedule_shift.organization_classtype.id))
     #     self.assertEqual(data['scheduleClass']['organizationLevel']['id'],
-    #                      to_global_id('OrganizationLevelNode', schedule_class.organization_level.id))
+    #                      to_global_id('OrganizationLevelNode', schedule_shift.organization_level.id))
     #
     # def test_query_one_booking_status_ok(self):
     #     """ Query one schedule_item as admin - booking status ok """
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_class.spaces = 10
-    #     schedule_class.save()
+    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+    #     schedule_shift.spaces = 10
+    #     schedule_shift.save()
     #
     #     today = datetime.date.today()
     #     next_monday = next_weekday(today, 1)
     #
     #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
     #         "date": str(next_monday)
     #     }
     #
@@ -570,18 +549,18 @@ class GQLScheduleClass(TestCase):
     #     now = datetime.datetime.now()
     #     delta = datetime.timedelta(hours=1)
     #
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_class.frequency_interval = now.date().isoweekday()
-    #     schedule_class.time_start = now - delta
-    #     schedule_class.time_end = now + delta
-    #     schedule_class.spaces = 10
-    #     schedule_class.save()
+    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+    #     schedule_shift.frequency_interval = now.date().isoweekday()
+    #     schedule_shift.time_start = now - delta
+    #     schedule_shift.time_end = now + delta
+    #     schedule_shift.spaces = 10
+    #     schedule_shift.save()
     #
     #     today = datetime.date.today()
     #     next_monday = next_weekday(today, 1)
     #
     #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
     #         "date": str(now.date())
     #     }
     #
@@ -594,12 +573,12 @@ class GQLScheduleClass(TestCase):
     #
     # def test_query_one_booking_status_full(self):
     #     """ Query one schedule_item as admin - booking status full """
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
+    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
     #     today = datetime.date.today()
     #     next_monday = next_weekday(today, 1)
     #
     #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
     #         "date": str(next_monday)
     #     }
     #
@@ -612,14 +591,14 @@ class GQLScheduleClass(TestCase):
     #
     # def test_query_one_booking_status_cancelled(self):
     #     """ Query one schedule_item as admin - booking status cancelled """
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_class.status = 'CANCELLED'
-    #     schedule_class.save()
+    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+    #     schedule_shift.status = 'CANCELLED'
+    #     schedule_shift.save()
     #     today = datetime.date.today()
     #     next_monday = next_weekday(today, 1)
     #
     #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
     #         "date": str(next_monday)
     #     }
     #
@@ -632,9 +611,9 @@ class GQLScheduleClass(TestCase):
     #
     # def test_query_one_booking_status_finished(self):
     #     """ Query one schedule_item as admin - booking status ok """
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
+    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
     #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
     #         "date": "2014-01-06"
     #     }
     #
@@ -647,9 +626,9 @@ class GQLScheduleClass(TestCase):
     #
     # def test_query_one_booking_status_not_yet_open(self):
     #     """ Query one schedule_item as admin - booking status ok """
-    #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
+    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
     #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
     #         "date": "2040-01-02"
     #     }
     #
@@ -662,20 +641,20 @@ class GQLScheduleClass(TestCase):
     # #
     # # # def test_query_one_booking_open_on(self):
     # # #     """ Query one schedule_item as admin - booking status ok """
-    # # #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    # # #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    # # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+    # # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
     # # #
     # # #     # Now query single schedule item and check
     # # #     executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables={"id": node_id})
     # # #     data = executed.get('data')
     # # #
     # # #     self.assertEqual(data['scheduleItem']['id'], node_id)
-    # # #     self.assertEqual(data['scheduleItem']['frequencyType'], schedule_class.frequency_type)
+    # # #     self.assertEqual(data['scheduleItem']['frequencyType'], schedule_shift.frequency_type)
     # #
     # # def test_query_one_anon_user_non_public(self):
     # #     """ Deny permission for anon users Query one class """
-    # #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create(display_public=False)
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create(display_public=False)
+    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
     # #
     # #     # Now query single scheduleshift and check
     # #     executed = execute_test_client_api_query(self.scheduleshift_query, self.anon_user, variables={"id": node_id})
@@ -684,8 +663,8 @@ class GQLScheduleClass(TestCase):
     # #
     # # def test_query_one_anon_user_public(self):
     # #     """ Allow anon users to query a public class """
-    # #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
     # #
     # #     # Now query single scheduleshift and check
     # #     executed = execute_test_client_api_query(self.scheduleshift_query, self.anon_user, variables={"id": node_id})
@@ -697,8 +676,8 @@ class GQLScheduleClass(TestCase):
     # #     # Create regular user
     # #     user = f.RegularUserFactory.create()
     # #
-    # #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
     # #
     # #     # Now query single scheduleshift and check
     # #     executed = execute_test_client_api_query(self.scheduleshift_query, user, variables={"id": node_id})
@@ -710,10 +689,10 @@ class GQLScheduleClass(TestCase):
     # #     # Create regular user
     # #     user = f.RegularUserFactory.create()
     # #
-    # #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create(
+    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create(
     # #         display_public=False
     # #     )
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
     # #
     # #     # Now query single scheduleshift and check
     # #     executed = execute_test_client_api_query(self.scheduleshift_query, user, variables={"id": node_id})
@@ -727,8 +706,8 @@ class GQLScheduleClass(TestCase):
     # #     user.user_permissions.add(permission)
     # #     user.save()
     # #
-    # #     schedule_class = f.ScheduleWeeklyShiftOTCFactory.create()
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
+    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
     # #
     # #     # Now query single location and check
     # #     executed = execute_test_client_api_query(self.scheduleshift_query, user, variables={"id": node_id})
@@ -760,7 +739,7 @@ class GQLScheduleClass(TestCase):
     #     self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
     #     self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
     #
-    # def test_create_schedule_class_add_all_non_archived_organization_subscription_groups(self):
+    # def test_create_schedule_shift_add_all_non_archived_organization_subscription_groups(self):
     #   """
     #   Create a schedule class and check whether a subscription group is added
     #   """
@@ -784,7 +763,7 @@ class GQLScheduleClass(TestCase):
     #       schedule_item=schedule_item
     #   ).exists(), True)
     #
-    # def test_create_schedule_class_add_all_non_archived_organization_classpass_groups(self):
+    # def test_create_schedule_shift_add_all_non_archived_organization_classpass_groups(self):
     #   """
     #   Create a schedule class and check whether a classpass group is added
     #   """
