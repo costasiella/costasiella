@@ -873,6 +873,21 @@ class ScheduleWeeklyShiftFactory(factory.DjangoModelFactory):
     time_end = datetime.time(9, 0)
 
 
+class ScheduleWeeklyShiftOTCFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemWeeklyOTC
+
+    schedule_item = factory.SubFactory(ScheduleWeeklyShiftFactory)
+    date = datetime.date(2030, 12, 30)
+    description = "Test description"
+    account = factory.SubFactory(TeacherFactory)
+    account_2 = factory.SubFactory(Teacher2Factory)
+    organization_location_room = factory.SelfAttribute('schedule_item.organization_location_room')
+    organization_shift = factory.SelfAttribute('schedule_item.organization_shift')
+    time_start = datetime.time(11, 0)
+    time_end = datetime.time(12, 30)
+
+
 class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItemAttendance
