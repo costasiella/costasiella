@@ -55,6 +55,7 @@ class ScheduleItemNode(DjangoObjectType):
                 'costasiella.view_scheduleitem',
                 'costasiella.view_scheduleclass',
                 'costasiella.view_scheduleevent',
+                'costasiella.view_scheduleshift',
             ]
             require_login_and_one_of_permissions(user, permissions)
             return schedule_item
@@ -78,6 +79,7 @@ class ScheduleItemQuery(graphene.ObjectType):
                 'costasiella.view_scheduleitem',
                 'costasiella.view_scheduleclass',
                 'costasiella.view_scheduleevent',
+                'costasiella.view_scheduleshift',
             ]
             permission = check_if_user_has_permission(user, permissions)
             if permission:

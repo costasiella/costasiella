@@ -396,6 +396,9 @@ class ScheduleShiftQuery(graphene.ObjectType):
         :param date:
         :return:
         """
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_scheduleshift')
+
         rid = get_rid(schedule_item_id)
         schedule_item = ScheduleItem.objects.get(pk=rid.id)
         if not schedule_item:
@@ -430,11 +433,7 @@ class ScheduleShiftQuery(graphene.ObjectType):
                                 organization_location=None,
                                 ):
         user = info.context.user
-        print("RESOLVE SCHEDULE SHIFTS")
-        print(user)
-        user_has_view_permission = check_if_user_has_permission(user, [
-            'costasiella.view_scheduleshift'
-        ])
+        require_login_and_permission(user, 'costasiella.view_scheduleshift')
 
         validation_result = validate_schedule_shifts_query_date_input(
             date_from, 
