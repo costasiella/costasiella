@@ -493,27 +493,20 @@ class GQLScheduleShift(TestCase):
         self.assertEqual(data['scheduleShift']['organizationShift']['id'],
                          to_global_id('OrganizationShiftNode', schedule_shift.organization_shift.id))
 
-    # #
-    # # def test_query_one_anon_user_non_public(self):
-    # #     """ Deny permission for anon users Query one class """
-    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create(display_public=False)
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
-    # #
-    # #     # Now query single scheduleshift and check
-    # #     executed = execute_test_client_api_query(self.scheduleshift_query, self.anon_user, variables={"id": node_id})
-    # #     errors = executed.get('errors')
-    # #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # #
-    # # def test_query_one_anon_user_public(self):
-    # #     """ Allow anon users to query a public class """
-    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
-    # #
-    # #     # Now query single scheduleshift and check
-    # #     executed = execute_test_client_api_query(self.scheduleshift_query, self.anon_user, variables={"id": node_id})
-    # #     data = executed.get('data')
-    # #     self.assertEqual(data['scheduleItem']['id'], node_id)
-    # #
+
+    def test_query_one_anon_user(self):
+        """ Anon users aren't allowed to query a shift """
+        schedule_shift = f.ScheduleWeeklyShiftFactory.create()
+        node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
+
+        # Now query single scheduleshift and check
+        executed = execute_test_client_api_query(self.scheduleshift_query, self.anon_user, variables={
+            "scheduleItemId": node_id,
+            "date": "2021-12-27"
+        })
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
     # # def test_query_one_public(self):
     # #     """ View public shifts as user lacking authorization """
     # #     # Create regular user
