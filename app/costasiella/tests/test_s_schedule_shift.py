@@ -33,7 +33,7 @@ class GQLScheduleClass(TestCase):
         self.permission_change = 'change_scheduleshift'
         self.permission_delete = 'delete_scheduleshift'
 
-        a_monday = datetime.date(2019, 6, 17)
+        a_monday = datetime.date(2021, 12, 27)
         self.variables_query_list = {
             'dateFrom': str(a_monday),
             'dateUntil': str(a_monday + datetime.timedelta(days=6)),
@@ -253,64 +253,58 @@ class GQLScheduleClass(TestCase):
 
         self.assertEqual(errors[0]['message'], 'dateUntil has to be bigger then dateFrom')
 
-    # def test_query_input_validation_error_date_input_max_7_days_apart(self):
-    #     """ Query list of scheduleshifts
-    #     An error message should be returned if dates apart > 7 days
-    #     """
-    #     query = self.scheduleshifts_query
-    #
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     a_monday = datetime.date(2019, 6, 17)
-    #     variables = {
-    #         'dateFrom': str(a_monday),
-    #         'dateUntil': str(a_monday + datetime.timedelta(days=31)),
-    #         'attendanceCountType': "ATTENDING_AND_BOOKED"
-    #     }
-    #
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     errors = executed.get('errors')
-    #
-    #     self.assertEqual(errors[0]['message'], "dateFrom and dateUntil can't be more then 7 days apart")
-    #
-    # def test_query(self):
-    #     """ Query list of scheduleshifts """
-    #     query = self.scheduleshifts_query
-    #
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #
-    #     variables = self.variables_query_list
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
-    #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
-    #         to_global_id('ScheduleItemNode', schedule_class.id)
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['organizationClasstype']['id'],
-    #         to_global_id('OrganizationClasstypeNode', schedule_class.organization_classtype.id)
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['organizationLocationRoom']['id'],
-    #         to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id)
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['organizationLevel']['id'],
-    #         to_global_id('OrganizationLevelNode', schedule_class.organization_level.id)
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['timeStart'],
-    #         str(schedule_class.time_start)
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['timeEnd'],
-    #         str(schedule_class.time_end)
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['displayPublic'],
-    #         schedule_class.display_public
-    #     )
+    def test_query_input_validation_error_date_input_max_7_days_apart(self):
+        """ Query list of scheduleshifts
+        An error message should be returned if dates apart > 7 days
+        """
+        query = self.scheduleshifts_query
+
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        a_monday = datetime.date(2019, 6, 17)
+        variables = {
+            'dateFrom': str(a_monday),
+            'dateUntil': str(a_monday + datetime.timedelta(days=31)),
+            'attendanceCountType': "ATTENDING_AND_BOOKED"
+        }
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], "dateFrom and dateUntil can't be more then 7 days apart")
+    
+    def test_query(self):
+        """ Query list of scheduleshifts """
+        query = self.scheduleshifts_query
+
+        schedule_class = f.ScheduleWeeklyShiftFactory.create()
+
+        variables = self.variables_query_list
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        print("###########")
+        print(executed)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleShifts'][0]['date'], variables['dateFrom'])
+        self.assertEqual(
+            data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
+            to_global_id('ScheduleItemNode', schedule_class.id)
+        )
+        self.assertEqual(
+            data['scheduleShifts'][0]['shifts'][0]['organizationShift']['id'],
+            to_global_id('OrganizationShiftNode', schedule_class.organization_shift.id)
+        )
+        self.assertEqual(
+            data['scheduleShifts'][0]['shifts'][0]['organizationLocationRoom']['id'],
+            to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id)
+        )
+        self.assertEqual(
+            data['scheduleShifts'][0]['shifts'][0]['timeStart'],
+            str(schedule_class.time_start)
+        )
+        self.assertEqual(
+            data['scheduleShifts'][0]['shifts'][0]['timeEnd'],
+            str(schedule_class.time_end)
+        )
     #
     # def test_query_status_sub(self):
     #     """ Query list sub status of scheduleshift """
@@ -323,13 +317,13 @@ class GQLScheduleClass(TestCase):
     #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
     #     data = executed.get('data')
     #
-    #     self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+    #     self.assertEqual(data['scheduleShifts'][0]['date'], variables['dateFrom'])
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+    #         data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
     #         to_global_id('ScheduleItemNode', schedule_class.id)
     #     )
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['status'],
+    #         data['scheduleShifts'][0]['shifts'][0]['status'],
     #         "SUB"
     #     )
     #
@@ -347,17 +341,17 @@ class GQLScheduleClass(TestCase):
     #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
     #     data = executed.get('data')
     #
-    #     self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+    #     self.assertEqual(data['scheduleShifts'][0]['date'], variables['dateFrom'])
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+    #         data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
     #         to_global_id('ScheduleItemNode', schedule_class.id)
     #     )
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['status'],
+    #         data['scheduleShifts'][0]['shifts'][0]['status'],
     #         schedule_class_otc.status
     #     )
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['description'],
+    #         data['scheduleShifts'][0]['shifts'][0]['description'],
     #         schedule_class_otc.description
     #     )
     #
@@ -377,25 +371,25 @@ class GQLScheduleClass(TestCase):
     #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
     #     data = executed.get('data')
     #
-    #     self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+    #     self.assertEqual(data['scheduleShifts'][0]['date'], variables['dateFrom'])
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+    #         data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
     #         to_global_id('ScheduleItemNode', schedule_class.id)
     #     )
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['status'],
+    #         data['scheduleShifts'][0]['shifts'][0]['status'],
     #         'CANCELLED'
     #     )
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['bookingStatus'],
+    #         data['scheduleShifts'][0]['shifts'][0]['bookingStatus'],
     #         'HOLIDAY'
     #     )
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['holidayName'],
+    #         data['scheduleShifts'][0]['shifts'][0]['holidayName'],
     #         organization_holiday.name
     #     )
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['holiday'],
+    #         data['scheduleShifts'][0]['shifts'][0]['holiday'],
     #         True
     #     )
     #
@@ -412,17 +406,17 @@ class GQLScheduleClass(TestCase):
     #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
     #     data = executed.get('data')
     #
-    #     self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+    #     self.assertEqual(data['scheduleShifts'][0]['date'], variables['dateFrom'])
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+    #         data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
     #         to_global_id('ScheduleItemNode', schedule_class.id)
     #     )
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['status'],
+    #         data['scheduleShifts'][0]['shifts'][0]['status'],
     #         schedule_class_otc.status
     #     )
     #
-    # def test_query_permission_denied_dont_show_nonpublic_classes(self):
+    # def test_query_permission_denied_dont_show_nonpublic_shifts(self):
     #     """ Query list of scheduleshifts - check permission denied """
     #     query = self.scheduleshifts_query
     #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
@@ -433,8 +427,8 @@ class GQLScheduleClass(TestCase):
     #     user = f.RegularUserFactory.create()
     #     executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
     #     data = executed['data']
-    #     for day in data['scheduleClasses']:
-    #         self.assertEqual(len(day['classes']), 0)
+    #     for day in data['scheduleShifts']:
+    #         self.assertEqual(len(day['shifts']), 0)
     #
     # def test_query_permission_granted(self):
     #     """ Query list of non public scheduleshifts with view permission """
@@ -457,9 +451,9 @@ class GQLScheduleClass(TestCase):
     #     print(executed)
     #
     #     # List all scheduleshifts
-    #     self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+    #     self.assertEqual(data['scheduleShifts'][0]['date'], variables['dateFrom'])
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+    #         data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
     #         to_global_id('ScheduleItemNode', schedule_class.id)
     #     )
     #
@@ -481,8 +475,8 @@ class GQLScheduleClass(TestCase):
     #
     #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
     #     data = executed.get('data')
-    #     for day in data['scheduleClasses']:
-    #         for day_class in day['classes']:
+    #     for day in data['scheduleShifts']:
+    #         for day_class in day['shifts']:
     #             self.assertEqual('Second' not in day_class['organizationClasstype']['name'], True)
     #
     # def test_query_filter_organization_level(self):
@@ -503,8 +497,8 @@ class GQLScheduleClass(TestCase):
     #
     #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
     #     data = executed.get('data')
-    #     for day in data['scheduleClasses']:
-    #         for day_class in day['classes']:
+    #     for day in data['scheduleShifts']:
+    #         for day_class in day['shifts']:
     #             self.assertEqual('Second' not in day_class['organizationLevel']['name'], True)
     #
     # def test_query_filter_organization_location(self):
@@ -529,12 +523,12 @@ class GQLScheduleClass(TestCase):
     #
     #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
     #     data = executed.get('data')
-    #     for day in data['scheduleClasses']:
-    #         for day_class in day['classes']:
+    #     for day in data['scheduleShifts']:
+    #         for day_class in day['shifts']:
     #             self.assertEqual('Second' not in day_class['organizationLocationRoom']['name'], True)
     #
     # def test_query_anon_user(self):
-    #     """ Query list of scheduleshifts - anon users can only list public classes """
+    #     """ Query list of scheduleshifts - anon users can only list public shifts """
     #     query = self.scheduleshifts_query
     #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
     #     schedule_class.display_public = False
@@ -542,18 +536,18 @@ class GQLScheduleClass(TestCase):
     #
     #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
     #     data = executed['data']
-    #     for day in data['scheduleClasses']:
-    #         self.assertEqual(len(day['classes']), 0)
+    #     for day in data['scheduleShifts']:
+    #         self.assertEqual(len(day['shifts']), 0)
     #
-    # def test_query_anon_user_list_public_classes(self):
-    #     """ Query list of scheduleshifts - anon users can only list public classes """
+    # def test_query_anon_user_list_public_shifts(self):
+    #     """ Query list of scheduleshifts - anon users can only list public shifts """
     #     query = self.scheduleshifts_query
     #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
     #
     #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
     #     data = executed['data']
     #     self.assertEqual(
-    #         data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+    #         data['scheduleShifts'][0]['shifts'][0]['scheduleItemId'],
     #         to_global_id('ScheduleItemNode', schedule_class.id)
     #     )
     #
@@ -730,7 +724,7 @@ class GQLScheduleClass(TestCase):
     # #     self.assertEqual(data['scheduleItem']['id'], node_id)
     # #
     # # def test_query_one_public(self):
-    # #     """ View public classes as user lacking authorization """
+    # #     """ View public shifts as user lacking authorization """
     # #     # Create regular user
     # #     user = f.RegularUserFactory.create()
     # #
