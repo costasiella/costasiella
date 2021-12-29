@@ -161,8 +161,6 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                         THEN "CANCELLED"
                     WHEN csiotc.status = "OPEN" 
                         THEN csiotc.status
-                    WHEN csiotc.account_id IS NOT NULL AND csiotc.role = "SUB" 
-                        THEN "SUB"
                     WHEN csiotc.status 
                         THEN csiotc.status                
                     ELSE ""
@@ -207,7 +205,7 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                     ELSE csia.account_2_id
                     END AS account_2_id,
                coho.id AS organization_holiday_id,
-               coho.name AS organization_holiday_name,
+               coho.name AS organization_holiday_name
             FROM costasiella_scheduleitem csi
             LEFT JOIN costasiella_organizationlocationroom csi_olr ON csi.organization_location_room_id = csi_olr.id
             LEFT JOIN costasiella_organizationlocation csi_ol ON csi_olr.organization_location_id = csi_ol.id
@@ -237,12 +235,12 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                     id,
                     schedule_item_id,
                     account_id,
-                    account_2_id,
-                FROM costasiella_scheduleitemaccount
-                WHERE date_start <= %(shift_date)s AND (
-                      date_end >= %(shift_date)s OR date_end IS NULL)
-                ORDER BY date_start
-                LIMIT 2
+                    account_2_id
+                  FROM costasiella_scheduleitemaccount
+                  WHERE date_start <= %(shift_date)s AND 
+                        (date_end >= %(shift_date)s OR date_end IS NULL)
+                  ORDER BY date_start
+                  LIMIT 2
                 ) csia
                 ON csia.schedule_item_id = csi.id
             LEFT JOIN
@@ -254,7 +252,7 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                   WHERE coh.date_start <= %(shift_date)s AND
                         coh.date_end >= %(shift_date)s) coho
                 ON coho.organization_location_id = csi_ol.id
-            WHERE csi.schedule_item_type = "CLASS" 
+            WHERE csi.schedule_item_type = "SHIFT" 
                 AND (
                         /* Selection on specific days /*
                         (csi.frequency_type = "SPECIFIC" AND csi.date_start = %(shift_date)s ) OR
@@ -269,7 +267,6 @@ class ScheduleShiftsDayType(graphene.ObjectType):
             ORDER BY {order_by_sql}
         """.format(
             where_sql=_get_where_query(),
-            attendance_count_sql=_get_attendance_count_sql(),
             order_by_sql=order_by_sql
         )
 
