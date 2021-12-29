@@ -44,23 +44,18 @@ def _get_resolve_shifts_filter_query(self):
     #                     THEN clt.auth_teacher_id2  \
     #                     ELSE cotc.auth_teacher_id2 END) = '
     #     where += str(self.filter_id_teacher) + ') '
-    if self.filter_id_organization_classtype:
-        where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
-                        THEN csi.organization_classtype_id  \
-                        ELSE csiotc.organization_classtype_id END) = '
-        where += str(self.filter_id_organization_classtype) + ' '
+    if self.filter_id_organization_shift:
+        where += 'AND (CASE WHEN csiotc.organization_shift_id IS NULL \
+                        THEN csi.organization_shift_id  \
+                        ELSE csiotc.organization_shift_id END) = '
+        where += str(self.filter_id_organization_shift) + ' '
     if self.filter_id_organization_location_room:
         where += 'AND (CASE WHEN csiotc.organization_location_room_id IS NULL \
                         THEN csi.organization_location_room_id  \
                         ELSE csiotc.organization_location_room_id END) = '
         where += str(self.filter_id_organization_location_room) + ' '
-    if self.filter_id_organization_level:
-        where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
-                        THEN csi.organization_level_id  \
-                        ELSE csiotc.organization_level_id END) = '
-        where += str(self.filter_id_organization_level) + ' '
-    if self.public_only:
-        where += "AND csi.display_public = 1 "
+    # if self.public_only:
+    #     where += "AND csi.display_public = 1 "
         # where += "AND sl.AllowAPI = 'T' "
         # where += "AND sct.AllowAPI = 'T' "
     # if self.filter_starttime_from:
@@ -124,7 +119,7 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                 where += 'AND (CASE WHEN csiotc.organization_shift_id IS NULL \
                                 THEN csi.organization_shift_id  \
                                 ELSE csiotc.organization_shift_id END) = '
-                where += '%(filter_id_organization_classtype)s '
+                where += '%(filter_id_organization_shift)s '
             if self.filter_id_organization_location:
                 where += 'AND (CASE WHEN csiotc.organization_location_id IS NULL \
                                 THEN csi_olr.organization_location_id  \
@@ -490,6 +485,9 @@ def validate_schedule_shift_create_update_input(input, update=False):
             result['organization_shift'] = organization_shift
             if not organization_shift:
                 raise Exception(_('Invalid Organization Shift ID!'))
+
+    print("**************")
+    print(result)
 
     return result
 
