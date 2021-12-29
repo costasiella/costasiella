@@ -412,12 +412,11 @@ class ScheduleShiftQuery(graphene.ObjectType):
             account_2=schedule_item.account_2,
             organization_location_room=schedule_item.organization_location_room,
             organization_shift=schedule_item.organization_shift,
-            organization_level=schedule_item.organization_level,
             time_start=schedule_item.time_start,
             time_end=schedule_item.time_end,
         )
 
-        return schedule_class
+        return schedule_shift
 
     def resolve_schedule_shifts(self,
                                 info,

@@ -20,7 +20,7 @@ from ..modules.gql_tools import get_rid
 from .tools import next_weekday
 
 
-class GQLScheduleClass(TestCase):
+class GQLScheduleShift(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
 
     def setUp(self):
@@ -130,34 +130,27 @@ class GQLScheduleClass(TestCase):
 '''
 
         self.scheduleshift_query = '''
-  query ScheduleClass($scheduleItemId: ID!, $date: Date!) {
-    scheduleClass(scheduleItemId:$scheduleItemId, date: $date) {
+  query ScheduleShift($scheduleItemId: ID!, $date: Date!) {
+    scheduleShift(scheduleItemId:$scheduleItemId, date: $date) {
       scheduleItemId
       frequencyType
       organizationLocationRoom {
         id
         name
       }
-      organizationClasstype {
-        id
-        name
-      }
-      organizationLevel {
+      organizationShift {
         id
         name
       }
       timeStart
       timeEnd
-      displayPublic
-      bookingStatus
-      bookingOpenOn
     }
   }
 '''
 
         self.scheduleshift_create_mutation = ''' 
-  mutation CreateScheduleClass($input:CreateScheduleClassInput!) {
-    createScheduleClass(input: $input) {
+  mutation CreateScheduleShift($input:CreateScheduleShiftInput!) {
+    createScheduleShift(input: $input) {
       scheduleItem {
         id
         scheduleItemType
@@ -171,11 +164,7 @@ class GQLScheduleClass(TestCase):
             name
           }
         }
-        organizationClasstype {
-          id
-          name
-        }
-        organizationLevel {
+        organizationShift {
           id
           name
         }
@@ -190,8 +179,8 @@ class GQLScheduleClass(TestCase):
 '''
 
         self.scheduleshift_update_mutation = '''
-  mutation UpdateScheduleClass($input:UpdateScheduleClassInput!) {
-    updateScheduleClass(input: $input) {
+  mutation UpdateScheduleShift($input:UpdateScheduleShiftInput!) {
+    updateScheduleShift(input: $input) {
       scheduleItem {
         id
         scheduleItemType
@@ -224,8 +213,8 @@ class GQLScheduleClass(TestCase):
 '''
 
         self.scheduleshift_delete_mutation = '''
-  mutation DeleteScheduleClass($input: DeleteScheduleClassInput!) {
-    deleteScheduleClass(input: $input) {
+  mutation DeleteScheduleShift($input: DeleteScheduleShiftInput!) {
+    deleteScheduleShift(input: $input) {
       ok
     }
   }
@@ -483,157 +472,27 @@ class GQLScheduleClass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    # def test_query_one(self):
-    #     """ Query one schedule_shift as admin """
-    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
-    #         "date": "2014-01-06"
-    #     }
-    #
-    #     # Now query single schedule item and check
-    #     executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
-    #     self.assertEqual(data['scheduleClass']['displayPublic'], schedule_shift.display_public)
-    #     self.assertEqual(data['scheduleClass']['frequencyType'], schedule_shift.frequency_type)
-    #     self.assertEqual(data['scheduleClass']['timeStart'], str(schedule_shift.time_start))
-    #     self.assertEqual(data['scheduleClass']['timeEnd'], str(schedule_shift.time_end))
-    #     self.assertEqual(data['scheduleClass']['organizationLocationRoom']['id'],
-    #                      to_global_id('OrganizationLocationRoomNode', schedule_shift.organization_location_room.id))
-    #     self.assertEqual(data['scheduleClass']['organizationClasstype']['id'],
-    #                      to_global_id('OrganizationClasstypeNode', schedule_shift.organization_classtype.id))
-    #     self.assertEqual(data['scheduleClass']['organizationLevel']['id'],
-    #                      to_global_id('OrganizationLevelNode', schedule_shift.organization_level.id))
-    #
-    # def test_query_one_booking_status_ok(self):
-    #     """ Query one schedule_item as admin - booking status ok """
-    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_shift.spaces = 10
-    #     schedule_shift.save()
-    #
-    #     today = datetime.date.today()
-    #     next_monday = next_weekday(today, 1)
-    #
-    #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
-    #         "date": str(next_monday)
-    #     }
-    #
-    #     # Now query single schedule item and check
-    #     executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
-    #     self.assertEqual(data['scheduleClass']['bookingStatus'], "OK")
-    #
-    # def test_query_one_booking_status_ongoing(self):
-    #     """ Query one schedule_item as admin - booking status ongoing """
-    #     now = datetime.datetime.now()
-    #     delta = datetime.timedelta(hours=1)
-    #
-    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_shift.frequency_interval = now.date().isoweekday()
-    #     schedule_shift.time_start = now - delta
-    #     schedule_shift.time_end = now + delta
-    #     schedule_shift.spaces = 10
-    #     schedule_shift.save()
-    #
-    #     today = datetime.date.today()
-    #     next_monday = next_weekday(today, 1)
-    #
-    #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
-    #         "date": str(now.date())
-    #     }
-    #
-    #     # Now query single schedule item and check
-    #     executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
-    #     self.assertEqual(data['scheduleClass']['bookingStatus'], "ONGOING")
-    #
-    # def test_query_one_booking_status_full(self):
-    #     """ Query one schedule_item as admin - booking status full """
-    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     today = datetime.date.today()
-    #     next_monday = next_weekday(today, 1)
-    #
-    #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
-    #         "date": str(next_monday)
-    #     }
-    #
-    #     # Now query single schedule item and check
-    #     executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
-    #     self.assertEqual(data['scheduleClass']['bookingStatus'], "FULL")
-    #
-    # def test_query_one_booking_status_cancelled(self):
-    #     """ Query one schedule_item as admin - booking status cancelled """
-    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     schedule_shift.status = 'CANCELLED'
-    #     schedule_shift.save()
-    #     today = datetime.date.today()
-    #     next_monday = next_weekday(today, 1)
-    #
-    #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
-    #         "date": str(next_monday)
-    #     }
-    #
-    #     # Now query single schedule item and check
-    #     executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
-    #     self.assertEqual(data['scheduleClass']['bookingStatus'], "CANCELLED")
-    #
-    # def test_query_one_booking_status_finished(self):
-    #     """ Query one schedule_item as admin - booking status ok """
-    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
-    #         "date": "2014-01-06"
-    #     }
-    #
-    #     # Now query single schedule item and check
-    #     executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
-    #     self.assertEqual(data['scheduleClass']['bookingStatus'], "FINISHED")
-    #
-    # def test_query_one_booking_status_not_yet_open(self):
-    #     """ Query one schedule_item as admin - booking status ok """
-    #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = {
-    #         "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
-    #         "date": "2040-01-02"
-    #     }
-    #
-    #     # Now query single schedule item and check
-    #     executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
-    #     self.assertEqual(data['scheduleClass']['bookingStatus'], "NOT_YET_OPEN")
-    # #
-    # # # def test_query_one_booking_open_on(self):
-    # # #     """ Query one schedule_item as admin - booking status ok """
-    # # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    # # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
-    # # #
-    # # #     # Now query single schedule item and check
-    # # #     executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables={"id": node_id})
-    # # #     data = executed.get('data')
-    # # #
-    # # #     self.assertEqual(data['scheduleItem']['id'], node_id)
-    # # #     self.assertEqual(data['scheduleItem']['frequencyType'], schedule_shift.frequency_type)
+    def test_query_one(self):
+        """ Query one schedule_shift as admin """
+        schedule_shift = f.ScheduleWeeklyShiftFactory.create()
+        variables = {
+            "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
+            "date": "2021-12-27"
+        }
+
+        # Now query single schedule item and check
+        executed = execute_test_client_api_query(self.scheduleshift_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleShift']['scheduleItemId'], variables['scheduleItemId'])
+        self.assertEqual(data['scheduleShift']['frequencyType'], schedule_shift.frequency_type)
+        self.assertEqual(data['scheduleShift']['timeStart'], str(schedule_shift.time_start))
+        self.assertEqual(data['scheduleShift']['timeEnd'], str(schedule_shift.time_end))
+        self.assertEqual(data['scheduleShift']['organizationLocationRoom']['id'],
+                         to_global_id('OrganizationLocationRoomNode', schedule_shift.organization_location_room.id))
+        self.assertEqual(data['scheduleShift']['organizationShift']['id'],
+                         to_global_id('OrganizationShiftNode', schedule_shift.organization_shift.id))
+
     # #
     # # def test_query_one_anon_user_non_public(self):
     # #     """ Deny permission for anon users Query one class """
@@ -712,16 +571,16 @@ class GQLScheduleClass(TestCase):
     #     print(executed)
     #
     #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLocationRoom']['id'], variables['input']['organizationLocationRoom'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationClasstype']['id'], variables['input']['organizationClasstype'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLevel']['id'], variables['input']['organizationLevel'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['timeStart'], variables['input']['timeStart'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationLocationRoom']['id'], variables['input']['organizationLocationRoom'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationClasstype']['id'], variables['input']['organizationClasstype'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationLevel']['id'], variables['input']['organizationLevel'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['dateStart'], variables['input']['dateStart'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['timeStart'], variables['input']['timeStart'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
     #
     # def test_create_schedule_shift_add_all_non_archived_organization_subscription_groups(self):
     #   """
@@ -739,7 +598,7 @@ class GQLScheduleClass(TestCase):
     #   )
     #
     #   data = executed.get('data')
-    #   schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
+    #   schedule_item_id = data['createScheduleShift']['scheduleItem']['id']
     #
     #   schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
     #
@@ -763,7 +622,7 @@ class GQLScheduleClass(TestCase):
     #   )
     #
     #   data = executed.get('data')
-    #   schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
+    #   schedule_item_id = data['createScheduleShift']['scheduleItem']['id']
     #
     #   schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
     #
@@ -802,9 +661,9 @@ class GQLScheduleClass(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'],
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyType'],
     #                      variables['input']['frequencyType'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'],
+    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyInterval'],
     #                      variables['input']['frequencyInterval'])
     #
     # def test_create_scheduleshift_permission_denied(self):
@@ -837,22 +696,22 @@ class GQLScheduleClass(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['id'], variables['input']['id'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyType'],
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['id'], variables['input']['id'])
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['frequencyType'],
     #                      variables['input']['frequencyType'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyInterval'],
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['frequencyInterval'],
     #                      variables['input']['frequencyInterval'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLocationRoom']['id'],
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['organizationLocationRoom']['id'],
     #                      variables['input']['organizationLocationRoom'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationClasstype']['id'],
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['organizationClasstype']['id'],
     #                      variables['input']['organizationClasstype'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLevel']['id'],
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['organizationLevel']['id'],
     #                      variables['input']['organizationLevel'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeStart'], variables['input']['timeStart'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['displayPublic'],
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['dateStart'], variables['input']['dateStart'])
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['timeStart'], variables['input']['timeStart'])
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['displayPublic'],
     #                      variables['input']['displayPublic'])
     #
     # def test_update_scheduleshift_anon_user(self):
@@ -890,8 +749,8 @@ class GQLScheduleClass(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['id'], variables['input']['id'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['id'], variables['input']['id'])
+    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
     #
     # def test_update_scheduleshift_permission_denied(self):
     #     """ Check update scheduleshift permission denied error message """
@@ -925,7 +784,7 @@ class GQLScheduleClass(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleClass']['ok'], True)
+    #     self.assertEqual(data['deleteScheduleShift']['ok'], True)
     #
     # def test_delete_scheduleshift_anon_user(self):
     #     """ Delete scheduleshift denied for anon user """
@@ -962,7 +821,7 @@ class GQLScheduleClass(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleClass']['ok'], True)
+    #     self.assertEqual(data['deleteScheduleShift']['ok'], True)
     #
     # def test_delete_scheduleshift_permission_denied(self):
     #     """ Check delete scheduleshift permission denied error message """
