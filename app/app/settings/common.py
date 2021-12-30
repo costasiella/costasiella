@@ -137,6 +137,9 @@ else:
         }
     }
 
+# Django 3.2 switches to BigAutoField by default. Not all apps might have implemented this yet. 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
