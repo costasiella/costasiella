@@ -553,7 +553,7 @@ class UpdateScheduleShift(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_scheduleshift')
 
-        result = validate_schedule_class_create_update_input(input)
+        result = validate_schedule_shift_create_update_input(input)
         rid = get_rid(input['id'])
 
         schedule_item = ScheduleItem.objects.get(pk=rid.id)
@@ -591,7 +591,7 @@ class UpdateScheduleShift(graphene.relay.ClientIDMutation):
         # ALl done, save it :).
         schedule_item.save()
 
-        return UpdateScheduleClass(schedule_item=schedule_item)
+        return UpdateScheduleShift(schedule_item=schedule_item)
 
 
 class DeleteScheduleShift(graphene.relay.ClientIDMutation):

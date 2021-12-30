@@ -606,37 +606,34 @@ class GQLScheduleShift(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_scheduleshift(self):
-    #     """ Update a scheduleshift """
-    #     query = self.scheduleshift_update_mutation
-    #     scheduleshift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['id'], variables['input']['id'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['frequencyType'],
-    #                      variables['input']['frequencyType'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['frequencyInterval'],
-    #                      variables['input']['frequencyInterval'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['organizationLocationRoom']['id'],
-    #                      variables['input']['organizationLocationRoom'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['organizationClasstype']['id'],
-    #                      variables['input']['organizationClasstype'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['organizationLevel']['id'],
-    #                      variables['input']['organizationLevel'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['timeStart'], variables['input']['timeStart'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['displayPublic'],
-    #                      variables['input']['displayPublic'])
+
+    def test_update_scheduleshift(self):
+        """ Update a scheduleshift """
+        query = self.scheduleshift_update_mutation
+        scheduleshift = f.ScheduleWeeklyShiftFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['id'], variables['input']['id'])
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['organizationLocationRoom']['id'],
+                         variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['organizationShift']['id'],
+                         variables['input']['organizationShift'])
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['timeStart'], variables['input']['timeStart'])
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
     #
     # def test_update_scheduleshift_anon_user(self):
     #     """ Don't allow updating scheduleshifts for non-logged in users """
