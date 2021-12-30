@@ -48,43 +48,35 @@ class GQLScheduleShift(TestCase):
         self.organization_location_room = f.OrganizationLocationRoomFactory.create()
         self.organization_shift = f.OrganizationShiftFactory.create()
         
-        # self.variables_create = {
-        #     "input": {
-        #         "frequencyType": "WEEKLY",
-        #         "frequencyInterval": 1, # Monday,
-        #         "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
-        #         "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
-        #         "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
-        #         "dateStart": "2019-01-01",
-        #         "dateEnd": "2999-12-31",
-        #         "timeStart": "11:00:00",
-        #         "timeEnd": "12:30:00",
-        #         "spaces": 20,
-        #         "walkInSpaces": 5,
-        #         "displayPublic": True
-        #     }
-        # }
-        # 
-        # self.variables_update = {
-        #     "input": {
-        #         "frequencyType": "WEEKLY",
-        #         "frequencyInterval": 2, # Tuesday,
-        #         "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
-        #         "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
-        #         "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
-        #         "dateStart": "1999-01-01",
-        #         "dateEnd": "2999-12-31",
-        #         "timeStart": "16:00:00",
-        #         "timeEnd": "17:30:00",
-        #         "spaces": 20,
-        #         "walkInSpaces": 5,
-        #         "displayPublic": True
-        #     }
-        # }
-        # 
-        # self.variables_delete = {
-        #     "input": {}
-        # }
+        self.variables_create = {
+            "input": {
+                "frequencyType": "WEEKLY",
+                "frequencyInterval": 1, # Monday,
+                "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
+                "organizationShift": to_global_id('OrganizationShiftNode', self.organization_shift.id),
+                "dateStart": "2019-01-01",
+                "dateEnd": "2999-12-31",
+                "timeStart": "11:00:00",
+                "timeEnd": "12:30:00",
+            }
+        }
+
+        self.variables_update = {
+            "input": {
+                "frequencyType": "WEEKLY",
+                "frequencyInterval": 2, # Tuesday,
+                "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
+                "organizationShift": to_global_id('OrganizationShiftNode', self.organization_shift.id),
+                "dateStart": "1999-01-01",
+                "dateEnd": "2999-12-31",
+                "timeStart": "16:00:00",
+                "timeEnd": "17:30:00"
+            }
+        }
+
+        self.variables_delete = {
+            "input": {}
+        }
 
         self.scheduleshifts_query = '''
   query ScheduleShifts(
@@ -172,7 +164,6 @@ class GQLScheduleShift(TestCase):
         dateEnd
         timeStart
         timeEnd
-        displayPublic
       }
     }
   }
@@ -194,11 +185,7 @@ class GQLScheduleShift(TestCase):
             name
           }
         }
-        organizationClasstype {
-          id
-          name
-        }
-        organizationLevel {
+        organizationShift {
           id
           name
         }
@@ -206,7 +193,6 @@ class GQLScheduleShift(TestCase):
         dateEnd
         timeStart
         timeEnd
-        displayPublic
       }
     }
   }
@@ -540,31 +526,31 @@ class GQLScheduleShift(TestCase):
         executed = execute_test_client_api_query(self.scheduleshift_query, user, variables=variables)
         data = executed.get('data')
         self.assertEqual(data['scheduleShift']['scheduleItemId'], variables['scheduleItemId'])
-    #
-    # def test_create_scheduleshift(self):
-    #     """ Create a scheduleshift """
-    #     query = self.scheduleshift_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     print("@@@@@@@@@@@@@")
-    #     print(executed)
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationLocationRoom']['id'], variables['input']['organizationLocationRoom'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationClasstype']['id'], variables['input']['organizationClasstype'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationLevel']['id'], variables['input']['organizationLevel'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['timeStart'], variables['input']['timeStart'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
+
+    def test_create_scheduleshift(self):
+        """ Create a scheduleshift """
+        query = self.scheduleshift_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        print("@@@@@@@@@@@@@")
+        print(executed)
+
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationLocationRoom']['id'], variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationClasstype']['id'], variables['input']['organizationClasstype'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationLevel']['id'], variables['input']['organizationLevel'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['timeStart'], variables['input']['timeStart'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
     #
     # def test_create_schedule_shift_add_all_non_archived_organization_subscription_groups(self):
     #   """
