@@ -634,133 +634,134 @@ class GQLScheduleShift(TestCase):
         self.assertEqual(data['updateScheduleShift']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
         self.assertEqual(data['updateScheduleShift']['scheduleItem']['timeStart'], variables['input']['timeStart'])
         self.assertEqual(data['updateScheduleShift']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
-    #
-    # def test_update_scheduleshift_anon_user(self):
-    #     """ Don't allow updating scheduleshifts for non-logged in users """
-    #     query = self.scheduleshift_update_mutation
-    #     scheduleshift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_scheduleshift_permission_granted(self):
-    #     """ Allow updating scheduleshifts for users with permissions """
-    #     query = self.scheduleshift_update_mutation
-    #     scheduleshift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['id'], variables['input']['id'])
-    #     self.assertEqual(data['updateScheduleShift']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
-    #
-    # def test_update_scheduleshift_permission_denied(self):
-    #     """ Check update scheduleshift permission denied error message """
-    #     query = self.scheduleshift_update_mutation
-    #     scheduleshift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_delete_scheduleshift(self):
-    #     """ Delete a scheduleshift """
-    #     query = self.scheduleshift_delete_mutation
-    #     scheduleshift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleShift']['ok'], True)
-    #
-    # def test_delete_scheduleshift_anon_user(self):
-    #     """ Delete scheduleshift denied for anon user """
-    #     query = self.scheduleshift_delete_mutation
-    #     scheduleshift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_scheduleshift_permission_granted(self):
-    #     """ Allow deleting scheduleshifts for users with permissions """
-    #     query = self.scheduleshift_delete_mutation
-    #     scheduleshift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleShift']['ok'], True)
-    #
-    # def test_delete_scheduleshift_permission_denied(self):
-    #     """ Check delete scheduleshift permission denied error message """
-    #     query = self.scheduleshift_delete_mutation
-    #     scheduleshift = f.ScheduleWeeklyShiftOTCFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_update_scheduleshift_anon_user(self):
+        """ Don't allow updating scheduleshifts for non-logged in users """
+        query = self.scheduleshift_update_mutation
+        scheduleshift = f.ScheduleWeeklyShiftFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_scheduleshift_permission_granted(self):
+        """ Allow updating scheduleshifts for users with permissions """
+        query = self.scheduleshift_update_mutation
+        scheduleshift = f.ScheduleWeeklyShiftFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['id'], variables['input']['id'])
+        self.assertEqual(data['updateScheduleShift']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+
+    def test_update_scheduleshift_permission_denied(self):
+        """ Check update scheduleshift permission denied error message """
+        query = self.scheduleshift_update_mutation
+        scheduleshift = f.ScheduleWeeklyShiftFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_scheduleshift(self):
+        """ Delete a scheduleshift """
+        query = self.scheduleshift_delete_mutation
+        scheduleshift = f.ScheduleWeeklyShiftFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleShift']['ok'], True)
+
+    def test_delete_scheduleshift_anon_user(self):
+        """ Delete scheduleshift denied for anon user """
+        query = self.scheduleshift_delete_mutation
+        scheduleshift = f.ScheduleWeeklyShiftFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_scheduleshift_permission_granted(self):
+        """ Allow deleting scheduleshifts for users with permissions """
+        query = self.scheduleshift_delete_mutation
+        scheduleshift = f.ScheduleWeeklyShiftFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleShift']['ok'], True)
+
+    def test_delete_scheduleshift_permission_denied(self):
+        """ Check delete scheduleshift permission denied error message """
+        query = self.scheduleshift_delete_mutation
+        scheduleshift = f.ScheduleWeeklyShiftFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleshift.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
