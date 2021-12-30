@@ -12,7 +12,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
+from ..models import ScheduleItem, ScheduleItemWeeklyOTC, OrganizationShift, OrganizationLocationRoom
 from ..modules.gql_tools import \
     check_if_user_has_permission, \
     require_login_and_permission, \
@@ -510,7 +510,7 @@ class CreateScheduleShift(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_scheduleshift')
 
         print(input)
-        result = validate_schedule_class_create_update_input(input)
+        result = validate_schedule_shift_create_update_input(input)
 
         schedule_item = ScheduleItem(
             schedule_item_type="SHIFT",
@@ -518,20 +518,15 @@ class CreateScheduleShift(graphene.relay.ClientIDMutation):
             frequency_interval=input['frequency_interval'],
             date_start=input['date_start'],
             time_start=input['time_start'],
-            time_end=input['time_end']
+            time_end=input['time_end'],
+            organization_location_room=result['organization_location_room'],
+            organization_shift=result['organization_shift']
         )
 
         # Optional fields
         date_end = input.get('date_end', None)
         if date_end:
             schedule_item.date_end = date_end
-
-        # Fields requiring additional validation
-        if result['organization_location_room']:
-            schedule_item.organization_location_room = result['organization_location_room']
-
-        if result['organization_shift']:
-            schedule_item.organization_shift = result['organization_shift']
 
         # All done, save it :).
         schedule_item.save()

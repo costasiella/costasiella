@@ -541,117 +541,71 @@ class GQLScheduleShift(TestCase):
         print(executed)
 
         data = executed.get('data')
-        self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
-        self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
-        self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationLocationRoom']['id'], variables['input']['organizationLocationRoom'])
-        self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationClasstype']['id'], variables['input']['organizationClasstype'])
-        self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationLevel']['id'], variables['input']['organizationLevel'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationLocationRoom']['id'],
+                         variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['organizationShift']['id'],
+                         variables['input']['organizationShift'])
         self.assertEqual(data['createScheduleShift']['scheduleItem']['dateStart'], variables['input']['dateStart'])
         self.assertEqual(data['createScheduleShift']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
         self.assertEqual(data['createScheduleShift']['scheduleItem']['timeStart'], variables['input']['timeStart'])
         self.assertEqual(data['createScheduleShift']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
-        self.assertEqual(data['createScheduleShift']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
-    #
-    # def test_create_schedule_shift_add_all_non_archived_organization_subscription_groups(self):
-    #   """
-    #   Create a schedule class and check whether a subscription group is added
-    #   """
-    #   subscription_group = f.OrganizationSubscriptionGroupFactory.create()
-    #
-    #   query = self.scheduleshift_create_mutation
-    #   variables = self.variables_create
-    #
-    #   executed = execute_test_client_api_query(
-    #       query,
-    #       self.admin_user,
-    #       variables=variables
-    #   )
-    #
-    #   data = executed.get('data')
-    #   schedule_item_id = data['createScheduleShift']['scheduleItem']['id']
-    #
-    #   schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
-    #
-    #   self.assertEqual(models.ScheduleItemOrganizationSubscriptionGroup.objects.filter(
-    #       schedule_item=schedule_item
-    #   ).exists(), True)
-    #
-    # def test_create_schedule_shift_add_all_non_archived_organization_classpass_groups(self):
-    #   """
-    #   Create a schedule class and check whether a classpass group is added
-    #   """
-    #   classpass_group = f.OrganizationClasspassGroupFactory.create()
-    #
-    #   query = self.scheduleshift_create_mutation
-    #   variables = self.variables_create
-    #
-    #   executed = execute_test_client_api_query(
-    #       query,
-    #       self.admin_user,
-    #       variables=variables
-    #   )
-    #
-    #   data = executed.get('data')
-    #   schedule_item_id = data['createScheduleShift']['scheduleItem']['id']
-    #
-    #   schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
-    #
-    #   self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
-    #       schedule_item = schedule_item
-    #   ).exists(), True)
-    #
-    # def test_create_scheduleshift_anon_user(self):
-    #     """ Don't allow creating scheduleshifts for non-logged in users """
-    #     query = self.scheduleshift_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating scheduleshifts for users with permissions """
-    #     query = self.scheduleshift_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyType'],
-    #                      variables['input']['frequencyType'])
-    #     self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyInterval'],
-    #                      variables['input']['frequencyInterval'])
-    #
-    # def test_create_scheduleshift_permission_denied(self):
-    #     """ Check create scheduleshift permission denied error message """
-    #     query = self.scheduleshift_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_create_scheduleshift_anon_user(self):
+        """ Don't allow creating scheduleshifts for non-logged in users """
+        query = self.scheduleshift_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_location_permission_granted(self):
+        """ Allow creating scheduleshifts for users with permissions """
+        query = self.scheduleshift_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+
+    def test_create_scheduleshift_permission_denied(self):
+        """ Check create scheduleshift permission denied error message """
+        query = self.scheduleshift_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_update_scheduleshift(self):
     #     """ Update a scheduleshift """
