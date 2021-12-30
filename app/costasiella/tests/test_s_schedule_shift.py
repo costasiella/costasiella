@@ -507,48 +507,39 @@ class GQLScheduleShift(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    # # def test_query_one_public(self):
-    # #     """ View public shifts as user lacking authorization """
-    # #     # Create regular user
-    # #     user = f.RegularUserFactory.create()
-    # #
-    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
-    # #
-    # #     # Now query single scheduleshift and check
-    # #     executed = execute_test_client_api_query(self.scheduleshift_query, user, variables={"id": node_id})
-    # #     data = executed.get('data')
-    # #     self.assertEqual(data['scheduleItem']['id'], node_id)
-    # #
-    # # def test_query_one_permission_denied_non_public(self):
-    # #     """ Permission denied message when user lacks authorization """
-    # #     # Create regular user
-    # #     user = f.RegularUserFactory.create()
-    # #
-    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create(
-    # #         display_public=False
-    # #     )
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
-    # #
-    # #     # Now query single scheduleshift and check
-    # #     executed = execute_test_client_api_query(self.scheduleshift_query, user, variables={"id": node_id})
-    # #     errors = executed.get('errors')
-    # #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # #
-    # # def test_query_one_permission_granted(self):
-    # #     """ Respond with data when user has permission """
-    # #     user = f.RegularUserFactory.create()
-    # #     permission = Permission.objects.get(codename='view_scheduleshift')
-    # #     user.user_permissions.add(permission)
-    # #     user.save()
-    # #
-    # #     schedule_shift = f.ScheduleWeeklyShiftOTCFactory.create()
-    # #     node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
-    # #
-    # #     # Now query single location and check
-    # #     executed = execute_test_client_api_query(self.scheduleshift_query, user, variables={"id": node_id})
-    # #     data = executed.get('data')
-    # #     self.assertEqual(data['scheduleItem']['id'], node_id)
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        schedule_shift = f.ScheduleWeeklyShiftFactory.create()
+        node_id = to_global_id('ScheduleItemNode', schedule_shift.id)
+
+        # Now query single scheduleshift and check
+        executed = execute_test_client_api_query(self.scheduleshift_query, user, variables={
+            "scheduleItemId": node_id,
+            "date": "2021-12-27"
+        })
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_scheduleshift')
+        user.user_permissions.add(permission)
+        user.save()
+
+        schedule_shift = f.ScheduleWeeklyShiftFactory.create()
+        variables = {
+            "scheduleItemId": to_global_id('ScheduleItemNode', schedule_shift.id),
+            "date": "2021-12-27"
+        }
+
+        # Now query single location and check
+        executed = execute_test_client_api_query(self.scheduleshift_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['scheduleShift']['scheduleItemId'], variables['scheduleItemId'])
     #
     # def test_create_scheduleshift(self):
     #     """ Create a scheduleshift """
