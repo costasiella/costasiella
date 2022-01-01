@@ -117,6 +117,7 @@ class Command(BaseCommand):
         self.school_discovery_map = None
         self.school_languages_map = None
         self.school_levels_map = None
+        self.school_shifts_map = None
         self.school_locations_map = None
         self.school_locations_rooms_map = None
         self.auth_user_map = None
@@ -371,6 +372,7 @@ class Command(BaseCommand):
         self.school_discovery_map = self._import_school_discovery()
         self.school_languages_map = self._import_school_langauges()
         self.school_levels_map = self._import_school_levels()
+        self.school_shifts_map = self._import_school_shifts()
         locations_import_result = self._import_school_locations()
         self.school_locations_map = locations_import_result['id_map_locations']
         self.school_locations_rooms_map = locations_import_result['id_map_rooms']
@@ -990,6 +992,36 @@ class Command(BaseCommand):
             id_map[record['id']] = organization_level
 
         log_message = "Import organization levels: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_school_shifts(self):
+        """
+        Fetch school shifts and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_shifts"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            organization_shift = m.OrganizationShift(
+                archived=self._web2py_bool_to_python(record['archived']),
+                name=record['name'],
+            )
+            organization_shift.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_shift
+
+        log_message = "Import organization shift: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
