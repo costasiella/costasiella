@@ -139,6 +139,7 @@ class Command(BaseCommand):
         self.classes_school_subscriptions_groups_map = None
         self.classes_teachers_map = None
         self.shifts_map = None
+        self.shifts_otc_map = None
         self.customers_subscriptions_credits_map = None
         self.workshops_map = None
         self.workshops_activities_map = None
@@ -397,6 +398,7 @@ class Command(BaseCommand):
         self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         self.classes_teachers_map = self._import_classes_teachers()
         self.shifts_map = self._import_shifts()
+        self.shifts_otc_map = self._import_shifts_otc()
         self.customers_subscriptions_credits_map = self._import_customers_subscriptions_credits()
         self.workshops_map = self._import_workshops()
         self.workshops_activities_map = self._import_workshops_activities()
@@ -1948,6 +1950,57 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import shifts: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_shifts_otc(self):
+        """
+        Fetch shifts otc and import them in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM shifts_otc"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                startime = None
+                endtime = None
+                if record['starttime']:
+                    startime = str(record['starttime'])
+                if record['endtime']:
+                    endtime = str(record['endtime'])
+
+                schedule_item_weekly_otc = m.ScheduleItemWeeklyOTC(
+                    schedule_item=self.classes_map.get(record['shifts_id'], None),
+                    date=record['shiftdate'],
+                    status=self.map_classes_otc_statuses.get(record['status'], ""),
+                    description=record['description'] or '',
+                    account=self.auth_user_map.get(record['auth_employee_id'], None),
+                    account_2=self.auth_user_map.get(record['auth_employee_id2'], None),
+                    organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id'], None),
+                    organization_shift=self.school_shifts_map.get(record['school_shifts_id'], None),
+                    time_start=startime,
+                    time_end=endtime,
+                )
+                schedule_item_weekly_otc.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_weekly_otc
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for class otc id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import shifts otc: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
