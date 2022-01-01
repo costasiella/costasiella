@@ -140,6 +140,7 @@ class Command(BaseCommand):
         self.classes_teachers_map = None
         self.shifts_map = None
         self.shifts_otc_map = None
+        self.shifts_staff_map = None
         self.customers_subscriptions_credits_map = None
         self.workshops_map = None
         self.workshops_activities_map = None
@@ -399,6 +400,7 @@ class Command(BaseCommand):
         self.classes_teachers_map = self._import_classes_teachers()
         self.shifts_map = self._import_shifts()
         self.shifts_otc_map = self._import_shifts_otc()
+        self.shifts_staff_map = self._import_shifs_staff()
         self.customers_subscriptions_credits_map = self._import_customers_subscriptions_credits()
         self.workshops_map = self._import_workshops()
         self.workshops_activities_map = self._import_workshops_activities()
@@ -2001,6 +2003,45 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import shifts otc: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_shifs_staff(self):
+        """
+        Fetch shifts staff and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM shifts_staff"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                schedule_item_account = m.ScheduleItemAccount(
+                    schedule_item=self.classes_map.get(record['classes_id'], None),
+                    account=self.auth_user_map.get(record['auth_teacher_id'], None),
+                    account_2=self.auth_user_map.get(record['auth_teacher_id2'], None),
+                    date_start=record['startdate'],
+                    date_end=record['enddate']
+                )
+                schedule_item_account.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_account
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for shift staff id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import shift staff: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
