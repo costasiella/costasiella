@@ -138,6 +138,7 @@ class Command(BaseCommand):
         self.classes_school_classcards_groups_map = None
         self.classes_school_subscriptions_groups_map = None
         self.classes_teachers_map = None
+        self.shifts_map = None
         self.customers_subscriptions_credits_map = None
         self.workshops_map = None
         self.workshops_activities_map = None
@@ -395,6 +396,7 @@ class Command(BaseCommand):
         self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
         self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         self.classes_teachers_map = self._import_classes_teachers()
+        self.shifts_map = self._import_shifts()
         self.customers_subscriptions_credits_map = self._import_customers_subscriptions_credits()
         self.workshops_map = self._import_workshops()
         self.workshops_activities_map = self._import_workshops_activities()
@@ -1902,6 +1904,50 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import classes teachers: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_shifts(self):
+        """
+        Fetch shifts and import them in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from shifts"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                schedule_item = m.ScheduleItem(
+                    schedule_event=None,
+                    schedule_item_type="SHIFT",
+                    frequency_type="WEEKLY",
+                    frequency_interval=record['week_day'],
+                    organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id'], None),
+                    organization_shift=self.school_shifts_map.get(record['school_shifts_id'], None),
+                    date_start=record['startdate'],
+                    date_end=record['enddate'],
+                    time_start=str(record['starttime']),
+                    time_end=str(record['endtime']),
+                )
+                schedule_item.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for shift id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import shifts: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
