@@ -124,6 +124,17 @@ def validate_update_input(input):
         else:
             result['organization_level'] = None
 
+    # Check OrganizationShift
+    if 'organization_shift' in input:
+        if input['organization_shift']:
+            rid = get_rid(input['organization_shift'])
+            organization_shift = OrganizationShift.objects.get(id=rid.id)
+            result['organization_shift'] = organization_shift
+            if not organization_shift:
+                raise Exception(_('Invalid Organization Shift ID!'))
+        else:
+            result['organization_shift'] = None
+
     return result
 
 
@@ -188,6 +199,7 @@ class UpdateScheduleItemWeeklyOTC(graphene.relay.ClientIDMutation):
         organization_location_room = graphene.ID(required=False)
         organization_classtype = graphene.ID(required=False)
         organization_level = graphene.ID(required=False)        
+        organization_shift = graphene.ID(required=False)
         time_start = graphene.types.datetime.Time(required=False)
         time_end = graphene.types.datetime.Time(required=False)
         spaces = graphene.Int(required=False)
@@ -237,6 +249,9 @@ class UpdateScheduleItemWeeklyOTC(graphene.relay.ClientIDMutation):
 
         if 'organization_level' in result:
             schedule_item_weekly_otc.organization_level = result['organization_level']
+
+        if 'organization_shift' in result:
+            schedule_item_weekly_otc.organization_shift = result['organization_shift']
 
         if 'time_start' in input:
             schedule_item_weekly_otc.time_start = input['time_start']
