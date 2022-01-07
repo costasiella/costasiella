@@ -383,7 +383,7 @@ class GQLFinanceInvoice(TestCase):
         """
         query = self.invoices_query
         invoice = f.FinanceInvoiceFactory.create()
-        other_user = f.TeacherFactory.create()
+        other_user = f.InstructorFactory.create()
 
         # Create regular user
         user = get_user_model().objects.get(pk=invoice.account.id)
@@ -472,7 +472,7 @@ class GQLFinanceInvoice(TestCase):
         """ Permission denied message when user lacks authorization """   
         # Create regular user
         invoice = f.FinanceInvoiceFactory.create()
-        user = f.Teacher2Factory.create()
+        user = f.Instructor2Factory.create()
 
         variables = {
             "id": to_global_id("FinanceInvoiceNode", invoice.id),

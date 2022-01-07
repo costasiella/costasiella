@@ -322,8 +322,8 @@ class GQLScheduleItemAccount(TestCase):
     def test_create_schedule_item_account(self):
         """ Create schedule item account """
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-        account = f.TeacherFactory.create()
-        account2 = f.Teacher2Factory.create()
+        account = f.InstructorFactory.create()
+        account2 = f.Instructor2Factory.create()
 
         query = self.schedule_item_account_create_mutation
         variables = self.variables_create
@@ -349,8 +349,8 @@ class GQLScheduleItemAccount(TestCase):
     def test_create_schedule_item_account_anon_user(self):
         """ Don't allow creating schedule item account for non-logged in users """
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-        account = f.TeacherFactory.create()
-        account2 = f.Teacher2Factory.create()
+        account = f.InstructorFactory.create()
+        account2 = f.Instructor2Factory.create()
 
         query = self.schedule_item_account_create_mutation
         variables = self.variables_create
@@ -378,8 +378,8 @@ class GQLScheduleItemAccount(TestCase):
         user.save()
 
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-        account = f.TeacherFactory.create()
-        account2 = f.Teacher2Factory.create()
+        account = f.InstructorFactory.create()
+        account2 = f.Instructor2Factory.create()
 
         query = self.schedule_item_account_create_mutation
         variables = self.variables_create
@@ -403,8 +403,8 @@ class GQLScheduleItemAccount(TestCase):
         user = f.RegularUserFactory.create()
 
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-        account = f.TeacherFactory.create()
-        account2 = f.Teacher2Factory.create()
+        account = f.InstructorFactory.create()
+        account2 = f.Instructor2Factory.create()
 
         query = self.schedule_item_account_create_mutation
         variables = self.variables_create

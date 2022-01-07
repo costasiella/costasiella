@@ -116,7 +116,7 @@ class GQLAccountBankAccount(TestCase):
 
         # Create regular user
         user = get_user_model().objects.get(pk=account_bank_account.account.id)
-        other_user = f.TeacherFactory.create()
+        other_user = f.InstructorFactory.create()
         executed = execute_test_client_api_query(query, other_user, variables=variables)
         data = executed.get('data')
 
@@ -284,7 +284,7 @@ class GQLAccountBankAccount(TestCase):
         query = self.account_bank_account_update_mutation
         account_bank_account = f.AccountBankAccountFactory.create()
         organization_account_bank_account = f.OrganizationClasspassFactory.create()
-        teacher = f.TeacherFactory.create()
+        instructor = f.InstructorFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
 
@@ -292,7 +292,7 @@ class GQLAccountBankAccount(TestCase):
 
         executed = execute_test_client_api_query(
             query,
-            teacher,
+            instructor,
             variables=variables
         )
         errors = executed.get('errors')

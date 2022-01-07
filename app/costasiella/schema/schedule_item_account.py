@@ -146,7 +146,7 @@ class UpdateScheduleItemAccount(graphene.relay.ClientIDMutation):
         rid = get_rid(input['id'])
         schedule_item_account = ScheduleItemAccount.objects.filter(id=rid.id).first()
         if not schedule_item_account:
-            raise Exception('Invalid Schedule Item Teacher ID!')
+            raise Exception('Invalid Schedule Item Instructor ID!')
 
         validation_result = validate_schedule_item_account_create_update_input(input)
 
@@ -185,7 +185,7 @@ class DeleteScheduleItemAccount(graphene.relay.ClientIDMutation):
         rid = get_rid(input['id'])
         schedule_item_account = ScheduleItemAccount.objects.filter(id=rid.id).first()
         if not schedule_item_account:
-            raise Exception('Invalid Schedule Item Teacher ID!')
+            raise Exception('Invalid Schedule Item Instructor ID!')
 
         ok = schedule_item_account.delete()
 

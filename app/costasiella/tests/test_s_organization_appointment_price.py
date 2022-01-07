@@ -30,7 +30,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
         self.permission_change = 'change_organizationappointmentprice'
         self.permission_delete = 'delete_organizationappointmentprice'
 
-        self.teacher = f.Teacher2Factory.create()
+        self.instructor = f.Instructor2Factory.create()
         self.organization_appointment = f.OrganizationAppointmentFactory.create()
         self.organization_appointment_price = f.OrganizationAppointmentPriceFactory.create()
         self.finance_tax_rate = f.FinanceTaxRateFactory.create()
@@ -42,7 +42,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
         self.variables_create = {
             "input": {
-                "account": to_global_id('AccountNode', self.teacher.pk),
+                "account": to_global_id('AccountNode', self.instructor.pk),
                 "organizationAppointment": to_global_id('OrganizationAppointmentNode', self.organization_appointment.pk),
                 "price": "200",
                 "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk)
@@ -52,7 +52,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
         self.variables_update = {
             "input": {
                 "id": to_global_id('OrganizationAppointmentPriceNode', self.organization_appointment_price.pk),
-                "account": to_global_id('AccountNode', self.teacher.pk),
+                "account": to_global_id('AccountNode', self.instructor.pk),
                 "price": "9876",
                 "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk)
             }

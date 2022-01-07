@@ -36,15 +36,15 @@ def _get_resolve_classes_filter_query(self):
     """
     where = ''
 
-    # if self.filter_id_teacher:
-    #     where += 'AND ((CASE WHEN cotc.auth_teacher_id IS NULL \
-    #                     THEN clt.auth_teacher_id  \
-    #                     ELSE cotc.auth_teacher_id END) = '
-    #     where += str(self.filter_id_teacher) + ' '
-    #     where += 'OR (CASE WHEN cotc.auth_teacher_id2 IS NULL \
-    #                     THEN clt.auth_teacher_id2  \
-    #                     ELSE cotc.auth_teacher_id2 END) = '
-    #     where += str(self.filter_id_teacher) + ') '
+    # if self.filter_id_instructor:
+    #     where += 'AND ((CASE WHEN cotc.auth_instructor_id IS NULL \
+    #                     THEN clt.auth_instructor_id  \
+    #                     ELSE cotc.auth_instructor_id END) = '
+    #     where += str(self.filter_id_instructor) + ' '
+    #     where += 'OR (CASE WHEN cotc.auth_instructor_id2 IS NULL \
+    #                     THEN clt.auth_instructor_id2  \
+    #                     ELSE cotc.auth_instructor_id2 END) = '
+    #     where += str(self.filter_id_instructor) + ') '
     if self.filter_id_organization_classtype:
         where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
                         THEN csi.organization_classtype_id  \
@@ -154,15 +154,15 @@ class ScheduleClassesDayType(graphene.ObjectType):
             """
             where = ''
 
-            # if self.filter_id_teacher:
-            #     where += 'AND ((CASE WHEN cotc.auth_teacher_id IS NULL \
-            #                     THEN clt.auth_teacher_id  \
-            #                     ELSE cotc.auth_teacher_id END) = '
-            #     where += str(self.filter_id_teacher) + ' '
-            #     where += 'OR (CASE WHEN cotc.auth_teacher_id2 IS NULL \
-            #                     THEN clt.auth_teacher_id2  \
-            #                     ELSE cotc.auth_teacher_id2 END) = '
-            #     where += str(self.filter_id_teacher) + ') '
+            # if self.filter_id_instructor:
+            #     where += 'AND ((CASE WHEN cotc.auth_instructor_id IS NULL \
+            #                     THEN clt.auth_instructor_id  \
+            #                     ELSE cotc.auth_instructor_id END) = '
+            #     where += str(self.filter_id_instructor) + ' '
+            #     where += 'OR (CASE WHEN cotc.auth_instructor_id2 IS NULL \
+            #                     THEN clt.auth_instructor_id2  \
+            #                     ELSE cotc.auth_instructor_id2 END) = '
+            #     where += str(self.filter_id_instructor) + ') '
             if self.filter_id_organization_classtype:
                 where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
                                 THEN csi.organization_classtype_id  \

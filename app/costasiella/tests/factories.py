@@ -442,7 +442,7 @@ class RegularUserFactory(factory.DjangoModelFactory):
     is_active = True
 
 
-class TeacherFactory(factory.DjangoModelFactory):
+class InstructorFactory(factory.DjangoModelFactory):
     """ Use a uuid in the email field in the tests, as the email address has to be unique.
     This allows multiple calls to the this factory without having to reset the db.
     """
@@ -450,15 +450,15 @@ class TeacherFactory(factory.DjangoModelFactory):
         model = get_user_model()
 
     email = '%s@costasiellla.com' % uuid.uuid4()
-    first_name = 'teacher'
+    first_name = 'instructor'
     last_name = 'account'
-    teacher = True
+    instructor = True
     password = factory.PostGenerationMethodCall('set_password', 'CSUser1#')
 
     is_active = True
 
 
-class Teacher2Factory(factory.DjangoModelFactory):
+class Instructor2Factory(factory.DjangoModelFactory):
     """ Use a uuid in the email field in the tests, as the email address has to be unique.
     This allows multiple calls to the this factory without having to reset the db.
     """
@@ -466,19 +466,19 @@ class Teacher2Factory(factory.DjangoModelFactory):
         model = get_user_model()
 
     email = '%s@costasiellla.com' % uuid.uuid4()
-    first_name = 'teacher2'
+    first_name = 'instructor2'
     last_name = 'account'
-    teacher = True
+    instructor = True
     password = factory.PostGenerationMethodCall('set_password', 'CSUser1#')
 
     is_active = True
 
 
-class TeacherProfileFactory(factory.DjangoModelFactory):
+class InstructorProfileFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.AccountTeacherProfile
+        model = models.AccountInstructorProfile
 
-    account = factory.SubFactory(TeacherFactory)
+    account = factory.SubFactory(InstructorFactory)
     classes = True
     appointments = True
     events = True
@@ -519,7 +519,7 @@ class OrganizationAppointmentPriceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationAppointmentPrice
 
-    account = factory.SubFactory(TeacherFactory)
+    account = factory.SubFactory(InstructorFactory)
     organization_appointment = factory.SubFactory(OrganizationAppointmentFactory)
     price = 1245
     finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
@@ -703,7 +703,7 @@ class AccountNoteBackofficeFactory(factory.DjangoModelFactory):
         model = models.AccountNote
 
     account = factory.SubFactory(RegularUserFactory)
-    note_by = factory.SubFactory(TeacherFactory)
+    note_by = factory.SubFactory(InstructorFactory)
     note_type = "BACKOFFICE"
     note = "Backoffice note"
     injury = False
@@ -847,9 +847,9 @@ class SchedulePublicWeeklyClassOTCFactory(factory.DjangoModelFactory):
     schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
     date = datetime.date(2030, 12, 30)
     description = "Test description"
-    account = factory.SubFactory(TeacherFactory)
+    account = factory.SubFactory(InstructorFactory)
     role = "SUB"
-    account_2 = factory.SubFactory(Teacher2Factory)
+    account_2 = factory.SubFactory(Instructor2Factory)
     role_2 = "SUB"
     organization_location_room = factory.SelfAttribute('schedule_item.organization_location_room')
     organization_classtype = factory.SelfAttribute('schedule_item.organization_classtype')
@@ -880,8 +880,8 @@ class ScheduleWeeklyShiftOTCFactory(factory.DjangoModelFactory):
     schedule_item = factory.SubFactory(ScheduleWeeklyShiftFactory)
     date = datetime.date(2030, 12, 30)
     description = "Test description"
-    account = factory.SubFactory(TeacherFactory)
-    account_2 = factory.SubFactory(Teacher2Factory)
+    account = factory.SubFactory(InstructorFactory)
+    account_2 = factory.SubFactory(Instructor2Factory)
     organization_location_room = factory.SelfAttribute('schedule_item.organization_location_room')
     organization_shift = factory.SelfAttribute('schedule_item.organization_shift')
     time_start = datetime.time(11, 0)
@@ -939,8 +939,8 @@ class ScheduleEventFactory(factory.DjangoModelFactory):
     preview = "Beautiful event preview"
     description = "Extensive description"
     organization_level = factory.SubFactory(OrganizationLevelFactory)
-    teacher = factory.SubFactory(TeacherFactory)
-    teacher_2 = factory.SubFactory(Teacher2Factory)
+    instructor = factory.SubFactory(InstructorFactory)
+    instructor_2 = factory.SubFactory(Instructor2Factory)
     info_mail_content = "Hello world from the info mail field"
 
 
@@ -1018,8 +1018,8 @@ class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     time_start = datetime.time(6, 0)
     time_end = datetime.time(9, 0)
     display_public = True
-    account = factory.SelfAttribute('schedule_event.teacher')
-    account_2 = factory.SelfAttribute('schedule_event.teacher_2')
+    account = factory.SelfAttribute('schedule_event.instructor')
+    account_2 = factory.SelfAttribute('schedule_event.instructor_2')
     name = "Event activity 1"
     spaces = 20
 
@@ -1050,8 +1050,8 @@ class ScheduleItemAccountFactory(factory.DjangoModelFactory):
         model = models.ScheduleItemAccount
 
     schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
-    account = factory.SubFactory(TeacherFactory)
-    account_2 = factory.SubFactory(Teacher2Factory)
+    account = factory.SubFactory(InstructorFactory)
+    account_2 = factory.SubFactory(Instructor2Factory)
     role_2 = "ASSISTANT"
     date_start = datetime.date(2014, 1, 1)
 

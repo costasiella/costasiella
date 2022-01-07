@@ -11,7 +11,7 @@ from django.http import Http404, StreamingHttpResponse, FileResponse
 from django.db.models import Q
 from django.template.loader import get_template, render_to_string
 
-from ...models import Account, AccountSubscriptionCredit, AccountTeacherProfile
+from ...models import Account, AccountSubscriptionCredit, AccountInstructorProfile
 
 # Django-graphql-jwt imports begin
 from ...modules.graphql_jwt_tools import get_user_by_token
@@ -41,8 +41,8 @@ def export_account_data(request, token, **kwargs):
     wb = _add_worksheet_account_event_tickets(user, wb)
     wb = _add_worksheet_account_note(user, wb)
 
-    if user.teacher:
-        wb = _add_worksheet_account_teacher_profile(user, wb)
+    if user.instructor:
+        wb = _add_worksheet_account_instructor_profile(user, wb)
 
     # # Create a file-like buffer to receive XLSX data.
     buffer = io.BytesIO()
@@ -107,14 +107,14 @@ def _add_worksheet_account(account, wb):
     return wb
 
 
-def _add_worksheet_account_teacher_profile(account, wb):
+def _add_worksheet_account_instructor_profile(account, wb):
     """
-    Add Account teacher profile sheet to workbook data export
+    Add Account instructor profile sheet to workbook data export
     :param account: models.Account object
     :param wb: openpyxl.workbook.Workbook object
     :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
     """
-    ws = wb.create_sheet("Teacher profile")
+    ws = wb.create_sheet("Instructor profile")
 
     # Write header
     header = [
@@ -128,19 +128,19 @@ def _add_worksheet_account_teacher_profile(account, wb):
     ]
     ws.append(header)
 
-    qs = AccountTeacherProfile.objects.filter(account=account)
+    qs = AccountInstructorProfile.objects.filter(account=account)
     if qs.exists():
-        account_teacher_profile = qs.first()
+        account_instructor_profile = qs.first()
 
         # Write data
         data = [
-            account_teacher_profile.classes,
-            account_teacher_profile.events,
-            account_teacher_profile.role,
-            account_teacher_profile.education,
-            account_teacher_profile.bio,
-            account_teacher_profile.url_bio,
-            account_teacher_profile.url_website,
+            account_instructor_profile.classes,
+            account_instructor_profile.events,
+            account_instructor_profile.role,
+            account_instructor_profile.education,
+            account_instructor_profile.bio,
+            account_instructor_profile.url_bio,
+            account_instructor_profile.url_website,
         ]
         ws.append(data)
 

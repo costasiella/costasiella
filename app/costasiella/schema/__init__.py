@@ -18,7 +18,7 @@ from .account_subscription_alt_price import AccountSubscriptionAltPriceQuery, Ac
 from .account_subscription_block import AccountSubscriptionBlockQuery, AccountSubscriptionBlockMutation
 from .account_subscription_credit import AccountSubscriptionCreditQuery, AccountSubscriptionCreditMutation
 from .account_subscription_pause import AccountSubscriptionPauseQuery, AccountSubscriptionPauseMutation
-from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherProfileMutation
+from .account_instructor_profile import AccountInstructorProfileQuery, AccountInstructorProfileMutation
 
 from .app_settings import AppSettingsQuery, AppSettingsMutation
 
@@ -89,7 +89,7 @@ from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemA
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutation
-from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
+from .schedule_item_instructor_available import ScheduleItemInstructorAvailableQuery, ScheduleItemInstructorAvailableMutation
 from .schedule_shift import ScheduleShiftQuery, ScheduleShiftMutation
 
 from .system_feature_shop import SystemFeatureShopQuery, SystemFeatureShopMutation
@@ -112,7 +112,7 @@ class Query(AccountQuery,
             AccountSubscriptionBlockQuery,
             AccountSubscriptionCreditQuery,
             AccountSubscriptionPauseQuery,
-            AccountTeacherProfileQuery,
+            AccountInstructorProfileQuery,
             AppSettingsQuery,
             BusinessQuery,
             DjangoCeleryResultTaskResultQuery,
@@ -169,7 +169,7 @@ class Query(AccountQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemPriceQuery,
-            ScheduleItemTeacherAvailableQuery,
+            ScheduleItemInstructorAvailableQuery,
             ScheduleItemWeeklyOTCQuery,
             ScheduleShiftQuery,
             SystemFeatureShopQuery,
@@ -193,7 +193,7 @@ class Mutation(AccountMutation,
                AccountSubscriptionBlockMutation,
                AccountSubscriptionCreditMutation,
                AccountSubscriptionPauseMutation,
-               AccountTeacherProfileMutation,
+               AccountInstructorProfileMutation,
                AppSettingsMutation,
                BusinessMutation,
                FinanceCostCenterMutation,
@@ -245,7 +245,7 @@ class Mutation(AccountMutation,
                ScheduleItemOrganizationClasspassGroupMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
                ScheduleItemPriceMutation,
-               ScheduleItemTeacherAvailableMutation,
+               ScheduleItemInstructorAvailableMutation,
                ScheduleItemWeeklyOTCMutation,
                ScheduleShiftMutation,
                SystemFeatureShopMutation,

@@ -66,7 +66,7 @@ class ScheduleItem(models.Model):
         (7, _("Sunday")),
     )
 
-    TEACHER_ROLES = get_instructor_roles()
+    INSTRUCTOR_ROLES = get_instructor_roles()
     STATUSES = get_schedule_item_otc_statuses()
 
     schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE, null=True,
@@ -105,12 +105,12 @@ class ScheduleItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     ################ BEGIN EMPTY FIELDS ################
     # No value is actually stored here for now, but these fields are very useful in the schedule_class schema
-    # By having these fields here we can map the schedule_item_teacher or schedule_item_weekly_otc account 
+    # By having these fields here we can map the schedule_item_instructor or schedule_item_weekly_otc account
     # into these fields
     ####################################################
     status = models.CharField(max_length=255, default="", choices=STATUSES)
-    role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
-    role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    role = models.CharField(default="", max_length=50, choices=INSTRUCTOR_ROLES)
+    role_2 = models.CharField(default="", max_length=50, choices=INSTRUCTOR_ROLES)
     description = models.CharField(max_length=255, default="")
     count_attendance = models.IntegerField(null=True)
     organization_holiday_id = models.IntegerField(null=True)

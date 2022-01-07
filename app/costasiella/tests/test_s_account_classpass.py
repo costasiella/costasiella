@@ -221,7 +221,7 @@ class GQLAccountClasspass(TestCase):
 
         # Create regular user
         user = get_user_model().objects.get(pk=classpass.account.id)
-        other_user = f.TeacherFactory.create()
+        other_user = f.InstructorFactory.create()
         executed = execute_test_client_api_query(query, other_user, variables=variables)
         data = executed.get('data')
 

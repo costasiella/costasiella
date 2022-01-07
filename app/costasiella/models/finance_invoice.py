@@ -24,7 +24,7 @@ class FinanceInvoice(models.Model):
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="invoices")
     finance_invoice_group = models.ForeignKey(FinanceInvoiceGroup, on_delete=models.CASCADE)
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
-    teacher_payment = models.BooleanField(default=False)
+    instructor_payment = models.BooleanField(default=False)
     employee_claim = models.BooleanField(default=False)
     relation_company = models.CharField(max_length=255, default="")
     relation_company_registration = models.CharField(max_length=255, default="")
@@ -647,7 +647,7 @@ class FinanceInvoice(models.Model):
             account=self.account,
             finance_invoice_group=self.finance_invoice_group,
             finance_payment_method=self.finance_payment_method,
-            teacher_payment=self.teacher_payment,
+            instructor_payment=self.instructor_payment,
             employee_claim=self.employee_claim,
             status="SENT",
             summary=self.summary,

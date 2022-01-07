@@ -427,8 +427,8 @@ query ScheduleEventActivity($id:ID!) {
         query = self.event_activity_create_mutation
         schedule_event = f.ScheduleEventFactory.create()
         self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.instructor.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.instructor_2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -466,8 +466,8 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event = schedule_event_ticket.schedule_event
 
         self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.instructor.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.instructor_2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -495,8 +495,8 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
         schedule_event = schedule_event_ticket.schedule_event
         self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.instructor.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.instructor_2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -520,8 +520,8 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
         schedule_event = schedule_event_ticket.schedule_event
         self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.instructor.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.instructor_2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -546,8 +546,8 @@ query ScheduleEventActivity($id:ID!) {
         query = self.event_activity_create_mutation
         schedule_event = f.ScheduleEventFactory.create()
         self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.instructor.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.instructor_2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -572,8 +572,8 @@ query ScheduleEventActivity($id:ID!) {
         query = self.event_activity_create_mutation
         schedule_event = f.ScheduleEventFactory.create()
         self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.instructor.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.instructor_2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -588,8 +588,8 @@ query ScheduleEventActivity($id:ID!) {
         query = self.event_activity_create_mutation
         schedule_event = f.ScheduleEventFactory.create()
         self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.instructor.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.instructor_2.id)
 
         account = f.RegularUserFactory.create()
         # Create regular user
@@ -612,8 +612,8 @@ query ScheduleEventActivity($id:ID!) {
         query = self.event_activity_create_mutation
         schedule_event = f.ScheduleEventFactory.create()
         self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.instructor.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.instructor_2.id)
 
         account = f.RegularUserFactory.create()
         # Create regular user
@@ -633,9 +633,9 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
         self.variables_update['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
         self.variables_update['input']['account'] = to_global_id('AccountNode',
-                                                                 schedule_event_activity.schedule_event.teacher.id)
+                                                                 schedule_event_activity.schedule_event.instructor.id)
         self.variables_update['input']['account2'] = to_global_id('AccountNode',
-                                                                  schedule_event_activity.schedule_event.teacher_2.id)
+                                                                  schedule_event_activity.schedule_event.instructor_2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -667,9 +667,9 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
         self.variables_update['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
         self.variables_update['input']['account'] = to_global_id('AccountNode',
-                                                                 schedule_event_activity.schedule_event.teacher.id)
+                                                                 schedule_event_activity.schedule_event.instructor.id)
         self.variables_update['input']['account2'] = to_global_id('AccountNode',
-                                                                  schedule_event_activity.schedule_event.teacher_2.id)
+                                                                  schedule_event_activity.schedule_event.instructor_2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -695,9 +695,9 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
         self.variables_update['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
         self.variables_update['input']['account'] = to_global_id('AccountNode',
-                                                                 schedule_event_activity.schedule_event.teacher.id)
+                                                                 schedule_event_activity.schedule_event.instructor.id)
         self.variables_update['input']['account2'] = to_global_id('AccountNode',
-                                                                  schedule_event_activity.schedule_event.teacher_2.id)
+                                                                  schedule_event_activity.schedule_event.instructor_2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -714,9 +714,9 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
         self.variables_update['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
         self.variables_update['input']['account'] = to_global_id('AccountNode',
-                                                                 schedule_event_activity.schedule_event.teacher.id)
+                                                                 schedule_event_activity.schedule_event.instructor.id)
         self.variables_update['input']['account2'] = to_global_id('AccountNode',
-                                                                  schedule_event_activity.schedule_event.teacher_2.id)
+                                                                  schedule_event_activity.schedule_event.instructor_2.id)
 
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_change)

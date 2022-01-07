@@ -617,7 +617,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='AccountTeacherProfile',
+            name='AccountInstructorProfile',
             fields=[
                 ('account', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='costasiella.account')),
                 ('classes', models.BooleanField(default=True)),
@@ -658,7 +658,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='ScheduleItemTeacherAvailable',
+            name='ScheduleItemInstructorAvailable',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date_start', models.DateField()),
@@ -1074,7 +1074,7 @@ class Migration(migrations.Migration):
             name='AccountNote',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('note_type', models.CharField(choices=[('BACKOFFICE', 'Backoffice'), ('TEACHERS', 'Teachers')], max_length=255)),
+                ('note_type', models.CharField(choices=[('BACKOFFICE', 'Backoffice'), ('INSTRUCTORS', 'Instructors')], max_length=255)),
                 ('note', costasiella.modules.encrypted_fields.EncryptedTextField(default='')),
                 ('injury', models.BooleanField(default=False)),
                 ('processed', models.BooleanField(default=False)),

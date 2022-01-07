@@ -16,7 +16,7 @@ from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
 
 
 class ScheduleItemWeeklyOTC(models.Model):
-    TEACHER_ROLES = get_instructor_roles()
+    INSTRUCTOR_ROLES = get_instructor_roles()
     STATUSES = get_schedule_item_otc_statuses()
 
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
@@ -24,9 +24,9 @@ class ScheduleItemWeeklyOTC(models.Model):
     status = models.CharField(max_length=255, default="", choices=STATUSES)
     description = models.CharField(max_length=255, default="")
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="otc_account")
-    role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    role = models.CharField(default="", max_length=50, choices=INSTRUCTOR_ROLES)
     account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="otc_account_2")
-    role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    role_2 = models.CharField(default="", max_length=50, choices=INSTRUCTOR_ROLES)
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.SET_NULL, null=True)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.SET_NULL, null=True)
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)   

@@ -7,7 +7,7 @@ from graphql import GraphQLError
 
 import validators
 
-from ..models import Account, AccountTeacherProfile
+from ..models import Account, AccountInstructorProfile
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -33,19 +33,19 @@ def validate_create_update_input(input, update=False):
 
     # # Fetch & check organization classpass
     # rid = get_rid(input['organization_classpass'])
-    # organization_classpass = OrganizationTeacherProfile.objects.get(pk=rid.id)
+    # organization_classpass = OrganizationInstructorProfile.objects.get(pk=rid.id)
     # result['organization_classpass'] = organization_classpass
     # if not organization_classpass:
-    #     raise Exception(_('Invalid Organization TeacherProfile ID!'))
+    #     raise Exception(_('Invalid Organization InstructorProfile ID!'))
 
 
 
     return result
 
 
-class AccountTeacherProfileNode(DjangoObjectType):   
+class AccountInstructorProfileNode(DjangoObjectType):   
     class Meta:
-        model = AccountTeacherProfile
+        model = AccountInstructorProfile
         filter_fields = [
             'account', 
             'classes', 
@@ -58,27 +58,27 @@ class AccountTeacherProfileNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountteacherprofile')
+        require_login_and_permission(user, 'costasiella.view_accountinstructorprofile')
 
         return self._meta.model.objects.get(id=id)
 
 
-class AccountTeacherProfileQuery(graphene.ObjectType):
-    account_teacher_profiles = DjangoFilterConnectionField(AccountTeacherProfileNode)
-    ## At some point, figure out which id is required. Node expects "AccountTeacherProfileNode ID", but the id will come
+class AccountInstructorProfileQuery(graphene.ObjectType):
+    account_instructor_profiles = DjangoFilterConnectionField(AccountInstructorProfileNode)
+    ## At some point, figure out which id is required. Node expects "AccountInstructorProfileNode ID", but the id will come
     # From "Account"
-    # account_teacher_profile = graphene.relay.Node.Field(AccountTeacherProfileNode)
+    # account_instructor_profile = graphene.relay.Node.Field(AccountInstructorProfileNode)
 
 
-    def resolve_account_teacher_profiles(self, info, **kwargs):
+    def resolve_account_instructor_profiles(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountteacherprofile')
+        require_login_and_permission(user, 'costasiella.view_accountinstructorprofile')
 
         ## return everything:
-        return AccountTeacherProfile.objects.all().order_by('account__full_name')
+        return AccountInstructorProfile.objects.all().order_by('account__full_name')
 
 
-# class CreateAccountTeacherProfile(graphene.relay.ClientIDMutation):
+# class CreateAccountInstructorProfile(graphene.relay.ClientIDMutation):
 #     class Input:
 #         account = graphene.ID(required=True)
 #         classes = graphene.Boolean(required=False, default_value=True)
@@ -90,50 +90,50 @@ class AccountTeacherProfileQuery(graphene.ObjectType):
 #         url_bio = graphene.String(required=False, default_value="")
 #         url_website = graphene.String(required=False, default_value="")        
 
-#     account_teacher_profile = graphene.Field(AccountTeacherProfileNode)
+#     account_instructor_profile = graphene.Field(AccountInstructorProfileNode)
 
 #     @classmethod
 #     def mutate_and_get_payload(self, root, info, **input):
 #         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.add_accountteacherprofile')
+#         require_login_and_permission(user, 'costasiella.add_accountinstructorprofile')
 
 #         # Validate input
 #         result = validate_create_update_input(input, update=False)
 
-#         account_teacher_profile = AccountTeacherProfile(
+#         account_instructor_profile = AccountInstructorProfile(
 #             account=result['account'],
 #         )
 
 #         if 'classes' in input:
-#             account_teacher_profile.classes = input['classes']
+#             account_instructor_profile.classes = input['classes']
 
 #         if 'appointments' in input:
-#             account_teacher_profile.appointments = input['appointments']
+#             account_instructor_profile.appointments = input['appointments']
 
 #         if 'events' in input:
-#             account_teacher_profile.events = input['events']
+#             account_instructor_profile.events = input['events']
 
 #         if 'role' in input:
-#             account_teacher_profile.role = input['role']
+#             account_instructor_profile.role = input['role']
 
 #         if 'education' in input:
-#             account_teacher_profile.education = input['education']
+#             account_instructor_profile.education = input['education']
 
 #         if 'bio' in input:
-#             account_teacher_profile.bio = input['bio']
+#             account_instructor_profile.bio = input['bio']
 
 #         if 'url_bio' in input:
-#             account_teacher_profile.url_bio = input['url_bio']
+#             account_instructor_profile.url_bio = input['url_bio']
 
 #         if 'url_website' in input:
-#             account_teacher_profile.url_website = input['url_website']
+#             account_instructor_profile.url_website = input['url_website']
 
-#         account_teacher_profile.save()
+#         account_instructor_profile.save()
 
-#         return CreateAccountTeacherProfile(account_teacher_profile=account_teacher_profile)
+#         return CreateAccountInstructorProfile(account_instructor_profile=account_instructor_profile)
 
 
-class UpdateAccountTeacherProfile(graphene.relay.ClientIDMutation):
+class UpdateAccountInstructorProfile(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
         classes = graphene.Boolean(required=False)
@@ -145,48 +145,48 @@ class UpdateAccountTeacherProfile(graphene.relay.ClientIDMutation):
         url_bio = graphene.String(required=False)
         url_website = graphene.String(required=False)    
         
-    account_teacher_profile = graphene.Field(AccountTeacherProfileNode)
+    account_instructor_profile = graphene.Field(AccountInstructorProfileNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_accountteacherprofile')
+        require_login_and_permission(user, 'costasiella.change_accountinstructorprofile')
 
         rid = get_rid(input['account'])
-        account_teacher_profile = AccountTeacherProfile.objects.filter(account=rid.id).first()
-        if not account_teacher_profile:
-            raise Exception('Invalid Account Teacher Profile ID!')
+        account_instructor_profile = AccountInstructorProfile.objects.filter(account=rid.id).first()
+        if not account_instructor_profile:
+            raise Exception('Invalid Account Instructor Profile ID!')
 
         if 'classes' in input:
-            account_teacher_profile.classes = input['classes']
+            account_instructor_profile.classes = input['classes']
 
         if 'appointments' in input:
-            account_teacher_profile.appointments = input['appointments']
+            account_instructor_profile.appointments = input['appointments']
 
         if 'events' in input:
-            account_teacher_profile.events = input['events']
+            account_instructor_profile.events = input['events']
 
         if 'role' in input:
-            account_teacher_profile.role = input['role']
+            account_instructor_profile.role = input['role']
 
         if 'education' in input:
-            account_teacher_profile.education = input['education']
+            account_instructor_profile.education = input['education']
 
         if 'bio' in input:
-            account_teacher_profile.bio = input['bio']
+            account_instructor_profile.bio = input['bio']
 
         if 'url_bio' in input:
-            account_teacher_profile.url_bio = input['url_bio']
+            account_instructor_profile.url_bio = input['url_bio']
 
         if 'url_website' in input:
-            account_teacher_profile.url_website = input['url_website']
+            account_instructor_profile.url_website = input['url_website']
         
-        account_teacher_profile.save()
+        account_instructor_profile.save()
 
-        return UpdateAccountTeacherProfile(account_teacher_profile=account_teacher_profile)
+        return UpdateAccountInstructorProfile(account_instructor_profile=account_instructor_profile)
 
 
-# class DeleteAccountTeacherProfile(graphene.relay.ClientIDMutation):
+# class DeleteAccountInstructorProfile(graphene.relay.ClientIDMutation):
 #     class Input:
 #         id = graphene.ID(required=True)
 
@@ -195,20 +195,20 @@ class UpdateAccountTeacherProfile(graphene.relay.ClientIDMutation):
 #     @classmethod
 #     def mutate_and_get_payload(self, root, info, **input):
 #         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.delete_accountteacherprofile')
+#         require_login_and_permission(user, 'costasiella.delete_accountinstructorprofile')
 
 #         rid = get_rid(input['id'])
-#         account_teacher_profile = AccountTeacherProfile.objects.filter(id=rid.id).first()
-#         if not account_teacher_profile:
-#             raise Exception('Invalid Account TeacherProfile ID!')
+#         account_instructor_profile = AccountInstructorProfile.objects.filter(id=rid.id).first()
+#         if not account_instructor_profile:
+#             raise Exception('Invalid Account InstructorProfile ID!')
 
-#         ok = account_teacher_profile.delete()
+#         ok = account_instructor_profile.delete()
 
-#         return DeleteAccountTeacherProfile(ok=ok)
+#         return DeleteAccountInstructorProfile(ok=ok)
 
 
-class AccountTeacherProfileMutation(graphene.ObjectType):
-    # create_account_teacher_profile = CreateAccountTeacherProfile.Field()
-    update_account_teacher_profile = UpdateAccountTeacherProfile.Field()
-    # delete_account_teacher_profile = DeleteAccountTeacherProfile.Field()
+class AccountInstructorProfileMutation(graphene.ObjectType):
+    # create_account_instructor_profile = CreateAccountInstructorProfile.Field()
+    update_account_instructor_profile = UpdateAccountInstructorProfile.Field()
+    # delete_account_instructor_profile = DeleteAccountInstructorProfile.Field()
     

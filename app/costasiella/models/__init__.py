@@ -13,7 +13,7 @@ from .account_subscription_alt_price import AccountSubscriptionAltPrice
 from .account_subscription_block import AccountSubscriptionBlock
 from .account_subscription_credit import AccountSubscriptionCredit
 from .account_subscription_pause import AccountSubscriptionPause
-from .account_teacher_profile import AccountTeacherProfile
+from .account_instructor_profile import AccountInstructorProfile
 
 from .app_settings import AppSettings
 
@@ -68,7 +68,7 @@ from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItem
 from .schedule_item import ScheduleItem
 from .schedule_item_account import ScheduleItemAccount
 from .schedule_item_attendance import ScheduleItemAttendance
-from .schedule_item_teacher_available import ScheduleItemTeacherAvailable
+from .schedule_item_instructor_available import ScheduleItemInstructorAvailable
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroup
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroup
 from .schedule_item_price import ScheduleItemPrice

@@ -65,7 +65,7 @@ class Command(BaseCommand):
             "cancelled": "CANCELLED"
         }
 
-        self.map_classes_teacher_roles = {
+        self.map_classes_instructor_roles = {
             0: "",
             1: "SUB",
             2: "ASSISTANT",
@@ -80,7 +80,7 @@ class Command(BaseCommand):
             'trial': 'TRIALCLASSES',
             'wsp': 'EVENT_TICKETS',
             'shop': 'SHOP_SALES',
-            'teacher_payments': 'TEACHER_PAYMENTS',
+            'instructor_payments': 'INSTRUCTOR_PAYMENTS',
             'employee_expenses': 'EMPLOYEE_EXPENSES'
         }
 
@@ -1209,19 +1209,19 @@ class Command(BaseCommand):
 
     def _import_auth_user_create_teacher_profile(self, account, record):
         # Create teacher profile for account
-        account_teacher_profile = account.create_teacher_profile()
+        account_instructor_profile = account.create_instructor_profile()
 
         # Fill fields
-        account_teacher_profile.classes = self._web2py_bool_to_python(record['teaches_classes'])
-        account_teacher_profile.appointments = False
-        account_teacher_profile.events = self._web2py_bool_to_python(record['teaches_workshops'])
-        account_teacher_profile.role = record['teacher_role'] or ""
-        account_teacher_profile.education = record['education'] or ""
-        account_teacher_profile.bio = record['teacher_bio'] or ""
-        account_teacher_profile.url_bio = record['teacher_bio_link'] or ""
-        account_teacher_profile.url_website = record['teacher_website'] or ""
+        account_instructor_profile.classes = self._web2py_bool_to_python(record['teaches_classes'])
+        account_instructor_profile.appointments = False
+        account_instructor_profile.events = self._web2py_bool_to_python(record['teaches_workshops'])
+        account_instructor_profile.role = record['teacher_role'] or ""
+        account_instructor_profile.education = record['education'] or ""
+        account_instructor_profile.bio = record['teacher_bio'] or ""
+        account_instructor_profile.url_bio = record['teacher_bio_link'] or ""
+        account_instructor_profile.url_website = record['teacher_website'] or ""
 
-        account_teacher_profile.save()
+        account_instructor_profile.save()
 
     def _import_customers_classcards(self):
         """
@@ -1443,7 +1443,7 @@ class Command(BaseCommand):
 
             note_type = "BACKOFFICE"
             if record['teachernote'] == "T":
-                note_type = "TEACHERS"
+                note_type = "INSTRUCTORS"
 
             try:
                 account_note = m.AccountNote(

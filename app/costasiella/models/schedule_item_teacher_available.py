@@ -7,7 +7,7 @@ from .account import Account
 
 
 # Create your models here.
-class ScheduleItemTeacherAvailable(models.Model):
+class ScheduleItemInstructorAvailable(models.Model):
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     date_start = models.DateField()

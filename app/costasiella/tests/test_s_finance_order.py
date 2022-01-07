@@ -210,7 +210,7 @@ class GQLFinanceOrder(TestCase):
         """
         query = self.orders_query
         order = f.FinanceOrderFactory.create()
-        other_user = f.TeacherFactory.create()
+        other_user = f.InstructorFactory.create()
 
         # Query as another use and verify oder is not visible
         user = get_user_model().objects.get(pk=order.account.id)
