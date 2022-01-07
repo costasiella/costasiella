@@ -9,14 +9,14 @@ from .organization_level import OrganizationLevel
 from .organization_shift import OrganizationShift
 from .schedule_item import ScheduleItem
 
-from .choices.teacher_roles import get_teacher_roles
+from .choices.instructor_roles import get_instructor_roles
 from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
 
 # Create your models here.
 
 
 class ScheduleItemWeeklyOTC(models.Model):
-    TEACHER_ROLES = get_teacher_roles()
+    TEACHER_ROLES = get_instructor_roles()
     STATUSES = get_schedule_item_otc_statuses()
 
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)

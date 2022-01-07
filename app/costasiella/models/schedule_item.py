@@ -11,7 +11,7 @@ from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_subscription_group import OrganizationSubscriptionGroup
 from .schedule_event import ScheduleEvent
 
-from .choices.teacher_roles import get_teacher_roles
+from .choices.instructor_roles import get_instructor_roles
 from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
 from .choices.schedule_item_frequency_types import get_schedule_item_frequency_types
 
@@ -66,7 +66,7 @@ class ScheduleItem(models.Model):
         (7, _("Sunday")),
     )
 
-    TEACHER_ROLES = get_teacher_roles()
+    TEACHER_ROLES = get_instructor_roles()
     STATUSES = get_schedule_item_otc_statuses()
 
     schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE, null=True,
