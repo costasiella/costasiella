@@ -80,7 +80,7 @@ class Command(BaseCommand):
             'trial': 'TRIALCLASSES',
             'wsp': 'EVENT_TICKETS',
             'shop': 'SHOP_SALES',
-            'instructor_payments': 'INSTRUCTOR_PAYMENTS',
+            'teacher_payments': 'INSTRUCTOR_PAYMENTS',
             'employee_expenses': 'EMPLOYEE_EXPENSES'
         }
 
