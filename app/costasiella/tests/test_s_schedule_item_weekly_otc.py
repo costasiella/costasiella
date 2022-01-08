@@ -92,6 +92,10 @@ class GQLScheduleItemWeeklyOTC(TestCase):
             id
             name
           }
+          organizationShift {
+            id
+            name
+          }
           timeStart
           timeEnd
         }
@@ -218,6 +222,9 @@ class GQLScheduleItemWeeklyOTC(TestCase):
         # schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
 
         variables = self.variables_list_all
+        self.class_otc.organization_shift = f.OrganizationShiftFactory.create()
+        self.class_otc.save()
+
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
@@ -249,6 +256,10 @@ class GQLScheduleItemWeeklyOTC(TestCase):
         self.assertEqual(
             data['scheduleItemWeeklyOtcs']['edges'][0]['node']['organizationLevel']['id'], 
             to_global_id("OrganizationLevelNode", self.class_otc.organization_level.id)
+        )
+        self.assertEqual(
+            data['scheduleItemWeeklyOtcs']['edges'][0]['node']['organizationShift']['id'],
+            to_global_id("OrganizationShiftNode", self.class_otc.organization_shift.id)
         )
         self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['timeStart'], str(self.class_otc.time_start))
         self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['timeEnd'], str(self.class_otc.time_end))        
