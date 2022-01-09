@@ -754,7 +754,7 @@ class Command(BaseCommand):
                 classes=record['classes'] or 0,
                 subscription_unit=self.map_validity_units_subscriptions.get(record['subscriptionunit'], 'MONTH'),
                 reconciliation_classes=record['reconciliationclasses'],
-                credit_validity=record['creditvalidity'] or 1,
+                credit_accumulation_days=record['creditvalidity'] or 1,
                 unlimited=self._web2py_bool_to_python(record['unlimited']),
                 terms_and_conditions=record['terms'] or "",
                 registration_fee=record['registrationfee'] or 0,
@@ -1103,7 +1103,7 @@ class Command(BaseCommand):
                 account = m.Account(
                     is_active=not self._web2py_bool_to_python(record['trashed']), # We need to invert this
                     customer=self._web2py_bool_to_python(record['customer']),
-                    teacher=self._web2py_bool_to_python(record['teacher']),
+                    instructor=self._web2py_bool_to_python(record['teacher']),
                     employee=self._web2py_bool_to_python(record['teacher']),
                     first_name=record['first_name'],
                     last_name=record['last_name'],
@@ -1140,8 +1140,8 @@ class Command(BaseCommand):
                 # Create allauth email
                 account.create_allauth_email()
 
-                # Create teacher profile
-                self._import_auth_user_create_teacher_profile(account, record)
+                # Create instructor profile
+                self._import_auth_user_create_instructor_profile(account, record)
 
                 # Create account bank account record
                 account.create_bank_account()
@@ -1207,8 +1207,8 @@ class Command(BaseCommand):
 
         return id_map
 
-    def _import_auth_user_create_teacher_profile(self, account, record):
-        # Create teacher profile for account
+    def _import_auth_user_create_instructor_profile(self, account, record):
+        # Create instructor profile for account
         account_instructor_profile = account.create_instructor_profile()
 
         # Fill fields
@@ -1442,7 +1442,7 @@ class Command(BaseCommand):
             record = {k.lower(): v for k, v in record.items()}
 
             note_type = "BACKOFFICE"
-            if record['teachernote'] == "T":
+            if record['instructornote'] == "T":
                 note_type = "INSTRUCTORS"
 
             try:
@@ -1727,9 +1727,9 @@ class Command(BaseCommand):
                     status=self.map_classes_otc_statuses.get(record['status'], ""),
                     description=record['description'] or '',
                     account=self.auth_user_map.get(record['auth_teacher_id'], None),
-                    role=self.map_classes_teacher_roles.get(record['teacher_role'], ""),
+                    role=self.map_classes_instructor_roles.get(record['teacher_role'], ""),
                     account_2=self.auth_user_map.get(record['auth_teacher_id2'], None),
-                    role_2=self.map_classes_teacher_roles.get(record['teacher_role2'], ""),
+                    role_2=self.map_classes_instructor_roles.get(record['teacher_role2'], ""),
                     organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id'], None),
                     organization_classtype=self.school_classtypes_map.get(record['school_classtypes_id'], None),
                     time_start=startime,
@@ -1891,9 +1891,9 @@ class Command(BaseCommand):
                 schedule_item_account = m.ScheduleItemAccount(
                     schedule_item=self.classes_map.get(record['classes_id'], None),
                     account=self.auth_user_map.get(record['auth_teacher_id'], None),
-                    role=self.map_classes_teacher_roles.get(record['teacher_role'], ""),
+                    role=self.map_classes_instructor_roles.get(record['teacher_role'], ""),
                     account_2=self.auth_user_map.get(record['auth_teacher_id2'], None),
-                    role_2=self.map_classes_teacher_roles.get(record['teacher_role2'], ''),
+                    role_2=self.map_classes_instructor_roles.get(record['teacher_role2'], ''),
                     date_start=record['startdate'],
                     date_end=record['enddate']
                 )
@@ -2025,9 +2025,9 @@ class Command(BaseCommand):
 
             try:
                 schedule_item_account = m.ScheduleItemAccount(
-                    schedule_item=self.classes_map.get(record['classes_id'], None),
-                    account=self.auth_user_map.get(record['auth_teacher_id'], None),
-                    account_2=self.auth_user_map.get(record['auth_teacher_id2'], None),
+                    schedule_item=self.shifts_map.get(record['shifts_id'], None),
+                    account=self.auth_user_map.get(record['auth_employee_id'], None),
+                    account_2=self.auth_user_map.get(record['auth_employee_id2'], None),
                     date_start=record['startdate'],
                     date_end=record['enddate']
                 )
@@ -2154,8 +2154,8 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                     preview=record['preview'] or "",
                     description=record['description'] or "",
                     organization_level=self.school_levels_map.get(record['school_levels_id']),
-                    teacher=self.auth_user_map.get(record['auth_teacher_id']),
-                    teacher_2=self.auth_user_map.get(record['auth_teacher_id2']),
+                    instructor=self.auth_user_map.get(record['auth_teacher_id']),
+                    instructor_2=self.auth_user_map.get(record['auth_teacher_id2']),
                     date_start=record['startdate'],
                     date_end=record['enddate'],
                     time_start=str(record['starttime']) if record['starttime'] else None,
@@ -2655,7 +2655,7 @@ ORDER BY i.id
                     account=self.auth_user_map.get(record['auth_customer_id'], None),
                     finance_invoice_group=self.invoices_groups_map.get(record['invoices_groups_id'], None),
                     finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
-                    teacher_payment=self._web2py_bool_to_python(record['teacherpayment']),
+                    instructor_payment=self._web2py_bool_to_python(record['teacherpayment']),
                     employee_claim=self._web2py_bool_to_python(record['employeeclaim']),
                     status=self.map_invoices_statuses.get(record['status']),
                     summary=summary,
