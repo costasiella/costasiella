@@ -535,7 +535,7 @@ class GQLAccountSubscription(TestCase):
         query = self.subscription_create_mutation
 
         account = f.RegularUserFactory.create()
-        teacher = f.TeacherFactory.create()
+        instructor = f.InstructorFactory.create()
         organization_subscription = f.OrganizationSubscriptionFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
@@ -544,7 +544,7 @@ class GQLAccountSubscription(TestCase):
 
         executed = execute_test_client_api_query(
             query,
-            teacher,
+            instructor,
             variables=variables
         )
         errors = executed.get('errors')

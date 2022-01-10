@@ -256,7 +256,7 @@ class GQLAccountScheduleEventTicket(TestCase):
     def test_query_not_listed_for_other_account_without_permission(self):
         """ Query list of account account_schedule_events - check permission denied """
         query = self.account_schedule_events_query
-        other_user = self.account_schedule_event_ticket.schedule_event_ticket.schedule_event.teacher
+        other_user = self.account_schedule_event_ticket.schedule_event_ticket.schedule_event.instructor
 
         # Create regular user
         # user = get_user_model().objects.get(pk=self.account_schedule_event_ticket.account.id)
@@ -267,7 +267,7 @@ class GQLAccountScheduleEventTicket(TestCase):
     def test_query_not_listed_for_other_account_with_permission(self):
         """ Query list of account account_schedule_events - check permission denied """
         query = self.account_schedule_events_query
-        other_user = self.account_schedule_event_ticket.schedule_event_ticket.schedule_event.teacher
+        other_user = self.account_schedule_event_ticket.schedule_event_ticket.schedule_event.instructor
 
         # Create regular user
         permission = Permission.objects.get(codename=self.permission_view)

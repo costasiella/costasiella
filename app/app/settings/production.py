@@ -14,6 +14,19 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
 
+## Server error notifications
+# All mail addresses listed in the ADMINS setting will receive server error notifications when DEBUG=False
+##
+# ADMINS = [
+#     ('Full name', 'user@example.com')
+# ]
+
+## By default server error notifications are sent from root@localhost.
+# Your email provider might reject emails from this address.
+# The SERVER_EMAIL setting sets the address from which server errors are sent.
+##
+# SERVER_EMAIL = 'user@yourdomain.com'
+
 # Static files config
 STATIC_ROOT = "/opt/static"
 MEDIA_ROOT = "/opt/media"

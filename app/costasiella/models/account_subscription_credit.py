@@ -9,7 +9,7 @@ from .schedule_item_attendance import ScheduleItemAttendance
 
 class AccountSubscriptionCredit(models.Model):
     # add additional fields in here
-    # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
+    # instructor and employee will use OneToOne fields. An account can optionally be a instructor or employee.
     # Editable parameter docs
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 

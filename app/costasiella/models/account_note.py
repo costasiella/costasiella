@@ -11,7 +11,7 @@ from .choices.account_note_types import get_account_note_types
 class AccountNote(models.Model):
     class Meta:
         permissions = [
-            ('view_accountnoteteachers', _("Can view teacher notes")),
+            ('view_accountnoteinstructors', _("Can view instructor notes")),
             ('view_accountnotebackoffice', _("Can view backoffice notes")),
         ]
 

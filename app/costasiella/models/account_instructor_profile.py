@@ -2,12 +2,13 @@ from django.db import models
 
 
 from .account import Account
+from .helpers import model_string
 from ..modules.encrypted_fields import EncryptedTextField
 
 
-class AccountTeacherProfile(models.Model):
+class AccountInstructorProfile(models.Model):
     # add additional fields in here
-    # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
+    # instructor and employee will use OneToOne fields. An account can optionally be a instructor or employee.
     # Editable parameter docs
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
     account = models.OneToOneField(
@@ -27,4 +28,4 @@ class AccountTeacherProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "Teacher profile: " + self.account.full_name 
+        return model_string(self)

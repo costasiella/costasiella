@@ -17,17 +17,17 @@ from .. import schema
 
 
 
-class GQLAccountTeacherProfile(TestCase):
+class GQLAccountInstructorProfile(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_accountteacherprofile'
-        self.permission_add = 'add_accountteacherprofile'
-        self.permission_change = 'change_accountteacherprofile'
-        self.permission_delete = 'delete_accountteacherprofile'
+        self.permission_view = 'view_accountinstructorprofile'
+        self.permission_add = 'add_accountinstructorprofile'
+        self.permission_change = 'change_accountinstructorprofile'
+        self.permission_delete = 'delete_accountinstructorprofile'
 
         self.variables_update = {
             "input": {
@@ -37,9 +37,9 @@ class GQLAccountTeacherProfile(TestCase):
             }
         }
 
-        self.teacher_profiles_query = '''
-  query AccountTeacherProfileQuery($id: ID!) {
-    accountTeacherProfiles(account:$id) {
+        self.instructor_profiles_query = '''
+  query AccountInstructorProfileQuery($id: ID!) {
+    accountInstructorProfiles(account:$id) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -64,7 +64,7 @@ class GQLAccountTeacherProfile(TestCase):
     }
     account(id:$id) {
       id
-      teacher
+      instructor
       firstName
       lastName
       email
@@ -76,10 +76,10 @@ class GQLAccountTeacherProfile(TestCase):
 '''
 
 
-        self.teacher_profile_update_mutation = '''
-  mutation UpdateAccountTeacherProfile($input:UpdateAccountTeacherProfileInput!) {
-    updateAccountTeacherProfile(input: $input) {
-      accountTeacherProfile {
+        self.instructor_profile_update_mutation = '''
+  mutation UpdateAccountInstructorProfile($input:UpdateAccountInstructorProfileInput!) {
+    updateAccountInstructorProfile(input: $input) {
+      accountInstructorProfile {
         account {
           id
         }
@@ -98,11 +98,11 @@ class GQLAccountTeacherProfile(TestCase):
 
 
     def test_query(self):
-        """ Query list of account teacher_profiles """
-        query = self.teacher_profiles_query
-        teacher_profile = f.TeacherProfileFactory.create()
+        """ Query list of account instructor_profiles """
+        query = self.instructor_profiles_query
+        instructor_profile = f.InstructorProfileFactory.create()
         variables = {
-            'id': to_global_id('AccountNode', teacher_profile.account.id)
+            'id': to_global_id('AccountNode', instructor_profile.account.id)
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
@@ -111,24 +111,24 @@ class GQLAccountTeacherProfile(TestCase):
         print(data)
 
         self.assertEqual(
-          data['accountTeacherProfiles']['edges'][0]['node']['account']['id'],
+          data['accountInstructorProfiles']['edges'][0]['node']['account']['id'],
           variables['id']
         )
-        self.assertEqual(data['accountTeacherProfiles']['edges'][0]['node']['classes'], teacher_profile.classes)
-        self.assertEqual(data['accountTeacherProfiles']['edges'][0]['node']['appointments'], teacher_profile.appointments)
-        self.assertEqual(data['accountTeacherProfiles']['edges'][0]['node']['events'], teacher_profile.events)
+        self.assertEqual(data['accountInstructorProfiles']['edges'][0]['node']['classes'], instructor_profile.classes)
+        self.assertEqual(data['accountInstructorProfiles']['edges'][0]['node']['appointments'], instructor_profile.appointments)
+        self.assertEqual(data['accountInstructorProfiles']['edges'][0]['node']['events'], instructor_profile.events)
 
 
     def test_query_permission_denied(self):
-        """ Query list of account teacher_profiles - check permission denied """
-        query = self.teacher_profiles_query
-        teacher_profile = f.TeacherProfileFactory.create()
+        """ Query list of account instructor_profiles - check permission denied """
+        query = self.instructor_profiles_query
+        instructor_profile = f.InstructorProfileFactory.create()
         variables = {
-            'id': to_global_id('AccountNode', teacher_profile.account.id)
+            'id': to_global_id('AccountNode', instructor_profile.account.id)
         }
 
         # Create regular user
-        user = get_user_model().objects.get(pk=teacher_profile.account.id)
+        user = get_user_model().objects.get(pk=instructor_profile.account.id)
         executed = execute_test_client_api_query(query, user, variables=variables)
         errors = executed.get('errors')
 
@@ -136,35 +136,35 @@ class GQLAccountTeacherProfile(TestCase):
 
 
     def test_query_permission_granted(self):
-        """ Query list of account teacher_profiles with view permission """
-        query = self.teacher_profiles_query
-        teacher_profile = f.TeacherProfileFactory.create()
+        """ Query list of account instructor_profiles with view permission """
+        query = self.instructor_profiles_query
+        instructor_profile = f.InstructorProfileFactory.create()
         variables = {
-            'id': to_global_id('AccountNode', teacher_profile.account.id)
+            'id': to_global_id('AccountNode', instructor_profile.account.id)
         }
 
         # Create regular user
-        user = get_user_model().objects.get(pk=teacher_profile.account.id)
-        permission = Permission.objects.get(codename='view_accountteacherprofile')
+        user = get_user_model().objects.get(pk=instructor_profile.account.id)
+        permission = Permission.objects.get(codename='view_accountinstructorprofile')
         user.user_permissions.add(permission)
         user.save()
 
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        # List all teacher_profiles for this account
+        # List all instructor_profiles for this account
         self.assertEqual(
-          data['accountTeacherProfiles']['edges'][0]['node']['account']['id'],
+          data['accountInstructorProfiles']['edges'][0]['node']['account']['id'],
           variables['id']
         )
 
 
     def test_query_anon_user(self):
-        """ Query list of account teacher_profiles - anon user """
-        query = self.teacher_profiles_query
-        teacher_profile = f.TeacherProfileFactory.create()
+        """ Query list of account instructor_profiles - anon user """
+        query = self.instructor_profiles_query
+        instructor_profile = f.InstructorProfileFactory.create()
         variables = {
-            'id': to_global_id('AccountNode', teacher_profile.account.id)
+            'id': to_global_id('AccountNode', instructor_profile.account.id)
         }
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
@@ -172,12 +172,12 @@ class GQLAccountTeacherProfile(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_teacher_profile(self):
-        """ Update a teacher_profile """
-        query = self.teacher_profile_update_mutation
-        teacher_profile = f.TeacherProfileFactory.create()
+    def test_update_instructor_profile(self):
+        """ Update a instructor_profile """
+        query = self.instructor_profile_update_mutation
+        instructor_profile = f.InstructorProfileFactory.create()
         variables = self.variables_update
-        variables['input']['account'] = to_global_id('AccountNode', teacher_profile.account.id)
+        variables['input']['account'] = to_global_id('AccountNode', instructor_profile.account.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -186,17 +186,17 @@ class GQLAccountTeacherProfile(TestCase):
         )
         data = executed.get('data')
 
-        self.assertEqual(data['updateAccountTeacherProfile']['accountTeacherProfile']['classes'], variables['input']['classes'])
-        self.assertEqual(data['updateAccountTeacherProfile']['accountTeacherProfile']['appointments'], variables['input']['appointments'])
-        self.assertEqual(data['updateAccountTeacherProfile']['accountTeacherProfile']['events'], variables['input']['events'])
+        self.assertEqual(data['updateAccountInstructorProfile']['accountInstructorProfile']['classes'], variables['input']['classes'])
+        self.assertEqual(data['updateAccountInstructorProfile']['accountInstructorProfile']['appointments'], variables['input']['appointments'])
+        self.assertEqual(data['updateAccountInstructorProfile']['accountInstructorProfile']['events'], variables['input']['events'])
 
 
-    def test_update_teacher_profile_anon_user(self):
-        """ Don't allow updating teacher_profiles for non-logged in users """
-        query = self.teacher_profile_update_mutation
-        teacher_profile = f.TeacherProfileFactory.create()
+    def test_update_instructor_profile_anon_user(self):
+        """ Don't allow updating instructor_profiles for non-logged in users """
+        query = self.instructor_profile_update_mutation
+        instructor_profile = f.InstructorProfileFactory.create()
         variables = self.variables_update
-        variables['input']['account'] = to_global_id('AccountNode', teacher_profile.account.id)
+        variables['input']['account'] = to_global_id('AccountNode', instructor_profile.account.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -208,14 +208,14 @@ class GQLAccountTeacherProfile(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_teacher_profile_permission_granted(self):
-        """ Allow updating teacher_profiles for users with permissions """
-        query = self.teacher_profile_update_mutation
-        teacher_profile = f.TeacherProfileFactory.create()
+    def test_update_instructor_profile_permission_granted(self):
+        """ Allow updating instructor_profiles for users with permissions """
+        query = self.instructor_profile_update_mutation
+        instructor_profile = f.InstructorProfileFactory.create()
         variables = self.variables_update
-        variables['input']['account'] = to_global_id('AccountNode', teacher_profile.account.id)
+        variables['input']['account'] = to_global_id('AccountNode', instructor_profile.account.id)
 
-        user = teacher_profile.account
+        user = instructor_profile.account
         permission = Permission.objects.get(codename=self.permission_change)
         user.user_permissions.add(permission)
         user.save()
@@ -226,17 +226,17 @@ class GQLAccountTeacherProfile(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateAccountTeacherProfile']['accountTeacherProfile']['classes'], variables['input']['classes'])
+        self.assertEqual(data['updateAccountInstructorProfile']['accountInstructorProfile']['classes'], variables['input']['classes'])
 
 
-    def test_update_teacher_profile_permission_denied(self):
-        """ Check update teacher_profile permission denied error message """
-        query = self.teacher_profile_update_mutation
-        teacher_profile = f.TeacherProfileFactory.create()
+    def test_update_instructor_profile_permission_denied(self):
+        """ Check update instructor_profile permission denied error message """
+        query = self.instructor_profile_update_mutation
+        instructor_profile = f.InstructorProfileFactory.create()
         variables = self.variables_update
-        variables['input']['account'] = to_global_id('AccountNode', teacher_profile.account.id)
+        variables['input']['account'] = to_global_id('AccountNode', instructor_profile.account.id)
 
-        user = teacher_profile.account
+        user = instructor_profile.account
 
         executed = execute_test_client_api_query(
             query, 

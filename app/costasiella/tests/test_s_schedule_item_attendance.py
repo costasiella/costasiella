@@ -213,7 +213,7 @@ class GQLScheduleItemAttendance(TestCase):
 
         # Regular user
         user = schedule_item_attendance.account
-        other_user = f.TeacherFactory.create()
+        other_user = f.InstructorFactory.create()
         executed = execute_test_client_api_query(query, other_user, variables=variables)
         data = executed.get('data')
 
@@ -808,7 +808,7 @@ class GQLScheduleItemAttendance(TestCase):
         # Create class pass
         account_classpass = f.AccountClasspassFactory.create()
         account = account_classpass.account
-        other_user = f.TeacherFactory.create()
+        other_user = f.InstructorFactory.create()
 
         # Create organization class pass group
         schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()

@@ -17,17 +17,17 @@ from .. import schema
 
 
 
-class GQLScheduleClassWeeklyOTC(TestCase):
+class GQLScheduleItemWeeklyOTC(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_scheduleclassweeklyotc'
-        self.permission_add = 'add_scheduleclassweeklyotc'
-        self.permission_change = 'change_scheduleclassweeklyotc'
-        self.permission_delete = 'delete_scheduleclassweeklyotc'
+        self.permission_view = 'view_scheduleitemweeklyotc'
+        self.permission_add = 'add_scheduleitemweeklyotc'
+        self.permission_change = 'change_scheduleitemweeklyotc'
+        self.permission_delete = 'delete_scheduleitemweeklyotc'
 
         self.class_otc = f.SchedulePublicWeeklyClassOTCFactory.create()
 
@@ -62,8 +62,8 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         }
 
         self.weeklyotcs_query = '''
-  query ScheduleClassWeeklyOTCs($scheduleItem: ID!, $date: Date!) {
-    scheduleClassWeeklyOtcs(first:1, scheduleItem: $scheduleItem, date:$date) {
+  query ScheduleItemWeeklyOTCs($scheduleItem: ID!, $date: Date!) {
+    scheduleItemWeeklyOtcs(first:1, scheduleItem: $scheduleItem, date:$date) {
       edges {
         node {
           id 
@@ -89,6 +89,10 @@ class GQLScheduleClassWeeklyOTC(TestCase):
             name
           }
           organizationLevel {
+            id
+            name
+          }
+          organizationShift {
             id
             name
           }
@@ -166,9 +170,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 
 
         self.update_mutation = '''
-  mutation UpdateScheduleClassWeeklyOTC($input: UpdateScheduleClassWeeklyOTCInput!) {
-    updateScheduleClassWeeklyOtc(input:$input) {
-      scheduleClassWeeklyOtc {
+  mutation UpdateScheduleItemWeeklyOTC($input: UpdateScheduleItemWeeklyOTCInput!) {
+    updateScheduleItemWeeklyOtc(input:$input) {
+      scheduleItemWeeklyOtc {
         id
         scheduleItem {
           id
@@ -200,8 +204,8 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 '''
 
         self.delete_mutation = '''
-  mutation DeleteScheduleClassWeeklyOTC($input: DeleteScheduleClassWeeklyOTCInput!) {
-    deleteScheduleClassWeeklyOtc(input: $input) {
+  mutation DeleteScheduleItemWeeklyOTC($input: DeleteScheduleItemWeeklyOTCInput!) {
+    deleteScheduleItemWeeklyOtc(input: $input) {
       ok
     }
   }
@@ -218,40 +222,47 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         # schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
 
         variables = self.variables_list_all
+        self.class_otc.organization_shift = f.OrganizationShiftFactory.create()
+        self.class_otc.save()
+
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
         self.assertEqual(
-            data['scheduleClassWeeklyOtcs']['edges'][0]['node']['id'], 
-            to_global_id("ScheduleClassWeeklyOTCNode", self.class_otc.id)
+            data['scheduleItemWeeklyOtcs']['edges'][0]['node']['id'], 
+            to_global_id("ScheduleItemWeeklyOTCNode", self.class_otc.id)
         )
-        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['date'], variables['date'])
-        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']["status"], self.class_otc.status)
-        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['description'], self.class_otc.description)
+        self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['date'], variables['date'])
+        self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']["status"], self.class_otc.status)
+        self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['description'], self.class_otc.description)
         self.assertEqual(
-            data['scheduleClassWeeklyOtcs']['edges'][0]['node']['account']['id'], 
+            data['scheduleItemWeeklyOtcs']['edges'][0]['node']['account']['id'], 
             to_global_id("AccountNode", self.class_otc.account.id)
         )
-        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['role'], self.class_otc.role)
+        self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['role'], self.class_otc.role)
         self.assertEqual(
-            data['scheduleClassWeeklyOtcs']['edges'][0]['node']['account2']['id'], 
+            data['scheduleItemWeeklyOtcs']['edges'][0]['node']['account2']['id'], 
             to_global_id("AccountNode", self.class_otc.account_2.id)
         )
-        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['role2'], self.class_otc.role_2)
+        self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['role2'], self.class_otc.role_2)
         self.assertEqual(
-            data['scheduleClassWeeklyOtcs']['edges'][0]['node']['organizationLocationRoom']['id'], 
+            data['scheduleItemWeeklyOtcs']['edges'][0]['node']['organizationLocationRoom']['id'], 
             to_global_id("OrganizationLocationRoomNode", self.class_otc.organization_location_room.id)
         )
         self.assertEqual(
-            data['scheduleClassWeeklyOtcs']['edges'][0]['node']['organizationClasstype']['id'], 
+            data['scheduleItemWeeklyOtcs']['edges'][0]['node']['organizationClasstype']['id'], 
             to_global_id("OrganizationClasstypeNode", self.class_otc.organization_classtype.id)
         )
         self.assertEqual(
-            data['scheduleClassWeeklyOtcs']['edges'][0]['node']['organizationLevel']['id'], 
+            data['scheduleItemWeeklyOtcs']['edges'][0]['node']['organizationLevel']['id'], 
             to_global_id("OrganizationLevelNode", self.class_otc.organization_level.id)
         )
-        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['timeStart'], str(self.class_otc.time_start))
-        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['timeEnd'], str(self.class_otc.time_end))        
+        self.assertEqual(
+            data['scheduleItemWeeklyOtcs']['edges'][0]['node']['organizationShift']['id'],
+            to_global_id("OrganizationShiftNode", self.class_otc.organization_shift.id)
+        )
+        self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['timeStart'], str(self.class_otc.time_start))
+        self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['timeEnd'], str(self.class_otc.time_end))        
 
 
     def test_query_permission_denied(self):
@@ -281,8 +292,8 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 
         # List all weeklyotcs
         self.assertEqual(
-            data['scheduleClassWeeklyOtcs']['edges'][0]['node']['id'], 
-            to_global_id("ScheduleClassWeeklyOTCNode", self.class_otc.id)
+            data['scheduleItemWeeklyOtcs']['edges'][0]['node']['id'], 
+            to_global_id("ScheduleItemWeeklyOTCNode", self.class_otc.id)
         )
 
 
@@ -308,51 +319,51 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['scheduleItem']['id'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['scheduleItem']['id'], 
           variables['input']['scheduleItem']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['date'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['date'], 
           variables['input']['date']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['description'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['description'], 
           variables['input']['description']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['account']['id'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['account']['id'], 
           variables['input']['account']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['role'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['role'], 
           variables['input']['role']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['account2']['id'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['account2']['id'], 
           variables['input']['account2']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['role2'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['role2'], 
           variables['input']['role2']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['organizationLocationRoom']['id'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['organizationLocationRoom']['id'], 
           variables['input']['organizationLocationRoom']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['organizationClasstype']['id'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['organizationClasstype']['id'], 
           variables['input']['organizationClasstype']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['organizationLevel']['id'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['organizationLevel']['id'], 
           variables['input']['organizationLevel']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['timeStart'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['timeStart'], 
           variables['input']['timeStart']
         )
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['timeEnd'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['timeEnd'], 
           variables['input']['timeEnd']
         )
 
@@ -389,7 +400,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         )
         data = executed.get('data')
         self.assertEqual(
-          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['scheduleItem']['id'], 
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['scheduleItem']['id'], 
           variables['input']['scheduleItem']
         )
 
@@ -422,7 +433,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['deleteScheduleClassWeeklyOtc']['ok'], True)
+        self.assertEqual(data['deleteScheduleItemWeeklyOtc']['ok'], True)
 
 
     def test_delete_schedule_class_weeklyotc_anon_user(self):
@@ -457,7 +468,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['deleteScheduleClassWeeklyOtc']['ok'], True)
+        self.assertEqual(data['deleteScheduleItemWeeklyOtc']['ok'], True)
 
 
     def test_delete_schedule_class_weeklyotc_permission_denied(self):

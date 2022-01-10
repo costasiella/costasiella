@@ -25,7 +25,7 @@ class GQLAccountNote(TestCase):
 
         self.permission_view = 'view_accountnote'
         self.permission_view_backoffice = 'view_accountnotebackoffice'
-        self.permission_view_teachers = 'view_accountnoteteachers'
+        self.permission_view_instructors = 'view_accountnoteinstructors'
         self.permission_add = 'add_accountnote'
         self.permission_change = 'change_accountnote'
         self.permission_delete = 'delete_accountnote'

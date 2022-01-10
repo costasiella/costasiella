@@ -312,10 +312,10 @@ class GQLAccount(TransactionTestCase):
           True
         )
 
-        # Check Teacher profile record
+        # Check Instructor profile record
         rid = get_rid(data['createAccount']['account']['id'])
         self.assertEqual(
-            models.AccountTeacherProfile.objects.filter(account=rid.id).exists(),
+            models.AccountInstructorProfile.objects.filter(account=rid.id).exists(),
             True
         )
 
@@ -491,7 +491,7 @@ class GQLAccount(TransactionTestCase):
 
         email = f.AllAuthEmailAddress.create()
         account = email.user
-        other_user = f.TeacherFactory.create()
+        other_user = f.InstructorFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
@@ -544,7 +544,7 @@ class GQLAccount(TransactionTestCase):
         query = self.account_update_active_mutation
 
         account = f.RegularUserFactory.create()
-        other_user = f.TeacherFactory.create()
+        other_user = f.InstructorFactory.create()
         variables = self.variables_update_active
         variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
@@ -661,7 +661,7 @@ class GQLAccount(TransactionTestCase):
         query = self.account_delete_mutation
 
         account = f.RegularUserFactory.create()
-        other_user = f.TeacherFactory.create()
+        other_user = f.InstructorFactory.create()
         variables = self.variables_delete
         variables['input']['id'] = to_global_id('AccountNode', account.pk)
 

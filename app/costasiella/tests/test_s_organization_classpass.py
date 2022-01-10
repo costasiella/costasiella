@@ -31,7 +31,6 @@ class GQLOrganizationClasspass(TestCase):
         self.permission_change = 'change_organizationclasspass'
         self.permission_delete = 'delete_organizationclasspass'
 
-        self.organization_membership = f.OrganizationMembershipFactory.create()
         self.finance_tax_rate = f.FinanceTaxRateFactory.create()
         self.finance_glaccount = f.FinanceGLAccountFactory.create()
         self.finance_costcenter = f.FinanceCostCenterFactory.create()
@@ -48,7 +47,6 @@ class GQLOrganizationClasspass(TestCase):
                 "validityUnit": "MONTHS",
                 "classes": 10,
                 "unlimited": False,
-                "organizationMembership": to_global_id("OrganizationMembershipNode", self.organization_membership.pk),
                 "quickStatsAmount": "12.5",
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
@@ -68,7 +66,6 @@ class GQLOrganizationClasspass(TestCase):
                 "validityUnit": "DAYS",
                 "classes": 1,
                 "unlimited": False,
-                "organizationMembership": to_global_id("OrganizationMembershipNode", self.organization_membership.pk),
                 "quickStatsAmount": "15",
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
@@ -88,7 +85,6 @@ class GQLOrganizationClasspass(TestCase):
                 "validityUnit": "MONTHS",
                 "classes": 10,
                 "unlimited": False,
-                "organizationMembership": to_global_id("OrganizationMembershipNode", self.organization_membership.pk),
                 "quickStatsAmount": "12.5",
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
@@ -130,10 +126,6 @@ class GQLOrganizationClasspass(TestCase):
           validityUnitDisplay
           classes
           unlimited
-          organizationMembership {
-            id
-            name
-          }
           quickStatsAmount
           financeGlaccount {
             id 
@@ -170,10 +162,6 @@ class GQLOrganizationClasspass(TestCase):
       validityUnitDisplay
       classes
       unlimited
-      organizationMembership {
-        id
-        name
-      }
       quickStatsAmount
       financeGlaccount {
         id 
@@ -182,21 +170,6 @@ class GQLOrganizationClasspass(TestCase):
       financeCostcenter {
         id
         name
-      }
-    }
-    organizationMemberships(first: 15, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-        }
       }
     }
     financeTaxRates(first: 15, before: $before, after: $after, archived: $archived) {
@@ -271,10 +244,6 @@ class GQLOrganizationClasspass(TestCase):
         validityUnit
         classes
         unlimited
-        organizationMembership {
-          id
-          name
-        }
         quickStatsAmount
         financeGlaccount {
           id
@@ -309,10 +278,6 @@ class GQLOrganizationClasspass(TestCase):
         validityUnit
         classes
         unlimited
-        organizationMembership {
-          id
-          name
-        }
         quickStatsAmount
         financeGlaccount {
           id
@@ -372,8 +337,6 @@ class GQLOrganizationClasspass(TestCase):
                          display_validity_unit(classpass.validity_unit, classpass.validity))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['classes'], classpass.classes)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['unlimited'], classpass.unlimited)
-        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['organizationMembership']['id'], 
-                         to_global_id("OrganizationMembershipNode", classpass.organization_membership.pk))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['quickStatsAmount'],
                          format(classpass.quick_stats_amount, '.2f'))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['financeGlaccount']['id'], 
@@ -493,8 +456,6 @@ class GQLOrganizationClasspass(TestCase):
                          display_validity_unit(classpass.validity_unit, classpass.validity))
         self.assertEqual(data['organizationClasspass']['classes'], classpass.classes)
         self.assertEqual(data['organizationClasspass']['unlimited'], classpass.unlimited)
-        self.assertEqual(data['organizationClasspass']['organizationMembership']['id'], 
-          to_global_id("OrganizationMembershipNode", classpass.organization_membership.pk))
         self.assertEqual(data['organizationClasspass']['quickStatsAmount'], format(classpass.quick_stats_amount, ".2f"))
         self.assertEqual(data['organizationClasspass']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
@@ -592,8 +553,6 @@ class GQLOrganizationClasspass(TestCase):
                          variables['input']['classes'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['unlimited'],
                          variables['input']['unlimited'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'],
-                         variables['input']['organizationMembership'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['quickStatsAmount'],
                          variables['input']['quickStatsAmount'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'],
@@ -659,7 +618,6 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['validityUnit'], variables['input']['validityUnit'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['classes'], variables['input']['classes'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['unlimited'], variables['input']['unlimited'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'], variables['input']['organizationMembership'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['quickStatsAmount'], variables['input']['quickStatsAmount'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
@@ -719,8 +677,6 @@ class GQLOrganizationClasspass(TestCase):
                          variables['input']['classes'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['unlimited'],
                          variables['input']['unlimited'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'],
-                         variables['input']['organizationMembership'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['quickStatsAmount'],
                          variables['input']['quickStatsAmount'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'],
@@ -775,7 +731,6 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['validityUnit'], variables['input']['validityUnit'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['classes'], variables['input']['classes'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['unlimited'], variables['input']['unlimited'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'], variables['input']['organizationMembership'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['quickStatsAmount'], variables['input']['quickStatsAmount'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])

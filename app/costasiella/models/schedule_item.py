@@ -6,11 +6,12 @@ from .account import Account
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
+from .organization_shift import OrganizationShift
 from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_subscription_group import OrganizationSubscriptionGroup
 from .schedule_event import ScheduleEvent
 
-from .choices.teacher_roles import get_teacher_roles
+from .choices.instructor_roles import get_instructor_roles
 from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
 from .choices.schedule_item_frequency_types import get_schedule_item_frequency_types
 
@@ -35,6 +36,10 @@ class ScheduleItem(models.Model):
             ('add_scheduleclass', _("Can add schedule class")),
             ('change_scheduleclass', _("Can change schedule class")),
             ('delete_scheduleclass', _("Can delete schedule class")),
+            ('view_scheduleshift', _("Can view schedule shift")),
+            ('add_scheduleshift', _("Can add schedule shift")),
+            ('change_scheduleshift', _("Can change schedule shift")),
+            ('delete_scheduleshift', _("Can delete schedule shift")),
             ('view_scheduleappointment', _("Can view schedule appointment")),
             ('add_scheduleappointment', _("Can add schedule appointment")),
             ('change_scheduleappointment', _("Can change schedule appointment")),
@@ -44,7 +49,8 @@ class ScheduleItem(models.Model):
     SCHEDULE_ITEM_TYPES = (
         ('CLASS', _("Class")),
         ('EVENT_ACTIVITY', _("Event Activity")),
-        ('APPOINTMENT', _("Appointment"))
+        ('APPOINTMENT', _("Appointment")),
+        ('SHIFT', _("Shift")),
     )
 
     FREQUENCY_TYPES = get_schedule_item_frequency_types()
@@ -60,7 +66,7 @@ class ScheduleItem(models.Model):
         (7, _("Sunday")),
     )
 
-    TEACHER_ROLES = get_teacher_roles()
+    INSTRUCTOR_ROLES = get_instructor_roles()
     STATUSES = get_schedule_item_otc_statuses()
 
     schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE, null=True,
@@ -71,6 +77,7 @@ class ScheduleItem(models.Model):
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)
+    organization_shift = models.ForeignKey(OrganizationShift, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255, null=True)
     spaces = models.IntegerField(null=True, default=0,
                                  help_text="Total spaces for this class.")
@@ -98,12 +105,12 @@ class ScheduleItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     ################ BEGIN EMPTY FIELDS ################
     # No value is actually stored here for now, but these fields are very useful in the schedule_class schema
-    # By having these fields here we can map the schedule_item_teacher or schedule_item_weekly_otc account 
+    # By having these fields here we can map the schedule_item_instructor or schedule_item_weekly_otc account
     # into these fields
     ####################################################
     status = models.CharField(max_length=255, default="", choices=STATUSES)
-    role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
-    role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    role = models.CharField(default="", max_length=50, choices=INSTRUCTOR_ROLES)
+    role_2 = models.CharField(default="", max_length=50, choices=INSTRUCTOR_ROLES)
     description = models.CharField(max_length=255, default="")
     count_attendance = models.IntegerField(null=True)
     organization_holiday_id = models.IntegerField(null=True)

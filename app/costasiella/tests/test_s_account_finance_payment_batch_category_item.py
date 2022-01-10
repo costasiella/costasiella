@@ -309,7 +309,7 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """
-        user = f.TeacherFactory.create()
+        user = f.InstructorFactory.create()
         permission = Permission.objects.get(codename=self.permission_view)
         user.user_permissions.add(permission)
         user.save()
@@ -561,7 +561,7 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
                                                 account_finance_payment_batch_category_item.pk)
 
         # Create regular user
-        user = f.TeacherFactory.create()
+        user = f.InstructorFactory.create()
         permission = Permission.objects.get(codename=self.permission_delete)
         user.user_permissions.add(permission)
         user.save()
@@ -583,7 +583,7 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
                                                 account_finance_payment_batch_category_item.pk)
 
         # Create regular user
-        user = f.TeacherFactory.create()
+        user = f.InstructorFactory.create()
 
         executed = execute_test_client_api_query(
             query,

@@ -65,7 +65,7 @@ class Command(BaseCommand):
             "cancelled": "CANCELLED"
         }
 
-        self.map_classes_teacher_roles = {
+        self.map_classes_instructor_roles = {
             0: "",
             1: "SUB",
             2: "ASSISTANT",
@@ -80,7 +80,7 @@ class Command(BaseCommand):
             'trial': 'TRIALCLASSES',
             'wsp': 'EVENT_TICKETS',
             'shop': 'SHOP_SALES',
-            'teacher_payments': 'TEACHER_PAYMENTS',
+            'teacher_payments': 'INSTRUCTOR_PAYMENTS',
             'employee_expenses': 'EMPLOYEE_EXPENSES'
         }
 
@@ -117,6 +117,7 @@ class Command(BaseCommand):
         self.school_discovery_map = None
         self.school_languages_map = None
         self.school_levels_map = None
+        self.school_shifts_map = None
         self.school_locations_map = None
         self.school_locations_rooms_map = None
         self.auth_user_map = None
@@ -137,6 +138,9 @@ class Command(BaseCommand):
         self.classes_school_classcards_groups_map = None
         self.classes_school_subscriptions_groups_map = None
         self.classes_teachers_map = None
+        self.shifts_map = None
+        self.shifts_otc_map = None
+        self.shifts_staff_map = None
         self.customers_subscriptions_credits_map = None
         self.workshops_map = None
         self.workshops_activities_map = None
@@ -371,6 +375,7 @@ class Command(BaseCommand):
         self.school_discovery_map = self._import_school_discovery()
         self.school_languages_map = self._import_school_langauges()
         self.school_levels_map = self._import_school_levels()
+        self.school_shifts_map = self._import_school_shifts()
         locations_import_result = self._import_school_locations()
         self.school_locations_map = locations_import_result['id_map_locations']
         self.school_locations_rooms_map = locations_import_result['id_map_rooms']
@@ -393,6 +398,9 @@ class Command(BaseCommand):
         self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
         self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         self.classes_teachers_map = self._import_classes_teachers()
+        self.shifts_map = self._import_shifts()
+        self.shifts_otc_map = self._import_shifts_otc()
+        self.shifts_staff_map = self._import_shifs_staff()
         self.customers_subscriptions_credits_map = self._import_customers_subscriptions_credits()
         self.workshops_map = self._import_workshops()
         self.workshops_activities_map = self._import_workshops_activities()
@@ -746,7 +754,7 @@ class Command(BaseCommand):
                 classes=record['classes'] or 0,
                 subscription_unit=self.map_validity_units_subscriptions.get(record['subscriptionunit'], 'MONTH'),
                 reconciliation_classes=record['reconciliationclasses'],
-                credit_validity=record['creditvalidity'] or 1,
+                credit_accumulation_days=record['creditvalidity'] or 1,
                 unlimited=self._web2py_bool_to_python(record['unlimited']),
                 terms_and_conditions=record['terms'] or "",
                 registration_fee=record['registrationfee'] or 0,
@@ -995,6 +1003,36 @@ class Command(BaseCommand):
 
         return id_map
 
+    def _import_school_shifts(self):
+        """
+        Fetch school shifts and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_shifts"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            organization_shift = m.OrganizationShift(
+                archived=self._web2py_bool_to_python(record['archived']),
+                name=record['name'],
+            )
+            organization_shift.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_shift
+
+        log_message = "Import organization shift: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
     def _import_school_locations(self):
         """
         Fetch school locations and import it in Costasiella.
@@ -1065,7 +1103,7 @@ class Command(BaseCommand):
                 account = m.Account(
                     is_active=not self._web2py_bool_to_python(record['trashed']), # We need to invert this
                     customer=self._web2py_bool_to_python(record['customer']),
-                    teacher=self._web2py_bool_to_python(record['teacher']),
+                    instructor=self._web2py_bool_to_python(record['teacher']),
                     employee=self._web2py_bool_to_python(record['teacher']),
                     first_name=record['first_name'],
                     last_name=record['last_name'],
@@ -1102,8 +1140,8 @@ class Command(BaseCommand):
                 # Create allauth email
                 account.create_allauth_email()
 
-                # Create teacher profile
-                self._import_auth_user_create_teacher_profile(account, record)
+                # Create instructor profile
+                self._import_auth_user_create_instructor_profile(account, record)
 
                 # Create account bank account record
                 account.create_bank_account()
@@ -1169,21 +1207,21 @@ class Command(BaseCommand):
 
         return id_map
 
-    def _import_auth_user_create_teacher_profile(self, account, record):
-        # Create teacher profile for account
-        account_teacher_profile = account.create_teacher_profile()
+    def _import_auth_user_create_instructor_profile(self, account, record):
+        # Create instructor profile for account
+        account_instructor_profile = account.create_instructor_profile()
 
         # Fill fields
-        account_teacher_profile.classes = self._web2py_bool_to_python(record['teaches_classes'])
-        account_teacher_profile.appointments = False
-        account_teacher_profile.events = self._web2py_bool_to_python(record['teaches_workshops'])
-        account_teacher_profile.role = record['teacher_role'] or ""
-        account_teacher_profile.education = record['education'] or ""
-        account_teacher_profile.bio = record['teacher_bio'] or ""
-        account_teacher_profile.url_bio = record['teacher_bio_link'] or ""
-        account_teacher_profile.url_website = record['teacher_website'] or ""
+        account_instructor_profile.classes = self._web2py_bool_to_python(record['teaches_classes'])
+        account_instructor_profile.appointments = False
+        account_instructor_profile.events = self._web2py_bool_to_python(record['teaches_workshops'])
+        account_instructor_profile.role = record['teacher_role'] or ""
+        account_instructor_profile.education = record['education'] or ""
+        account_instructor_profile.bio = record['teacher_bio'] or ""
+        account_instructor_profile.url_bio = record['teacher_bio_link'] or ""
+        account_instructor_profile.url_website = record['teacher_website'] or ""
 
-        account_teacher_profile.save()
+        account_instructor_profile.save()
 
     def _import_customers_classcards(self):
         """
@@ -1404,8 +1442,8 @@ class Command(BaseCommand):
             record = {k.lower(): v for k, v in record.items()}
 
             note_type = "BACKOFFICE"
-            if record['teachernote'] == "T":
-                note_type = "TEACHERS"
+            if record['instructornote'] == "T":
+                note_type = "INSTRUCTORS"
 
             try:
                 account_note = m.AccountNote(
@@ -1689,9 +1727,9 @@ class Command(BaseCommand):
                     status=self.map_classes_otc_statuses.get(record['status'], ""),
                     description=record['description'] or '',
                     account=self.auth_user_map.get(record['auth_teacher_id'], None),
-                    role=self.map_classes_teacher_roles.get(record['teacher_role'], ""),
+                    role=self.map_classes_instructor_roles.get(record['teacher_role'], ""),
                     account_2=self.auth_user_map.get(record['auth_teacher_id2'], None),
-                    role_2=self.map_classes_teacher_roles.get(record['teacher_role2'], ""),
+                    role_2=self.map_classes_instructor_roles.get(record['teacher_role2'], ""),
                     organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id'], None),
                     organization_classtype=self.school_classtypes_map.get(record['school_classtypes_id'], None),
                     time_start=startime,
@@ -1850,19 +1888,19 @@ class Command(BaseCommand):
             record = {k.lower(): v for k, v in record.items()}
 
             try:
-                schedule_item_teacher = m.ScheduleItemTeacher(
+                schedule_item_account = m.ScheduleItemAccount(
                     schedule_item=self.classes_map.get(record['classes_id'], None),
                     account=self.auth_user_map.get(record['auth_teacher_id'], None),
-                    role=self.map_classes_teacher_roles.get(record['teacher_role'], ""),
+                    role=self.map_classes_instructor_roles.get(record['teacher_role'], ""),
                     account_2=self.auth_user_map.get(record['auth_teacher_id2'], None),
-                    role_2=self.map_classes_teacher_roles.get(record['teacher_role2'], ''),
+                    role_2=self.map_classes_instructor_roles.get(record['teacher_role2'], ''),
                     date_start=record['startdate'],
                     date_end=record['enddate']
                 )
-                schedule_item_teacher.save()
+                schedule_item_account.save()
                 records_imported += 1
 
-                id_map[record['id']] = schedule_item_teacher
+                id_map[record['id']] = schedule_item_account
             except django.db.utils.IntegrityError as e:
                 logging.error("Import error for class teacher id: %s: %s" % (
                     record['id'],
@@ -1870,6 +1908,140 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import classes teachers: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_shifts(self):
+        """
+        Fetch shifts and import them in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from shifts"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                schedule_item = m.ScheduleItem(
+                    schedule_event=None,
+                    schedule_item_type="SHIFT",
+                    frequency_type="WEEKLY",
+                    frequency_interval=record['week_day'],
+                    organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id'], None),
+                    organization_shift=self.school_shifts_map.get(record['school_shifts_id'], None),
+                    date_start=record['startdate'],
+                    date_end=record['enddate'],
+                    time_start=str(record['starttime']),
+                    time_end=str(record['endtime']),
+                )
+                schedule_item.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for shift id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import shifts: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_shifts_otc(self):
+        """
+        Fetch shifts otc and import them in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM shifts_otc"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                startime = None
+                endtime = None
+                if record['starttime']:
+                    startime = str(record['starttime'])
+                if record['endtime']:
+                    endtime = str(record['endtime'])
+
+                schedule_item_weekly_otc = m.ScheduleItemWeeklyOTC(
+                    schedule_item=self.classes_map.get(record['shifts_id'], None),
+                    date=record['shiftdate'],
+                    status=self.map_classes_otc_statuses.get(record['status'], ""),
+                    description=record['description'] or '',
+                    account=self.auth_user_map.get(record['auth_employee_id'], None),
+                    account_2=self.auth_user_map.get(record['auth_employee_id2'], None),
+                    organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id'], None),
+                    organization_shift=self.school_shifts_map.get(record['school_shifts_id'], None),
+                    time_start=startime,
+                    time_end=endtime,
+                )
+                schedule_item_weekly_otc.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_weekly_otc
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for class otc id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import shifts otc: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_shifs_staff(self):
+        """
+        Fetch shifts staff and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM shifts_staff"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                schedule_item_account = m.ScheduleItemAccount(
+                    schedule_item=self.shifts_map.get(record['shifts_id'], None),
+                    account=self.auth_user_map.get(record['auth_employee_id'], None),
+                    account_2=self.auth_user_map.get(record['auth_employee_id2'], None),
+                    date_start=record['startdate'],
+                    date_end=record['enddate']
+                )
+                schedule_item_account.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_account
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for shift staff id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import shift staff: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
@@ -1982,8 +2154,8 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                     preview=record['preview'] or "",
                     description=record['description'] or "",
                     organization_level=self.school_levels_map.get(record['school_levels_id']),
-                    teacher=self.auth_user_map.get(record['auth_teacher_id']),
-                    teacher_2=self.auth_user_map.get(record['auth_teacher_id2']),
+                    instructor=self.auth_user_map.get(record['auth_teacher_id']),
+                    instructor_2=self.auth_user_map.get(record['auth_teacher_id2']),
                     date_start=record['startdate'],
                     date_end=record['enddate'],
                     time_start=str(record['starttime']) if record['starttime'] else None,
@@ -2483,7 +2655,7 @@ ORDER BY i.id
                     account=self.auth_user_map.get(record['auth_customer_id'], None),
                     finance_invoice_group=self.invoices_groups_map.get(record['invoices_groups_id'], None),
                     finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
-                    teacher_payment=self._web2py_bool_to_python(record['teacherpayment']),
+                    instructor_payment=self._web2py_bool_to_python(record['teacherpayment']),
                     employee_claim=self._web2py_bool_to_python(record['employeeclaim']),
                     status=self.map_invoices_statuses.get(record['status']),
                     summary=summary,

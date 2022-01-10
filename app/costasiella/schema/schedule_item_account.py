@@ -5,44 +5,44 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, ScheduleItem, ScheduleItemTeacher
+from ..models import Account, ScheduleItem, ScheduleItemAccount
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
 
-class ScheduleItemTeacherNode(DjangoObjectType):
+class ScheduleItemAccountNode(DjangoObjectType):
     # Disable output like "A_3" by graphene automatically converting model choices
     # to an Enum field
     role = graphene.Field(graphene.String, source='role')
     role_2 = graphene.Field(graphene.String, source='role_2')
 
     class Meta:
-        model = ScheduleItemTeacher
+        model = ScheduleItemAccount
         filter_fields = ['schedule_item']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitemteacher')
+        require_login_and_permission(user, 'costasiella.view_scheduleitemaccount')
 
         # Return only public non-archived location rooms
         return self._meta.model.objects.get(id=id)
 
 
-class ScheduleItemTeacherQuery(graphene.ObjectType):
-    schedule_item_teachers = DjangoFilterConnectionField(ScheduleItemTeacherNode)
-    schedule_item_teacher = graphene.relay.Node.Field(ScheduleItemTeacherNode)
+class ScheduleItemAccountQuery(graphene.ObjectType):
+    schedule_item_accounts = DjangoFilterConnectionField(ScheduleItemAccountNode)
+    schedule_item_account = graphene.relay.Node.Field(ScheduleItemAccountNode)
 
-    def resolve_schedule_item_teachers(self, info, **kwargs):
+    def resolve_schedule_item_accounts(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitemteacher')
+        require_login_and_permission(user, 'costasiella.view_scheduleitemaccount')
 
-        return ScheduleItemTeacher.objects.order_by('-date_start')
+        return ScheduleItemAccount.objects.order_by('-date_start')
             
 
-def validate_schedule_item_teacher_create_update_input(input):
+def validate_schedule_item_account_create_update_input(input):
     """
     Validate input
     """ 
@@ -79,7 +79,7 @@ def validate_schedule_item_teacher_create_update_input(input):
     return result
 
 
-class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
+class CreateScheduleItemAccount(graphene.relay.ClientIDMutation):
     class Input:
         schedule_item = graphene.ID(required=True)
         account = graphene.ID(required=True)
@@ -89,16 +89,16 @@ class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
 
-    schedule_item_teacher = graphene.Field(ScheduleItemTeacherNode)
+    schedule_item_account = graphene.Field(ScheduleItemAccountNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleitemteacher')
+        require_login_and_permission(user, 'costasiella.add_scheduleitemaccount')
 
-        validation_result = validate_schedule_item_teacher_create_update_input(input)
+        validation_result = validate_schedule_item_account_create_update_input(input)
 
-        schedule_item_teacher = ScheduleItemTeacher(
+        schedule_item_account = ScheduleItemAccount(
             schedule_item = validation_result['schedule_item'],
             account=validation_result['account'],
             date_start=input['date_start']
@@ -107,26 +107,26 @@ class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
         # Optional fields
         date_end = input.get('date_end', None)
         if date_end:
-            schedule_item_teacher.date_end = date_end
+            schedule_item_account.date_end = date_end
 
         role = input.get('role', None)
         if role:
-            schedule_item_teacher.role = role
+            schedule_item_account.role = role
 
         account_2 = validation_result.get('account_2', None)
         if account_2:
-            schedule_item_teacher.account_2 = account_2
+            schedule_item_account.account_2 = account_2
 
         role_2 = input.get('role_2', None)
         if role_2:
-            schedule_item_teacher.role_2 = role_2
+            schedule_item_account.role_2 = role_2
 
-        schedule_item_teacher.save()
+        schedule_item_account.save()
 
-        return CreateScheduleItemTeacher(schedule_item_teacher=schedule_item_teacher)
+        return CreateScheduleItemAccount(schedule_item_account=schedule_item_account)
 
 
-class UpdateScheduleItemTeacher(graphene.relay.ClientIDMutation):
+class UpdateScheduleItemAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         account = graphene.ID(required=True)
@@ -136,42 +136,42 @@ class UpdateScheduleItemTeacher(graphene.relay.ClientIDMutation):
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         
-    schedule_item_teacher = graphene.Field(ScheduleItemTeacherNode)
+    schedule_item_account = graphene.Field(ScheduleItemAccountNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_scheduleitemteacher')
+        require_login_and_permission(user, 'costasiella.change_scheduleitemaccount')
 
         rid = get_rid(input['id'])
-        schedule_item_teacher = ScheduleItemTeacher.objects.filter(id=rid.id).first()
-        if not schedule_item_teacher:
-            raise Exception('Invalid Schedule Item Teacher ID!')
+        schedule_item_account = ScheduleItemAccount.objects.filter(id=rid.id).first()
+        if not schedule_item_account:
+            raise Exception('Invalid Schedule Item Instructor ID!')
 
-        validation_result = validate_schedule_item_teacher_create_update_input(input)
+        validation_result = validate_schedule_item_account_create_update_input(input)
 
-        schedule_item_teacher.account=validation_result['account']
-        schedule_item_teacher.date_start=input['date_start']
+        schedule_item_account.account=validation_result['account']
+        schedule_item_account.date_start=input['date_start']
         
         # Optional fields
         if 'date_end' in input:
-            schedule_item_teacher.date_end = input['date_end']
+            schedule_item_account.date_end = input['date_end']
 
         if 'role' in input:
-            schedule_item_teacher.role = input['role']
+            schedule_item_account.role = input['role']
 
         if 'account_2' in validation_result:
-            schedule_item_teacher.account_2 = validation_result['account_2']
+            schedule_item_account.account_2 = validation_result['account_2']
 
         if 'role_2' in input:
-            schedule_item_teacher.role_2 = input['role_2']
+            schedule_item_account.role_2 = input['role_2']
 
-        schedule_item_teacher.save()
+        schedule_item_account.save()
 
-        return UpdateScheduleItemTeacher(schedule_item_teacher=schedule_item_teacher)
+        return UpdateScheduleItemAccount(schedule_item_account=schedule_item_account)
 
 
-class DeleteScheduleItemTeacher(graphene.relay.ClientIDMutation):
+class DeleteScheduleItemAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
 
@@ -180,20 +180,20 @@ class DeleteScheduleItemTeacher(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_scheduleitemteacher')
+        require_login_and_permission(user, 'costasiella.delete_scheduleitemaccount')
 
         rid = get_rid(input['id'])
-        schedule_item_teacher = ScheduleItemTeacher.objects.filter(id=rid.id).first()
-        if not schedule_item_teacher:
-            raise Exception('Invalid Schedule Item Teacher ID!')
+        schedule_item_account = ScheduleItemAccount.objects.filter(id=rid.id).first()
+        if not schedule_item_account:
+            raise Exception('Invalid Schedule Item Instructor ID!')
 
-        ok = schedule_item_teacher.delete()
+        ok = schedule_item_account.delete()
 
-        return DeleteScheduleItemTeacher(ok=ok)
+        return DeleteScheduleItemAccount(ok=ok)
 
 
-class ScheduleItemTeacherMutation(graphene.ObjectType):
-    delete_schedule_item_teacher = DeleteScheduleItemTeacher.Field()
-    create_schedule_item_teacher = CreateScheduleItemTeacher.Field()
-    update_schedule_item_teacher = UpdateScheduleItemTeacher.Field()
+class ScheduleItemAccountMutation(graphene.ObjectType):
+    delete_schedule_item_account = DeleteScheduleItemAccount.Field()
+    create_schedule_item_account = CreateScheduleItemAccount.Field()
+    update_schedule_item_account = UpdateScheduleItemAccount.Field()
     

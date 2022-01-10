@@ -35,7 +35,7 @@ def validate_create_update_input(input, update=False):
             note_types.append(item[0])
 
         if input['note_type'] not in note_types:
-            raise Exception(_('noteType should be TEACHERS or BACKOFFICE!'))
+            raise Exception(_('noteType should be INSTRUCTORS or BACKOFFICE!'))
 
         result['note_type'] = input['note_type']
 
@@ -54,7 +54,7 @@ class AccountNoteNode(DjangoObjectType):
         require_login_and_permission(user, 'costasiella.view_accountnote')
 
         note = self._meta.model.objects.get(id=id)
-        if user.has_perm('costasiella.view_accountnoteteachers') and note.note_type == 'TEACHERS':
+        if user.has_perm('costasiella.view_accountnoteinstructors') and note.note_type == 'INSTRUCTORS':
             return note
         elif user.has_perm('costasiella.view_accountnotebackoffice') and note.note_type == 'BACKOFFICE':
             return note

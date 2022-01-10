@@ -32,8 +32,8 @@ def finance_payment_batch_add_invoice_payments(finance_payment_batch_id):
 #         Generate invoices batch and write to db.payment_batches_items
 #     """
 #     query = (db.invoices.Status == 'sent') & \
-#             ((db.invoices.TeacherPayment == False) |
-#              (db.invoices.TeacherPayment == None)) & \
+#             ((db.invoices.InstructorPayment == False) |
+#              (db.invoices.InstructorPayment == None)) & \
 #             ((db.invoices.EmployeeClaim == False) |
 #              (db.invoices.EmployeeClaim == None)) & \
 #             (db.invoices.payment_methods_id == 3) # 3 = Direct Debit

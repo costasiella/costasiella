@@ -5,5 +5,5 @@ def get_schedule_item_otc_statuses():
     return [
         ['', _("Regular")],
         ['CANCELLED', _("Cancelled")],
-        ['OPEN', _("No teacher")]
+        ['OPEN', _("No instructor")]
     ]

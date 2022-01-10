@@ -45,7 +45,7 @@ class GQLAccount(TestCase):
       phone
       mobile
       emergency
-      teacher
+      instructor
       employee
       hasBankAccountInfo
     }

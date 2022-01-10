@@ -18,7 +18,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from sorl.thumbnail import get_thumbnail
 
 from allauth.account.models import EmailAddress
-from ..models import AccountBankAccount, AccountTeacherProfile, OrganizationDiscovery, OrganizationLanguage
+from ..models import AccountBankAccount, AccountInstructorProfile, OrganizationDiscovery, OrganizationLanguage
 
 from ..modules.gql_tools import require_login, \
     require_permission, \
@@ -79,7 +79,7 @@ class AccountNode(DjangoObjectType):
             'full_name': ['icontains', 'exact'],
             'is_active': ['exact'],
             'customer': ['exact'],
-            'teacher': ['exact'],
+            'instructor': ['exact'],
             'employee': ['exact'],
         }
         interfaces = (graphene.relay.Node, AccountNodeInterface,)
@@ -214,8 +214,8 @@ class CreateAccount(graphene.relay.ClientIDMutation):
         # Insert Allauth email address
         account.create_allauth_email()
 
-        # Create teacher profile record
-        account.create_teacher_profile()
+        # Create instructor profile record
+        account.create_instructor_profile()
 
         # Create Bank account record
         account.create_bank_account()
@@ -285,7 +285,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         # password = graphene.String(required=False)
         customer = graphene.Boolean(required=False)
-        teacher = graphene.Boolean(required=False)
+        instructor = graphene.Boolean(required=False)
         employee = graphene.Boolean(required=False)
         first_name = graphene.String(required=False)
         last_name = graphene.String(required=False)
@@ -332,8 +332,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if user.has_perm(change_permission):
             if 'customer' in input:
                 account.customer = input['customer']
-            if 'teacher' in input:
-                account.teacher = input['teacher']
+            if 'instructor' in input:
+                account.instructor = input['instructor']
             if 'employee' in input:
                 account.employee = input['employee']
 

@@ -18,7 +18,7 @@ from .account_subscription_alt_price import AccountSubscriptionAltPriceQuery, Ac
 from .account_subscription_block import AccountSubscriptionBlockQuery, AccountSubscriptionBlockMutation
 from .account_subscription_credit import AccountSubscriptionCreditQuery, AccountSubscriptionCreditMutation
 from .account_subscription_pause import AccountSubscriptionPauseQuery, AccountSubscriptionPauseMutation
-from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherProfileMutation
+from .account_instructor_profile import AccountInstructorProfileQuery, AccountInstructorProfileMutation
 
 from .app_settings import AppSettingsQuery, AppSettingsMutation
 
@@ -67,7 +67,8 @@ from .organization_location import OrganizationLocationQuery, OrganizationLocati
 from .organization_location_room import OrganizationLocationRoomQuery, OrganizationLocationRoomMutation
 from .organization_language import OrganizationLanguageQuery, OrganizationLanguageMutation
 from .organization_level import OrganizationLevelQuery, OrganizationLevelMutation
-from .organization_membership import OrganizationMembershipQuery, OrganizationMembershipMutation
+# from .organization_membership import OrganizationMembershipQuery, OrganizationMembershipMutation
+from .organization_shift import OrganizationShiftQuery, OrganizationShiftMutation
 from .organization_subscription import OrganizationSubscriptionQuery, OrganizationSubscriptionMutation
 from .organization_subscription_group import OrganizationSubscriptionGroupQuery, OrganizationSubscriptionGroupMutation
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscriptionMutation
@@ -76,19 +77,20 @@ from .organization_subscription_price import OrganizationSubscriptionPriceQuery,
 from .schedule_appointment import ScheduleAppointmentQuery, ScheduleAppointmentMutation
 from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
 from .schedule_class_booking_option import ScheduleClassBookingOptionsQuery
-from .schedule_class_weekly_otc import ScheduleClassWeeklyOTCQuery, ScheduleClassWeeklyOTCMutation
+from .schedule_item_weekly_otc import ScheduleItemWeeklyOTCQuery, ScheduleItemWeeklyOTCMutation
 from .schedule_event import ScheduleEventQuery, ScheduleEventMutation
 from .schedule_event_earlybird import ScheduleEventEarlybirdQuery, ScheduleEventEarlybirdMutation
 from .schedule_event_media import ScheduleEventMediaQuery, ScheduleEventMediaMutation
 from .schedule_event_ticket import ScheduleEventTicketQuery, ScheduleEventTicketMutation
 from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItemQuery, ScheduleEventTicketScheduleItemMutation
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
+from .schedule_item_account import ScheduleItemAccountQuery, ScheduleItemAccountMutation
 from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemAttendanceMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutation
-from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
-from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
+from .schedule_item_instructor_available import ScheduleItemInstructorAvailableQuery, ScheduleItemInstructorAvailableMutation
+from .schedule_shift import ScheduleShiftQuery, ScheduleShiftMutation
 
 from .system_feature_shop import SystemFeatureShopQuery, SystemFeatureShopMutation
 from .system_mail_template import SystemMailTemplateQuery, SystemMailTemplateMutation
@@ -110,7 +112,7 @@ class Query(AccountQuery,
             AccountSubscriptionBlockQuery,
             AccountSubscriptionCreditQuery,
             AccountSubscriptionPauseQuery,
-            AccountTeacherProfileQuery,
+            AccountInstructorProfileQuery,
             AppSettingsQuery,
             BusinessQuery,
             DjangoCeleryResultTaskResultQuery,
@@ -149,26 +151,27 @@ class Query(AccountQuery,
             OrganizationLocationRoomQuery,
             OrganizationLanguageQuery,
             OrganizationLevelQuery, 
-            OrganizationMembershipQuery,
+            OrganizationShiftQuery,
             OrganizationSubscriptionQuery,
             OrganizationSubscriptionGroupQuery,
             OrganizationSubscriptionPriceQuery,
             ScheduleAppointmentQuery,
             ScheduleClassQuery,
             ScheduleClassBookingOptionsQuery,
-            ScheduleClassWeeklyOTCQuery,
             ScheduleEventQuery,
             ScheduleEventEarlybirdQuery,
             ScheduleEventMediaQuery,
             ScheduleEventTicketQuery,
             ScheduleEventTicketScheduleItemQuery,
             ScheduleItemQuery,
+            ScheduleItemAccountQuery,
             ScheduleItemAttendanceQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemPriceQuery,
-            ScheduleItemTeacherQuery,
-            ScheduleItemTeacherAvailableQuery,
+            ScheduleItemInstructorAvailableQuery,
+            ScheduleItemWeeklyOTCQuery,
+            ScheduleShiftQuery,
             SystemFeatureShopQuery,
             SystemMailTemplateQuery,
             SystemSettingQuery,
@@ -190,7 +193,7 @@ class Mutation(AccountMutation,
                AccountSubscriptionBlockMutation,
                AccountSubscriptionCreditMutation,
                AccountSubscriptionPauseMutation,
-               AccountTeacherProfileMutation,
+               AccountInstructorProfileMutation,
                AppSettingsMutation,
                BusinessMutation,
                FinanceCostCenterMutation,
@@ -224,26 +227,27 @@ class Mutation(AccountMutation,
                OrganizationLocationMutation,
                OrganizationLocationRoomMutation,
                OrganizationLevelMutation,
-               OrganizationMembershipMutation, 
+               OrganizationShiftMutation,
                OrganizationSubscriptionMutation, 
                OrganizationSubscriptionGroupMutation, 
                OrganizationSubscriptionGroupSubscriptionMutation, 
                OrganizationSubscriptionPriceMutation, 
                ScheduleAppointmentMutation,
                ScheduleClassMutation,
-               ScheduleClassWeeklyOTCMutation,
                ScheduleEventMutation,
                ScheduleEventEarlybirdMutation,
                ScheduleEventMediaMutation,
                ScheduleEventTicketMutation,
                ScheduleEventTicketScheduleItemMutation,
                ScheduleItemMutation,
+               ScheduleItemAccountMutation,
                ScheduleItemAttendanceMutation,
                ScheduleItemOrganizationClasspassGroupMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
                ScheduleItemPriceMutation,
-               ScheduleItemTeacherMutation,
-               ScheduleItemTeacherAvailableMutation,
+               ScheduleItemInstructorAvailableMutation,
+               ScheduleItemWeeklyOTCMutation,
+               ScheduleShiftMutation,
                SystemFeatureShopMutation,
                SystemMailTemplateMutation,
                SystemSettingMutation,

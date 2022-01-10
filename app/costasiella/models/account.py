@@ -15,7 +15,7 @@ from .choices.account_genders import get_account_genders
 
 class Account(AbstractUser):
     # add additional fields in here
-    # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
+    # instructor and employee will use OneToOne fields. An account can optionally be a instructor or employee.
     # Editable parameter docs
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
@@ -39,7 +39,7 @@ class Account(AbstractUser):
     country_choices = get_account_country_codes()
 
     customer = models.BooleanField(default=True)
-    teacher = models.BooleanField(default=False)
+    instructor = models.BooleanField(default=False)
     employee = models.BooleanField(default=False)
     full_name = models.CharField(max_length=255, default="", editable=False)
     gender = EncryptedTextField(default="")
@@ -90,15 +90,15 @@ class Account(AbstractUser):
         )
         account_bank_account.save()
 
-    def create_teacher_profile(self):
-        from .account_teacher_profile import AccountTeacherProfile
+    def create_instructor_profile(self):
+        from .account_instructor_profile import AccountInstructorProfile
 
-        account_teacher_profile = AccountTeacherProfile(
+        account_instructor_profile = AccountInstructorProfile(
             account=self
         )
-        account_teacher_profile.save()
+        account_instructor_profile.save()
 
-        return account_teacher_profile
+        return account_instructor_profile
 
     def has_bank_account_info(self):
         """

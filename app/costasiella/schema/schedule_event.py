@@ -82,21 +82,21 @@ def validate_create_update_input(input, update=False):
             if not organization_level:
                 raise Exception(_('Invalid Organization Level ID!'))
 
-    # Fetch & check teacher (account)
-    if 'teacher' in input:
-        rid = get_rid(input['teacher'])
-        teacher = Account.objects.filter(id=rid.id).first()
-        result['teacher'] = teacher
-        if not teacher:
-            raise Exception(_('Invalid Account ID (teacher)!'))
+    # Fetch & check instructor (account)
+    if 'instructor' in input:
+        rid = get_rid(input['instructor'])
+        instructor = Account.objects.filter(id=rid.id).first()
+        result['instructor'] = instructor
+        if not instructor:
+            raise Exception(_('Invalid Account ID (instructor)!'))
 
-    # Fetch & check teacher_2 (account)
-    if 'teacher_2' in input:
-        rid = get_rid(input['teacher_2'])
-        teacher_2 = Account.objects.filter(id=rid.id).first()
-        result['teacher_2'] = teacher_2
-        if not teacher_2:
-            raise Exception(_('Invalid Account ID (teacher2)!'))
+    # Fetch & check instructor_2 (account)
+    if 'instructor_2' in input:
+        rid = get_rid(input['instructor_2'])
+        instructor_2 = Account.objects.filter(id=rid.id).first()
+        result['instructor_2'] = instructor_2
+        if not instructor_2:
+            raise Exception(_('Invalid Account ID (instructor2)!'))
 
     return result
 
@@ -112,8 +112,8 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
         tagline = graphene.String(required=False, default_value="")
         preview = graphene.String(required=False, default_value="")
         description = graphene.String(required=False, default_value="")
-        teacher = graphene.ID(required=False)
-        teacher_2 = graphene.ID(required=False)
+        instructor = graphene.ID(required=False)
+        instructor_2 = graphene.ID(required=False)
         info_mail_content = graphene.String(required=False, default_value="")
 
     schedule_event = graphene.Field(ScheduleEventNode)
@@ -141,11 +141,11 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
         if 'organization_level' in result:
             schedule_event.organization_level = result['organization_level']
 
-        if 'teacher' in result:
-            schedule_event.teacher = result['teacher']
+        if 'instructor' in result:
+            schedule_event.instructor = result['instructor']
 
-        if 'teacher_2' in result:
-            schedule_event.teacher_2 = result['teacher_2']
+        if 'instructor_2' in result:
+            schedule_event.instructor_2 = result['instructor_2']
 
         schedule_event.save()
 
@@ -175,8 +175,8 @@ class UpdateScheduleEvent(graphene.relay.ClientIDMutation):
         tagline = graphene.String(required=False)
         preview = graphene.String(required=False)
         description = graphene.String(required=False)
-        teacher = graphene.ID(required=False)
-        teacher_2 = graphene.ID(required=False)
+        instructor = graphene.ID(required=False)
+        instructor_2 = graphene.ID(required=False)
         info_mail_content = graphene.String(required=False)
         
     schedule_event = graphene.Field(ScheduleEventNode)
@@ -214,10 +214,10 @@ class UpdateScheduleEvent(graphene.relay.ClientIDMutation):
             schedule_event.preview = input['preview']
         if 'description' in input:
             schedule_event.description = input['description']
-        if 'teacher' in result:
-            schedule_event.teacher = result['teacher']
-        if 'teacher_2' in result:
-            schedule_event.teacher_2 = result['teacher_2']
+        if 'instructor' in result:
+            schedule_event.instructor = result['instructor']
+        if 'instructor_2' in result:
+            schedule_event.instructor_2 = result['instructor_2']
         if 'info_mail_content' in input:
             schedule_event.info_mail_content = input['info_mail_content']
 

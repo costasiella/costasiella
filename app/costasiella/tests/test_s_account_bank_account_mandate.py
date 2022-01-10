@@ -174,7 +174,7 @@ class GQLAccountBankAccountMandate(TestCase):
         }
 
         # Create regular user
-        user = f.TeacherFactory.create()
+        user = f.InstructorFactory.create()
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
@@ -211,7 +211,7 @@ class GQLAccountBankAccountMandate(TestCase):
         }
 
         # Create regular user
-        user = f.TeacherFactory.create()
+        user = f.InstructorFactory.create()
         permission = Permission.objects.get(codename='view_accountbankaccountmandate')
         user.user_permissions.add(permission)
         user.save()
@@ -284,7 +284,7 @@ class GQLAccountBankAccountMandate(TestCase):
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """
-        user = f.TeacherFactory.create()
+        user = f.InstructorFactory.create()
         permission = Permission.objects.get(codename='view_accountbankaccountmandate')
         user.user_permissions.add(permission)
         user.save()
@@ -497,7 +497,7 @@ class GQLAccountBankAccountMandate(TestCase):
         variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
 
         # Create regular user
-        user = f.TeacherFactory.create()
+        user = f.InstructorFactory.create()
         permission = Permission.objects.get(codename=self.permission_delete)
         user.user_permissions.add(permission)
         user.save()
@@ -518,7 +518,7 @@ class GQLAccountBankAccountMandate(TestCase):
         variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
 
         # Create regular user
-        user = f.TeacherFactory.create()
+        user = f.InstructorFactory.create()
 
         executed = execute_test_client_api_query(
             query,

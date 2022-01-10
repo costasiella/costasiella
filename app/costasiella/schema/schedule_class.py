@@ -36,15 +36,15 @@ def _get_resolve_classes_filter_query(self):
     """
     where = ''
 
-    # if self.filter_id_teacher:
-    #     where += 'AND ((CASE WHEN cotc.auth_teacher_id IS NULL \
-    #                     THEN clt.auth_teacher_id  \
-    #                     ELSE cotc.auth_teacher_id END) = '
-    #     where += str(self.filter_id_teacher) + ' '
-    #     where += 'OR (CASE WHEN cotc.auth_teacher_id2 IS NULL \
-    #                     THEN clt.auth_teacher_id2  \
-    #                     ELSE cotc.auth_teacher_id2 END) = '
-    #     where += str(self.filter_id_teacher) + ') '
+    # if self.filter_id_instructor:
+    #     where += 'AND ((CASE WHEN cotc.auth_instructor_id IS NULL \
+    #                     THEN clt.auth_instructor_id  \
+    #                     ELSE cotc.auth_instructor_id END) = '
+    #     where += str(self.filter_id_instructor) + ' '
+    #     where += 'OR (CASE WHEN cotc.auth_instructor_id2 IS NULL \
+    #                     THEN clt.auth_instructor_id2  \
+    #                     ELSE cotc.auth_instructor_id2 END) = '
+    #     where += str(self.filter_id_instructor) + ') '
     if self.filter_id_organization_classtype:
         where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
                         THEN csi.organization_classtype_id  \
@@ -154,15 +154,15 @@ class ScheduleClassesDayType(graphene.ObjectType):
             """
             where = ''
 
-            # if self.filter_id_teacher:
-            #     where += 'AND ((CASE WHEN cotc.auth_teacher_id IS NULL \
-            #                     THEN clt.auth_teacher_id  \
-            #                     ELSE cotc.auth_teacher_id END) = '
-            #     where += str(self.filter_id_teacher) + ' '
-            #     where += 'OR (CASE WHEN cotc.auth_teacher_id2 IS NULL \
-            #                     THEN clt.auth_teacher_id2  \
-            #                     ELSE cotc.auth_teacher_id2 END) = '
-            #     where += str(self.filter_id_teacher) + ') '
+            # if self.filter_id_instructor:
+            #     where += 'AND ((CASE WHEN cotc.auth_instructor_id IS NULL \
+            #                     THEN clt.auth_instructor_id  \
+            #                     ELSE cotc.auth_instructor_id END) = '
+            #     where += str(self.filter_id_instructor) + ' '
+            #     where += 'OR (CASE WHEN cotc.auth_instructor_id2 IS NULL \
+            #                     THEN clt.auth_instructor_id2  \
+            #                     ELSE cotc.auth_instructor_id2 END) = '
+            #     where += str(self.filter_id_instructor) + ') '
             if self.filter_id_organization_classtype:
                 where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
                                 THEN csi.organization_classtype_id  \
@@ -252,27 +252,27 @@ class ScheduleClassesDayType(graphene.ObjectType):
                         THEN NULL
                     WHEN csiotc.account_id IS NOT NULL
                         THEN csiotc.account_id
-                    ELSE csit.account_id
+                    ELSE csia.account_id
                     END AS account_id,
                CASE 
                     WHEN csiotc.status = "OPEN"
                         THEN NULL
                     WHEN csiotc.account_id IS NOT NULL
                         THEN csiotc.role
-                    ELSE csit.role
+                    ELSE csia.role
                     END AS role,
                CASE 
                     WHEN csiotc.status = "OPEN"
                         THEN NULL
                     WHEN csiotc.account_2_id IS NOT NULL
                         THEN csiotc.account_2_id
-                    ELSE csit.account_2_id
+                    ELSE csia.account_2_id
                     END AS account_2_id,
                CASE WHEN csiotc.status = "OPEN"
                         THEN NULL
                     WHEN csiotc.account_2_id IS NOT NULL
                         THEN csiotc.role_2
-                    ELSE csit.role_2
+                    ELSE csia.role_2
                     END AS role_2,
                coho.id AS organization_holiday_id,
                coho.name AS organization_holiday_name,
@@ -322,13 +322,13 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     role,
                     account_2_id,
                     role_2
-                FROM costasiella_scheduleitemteacher
+                FROM costasiella_scheduleitemaccount
                 WHERE date_start <= %(class_date)s AND (
                       date_end >= %(class_date)s OR date_end IS NULL)
                 ORDER BY date_start
                 LIMIT 2
-                ) csit
-                ON csit.schedule_item_id = csi.id
+                ) csia
+                ON csia.schedule_item_id = csi.id
             LEFT JOIN
                 ( SELECT coh.id, coh.name, cohl.organization_location_id
                   FROM costasiella_organizationholiday coh
@@ -340,12 +340,14 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 ON coho.organization_location_id = csi_ol.id
             WHERE csi.schedule_item_type = "CLASS" 
                 AND (
+                        /* Selection on specific days /*
                         (csi.frequency_type = "SPECIFIC" AND csi.date_start = %(class_date)s ) OR
+                        /* Weekly selection */
                         ( csi.frequency_type = "WEEKLY" AND 
                           csi.frequency_interval = %(iso_week_day)s AND 
                           csi.date_start <= %(class_date)s AND
                          (csi.date_end >= %(class_date)s OR csi.date_end IS NULL)
-                        ) 
+                        )            
                     )
                 {where_sql}
             ORDER BY {order_by_sql}

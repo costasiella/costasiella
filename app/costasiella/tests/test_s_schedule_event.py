@@ -99,11 +99,11 @@ class GQLScheduleEvent(TestCase):
             id
             name
           }
-          teacher {
+          instructor {
             id 
             fullName
           }
-          teacher2 {
+          instructor2 {
             id
             fullName
           }
@@ -147,11 +147,11 @@ class GQLScheduleEvent(TestCase):
         id
         name
       }
-      teacher {
+      instructor {
         id 
         fullName
       }
-      teacher2 {
+      instructor2 {
         id
         fullName
       }
@@ -192,10 +192,10 @@ class GQLScheduleEvent(TestCase):
         preview
         description
         infoMailContent
-        teacher {
+        instructor {
           id
         }
-        teacher2 {
+        instructor2 {
           id 
         }
       }
@@ -222,10 +222,10 @@ class GQLScheduleEvent(TestCase):
         preview
         description
         infoMailContent
-        teacher {
+        instructor {
           id
         }
-        teacher2 {
+        instructor2 {
           id 
         }
       }
@@ -266,10 +266,10 @@ class GQLScheduleEvent(TestCase):
                          schedule_event.info_mail_content)
         self.assertEqual(data['scheduleEvents']['edges'][0]['node']['organizationLevel']['id'],
                          to_global_id("OrganizationLevelNode", schedule_event.organization_level.id))
-        self.assertEqual(data['scheduleEvents']['edges'][0]['node']['teacher']['id'],
-                         to_global_id("AccountNode", schedule_event.teacher.id))
-        self.assertEqual(data['scheduleEvents']['edges'][0]['node']['teacher2']['id'],
-                         to_global_id("AccountNode", schedule_event.teacher_2.id))
+        self.assertEqual(data['scheduleEvents']['edges'][0]['node']['instructor']['id'],
+                         to_global_id("AccountNode", schedule_event.instructor.id))
+        self.assertEqual(data['scheduleEvents']['edges'][0]['node']['instructor2']['id'],
+                         to_global_id("AccountNode", schedule_event.instructor_2.id))
 
     def test_query_permission_denied_dont_show_nonpublic_events(self):
         """ Query list of events - check permission denied
@@ -344,10 +344,10 @@ class GQLScheduleEvent(TestCase):
                          schedule_event.info_mail_content)
         self.assertEqual(data['scheduleEvent']['organizationLevel']['id'],
                          to_global_id("OrganizationLevelNode", schedule_event.organization_level.id))
-        self.assertEqual(data['scheduleEvent']['teacher']['id'],
-                         to_global_id("AccountNode", schedule_event.teacher.id))
-        self.assertEqual(data['scheduleEvent']['teacher2']['id'],
-                         to_global_id("AccountNode", schedule_event.teacher_2.id))
+        self.assertEqual(data['scheduleEvent']['instructor']['id'],
+                         to_global_id("AccountNode", schedule_event.instructor.id))
+        self.assertEqual(data['scheduleEvent']['instructor2']['id'],
+                         to_global_id("AccountNode", schedule_event.instructor_2.id))
 
     def test_query_one_anon_user_nonpublic_not_allowed(self):
         """ Deny permission for anon users Query one schedule event """
@@ -422,10 +422,10 @@ class GQLScheduleEvent(TestCase):
     def test_create_schedule_event(self):
         """ Create a schedule event """
         query = self.event_create_mutation
-        teacher = f.TeacherFactory.create()
-        teacher2 = f.Teacher2Factory.create()
-        self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-        self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
+        instructor = f.InstructorFactory.create()
+        instructor2 = f.Instructor2Factory.create()
+        self.variables_create['input']['instructor'] = to_global_id('AccountNode', instructor.id)
+        self.variables_create['input']['instructor2'] = to_global_id('AccountNode', instructor2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -444,18 +444,18 @@ class GQLScheduleEvent(TestCase):
                          self.variables_create['input']['description'])
         self.assertEqual(data['createScheduleEvent']['scheduleEvent']['infoMailContent'],
                          self.variables_create['input']['infoMailContent'])
-        self.assertEqual(data['createScheduleEvent']['scheduleEvent']['teacher']['id'],
-                         self.variables_create['input']['teacher'])
-        self.assertEqual(data['createScheduleEvent']['scheduleEvent']['teacher2']['id'],
-                         self.variables_create['input']['teacher2'])
+        self.assertEqual(data['createScheduleEvent']['scheduleEvent']['instructor']['id'],
+                         self.variables_create['input']['instructor'])
+        self.assertEqual(data['createScheduleEvent']['scheduleEvent']['instructor2']['id'],
+                         self.variables_create['input']['instructor2'])
 
     def test_create_schedule_event_full_ticket_added(self):
         """ Create a schedule event and check if the full event ticket is added """
         query = self.event_create_mutation
-        teacher = f.TeacherFactory.create()
-        teacher2 = f.Teacher2Factory.create()
-        self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-        self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
+        instructor = f.InstructorFactory.create()
+        instructor2 = f.Instructor2Factory.create()
+        self.variables_create['input']['instructor'] = to_global_id('AccountNode', instructor.id)
+        self.variables_create['input']['instructor2'] = to_global_id('AccountNode', instructor2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -479,10 +479,10 @@ class GQLScheduleEvent(TestCase):
     def test_create_event_anon_user(self):
         """ Don't allow creating schedule events for non-logged in users """
         query = self.event_create_mutation
-        teacher = f.TeacherFactory.create()
-        teacher2 = f.Teacher2Factory.create()
-        self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-        self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
+        instructor = f.InstructorFactory.create()
+        instructor2 = f.Instructor2Factory.create()
+        self.variables_create['input']['instructor'] = to_global_id('AccountNode', instructor.id)
+        self.variables_create['input']['instructor2'] = to_global_id('AccountNode', instructor2.id)
 
         executed = execute_test_client_api_query(
             query,
@@ -496,10 +496,10 @@ class GQLScheduleEvent(TestCase):
     def test_create_location_permission_granted(self):
         """ Allow creating events for users with permissions """
         query = self.event_create_mutation
-        teacher = f.TeacherFactory.create()
-        teacher2 = f.Teacher2Factory.create()
-        self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-        self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
+        instructor = f.InstructorFactory.create()
+        instructor2 = f.Instructor2Factory.create()
+        self.variables_create['input']['instructor'] = to_global_id('AccountNode', instructor.id)
+        self.variables_create['input']['instructor2'] = to_global_id('AccountNode', instructor2.id)
 
         account = f.RegularUserFactory.create()
         # Create regular user
@@ -520,10 +520,10 @@ class GQLScheduleEvent(TestCase):
     def test_create_event_permission_denied(self):
         """ Check create event permission denied error message """
         query = self.event_create_mutation
-        teacher = f.TeacherFactory.create()
-        teacher2 = f.Teacher2Factory.create()
-        self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-        self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
+        instructor = f.InstructorFactory.create()
+        instructor2 = f.Instructor2Factory.create()
+        self.variables_create['input']['instructor'] = to_global_id('AccountNode', instructor.id)
+        self.variables_create['input']['instructor2'] = to_global_id('AccountNode', instructor2.id)
 
         account = f.RegularUserFactory.create()
         # Create regular user
