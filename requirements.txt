@@ -18,6 +18,7 @@ cryptography==36.0.1
 cssselect2==0.2.2
 decorator==4.3.2
 defusedxml==0.7.1
+Deprecated==1.2.13
 Django==3.2.10
 django-allauth==0.47.0
 django-celery-beat==2.2.1
@@ -49,17 +50,19 @@ more-itertools==7.2.0
 mysqlclient==2.0.3
 oauthlib==3.0.1
 openpyxl==3.0.7
+packaging==21.3
 Pillow==8.3.2
 promise==2.2.1
 prompt-toolkit==3.0.9
 pycparser==2.19
 PyJWT==1.7.1
+pyparsing==3.0.6
 Pyphen==0.9.5
 python-crontab==2.3.8
 python-dateutil==2.8.0
 python3-openid==3.1.0
 pytz==2018.9
-redis==3.2.1
+redis==4.1.0
 requests==2.25.1
 requests-oauthlib==1.2.0
 Rx==1.6.1
@@ -76,4 +79,5 @@ vine==5.0.0
 wcwidth==0.2.5
 WeasyPrint==51
 webencodings==0.5.1
+wrapt==1.13.3
 zipp==0.6.0
