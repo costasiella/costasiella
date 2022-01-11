@@ -86,6 +86,7 @@ from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItem
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 from .schedule_item_account import ScheduleItemAccountQuery, ScheduleItemAccountMutation
 from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemAttendanceMutation
+from .schedule_item_enrollment import ScheduleItemEnrollmentQuery, ScheduleItemEnrollmentMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutation
@@ -166,6 +167,7 @@ class Query(AccountQuery,
             ScheduleItemQuery,
             ScheduleItemAccountQuery,
             ScheduleItemAttendanceQuery,
+            ScheduleItemEnrollmentQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemPriceQuery,
@@ -242,6 +244,7 @@ class Mutation(AccountMutation,
                ScheduleItemMutation,
                ScheduleItemAccountMutation,
                ScheduleItemAttendanceMutation,
+               ScheduleItemEnrollmentMutation,
                ScheduleItemOrganizationClasspassGroupMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
                ScheduleItemPriceMutation,
