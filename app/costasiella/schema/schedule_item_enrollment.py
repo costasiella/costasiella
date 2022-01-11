@@ -9,7 +9,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, AccountSubscription, ScheduleItem, ScheduleItemEnrollment
+from ..models import AccountSubscription, ScheduleItem, ScheduleItemEnrollment
 from ..modules.gql_tools import require_login, require_login_and_permission, \
                                 require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
@@ -25,7 +25,6 @@ class ScheduleItemEnrollmentNode(DjangoObjectType):
         # account_schedule_event_ticket_Isnull filter can be used to differentiate class & event enrollment
         filter_fields = {
             'schedule_item': ['exact'],
-            'account': ['exact'],
             'account_subscription': ['exact'],
             'date_start': ['exact', 'gte', 'lte'],
             'date_end': ['exact', 'gte', 'lte', 'isnull']
@@ -75,15 +74,6 @@ def validate_schedule_item_enrollment_create_update_input(input):
     """ 
     result = {}
 
-    # Check Account
-    if 'account' in input:
-        if input['account']:
-            rid = get_rid(input['account'])
-            account = Account.objects.filter(id=rid.id).first()
-            result['account'] = account
-            if not account:
-                raise Exception(_('Invalid Account ID!'))
-
     # Check AccountSubscription
     if 'account_subscription' in input:
         if input['account_subscription']:
@@ -107,7 +97,6 @@ def validate_schedule_item_enrollment_create_update_input(input):
 
 class CreateScheduleItemEnrollment(graphene.relay.ClientIDMutation):
     class Input:
-        account = graphene.ID(required=False)
         schedule_item = graphene.ID(required=True)
         account_subscription = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
