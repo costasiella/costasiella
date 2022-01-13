@@ -45,27 +45,30 @@ class ScheduleItemEnrollmentQuery(graphene.ObjectType):
 
     def resolve_schedule_item_enrollments(self, info, **kwargs):
         user = info.context.user
-        require_login(user)
 
-        view_permission = user.has_perm('costasiella.view_scheduleitemenrollment')
-
-        if view_permission and 'account' in kwargs:
-            # Allow user to filter by any account
-            rid = get_rid(kwargs.get('account', user.id))
-            account_id = rid.id
-        elif view_permission:
-            # return all
-            account_id = None
-        else:
-            # A user can only query their own orders
-            account_id = user.id
-
-        if account_id:
-            order_by = '-date_start'
-            return ScheduleItemEnrollment.objects.filter(account=account_id).order_by(order_by)
-        else:
-            order_by = '-account__full_name'
-            return ScheduleItemEnrollment.objects.all().order_by(order_by)
+        ## Code below can someday be modified to allow a filtering enrollments by accounts & allow users to
+        ## view their own enrollments
+        # require_login(user)
+        #
+        # view_permission = user.has_perm('costasiella.view_scheduleitemenrollment')
+        #
+        # if view_permission and 'account' in kwargs:
+        #     # Allow user to filter by any account
+        #     rid = get_rid(kwargs.get('account', user.id))
+        #     account_id = rid.id
+        # elif view_permission:
+        #     # return all
+        #     account_id = None
+        # else:
+        #     # A user can only query their own orders
+        #     account_id = user.id
+        #
+        # if account_id:
+        #     order_by = '-date_start'
+        #     return ScheduleItemEnrollment.objects.filter(account=account_id).order_by(order_by)
+        # else:
+        #     order_by = '-account__full_name'
+        #     return ScheduleItemEnrollment.objects.all().order_by(order_by)
             
 
 def validate_schedule_item_enrollment_create_update_input(input):

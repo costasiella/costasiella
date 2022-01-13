@@ -16,8 +16,8 @@ from .helpers import model_string
 
 # Create your models here
 class ScheduleItemEnrollment(models.Model):
-    schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
-    account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.CASCADE)
+    schedule_item = models.ForeignKey(ScheduleItem, related_name="enrollments", on_delete=models.CASCADE)
+    account_subscription = models.ForeignKey(AccountSubscription, related_name="enrollments", on_delete=models.CASCADE)
     date_start = models.DateField()
     date_end = models.DateField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
