@@ -35,13 +35,13 @@ class ScheduleClassEnrollmentSubscriptionType(graphene.ObjectType):
 
     
 # ScheduleClassEnrollmentOptionsType
-class ScheduleClassEnrollmentptionsType(graphene.ObjectType):
+class ScheduleClassEnrollmentOptionsType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     account = graphene.Field(AccountNode)
     account_id = graphene.ID()
     schedule_item = graphene.Field(ScheduleItemNode)
     schedule_item_id = graphene.ID()
-    subscriptions = graphene.List(ScheduleClassBookingSubscriptionType)
+    subscriptions = graphene.List(ScheduleClassEnrollmentSubscriptionType)
 
     def resolve_account(self, info):
         # account
@@ -103,17 +103,17 @@ class ScheduleClassEnrollmentptionsType(graphene.ObjectType):
 
 class ScheduleClassEnrollmentOptionsQuery(graphene.ObjectType):
     schedule_class_enrollment_options = graphene.Field(
-        ScheduleClassBookingOptionsType,
+        ScheduleClassEnrollmentOptionsType,
         account=graphene.ID(),
         schedule_item=graphene.ID(),
         date=graphene.types.datetime.Date(),
     )
 
-    def resolve_schedule_class_booking_options(self, info, schedule_item, date, **kwargs):
+    def resolve_schedule_class_enrollment_options(self, info, schedule_item, date, **kwargs):
         user = info.context.user
         require_login(user)
 
-        permission = user.has_perm('costasiella.view_scheduleitem') or user.has_perm('costasiella.view_selfcheckin')
+        permission = user.has_perm('costasiella.view_scheduleitem')
 
         account = to_global_id('AccountNode', user.id)
         if 'account' in kwargs and permission:

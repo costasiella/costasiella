@@ -77,6 +77,7 @@ from .organization_subscription_price import OrganizationSubscriptionPriceQuery,
 from .schedule_appointment import ScheduleAppointmentQuery, ScheduleAppointmentMutation
 from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
 from .schedule_class_booking_option import ScheduleClassBookingOptionsQuery
+from .schedule_class_enrollment_option import ScheduleClassEnrollmentOptionsQuery
 from .schedule_item_weekly_otc import ScheduleItemWeeklyOTCQuery, ScheduleItemWeeklyOTCMutation
 from .schedule_event import ScheduleEventQuery, ScheduleEventMutation
 from .schedule_event_earlybird import ScheduleEventEarlybirdQuery, ScheduleEventEarlybirdMutation
@@ -159,6 +160,7 @@ class Query(AccountQuery,
             ScheduleAppointmentQuery,
             ScheduleClassQuery,
             ScheduleClassBookingOptionsQuery,
+            ScheduleClassEnrollmentOptionsQuery,
             ScheduleEventQuery,
             ScheduleEventEarlybirdQuery,
             ScheduleEventMediaQuery,
