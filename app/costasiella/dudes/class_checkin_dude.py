@@ -522,3 +522,15 @@ class ClassCheckinDude:
                 pass
 
         return schedule_item_ids
+
+    def subscription_enroll_allowed_for_class(self, account_subscription, schedule_item):
+        """
+        Returns True if enrollment using the given subscription is allowed for a class,
+        otherwise False
+        """
+        classes_allowed = self.subscription_enroll_allowed(account_subscription)
+
+        if schedule_item.id in classes_allowed:
+            return True
+        else:
+            return False
