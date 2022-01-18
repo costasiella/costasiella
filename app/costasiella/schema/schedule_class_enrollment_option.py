@@ -2,6 +2,7 @@ import graphene
 
 from django.utils.translation import gettext as _
 from django.db.models import Q
+from django.utils import timezone
 
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -36,7 +37,6 @@ class ScheduleClassEnrollmentSubscriptionType(graphene.ObjectType):
     
 # ScheduleClassEnrollmentOptionsType
 class ScheduleClassEnrollmentOptionsType(graphene.ObjectType):
-    date = graphene.types.datetime.Date()
     account = graphene.Field(AccountNode)
     account_id = graphene.ID()
     schedule_item = graphene.Field(ScheduleItemNode)
@@ -59,22 +59,22 @@ class ScheduleClassEnrollmentOptionsType(graphene.ObjectType):
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
-        sih = ScheduleItemHelper()
-        schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, self.date)
+        # sih = ScheduleItemHelper()
+        # schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, self.date)
 
         return schedule_item
 
-    def resolve_subscriptions(self, 
-                              info,
-                              date=graphene.types.datetime.Date(),
-                              ):
+    def resolve_subscriptions(self, info):
         checkin_dude = ClassCheckinDude()
         account = self.resolve_account(info)
         schedule_item = self.resolve_schedule_item(info)
+        today = timezone.now().date()
 
-        subscriptions_filter = Q(account = account) & \
-            Q(date_start__lte = self.date) & \
-            (Q(date_end__gte = self.date) | Q(date_end__isnull = True))
+        # All subscriptions that haven't ended yet. Also list subscriptions that start in the future.
+        subscriptions_filter = (
+            Q(account=account) &
+            (Q(date_end__gte=today) | Q(date_end__isnull=True))
+        )
 
         subscriptions = AccountSubscription.objects.filter(subscriptions_filter).order_by(
             'organization_subscription__name'
@@ -82,8 +82,8 @@ class ScheduleClassEnrollmentOptionsType(graphene.ObjectType):
 
         subscriptions_list = []
         for subscription in subscriptions:
-            blocked = subscription.get_blocked_on_date(self.date)
-            paused = subscription.get_paused_on_date(self.date)
+            blocked = subscription.get_blocked_on_date(today)
+            paused = subscription.get_paused_on_date(today)
 
             allowed = False
             if checkin_dude.subscription_enroll_allowed_for_class(subscription, schedule_item):
@@ -106,10 +106,9 @@ class ScheduleClassEnrollmentOptionsQuery(graphene.ObjectType):
         ScheduleClassEnrollmentOptionsType,
         account=graphene.ID(),
         schedule_item=graphene.ID(),
-        date=graphene.types.datetime.Date(),
     )
 
-    def resolve_schedule_class_enrollment_options(self, info, schedule_item, date, **kwargs):
+    def resolve_schedule_class_enrollment_options(self, info, schedule_item, **kwargs):
         user = info.context.user
         require_login(user)
 
@@ -124,20 +123,17 @@ class ScheduleClassEnrollmentOptionsQuery(graphene.ObjectType):
         validate_schedule_class_enrollment_options_input(
             account,
             schedule_item,
-            date,
         )
 
         return ScheduleClassEnrollmentOptionsType(
-            date=date,
             account_id=account,
             schedule_item_id=schedule_item,
         )
 
 
-def validate_schedule_class_enrollment_options_input(account, schedule_item, date):
+def validate_schedule_class_enrollment_options_input(account, schedule_item,):
     """
-    Check if date_until >= date_start
-    Check if delta between dates <= 7 days
+    Verify ids
     """
     result = {}
    
@@ -156,10 +152,5 @@ def validate_schedule_class_enrollment_options_input(account, schedule_item, dat
         raise Exception('Invalid Schedule Item ID!')
 
     result['schedule_item'] = result
-
-    # Check if schedule item takes place on date
-    schedule_dude = ClassScheduleDude()
-    if not schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
-        raise Exception("This class doesn't take place on date: " + str(date))
 
     return result
