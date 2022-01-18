@@ -45,6 +45,9 @@ class ScheduleItemEnrollmentQuery(graphene.ObjectType):
 
     def resolve_schedule_item_enrollments(self, info, **kwargs):
         user = info.context.user
+        require_login_and_permission(user, 'costasiella.add_scheduleitemenrollment')
+
+        return ScheduleItemEnrollment.objects.order_by('-date_start')
 
         ## Code below can someday be modified to allow a filtering enrollments by accounts & allow users to
         ## view their own enrollments
@@ -110,16 +113,11 @@ class CreateScheduleItemEnrollment(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login(user)
+        require_login_and_permission(user, 'costasiella.add_scheduleitemenrollment')
 
-        permission = user.has_perm('costasiella.add_scheduleitemenrollment')
         validation_result = validate_schedule_item_enrollment_create_update_input(input)
-        if not permission or 'account' not in input:
-            # When the user doesn't have permissions; always use their own account
-            validation_result['account'] = user
 
         schedule_item_enrollment = ScheduleItemEnrollment(
-            account=validation_result['account'],
             schedule_item=validation_result['schedule_item'],
             account_subscription=validation_result['account_subscription'],
             date_start=input['date_start']
@@ -144,7 +142,7 @@ class UpdateScheduleItemEnrollment(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permissions(user, 'costasiella.change_scheduleitemenrollment')
+        require_login_and_permission(user, 'costasiella.change_scheduleitemenrollment')
 
         rid = get_rid(input['id'])
         schedule_item_enrollment = ScheduleItemEnrollment.objects.filter(id=rid.id).first()
@@ -171,7 +169,7 @@ class DeleteScheduleItemEnrollment(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permissions(user, 'costasiella.change_scheduleitemenrollment')
+        require_login_and_permission(user, 'costasiella.change_scheduleitemenrollment')
 
         rid = get_rid(input['id'])
         schedule_item_enrollment = ScheduleItemEnrollment.objects.filter(id=rid.id).first()
