@@ -66,6 +66,10 @@ class ScheduleItemNode(DjangoObjectType):
 
         return count_attendance
 
+    def resolve_enrollments(self, info, first):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.add_scheduleitemenrollment')
+
 
 class ScheduleItemQuery(graphene.ObjectType):
     schedule_items = DjangoFilterConnectionField(ScheduleItemNode)
