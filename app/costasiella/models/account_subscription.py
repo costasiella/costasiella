@@ -145,6 +145,97 @@ class AccountSubscription(models.Model):
 
         return account_subscription_credit
 
+    def get_enrollments_in_month(self, year, month):
+        """
+
+        :param year:
+        :param month:
+        :return:
+        """
+        from ..dudes import DateToolsDude
+        from .schedule_item_enrollment import ScheduleItemEnrollment
+
+        date_dude = DateToolsDude()
+        first_day_month = datetime.date(year, month, 1)
+        last_day_month = date_dude.get_last_day_month(first_day_month)
+
+        enrollments = ScheduleItemEnrollment.objects.filter(
+            Q(account_subscription=self) &
+            Q(date_start__gte=first_day_month) &
+            (Q(date_end__lte=last_day_month) | Q(date_end__isnull=True))
+        )
+
+        return enrollments
+
+    def find_enrolled_classes_in_month(self, year, month):
+        """
+
+        :return:
+        """
+        from graphql_relay import to_global_id
+
+        from ..dudes import DateToolsDude
+        from ..schema.schedule_class import ScheduleClassesDayType
+
+        date_dude = DateToolsDude()
+        enrollments = self.get_enrollments_in_month(year, month)
+
+        enrolled_schedule_item_ids = []
+        for enrollment in enrollments:
+            enrolled_schedule_item_ids.append(to_global_id('ScheduleItemNode', enrollment.schedule_item.id))
+
+        first_day_month = datetime.date(year, month, 1)
+        last_day_month = date_dude.get_last_day_month(first_day_month)
+
+        classes_in_month = []
+        date = first_day_month
+        while date <= last_day_month:
+            day = ScheduleClassesDayType()
+            day.date = date
+            day.attendance_count_type = 'ATTENDING_AND_BOOKED'
+            day.classes = day.resolve_classes(None)
+
+            if day.classes:
+                for schedule_class_type in day.classes:
+                    if schedule_class_type.schedule_item_id in enrolled_schedule_item_ids:
+                        classes_in_month.append(schedule_class_type)
+
+            date += datetime.timedelta(days=1)
+
+        return classes_in_month
+
+    def book_enrolled_classes_for_month(self, year, month):
+        """
+
+        :param year:
+        :param month:
+        :return:
+        """
+        from ..dudes import ClassCheckinDude, DateToolsDude
+        from ..modules.gql_tools import get_rid
+        from .schedule_item import ScheduleItem
+
+        class_checkin_dude = ClassCheckinDude()
+        date_dude = DateToolsDude()
+        first_day_month = datetime.date(year, month, 1)
+        last_day_month = date_dude.get_last_day_month(first_day_month)
+
+        classes_in_month = self.find_enrolled_classes_in_month(year, month)
+        for schedule_class_type in classes_in_month:
+            rid = get_rid(schedule_class_type.schedule_item_id)
+            schedule_item_id = rid.id
+            schedule_item = ScheduleItem.objects.get(pk=schedule_item_id)
+
+            class_checkin_dude.class_checkin_subscription(
+                account=self.account,
+                account_subscription=self,
+                schedule_item=schedule_item,
+                date=schedule_class_type.date,
+                online_booking=False,
+                booking_status="BOOKED"
+            )
+
+
     def get_blocked_on_date(self, date):
         """
 
