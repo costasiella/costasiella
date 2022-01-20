@@ -60,6 +60,7 @@ def account_subscription_credits_add_for_month(year, month):
         # Calculate number of credits to give:
         # Total days (Add 1, when subtracted it's one day less)
         account_subscription.create_credits_for_month(year, month)
+        account_subscription.book_enrolled_classes_for_month(year, month)
         counter += 1
 
     return _("Added credits for %s subscriptions") % counter
@@ -71,8 +72,6 @@ def account_subscription_credits_add_for_month(year, month):
 
     # Pass number of billable days to add function for individual subscription
     #TODO book classes when class reservations are implemented
-
-    # Calculate number of credits to give
 
 
 @shared_task
