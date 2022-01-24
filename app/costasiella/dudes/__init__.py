@@ -1,7 +1,6 @@
 from .app_settings_dude import AppSettingsDude
 
 from .class_checkin_dude import ClassCheckinDude
-from .class_enrollment_dude import ClassEnrollmentDude
 from .class_schedule_dude import ClassScheduleDude
 
 from .date_tools_dude import DateToolsDude

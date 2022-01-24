@@ -180,10 +180,6 @@ class AccountSubscription(models.Model):
         date_dude = DateToolsDude()
         enrollments = self.get_enrollments_in_month(year, month)
 
-        enrolled_schedule_item_ids = []
-        for enrollment in enrollments:
-            enrolled_schedule_item_ids.append(to_global_id('ScheduleItemNode', enrollment.schedule_item.id))
-
         first_day_month = datetime.date(year, month, 1)
         last_day_month = date_dude.get_last_day_month(first_day_month)
 
@@ -197,8 +193,15 @@ class AccountSubscription(models.Model):
 
             if day.classes:
                 for schedule_class_type in day.classes:
-                    if schedule_class_type.schedule_item_id in enrolled_schedule_item_ids:
-                        classes_in_month.append(schedule_class_type)
+                    for enrollment in enrollments:
+                        # Possible optimization; do this only once for each enrollment... but well...
+                        # it's in the background
+                        schedule_item_node_id = to_global_id('ScheduleItemNode', enrollment.schedule_item.id)
+
+                        if (schedule_class_type.schedule_item_id == schedule_item_node_id
+                            and date >= enrollment.date_start
+                        ):
+                            classes_in_month.append(schedule_class_type)
 
             date += datetime.timedelta(days=1)
 
@@ -235,6 +238,22 @@ class AccountSubscription(models.Model):
                 booking_status="BOOKED"
             )
 
+    def cancel_booked_classes_after_enrollment_end(self, schedule_item_enrollment):
+        """
+
+        :param schedule_item_enrollment:
+        :return:
+        """
+        from .schedule_item_attendance import ScheduleItemAttendance
+
+        schedule_item = schedule_item_enrollment.schedule_item
+
+        if schedule_item_enrollment.date_end:
+            ScheduleItemAttendance.objects.filter(
+                schedule_item=schedule_item,
+                account_subscription=self,
+                date__gte=schedule_item_enrollment.date_end
+            ).update(booking_status='CANCELLED')
 
     def get_blocked_on_date(self, date):
         """

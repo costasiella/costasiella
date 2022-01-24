@@ -65,14 +65,6 @@ def account_subscription_credits_add_for_month(year, month):
 
     return _("Added credits for %s subscriptions") % counter
 
-    # For row in rows
-    # Skip when credits have already been given for a month
-    # Skip when no billable days (fully paused)
-    # Skip when no classes or subscription unit defined in organization subscription
-
-    # Pass number of billable days to add function for individual subscription
-    #TODO book classes when class reservations are implemented
-
 
 @shared_task
 def account_subscription_credits_expire():
