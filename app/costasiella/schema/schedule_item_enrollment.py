@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 
+import os
 import datetime
 import pytz
 import graphene
@@ -15,6 +16,7 @@ from ..modules.gql_tools import require_login, require_login_and_permission, \
 from ..modules.messages import Messages
 
 from ..dudes import ClassCheckinDude, ClassScheduleDude
+from ..tasks import cancel_booked_classes_after_enrollment_end
 
 m = Messages()
 
@@ -157,6 +159,11 @@ class UpdateScheduleItemEnrollment(graphene.relay.ClientIDMutation):
 
         schedule_item_enrollment.save()
 
+        if schedule_item_enrollment.date_end:
+            # Call background task to create batch items when we're not in CI test mode
+            if 'GITHUB_WORKFLOW' not in os.environ and not getattr(settings, 'TESTING', False):
+                task = cancel_booked_classes_after_enrollment_end.delay(schedule_item_enrollment.id)
+
         return UpdateScheduleItemEnrollment(schedule_item_enrollment=schedule_item_enrollment)
 
 
@@ -175,6 +182,16 @@ class DeleteScheduleItemEnrollment(graphene.relay.ClientIDMutation):
         schedule_item_enrollment = ScheduleItemEnrollment.objects.filter(id=rid.id).first()
         if not schedule_item_enrollment:
             raise Exception('Invalid Schedule Item Enrollment ID!')
+
+        # Cancel all class bookings enrollment subscription after today
+        # Set end date
+        today = timezone.now().date()
+        schedule_item_enrollment.date_end = today
+        schedule_item_enrollment.save()
+
+        # Cancel class bookings 
+        if 'GITHUB_WORKFLOW' not in os.environ and not getattr(settings, 'TESTING', False):
+            task = cancel_booked_classes_after_enrollment_end.delay(schedule_item_enrollment.id)
 
         # Actually remove
         ok = schedule_item_enrollment.delete()

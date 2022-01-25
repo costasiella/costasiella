@@ -3,6 +3,7 @@ from .account.classpass.trialpass.tasks import account_trialpass_followup
 from .account.subscription.credits.tasks import \
     account_subscription_credits_add_for_month, \
     account_subscription_credits_expire
+from .account.subscription.enrollments.tasks import cancel_booked_classes_after_enrollment_end
 from .account.subscription.invoices.tasks import account_subscription_invoices_add_for_month
 from .account.subscription.invoices.tasks import account_subscription_invoices_add_for_month_mollie_collection
 
