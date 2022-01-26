@@ -10,6 +10,9 @@ from .account import Account
 from .organization_subscription import OrganizationSubscription
 from .finance_payment_method import FinancePaymentMethod
 
+from ..modules.cs_errors import CSClassBookingSubscriptionBlockedError, \
+    CSClassBookingSubscriptionPausedError, \
+    CSClassBookingSubscriptionNoCreditsError
 
 class AccountSubscription(models.Model):
     # add additional fields in here
@@ -198,10 +201,19 @@ class AccountSubscription(models.Model):
                         # it's in the background
                         schedule_item_node_id = to_global_id('ScheduleItemNode', enrollment.schedule_item.id)
 
+                        print("---")
+                        print(date)
+                        print(enrollment.date_start)
+                        print(schedule_item_node_id)
+                        print(schedule_class_type.schedule_item_id)
+
                         if (schedule_class_type.schedule_item_id == schedule_item_node_id
                             and date >= enrollment.date_start
                         ):
                             classes_in_month.append(schedule_class_type)
+                            print("added class")
+                        else:
+                            print("Skipped class")
 
             date += datetime.timedelta(days=1)
 
@@ -229,14 +241,23 @@ class AccountSubscription(models.Model):
             schedule_item_id = rid.id
             schedule_item = ScheduleItem.objects.get(pk=schedule_item_id)
 
-            class_checkin_dude.class_checkin_subscription(
-                account=self.account,
-                account_subscription=self,
-                schedule_item=schedule_item,
-                date=schedule_class_type.date,
-                online_booking=False,
-                booking_status="BOOKED"
-            )
+            # Try to book class, but continue on possible common errors, try to book as many as possible.
+            try:
+                class_checkin_dude.class_checkin_subscription(
+                    account=self.account,
+                    account_subscription=self,
+                    schedule_item=schedule_item,
+                    date=schedule_class_type.date,
+                    online_booking=False,
+                    booking_status="BOOKED"
+                )
+            except CSClassBookingSubscriptionBlockedError:
+                pass
+            except CSClassBookingSubscriptionPausedError:
+                pass
+            except CSClassBookingSubscriptionNoCreditsError:
+                pass
+
 
     def cancel_booked_classes_after_enrollment_end(self, schedule_item_enrollment):
         """

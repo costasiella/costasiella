@@ -189,7 +189,7 @@ class DeleteScheduleItemEnrollment(graphene.relay.ClientIDMutation):
         schedule_item_enrollment.date_end = today
         schedule_item_enrollment.save()
 
-        # Cancel class bookings 
+        # Cancel class bookings
         if 'GITHUB_WORKFLOW' not in os.environ and not getattr(settings, 'TESTING', False):
             task = cancel_booked_classes_after_enrollment_end.delay(schedule_item_enrollment.id)
 

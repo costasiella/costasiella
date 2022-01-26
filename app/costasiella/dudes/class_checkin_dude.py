@@ -1,5 +1,8 @@
 from django.utils.translation import gettext as _
 
+from ..modules.cs_errors import CSClassBookingSubscriptionBlockedError, \
+    CSClassBookingSubscriptionPausedError, \
+    CSClassBookingSubscriptionNoCreditsError
 
 class ClassCheckinDude:
     def _send_info_mail(self, account, schedule_item, date):
@@ -330,15 +333,15 @@ class ClassCheckinDude:
 
         # Check credits remaining
         if (account_subscription.get_usable_credits_total() - 1) < 0:
-            raise Exception(_("Insufficient credits available to book this class"))
+            raise CSClassBookingSubscriptionNoCreditsError(_("Insufficient credits available to book this class"))
 
         # Check blocked:
         if account_subscription.get_blocked_on_date(date):
-            raise Exception(_("This subscription is blocked on %s") % date)
+            raise CSClassBookingSubscriptionBlockedError(_("This subscription is blocked on %s") % date)
 
         # Check paused:
         if account_subscription.get_paused_on_date(date):
-            raise Exception(_("This subscription is paused on %s") % date)
+            raise CSClassBookingSubscriptionPausedError(_("This subscription is paused on %s") % date)
 
         # Subscription valid on date
         if account_subscription.date_end:
