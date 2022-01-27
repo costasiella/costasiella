@@ -29,7 +29,7 @@ class ScheduleItemEnrollmentNode(DjangoObjectType):
             'schedule_item': ['exact'],
             'account_subscription': ['exact'],
             'date_start': ['exact', 'gte', 'lte'],
-            'date_end': ['exact', 'gte', 'lte', 'isnull']
+            'date_end': ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull']
         }
         interfaces = (graphene.relay.Node,)
 
