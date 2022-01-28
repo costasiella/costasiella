@@ -914,6 +914,16 @@ class ScheduleItemAttendanceSubscriptionFactory(factory.DjangoModelFactory):
     booking_status = "ATTENDING"
 
 
+class ScheduleItemEnrollmentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemEnrollment
+
+    account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    date_start = datetime.date(2010, 1, 1)
+    date_end = datetime.date(2999, 12, 30)
+
+
 class AccountSubscriptionCreditAttendanceSubFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscriptionCredit
