@@ -111,36 +111,31 @@ class GQLScheduleItemEnrollment(TestCase):
   }
 '''
 
-#         self.schedule_item_enrollment_update_mutation = '''
-#   mutation UpdateScheduleItemEnrollment($input: UpdateScheduleItemEnrollmentInput!) {
-#     updateScheduleItemEnrollment(input:$input) {
-#       scheduleItemEnrollment {
-#         id
-#         scheduleItem {
-#           id
-#         }
-#         organizationClasspassDropin {
-#           id
-#           name
-#         }
-#         organizationClasspassTrial {
-#           id
-#           name
-#         }
-#         dateStart
-#         dateEnd
-#       }
-#     }
-#   }
-# '''
-#
-#         self.schedule_item_enrollment_delete_mutation = '''
-#   mutation DeleteScheduleItemEnrollment($input: DeleteScheduleItemEnrollmentInput!) {
-#     deleteScheduleItemEnrollment(input: $input) {
-#       ok
-#     }
-#   }
-# '''
+        self.schedule_item_enrollment_update_mutation = '''
+  mutation UpdateScheduleItemEnrollment($input: UpdateScheduleItemEnrollmentInput!) {
+    updateScheduleItemEnrollment(input:$input) {
+      scheduleItemEnrollment {
+        id
+        dateStart
+        dateEnd
+        scheduleItem {
+          id
+        }
+        accountSubscription {
+          id
+        }
+      }
+    }
+  }
+'''
+
+        self.schedule_item_enrollment_delete_mutation = '''
+  mutation DeleteScheduleItemEnrollment($input: DeleteScheduleItemEnrollmentInput!) {
+    deleteScheduleItemEnrollment(input: $input) {
+      ok
+    }
+  }
+'''
 
     def tearDown(self):
         # This is run after every test
@@ -383,33 +378,25 @@ class GQLScheduleItemEnrollment(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_update_schedule_item_enrollment(self):
-    #     """ Update schedule item enrollment """
-    #     schedule_item_enrollment = f.ScheduleItemEnrollmentFactory.create()
-    #     classpass_dropin = f.OrganizationClasspassFactory.create()
-    #     classpass_trial = f.OrganizationClasspassTrialFactory.create()
-    #
-    #     query = self.schedule_item_enrollment_update_mutation
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemEnrollmentNode', schedule_item_enrollment.pk)
-    #     variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
-    #     variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleItemEnrollment']['scheduleItemEnrollment']['organizationClasspassDropin']['id'],
-    #       variables['input']['organizationClasspassDropin'])
-    #     self.assertEqual(data['updateScheduleItemEnrollment']['scheduleItemEnrollment']['organizationClasspassTrial']['id'],
-    #       variables['input']['organizationClasspassTrial'])
-    #     self.assertEqual(data['updateScheduleItemEnrollment']['scheduleItemEnrollment']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateScheduleItemEnrollment']['scheduleItemEnrollment']['dateEnd'], variables['input']['dateEnd'])
+
+
+    def test_update_schedule_item_enrollment(self):
+        """ Update schedule item enrollment """
+        query = self.schedule_item_enrollment_update_mutation
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemEnrollmentNode', self.schedule_item_enrollment.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleItemEnrollment']['scheduleItemEnrollment']['dateStart'],
+                         variables['input']['dateStart'])
+        self.assertEqual(data['updateScheduleItemEnrollment']['scheduleItemEnrollment']['dateEnd'],
+                         variables['input']['dateEnd'])
     #
     #
     # def test_update_schedule_item_enrollment_anon_user(self):
