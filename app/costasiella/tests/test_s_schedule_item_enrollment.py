@@ -92,30 +92,25 @@ class GQLScheduleItemEnrollment(TestCase):
     }
   }
 '''
-#
-#         self.schedule_item_enrollment_create_mutation = '''
-#   mutation CreateScheduleItemEnrollment($input:CreateScheduleItemEnrollmentInput!) {
-#     createScheduleItemEnrollment(input:$input) {
-#       scheduleItemEnrollment {
-#         id
-#         scheduleItem {
-#           id
-#         }
-#         organizationClasspassDropin {
-#           id
-#           name
-#         }
-#         organizationClasspassTrial {
-#           id
-#           name
-#         }
-#         dateStart
-#         dateEnd
-#       }
-#     }
-#   }
-# '''
-#
+
+        self.schedule_item_enrollment_create_mutation = '''
+  mutation CreateScheduleItemEnrollment($input: CreateScheduleItemEnrollmentInput!) {
+    createScheduleItemEnrollment(input:$input) {
+      scheduleItemEnrollment {
+        id
+        dateStart
+        dateEnd
+        scheduleItem {
+          id
+        }
+        accountSubscription {
+          id
+        }
+      }
+    }
+  }
+'''
+
 #         self.schedule_item_enrollment_update_mutation = '''
 #   mutation UpdateScheduleItemEnrollment($input: UpdateScheduleItemEnrollmentInput!) {
 #     updateScheduleItemEnrollment(input:$input) {
@@ -296,109 +291,98 @@ class GQLScheduleItemEnrollment(TestCase):
           to_global_id('ScheduleItemNode', self.schedule_item_enrollment.schedule_item.pk)
         )
 
-    #
-    # def test_create_schedule_item_enrollment(self):
-    #     """ Create schedule item enrollment """
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     classpass_dropin = f.OrganizationClasspassFactory.create()
-    #     classpass_trial = f.OrganizationClasspassTrialFactory.create()
-    #
-    #     query = self.schedule_item_enrollment_create_mutation
-    #     variables = self.variables_create
-    #     variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
-    #     variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
-    #     variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['scheduleItem']['id'], variables['input']['scheduleItem'])
-    #     self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['organizationClasspassDropin']['id'],
-    #       variables['input']['organizationClasspassDropin'])
-    #     self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['organizationClasspassTrial']['id'],
-    #       variables['input']['organizationClasspassTrial'])
-    #     self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['dateEnd'], variables['input']['dateEnd'])
-    #
-    #
-    # def test_create_schedule_item_enrollment_anon_user(self):
-    #     """ Don't allow creating schedule item enrollment for non-logged in users """
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     classpass_dropin = f.OrganizationClasspassFactory.create()
-    #     classpass_trial = f.OrganizationClasspassTrialFactory.create()
-    #
-    #     query = self.schedule_item_enrollment_create_mutation
-    #     variables = self.variables_create
-    #     variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
-    #     variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
-    #     variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_create_schedule_item_enrollment_permission_granted(self):
-    #     """ Allow creating schedule item enrollments for users with permissions """
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     classpass_dropin = f.OrganizationClasspassFactory.create()
-    #     classpass_trial = f.OrganizationClasspassTrialFactory.create()
-    #
-    #     query = self.schedule_item_enrollment_create_mutation
-    #     variables = self.variables_create
-    #     variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
-    #     variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
-    #     variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['organizationClasspassDropin']['id'],
-    #                      variables['input']['organizationClasspassDropin'])
-    #
-    #
-    # def test_create_schedule_item_enrollment_permission_denied(self):
-    #     """ Check create schedule item enrollment permission denied error message """
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     classpass_dropin = f.OrganizationClasspassFactory.create()
-    #     classpass_trial = f.OrganizationClasspassTrialFactory.create()
-    #
-    #     query = self.schedule_item_enrollment_create_mutation
-    #     variables = self.variables_create
-    #     variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
-    #     variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
-    #     variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_create_schedule_item_enrollment(self):
+        """ Create schedule item enrollment """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        account_subscription = self.schedule_item_enrollment.account_subscription
+
+        query = self.schedule_item_enrollment_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
+        variables['input']['accountSubscription'] = to_global_id('AccountSubscriptionNode', account_subscription.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['scheduleItem']['id'],
+                         variables['input']['scheduleItem'])
+        self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['accountSubscription']['id'],
+                         variables['input']['accountSubscription'])
+        self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['dateStart'],
+                         variables['input']['dateStart'])
+        self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['dateEnd'],
+                         variables['input']['dateEnd'])
+
+
+    def test_create_schedule_item_enrollment_anon_user(self):
+        """ Don't allow creating schedule item enrollment for non-logged in users """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        account_subscription = self.schedule_item_enrollment.account_subscription
+
+        query = self.schedule_item_enrollment_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
+        variables['input']['accountSubscription'] = to_global_id('AccountSubscriptionNode', account_subscription.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_create_schedule_item_enrollment_permission_granted(self):
+        """ Allow creating schedule item enrollments for users with permissions """
+        # Create regular user
+        user = self.user
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        account_subscription = self.schedule_item_enrollment.account_subscription
+
+        query = self.schedule_item_enrollment_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
+        variables['input']['accountSubscription'] = to_global_id('AccountSubscriptionNode', account_subscription.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleItemEnrollment']['scheduleItemEnrollment']['scheduleItem']['id'],
+                         variables['input']['scheduleItem'])
+
+
+    def test_create_schedule_item_enrollment_permission_denied(self):
+        """ Check create schedule item enrollment permission denied error message """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        account_subscription = self.schedule_item_enrollment.account_subscription
+
+        query = self.schedule_item_enrollment_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
+        variables['input']['accountSubscription'] = to_global_id('AccountSubscriptionNode', account_subscription.pk)
+        executed = execute_test_client_api_query(
+            query,
+            self.user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     #
     # def test_update_schedule_item_enrollment(self):
