@@ -76,24 +76,22 @@ class GQLScheduleItemEnrollment(TestCase):
     }
   }
 '''
-#
-#         self.schedule_item_enrollment_query = '''
-#   query ScheduleItemEnrollment($id: ID!) {
-#     scheduleItemEnrollment(id: $id) {
-#       id
-#       organizationClasspassDropin {
-#         id
-#         name
-#       }
-#       organizationClasspassTrial {
-#         id
-#         name
-#       }
-#       dateStart
-#       dateEnd
-#     }
-#   }
-# '''
+
+        self.schedule_item_enrollment_query = '''
+  query ScheduleItemEnrollment($id: ID!) {
+    scheduleItemEnrollment(id: $id) {
+      id
+      dateStart
+      dateEnd
+      scheduleItem {
+        id
+      }
+      accountSubscription {
+        id
+      }   
+    }
+  }
+'''
 #
 #         self.schedule_item_enrollment_create_mutation = '''
 #   mutation CreateScheduleItemEnrollment($input:CreateScheduleItemEnrollmentInput!) {
@@ -225,85 +223,79 @@ class GQLScheduleItemEnrollment(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_query_one(self):
-    #     """ Query list of schedule item enrollment """
-    #     schedule_item_enrollment = f.ScheduleItemEnrollmentFactory.create()
-    #     query = self.schedule_item_enrollment_query
-    #
-    #     variables = {
-    #       "id": to_global_id('ScheduleItemEnrollmentNode', schedule_item_enrollment.id),
-    #     }
-    #
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #       data['scheduleItemEnrollment']['organizationClasspassDropin']['id'],
-    #       to_global_id('OrganizationClasspassNode', schedule_item_enrollment.organization_classpass_dropin.pk)
-    #     )
-    #     self.assertEqual(
-    #       data['scheduleItemEnrollment']['organizationClasspassTrial']['id'],
-    #       to_global_id('OrganizationClasspassNode', schedule_item_enrollment.organization_classpass_trial.pk)
-    #     )
-    #     self.assertEqual(data['scheduleItemEnrollment']['dateStart'], str(schedule_item_enrollment.date_start))
-    #     self.assertEqual(data['scheduleItemEnrollment']['dateEnd'], schedule_item_enrollment.date_end)
-    #
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Query list of schedule item enrollment """
-    #     schedule_item_enrollment = f.ScheduleItemEnrollmentFactory.create()
-    #     query = self.schedule_item_enrollment_query
-    #
-    #     variables = {
-    #       "id": to_global_id('ScheduleItemEnrollmentNode', schedule_item_enrollment.id),
-    #     }
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     schedule_item_enrollment = f.ScheduleItemEnrollmentFactory.create()
-    #     query = self.schedule_item_enrollment_query
-    #
-    #     variables = {
-    #       "id": to_global_id('ScheduleItemEnrollmentNode', schedule_item_enrollment.id),
-    #     }
-    #
-    #     # Now query single schedule item enrollment and check
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_scheduleitemenrollment')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     schedule_item_enrollment = f.ScheduleItemEnrollmentFactory.create()
-    #     query = self.schedule_item_enrollment_query
-    #
-    #     variables = {
-    #       "id": to_global_id('ScheduleItemEnrollmentNode', schedule_item_enrollment.id),
-    #     }
-    #
-    #     # Now query single schedule item enrollment and check
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['scheduleItemEnrollment']['organizationClasspassDropin']['id'],
-    #       to_global_id('OrganizationClasspassNode', schedule_item_enrollment.organization_classpass_dropin.pk)
-    #     )
-    #
+
+
+    def test_query_one(self):
+        """ Query a schedule item enrollment """
+        query = self.schedule_item_enrollment_query
+
+        variables = {
+          "id": to_global_id('ScheduleItemEnrollmentNode', self.schedule_item_enrollment.id),
+        }
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(
+          data['scheduleItemEnrollment']['scheduleItem']['id'],
+          to_global_id('ScheduleItemNode', self.schedule_item_enrollment.schedule_item.pk)
+        )
+        self.assertEqual(
+          data['scheduleItemEnrollment']['accountSubscription']['id'],
+          to_global_id('AccountSubscriptionNode', self.schedule_item_enrollment.account_subscription.id)
+        )
+        self.assertEqual(data['scheduleItemEnrollment']['dateStart'], str(self.schedule_item_enrollment.date_start))
+        self.assertEqual(data['scheduleItemEnrollment']['dateEnd'], str(self.schedule_item_enrollment.date_end))
+
+
+    def test_query_one_anon_user(self):
+        """ Query schedule item enrollment """
+        query = self.schedule_item_enrollment_query
+
+        variables = {
+          "id": to_global_id('ScheduleItemEnrollmentNode', self.schedule_item_enrollment.id),
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        # Create regular user
+        query = self.schedule_item_enrollment_query
+
+        variables = {
+          "id": to_global_id('ScheduleItemEnrollmentNode', self.schedule_item_enrollment.id),
+        }
+
+        # Now query single schedule item enrollment and check
+        executed = execute_test_client_api_query(query, self.user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        permission = Permission.objects.get(codename=self.permission_view)
+        self.user.user_permissions.add(permission)
+        self.user.save()
+
+        query = self.schedule_item_enrollment_query
+
+        variables = {
+          "id": to_global_id('ScheduleItemEnrollmentNode', self.schedule_item_enrollment.id),
+        }
+
+        # Now query single schedule item enrollment and check
+        executed = execute_test_client_api_query(query, self.user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+          data['scheduleItemEnrollment']['scheduleItem']['id'],
+          to_global_id('ScheduleItemNode', self.schedule_item_enrollment.schedule_item.pk)
+        )
+
     #
     # def test_create_schedule_item_enrollment(self):
     #     """ Create schedule item enrollment """
