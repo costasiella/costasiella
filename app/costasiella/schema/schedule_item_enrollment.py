@@ -47,7 +47,7 @@ class ScheduleItemEnrollmentQuery(graphene.ObjectType):
 
     def resolve_schedule_item_enrollments(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleitemenrollment')
+        require_login_and_permission(user, 'costasiella.view_scheduleitemenrollment')
 
         return ScheduleItemEnrollment.objects.order_by('-date_start')
 
