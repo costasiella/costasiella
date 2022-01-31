@@ -176,7 +176,7 @@ class DeleteScheduleItemEnrollment(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_scheduleitemenrollment')
+        require_login_and_permission(user, 'costasiella.delete_scheduleitemenrollment')
 
         rid = get_rid(input['id'])
         schedule_item_enrollment = ScheduleItemEnrollment.objects.filter(id=rid.id).first()

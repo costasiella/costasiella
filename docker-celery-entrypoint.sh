@@ -3,6 +3,6 @@
 # Set working directory
 cd /opt/app
 
-# Collect static files
+# Start celery
 echo "Start celery"
 celery -A app worker -l info
