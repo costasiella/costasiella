@@ -10,7 +10,7 @@ from .account_document import AccountDocumentQuery, AccountDocumentMutation
 from .account_finance_payment_batch_category_item import \
     AccountFinancePaymentBatchCategoryItemQuery,\
     AccountFinancePaymentBatchCategoryItemMutation
-from .account_membership import AccountMembershipQuery, AccountMembershipMutation
+# from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_note import AccountNoteQuery, AccountNoteMutation
 from .account_schedule_event_ticket import AccountScheduleEventTicketQuery, AccountScheduleEventTicketMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
@@ -106,7 +106,7 @@ class Query(AccountQuery,
             AccountClasspassQuery,
             AccountDocumentQuery,
             AccountFinancePaymentBatchCategoryItemQuery,
-            AccountMembershipQuery,
+            # AccountMembershipQuery,
             AccountNoteQuery,
             AccountScheduleEventTicketQuery,
             AccountSubscriptionQuery,
@@ -189,7 +189,7 @@ class Mutation(AccountMutation,
                AccountClasspassMutation,
                AccountDocumentMutation,
                AccountFinancePaymentBatchCategoryItemMutation,
-               AccountMembershipMutation,
+               # AccountMembershipMutation,
                AccountNoteMutation,
                AccountSubscriptionMutation,
                AccountScheduleEventTicketMutation,
