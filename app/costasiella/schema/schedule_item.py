@@ -61,14 +61,14 @@ class ScheduleItemNode(DjangoObjectType):
             return schedule_item
 
     def resolve_count_attendance(self, info):
-        filter = Q(schedule_item_id=self.id) & ~Q(booking_status="cancelled")
+        filter = Q(schedule_item_id=self.id) & ~Q(booking_status="CANCELLED")
         count_attendance = ScheduleItemAttendance.objects.filter(filter).count()
 
         return count_attendance
 
-    def resolve_enrollments(self, info, first, **kwargs):
+    def resolve_enrollments(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleitemenrollment')
+        require_login_and_permission(user, 'costasiella.view_scheduleitemenrollment')
 
 
 class ScheduleItemQuery(graphene.ObjectType):

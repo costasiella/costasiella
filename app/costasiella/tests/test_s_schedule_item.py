@@ -516,8 +516,9 @@ query ScheduleEventActivity($id:ID!) {
 
         # Now query single event and check
         executed = execute_test_client_api_query(self.schedule_item_enrollments_query, user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        data = executed.get('data')
+        self.assertEqual(data['scheduleItem']['enrollments']['edges'][0]['node']['id'],
+                         to_global_id("ScheduleItemEnrollmentNode", schedule_item_enrollment.id))
 
 
     def test_create_schedule_event_activity(self):
