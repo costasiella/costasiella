@@ -26,7 +26,9 @@ class TaskAccountSubscriptionCredits(TestCase):
         'app_settings.json',
         'finance_invoice_group.json',
         'finance_invoice_group_defaults.json',
-        'finance_payment_methods.json'
+        'finance_payment_methods.json',
+        'organization.json',
+        'system_mail_template.json'
     ]
 
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
@@ -58,6 +60,22 @@ class TaskAccountSubscriptionCredits(TestCase):
         self.assertEqual(float(add_mutation.mutation_amount), expected_credits)
         self.assertEqual(add_mutation.subscription_year, year)
         self.assertEqual(add_mutation.subscription_month, month)
+
+    def test_account_subscription_credits_add_for_month_process_enrollments(self):
+        """ Are enrolled classes booked """
+        schedule_item_enrollment = f.ScheduleItemEnrollmentFactory.create()
+        account_subscription = schedule_item_enrollment.account_subscription
+
+        today = timezone.now().date()
+        year = today.year
+        month = today.month
+        expected_credits = account_subscription._calculate_credits_for_month(year, month)
+        result = account_subscription_credits_add_for_month(year, month)
+        self.assertEqual(result, "Added credits for 1 subscriptions")
+
+        # Check classes booked
+        classes_booked = models.ScheduleItemAttendance.objects.filter(account_subscription=account_subscription)
+        self.assertEqual(len(classes_booked) > 1, True)
 
     def test_expire_subscription_credits(self):
         """ Test credit expiration """

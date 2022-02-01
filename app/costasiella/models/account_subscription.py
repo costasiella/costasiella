@@ -164,8 +164,8 @@ class AccountSubscription(models.Model):
 
         enrollments = ScheduleItemEnrollment.objects.filter(
             Q(account_subscription=self) &
-            Q(date_start__gte=first_day_month) &
-            (Q(date_end__lte=last_day_month) | Q(date_end__isnull=True))
+            Q(date_start__lte=last_day_month) &
+            (Q(date_end__gte=first_day_month) | Q(date_end__isnull=True))
         )
 
         return enrollments
