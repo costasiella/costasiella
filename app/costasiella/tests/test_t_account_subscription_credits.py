@@ -95,4 +95,3 @@ class TaskAccountSubscriptionCredits(TestCase):
             mutation_type="SUB"
         ).first()
         self.assertEqual(sub_mutation.mutation_amount, account_subscription_credit.mutation_amount)
-
