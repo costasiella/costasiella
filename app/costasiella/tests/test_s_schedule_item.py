@@ -29,6 +29,7 @@ class GQLScheduleItem(TestCase):
         self.anon_user = AnonymousUser()
 
         self.permission_view = 'view_scheduleitem'
+        self.permission_view_enrollments = 'view_scheduleitemenrollment'
         self.permission_add = 'add_scheduleitem'
         self.permission_change = 'change_scheduleitem'
         self.permission_delete = 'delete_scheduleitem'
@@ -226,6 +227,66 @@ query ScheduleEventActivity($id:ID!) {
   }
 '''
 
+        self.schedule_item_enrollments_query = '''
+      query ScheduleItemEnrollments($after: String, $before: String, $scheduleItem: ID!, $dateEnd_Isnull:Boolean) {
+    scheduleItem(id:$scheduleItem) {
+      id
+      frequencyType
+      frequencyInterval
+      organizationLocationRoom {
+        id
+        name
+        organizationLocation {
+          id
+          name
+        }
+      }
+      organizationClasstype {
+        id
+        name
+      }
+      organizationLevel {
+        id
+        name
+      }
+      dateStart
+      dateEnd
+      timeStart
+      timeEnd
+      displayPublic
+      enrollments(first: 1000, before: $before, after: $after, scheduleItem: $scheduleItem, dateEnd_Isnull: $dateEnd_Isnull) {
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            id 
+            dateStart
+            dateEnd
+            accountSubscription {
+              id
+              dateStart
+              dateEnd
+              organizationSubscription {
+                id
+                name
+              }
+              account {
+                id
+                fullName
+              }            
+            }
+          }
+        }
+      }
+    }
+  }
+'''
+
+
     def tearDown(self):
         # This is run after every test
         pass
@@ -421,6 +482,43 @@ query ScheduleEventActivity($id:ID!) {
         data = executed.get('data')
         self.assertEqual(data['scheduleItem']['scheduleEvent']['id'],
                          to_global_id("ScheduleEventNode", schedule_event_activity.schedule_event.id))
+
+
+    def test_query_one_schedule_item_enrollments_permission_denied(self):
+        """ Query schedule item with enrollments - ensure enrollment permissions are checked """
+        schedule_item_enrollment = f.ScheduleItemEnrollmentFactory.create()
+        # Create regular user
+        user = schedule_item_enrollment.account_subscription.account
+
+        variables = {
+            "scheduleItem": to_global_id("ScheduleItemNode", schedule_item_enrollment.schedule_item.id),
+        }
+
+        # Now query single event and check
+        executed = execute_test_client_api_query(self.schedule_item_enrollments_query, user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        self.assertEqual(errors[0]['path'], ['scheduleItem', 'enrollments'])
+
+
+    def test_query_one_schedule_item_enrollments_permission_granted(self):
+        """ Query schedule item with enrollments - ensure enrollment permissions are checked """
+        schedule_item_enrollment = f.ScheduleItemEnrollmentFactory.create()
+        # Create regular user
+        user = schedule_item_enrollment.account_subscription.account
+        permission = Permission.objects.get(codename=self.permission_view_enrollments)
+        user.user_permissions.add(permission)
+
+        variables = {
+            "scheduleItem": to_global_id("ScheduleItemNode", schedule_item_enrollment.schedule_item.id),
+        }
+
+        # Now query single event and check
+        executed = execute_test_client_api_query(self.schedule_item_enrollments_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
 
     def test_create_schedule_event_activity(self):
         """ Create a schedule event activity """
