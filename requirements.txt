@@ -1,7 +1,7 @@
 amqp==5.0.9
 aniso8601==3.0.2
-anyjson==0.3.3
-argon2-cffi==19.1.0
+argon2-cffi==21.3.0
+argon2-cffi-bindings==21.2.0
 asgiref==3.4.1
 billiard==3.6.4.0
 cairocffi==1.1.0
