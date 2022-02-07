@@ -27,7 +27,8 @@ class ScheduleItemAttendance(models.Model):
     ]
 
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
+    schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE,
+                                      related_name="attendances")
     account_classpass = models.ForeignKey(AccountClasspass, on_delete=models.CASCADE, null=True,
                                           related_name="classes")
     account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.CASCADE, null=True)
