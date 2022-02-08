@@ -30,6 +30,14 @@ class AccountDocumentNode(DjangoObjectType):
     
     class Meta:
         model = AccountDocument
+        # Fields to include
+        fields = (
+            'account',
+            'description',
+            'document',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['account']
         interfaces = (graphene.relay.Node, AccountDocumentNodeInterface)
 
