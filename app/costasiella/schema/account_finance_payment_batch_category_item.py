@@ -47,6 +47,17 @@ class AccountFinancePaymentBatchCategoryItemNodeInterface(graphene.Interface):
 class AccountFinancePaymentBatchCategoryItemNode(DjangoObjectType):
     class Meta:
         model = AccountFinancePaymentBatchCategoryItem
+        # Fields to include
+        fields = (
+            'account',
+            'finance_payment_batch_category',
+            'year',
+            'month',
+            'amount',
+            'description',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['account']
         interfaces = (graphene.relay.Node, AccountFinancePaymentBatchCategoryItemNodeInterface, )
 
