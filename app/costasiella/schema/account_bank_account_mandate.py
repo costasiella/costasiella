@@ -35,6 +35,15 @@ def validate_create_update_input(input, update=False):
 class AccountBankAccountMandateNode(DjangoObjectType):
     class Meta:
         model = AccountBankAccountMandate
+        # Fields to include
+        fields = (
+            'account_bank_account',
+            'reference',
+            'content',
+            'signature_date',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['account_bank_account']
         interfaces = (graphene.relay.Node, )
 
