@@ -28,6 +28,37 @@ class FinanceInvoiceInterface(graphene.Interface):
 class FinanceInvoiceNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoice
+        fields = (
+            'account',
+            'finance_invoice_group',
+            'finance_payment_method',
+            'instructor_payment',
+            'employee_claim',
+            'relation_company',
+            'relation_company_registration',
+            'relation_company_tax_registration',
+            'relation_contact_name',
+            'relation_address',
+            'relation_postcode',
+            'relation_city',
+            'relation_country',
+            'status',
+            'summary',
+            'invoice_number',
+            'date_sent',
+            'date_due',
+            'terms',
+            'footer',
+            'note',
+            'subtotal',
+            'tax',
+            'total',
+            'paid',
+            'balance',
+            'credit_invoice_for',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = {
             'account': ['exact'],
             'invoice_number': ['icontains', 'exact'],
