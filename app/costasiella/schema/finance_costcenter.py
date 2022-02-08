@@ -15,6 +15,11 @@ m = Messages()
 class FinanceCostCenterNode(DjangoObjectType):
     class Meta:
         model = FinanceCostCenter
+        fields = (
+            'archived',
+            'name',
+            'code'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 
