@@ -27,6 +27,10 @@ class AppSettingsNode(DjangoObjectType):
 
     class Meta:
         model = AppSettings
+        fields = (
+            'date_format',
+            'time_format'
+        )
         interfaces = (graphene.relay.Node, AppSettingsNodeInterface,)
 
     def resolve_time_format_moment(self, info):
