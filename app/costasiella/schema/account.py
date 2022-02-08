@@ -74,7 +74,6 @@ class AccountNodeInterface(graphene.Interface):
 class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
-
         # Fields to include
         fields = (
             'is_active',
@@ -101,7 +100,6 @@ class AccountNode(DjangoObjectType):
             'classpasses',
             'subscriptions'
         )
-        # exclude = ['password']  # Fields to exclude
         filter_fields = {
             'full_name': ['icontains', 'exact'],
             'is_active': ['exact'],
@@ -166,7 +164,7 @@ class AccountNode(DjangoObjectType):
         ])
 
     def resolve_customer(self, info, **kwargs):
-        return check_node_item_permission(
+        return check_node_item_resolve_permission(
             user=info.context.user,
             node=self,
             permission='costasiella.view_account',
@@ -187,7 +185,7 @@ class AccountNode(DjangoObjectType):
         ])
 
     def resolve_email(self, info, **kwargs):
-        return check_node_item_permission(
+        return check_node_item_resolve_permission(
             user=info.context.user,
             node=self,
             permission='costasiella.view_account',
@@ -196,7 +194,7 @@ class AccountNode(DjangoObjectType):
         )
 
     def resolve_employee(self, info, **kwargs):
-        return check_node_item_permission(
+        return check_node_item_resolve_permission(
             user=info.context.user,
             node=self,
             permission='costasiella.view_account',
@@ -217,7 +215,7 @@ class AccountNode(DjangoObjectType):
         ])
 
     def resolve_instructor(self, info, **kwargs):
-        return check_node_item_permission(
+        return check_node_item_resolve_permission(
             user=info.context.user,
             node=self,
             permission='costasiella.view_account',
@@ -226,7 +224,7 @@ class AccountNode(DjangoObjectType):
         )
 
     def resolve_is_active(self, info, **kwargs):
-        return check_node_item_permission(
+        return check_node_item_resolve_permission(
             user=info.context.user,
             node=self,
             permission='costasiella.view_account',
