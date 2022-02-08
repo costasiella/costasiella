@@ -20,7 +20,9 @@ from sorl.thumbnail import get_thumbnail
 from allauth.account.models import EmailAddress
 from ..models import AccountBankAccount, AccountInstructorProfile, OrganizationDiscovery, OrganizationLanguage
 
-from ..modules.gql_tools import require_login, \
+from ..modules.gql_tools import \
+    check_node_item_resolve_permission, \
+    require_login, \
     require_permission, \
     require_login_and_permission, \
     require_login_and_one_of_permissions, \
@@ -72,9 +74,34 @@ class AccountNodeInterface(graphene.Interface):
 class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
-        
-        # fields=() # Fields to include
-        exclude = ['password']  # Fields to exclude
+
+        # Fields to include
+        fields = (
+            'is_active',
+            'customer',
+            'instructor',
+            'employee',
+            'first_name',
+            'last_name',
+            'full_name',
+            'email',
+            'gender',
+            'date_of_birth',
+            'address',
+            'postcode',
+            'city',
+            'country',
+            'phone',
+            'mobile',
+            'emergency',
+            'key_number',
+            'image',
+            'organization_discovery',
+            'organization_language',
+            'classpasses',
+            'subscriptions'
+        )
+        # exclude = ['password']  # Fields to exclude
         filter_fields = {
             'full_name': ['icontains', 'exact'],
             'is_active': ['exact'],
@@ -85,6 +112,11 @@ class AccountNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, AccountNodeInterface,)
 
     def resolve_has_reached_trial_limit(self, info):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
         return self.has_reached_trial_limit()
 
     #TODO: Replace by protected url like account document, in case there's a use for the full res image.
@@ -95,6 +127,11 @@ class AccountNode(DjangoObjectType):
     #         return ''
 
     def resolve_url_image_thumbnail_small(self, info):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
         if self.image:
             return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
         else:
@@ -109,6 +146,125 @@ class AccountNode(DjangoObjectType):
         ])
 
         return cls._meta.model.objects.get(id=id)
+
+    def resolve_address(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_city(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_country(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_customer(self, info, **kwargs):
+        return check_node_item_permission(
+            user=info.context.user,
+            node=self,
+            permission='costasiella.view_account',
+            ok_value=self.customer,
+            fail_value=False
+        )
+
+    def resolve_date_of_birth(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_emergency(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_email(self, info, **kwargs):
+        return check_node_item_permission(
+            user=info.context.user,
+            node=self,
+            permission='costasiella.view_account',
+            ok_value=self.email,
+            fail_value="permission@denied.com"
+        )
+
+    def resolve_employee(self, info, **kwargs):
+        return check_node_item_permission(
+            user=info.context.user,
+            node=self,
+            permission='costasiella.view_account',
+            ok_value=self.employee,
+            fail_value=False
+        )
+
+    def resolve_gender(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_image(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_instructor(self, info, **kwargs):
+        return check_node_item_permission(
+            user=info.context.user,
+            node=self,
+            permission='costasiella.view_account',
+            ok_value=self.instructor,
+            fail_value=False
+        )
+
+    def resolve_is_active(self, info, **kwargs):
+        return check_node_item_permission(
+            user=info.context.user,
+            node=self,
+            permission='costasiella.view_account',
+            ok_value=self.is_active,
+            fail_value=False
+        )
+
+    def resolve_key_number(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_mobile(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_phone(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_postcode(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+    def resolve_classpasses(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_accountclasspass')
+
+    def resolve_subscriptions(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
 
 class GroupNode(DjangoObjectType):

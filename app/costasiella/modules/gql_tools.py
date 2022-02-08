@@ -54,6 +54,19 @@ def require_login_and_one_of_permission_or_own_account(user, user_model, record_
         raise GraphQLError(m.user_permission_denied, extensions={'code': get_error_code('USER_PERMISSION_DENIED')})
 
 
+def check_node_item_resolve_permission(user, node, permission, ok_value, fail_value=None):
+    """
+    Check whether the current user has permissions to view the requested field for a given node
+    """
+    return_value = fail_value
+
+    if not user.is_anonymous:
+        if user.id == node.id or user.has_perm(permission):
+            return_value = ok_value
+
+    return return_value
+
+
 # To convert relay node id to real id
 def get_rid(global_id):
     Rid = namedtuple('Rid', 'name id')
