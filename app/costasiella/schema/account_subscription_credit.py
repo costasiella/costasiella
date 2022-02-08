@@ -39,6 +39,18 @@ def validate_create_update_input(input, update=False):
 class AccountSubscriptionCreditNode(DjangoObjectType):
     class Meta:
         model = AccountSubscriptionCredit
+        # Fields to include
+        fields = (
+            'account_subscription',
+            'schedule_item_attendance',
+            'mutation_type',
+            'mutation_amount',
+            'description',
+            'subscription_year',
+            'subscription_month',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = {
             'account_subscription': ['exact'],
         }
