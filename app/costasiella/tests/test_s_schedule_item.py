@@ -288,7 +288,7 @@ query ScheduleEventActivity($id:ID!) {
 '''
 
         self.schedule_item_attendances_query = '''
-      query ScheduleItemAttendances($after: String, $before: String, $scheduleItem: ID!) {
+  query ScheduleItemAttendances($after: String, $before: String, $scheduleItem: ID!) {
     scheduleItem(id:$scheduleItem) {
       id
       frequencyType
@@ -602,8 +602,6 @@ query ScheduleEventActivity($id:ID!) {
 
         # Now query single event and check
         executed = execute_test_client_api_query(self.schedule_item_attendances_query, user, variables=variables)
-        print('#######')
-        print(executed)
         data = executed.get('data')
         self.assertEqual(data['scheduleItem']['attendances']['edges'][0]['node']['id'],
                          to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id))
