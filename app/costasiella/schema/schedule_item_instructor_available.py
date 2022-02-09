@@ -11,9 +11,18 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+
 class ScheduleItemInstructorAvailableNode(DjangoObjectType):
     class Meta:
         model = ScheduleItemInstructorAvailable
+        fields = (
+            'schedule_item',
+            'account',
+            'date_start',
+            'date_end',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['schedule_item']
         interfaces = (graphene.relay.Node, )
 

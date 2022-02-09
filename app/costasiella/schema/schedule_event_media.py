@@ -24,6 +24,24 @@ class ScheduleEventMediaNodeInterface(graphene.Interface):
 
 
 class ScheduleEventMediaNode(DjangoObjectType):
+    class Meta:
+        model = ScheduleEventMedia
+        fields = (
+            'schedule_event',
+            'sort_order',
+            'description',
+            'image'
+        )
+        filter_fields = ['schedule_event']
+        interfaces = (graphene.relay.Node, ScheduleEventMediaNodeInterface)
+
+    @classmethod
+    def get_node(self, info, id):
+        # user = info.context.user
+        # require_login_and_permission(user, 'costasiella.view_scheduleeventmedia')
+
+        return self._meta.model.objects.get(id=id)
+
     def resolve_url_image(self, info):
         if self.image:
             return self.image.url
@@ -41,18 +59,6 @@ class ScheduleEventMediaNode(DjangoObjectType):
             return get_thumbnail(self.image, '400x400', crop='center', quality=99).url
         else:
             return ''
-    
-    class Meta:
-        model = ScheduleEventMedia
-        filter_fields = ['schedule_event']
-        interfaces = (graphene.relay.Node, ScheduleEventMediaNodeInterface)
-
-    @classmethod
-    def get_node(self, info, id):
-        # user = info.context.user
-        # require_login_and_permission(user, 'costasiella.view_scheduleeventmedia')
-
-        return self._meta.model.objects.get(id=id)
 
 
 class ScheduleEventMediaQuery(graphene.ObjectType):

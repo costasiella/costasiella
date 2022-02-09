@@ -40,6 +40,31 @@ class ScheduleItemNode(DjangoObjectType):
 
     class Meta:
         model = ScheduleItem
+        fields = (
+            'schedule_event',
+            'schedule_item_type',
+            'frequency_type',
+            'frequency_interval',
+            'organization_location_room',
+            'organization_classtype',
+            'organization_level',
+            'organization_shift',
+            'name',
+            'spaces',
+            'walk_in_spaces',
+            'date_start',
+            'date_end',
+            'time_start',
+            'time_end',
+            'display_public',
+            'organization_classpass_groups',
+            'organization_subscription_groups',
+            'info_mail_content',
+            'account',
+            'account_2',
+            'created_at',
+            'updated_at',
+        )
         filter_fields = ['schedule_item_type', 'schedule_event']
         interfaces = (graphene.relay.Node, ScheduleItemNodeInterface)
 

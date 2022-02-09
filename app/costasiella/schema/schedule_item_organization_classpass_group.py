@@ -15,6 +15,12 @@ m = Messages()
 class ScheduleItemOrganizationClasspassGroupNode(DjangoObjectType):
     class Meta:
         model = ScheduleItemOrganizationClasspassGroup
+        fields = (
+            'schedule_item',
+            'organization_classpass_group',
+            'shop_book',
+            'attend'
+        )
         filter_fields = ['schedule_item', 'organization_classpass_group']
         interfaces = (graphene.relay.Node, )
 

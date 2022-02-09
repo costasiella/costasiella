@@ -15,6 +15,10 @@ m = Messages()
 class OrganizationHolidayLocationNode(DjangoObjectType):
     class Meta:
         model = OrganizationHolidayLocation
+        fields = (
+            'organization_holiday',
+            'organization_location'
+        )
         interfaces = (graphene.relay.Node, )
 
     @classmethod

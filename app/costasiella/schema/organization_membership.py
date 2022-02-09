@@ -64,6 +64,20 @@ class OrganizationMembershipNodeInterface(graphene.Interface):
 class OrganizationMembershipNode(DjangoObjectType):   
     class Meta:
         model = OrganizationMembership
+        fields = (
+            'archived',
+            'display_public',
+            'display_shop',
+            'name',
+            'description',
+            'price',
+            'finance_tax_rate',
+            'validity',
+            'validity_unit',
+            'terms_and_conditions',
+            'finance_glaccount',
+            'finance_costcenter'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, OrganizationMembershipNodeInterface)
 

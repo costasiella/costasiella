@@ -34,8 +34,6 @@ class ScheduleItemAttendance(models.Model):
     account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.CASCADE, null=True)
     account_schedule_event_ticket = models.ForeignKey(AccountScheduleEventTicket, on_delete=models.CASCADE, null=True)
     finance_invoice_item = models.ForeignKey(FinanceInvoiceItem, on_delete=models.SET_NULL, null=True)
-    # Set to True when account has membership at time of check-in
-    account_has_membership = models.BooleanField(default=False)
     attendance_type = models.CharField(max_length=255, choices=ATTENDANCE_TYPES)
     date = models.DateField()
     online_booking = models.BooleanField(default=False)

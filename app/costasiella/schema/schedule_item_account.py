@@ -11,6 +11,7 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+
 class ScheduleItemAccountNode(DjangoObjectType):
     # Disable output like "A_3" by graphene automatically converting model choices
     # to an Enum field
@@ -19,6 +20,16 @@ class ScheduleItemAccountNode(DjangoObjectType):
 
     class Meta:
         model = ScheduleItemAccount
+        fields = (
+            'schedule_item',
+            'role',
+            'account_2',
+            'role_2',
+            'date_start',
+            'date_end',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['schedule_item']
         interfaces = (graphene.relay.Node, )
 

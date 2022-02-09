@@ -15,6 +15,14 @@ m = Messages()
 class SystemMailTemplateNode(DjangoObjectType):
     class Meta:
         model = SystemMailTemplate
+        fields = (
+            'name',
+            'subject',
+            'title',
+            'description',
+            'content',
+            'comments'
+        )
         filter_fields = {
             'id': ['exact'],
         }

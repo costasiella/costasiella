@@ -15,6 +15,10 @@ m = Messages()
 class OrganizationShiftNode(DjangoObjectType):
     class Meta:
         model = OrganizationShift
+        fields = (
+            'archived',
+            'name'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 

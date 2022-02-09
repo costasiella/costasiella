@@ -32,15 +32,6 @@ def validate_create_update_input(input, update=False):
     if not finance_tax_rate:
         raise Exception(_('Invalid Finance Tax Rate ID!'))
 
-    # Check OrganizationMembership
-    if 'organization_membership' in input:
-        if input['organization_membership']:
-            rid = get_rid(input['organization_membership'])
-            organization_membership = OrganizationMembership.objects.filter(id=rid.id).first()
-            result['organization_membership'] = organization_membership
-            if not organization_membership:
-                raise Exception(_('Invalid Organization Membership ID!'))            
-
     # Check GLAccount
     if 'finance_glaccount' in input:
         if input['finance_glaccount']: 
@@ -72,6 +63,23 @@ class OrganizationClasspassNodeInterface(graphene.Interface):
 class OrganizationClasspassNode(DjangoObjectType):   
     class Meta:
         model = OrganizationClasspass
+        fields = (
+            'archived',
+            'display_public',
+            'display_shop',
+            'trial_pass',
+            'name',
+            'description',
+            'price',
+            'finance_tax_rate',
+            'validity',
+            'validity_unit',
+            'classes',
+            'unlimited',
+            'quick_stats_amount',
+            'finance_glaccount',
+            'finance_costcenter'
+        )
         filter_fields = ['archived', 'display_shop']
         interfaces = (graphene.relay.Node, OrganizationClasspassNodeInterface)
 
@@ -147,7 +155,6 @@ class CreateOrganizationClasspass(graphene.relay.ClientIDMutation):
         validity_unit = graphene.String(required=True)
         classes = graphene.Int(required=True, default_value=1)
         unlimited = graphene.Boolean(required=True, default_value=False)
-        organization_membership = graphene.ID(required=False, default_value="")
         quick_stats_amount = graphene.Decimal(required=False, default_value=0)
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
@@ -180,9 +187,6 @@ class CreateOrganizationClasspass(graphene.relay.ClientIDMutation):
         if 'trial_times' in input:
             classpass.trial_times = input['trial_times']
 
-        if 'organization_membership' in result:
-            classpass.organization_membership = result['organization_membership']
-
         if 'finance_glaccount' in result:
             classpass.finance_glaccount = result['finance_glaccount']
 
@@ -209,7 +213,6 @@ class UpdateOrganizationClasspass(graphene.relay.ClientIDMutation):
         validity_unit = graphene.String(required=True)
         classes = graphene.Int(required=True, default_value=1)
         unlimited = graphene.Boolean(required=True, default_value=False)
-        organization_membership = graphene.ID(required=False, default_value="")
         quick_stats_amount = graphene.Decimal(required=False, default_value=0)
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
@@ -245,9 +248,6 @@ class UpdateOrganizationClasspass(graphene.relay.ClientIDMutation):
 
         if 'trial_times' in input:
             classpass.trial_times = input['trial_times']
-
-        if 'organization_membership' in result:
-            classpass.organization_membership = result['organization_membership']
 
         if 'finance_glaccount' in result:
             classpass.finance_glaccount = result['finance_glaccount']

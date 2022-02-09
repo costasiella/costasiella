@@ -16,6 +16,11 @@ m = Messages()
 class OrganizationClasspassGroupNode(DjangoObjectType):
     class Meta:
         model = OrganizationClasspassGroup
+        fields = (
+            'name',
+            'description',
+            'organization_classpass'
+        )
         filter_fields = []
         interfaces = (graphene.relay.Node, )
 

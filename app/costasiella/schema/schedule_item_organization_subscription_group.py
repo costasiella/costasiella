@@ -15,6 +15,13 @@ m = Messages()
 class ScheduleItemOrganizationSubscriptionGroupNode(DjangoObjectType):
     class Meta:
         model = ScheduleItemOrganizationSubscriptionGroup
+        fields = (
+            'schedule_item',
+            'organization_subscription_group',
+            'enroll',
+            'shop_book',
+            'attend'
+        )
         filter_fields = ['schedule_item', 'organization_subscription_group']
         interfaces = (graphene.relay.Node, )
 

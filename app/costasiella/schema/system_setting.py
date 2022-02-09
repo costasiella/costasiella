@@ -15,6 +15,10 @@ m = Messages()
 class SystemSettingNode(DjangoObjectType):   
     class Meta:
         model = SystemSetting
+        fields = (
+            'setting',
+            'value'
+        )
         filter_fields = {
             'setting': ['exact'],
         }
@@ -25,7 +29,6 @@ class SystemSettingNode(DjangoObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_systemsetting')
 
-        print(kwargs)
         id = kwargs.get('id')
         setting = kwargs.get('name')
 

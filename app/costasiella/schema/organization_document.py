@@ -22,14 +22,16 @@ class OrganizationDocumentNodeInterface(graphene.Interface):
 
 
 class OrganizationDocumentNode(DjangoObjectType):
-    def resolve_url_document(self, info):
-        if self.document:
-            return self.document.url
-        else:
-            return ''
-    
     class Meta:
         model = OrganizationDocument
+        fields = (
+            'organization',
+            'document_type',
+            'version',
+            'date_start',
+            'date_end',
+            'document'
+        )
         filter_fields = ['document_type', 'organization']
         interfaces = (graphene.relay.Node, OrganizationDocumentNodeInterface)
 
@@ -39,6 +41,12 @@ class OrganizationDocumentNode(DjangoObjectType):
         # This node is public, no need for any permission checking
 
         return self._meta.model.objects.get(id=id)
+
+    def resolve_url_document(self, info):
+        if self.document:
+            return self.document.url
+        else:
+            return ''
 
 
 class OrganizationDocumentQuery(graphene.ObjectType):

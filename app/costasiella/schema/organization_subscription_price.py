@@ -75,6 +75,13 @@ class OrganizationSubscriptionPriceNodeInterface(graphene.Interface):
 class OrganizationSubscriptionPriceNode(DjangoObjectType):
     class Meta:
         model = OrganizationSubscriptionPrice
+        fields = (
+            'organization_subscription',
+            'price',
+            'finance_tax_rate',
+            'date_start',
+            'date_end'
+        )
         filter_fields = {
             'organization_subscription': ['exact'],
             'date_start': ['lte'],

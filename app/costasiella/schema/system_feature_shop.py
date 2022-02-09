@@ -15,6 +15,14 @@ m = Messages()
 class SystemFeatureShopNode(DjangoObjectType):   
     class Meta:
         model = SystemFeatureShop
+        fields = (
+            'memberships',
+            'subscriptions',
+            'classpasses',
+            'classes',
+            'events',
+            'account_data_download'
+        )
         filter_fields = {}
         interfaces = (graphene.relay.Node, )
 

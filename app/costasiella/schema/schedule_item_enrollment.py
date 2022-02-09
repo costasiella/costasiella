@@ -24,6 +24,14 @@ m = Messages()
 class ScheduleItemEnrollmentNode(DjangoObjectType):
     class Meta:
         model = ScheduleItemEnrollment
+        fields = (
+            'schedule_item',
+            'account_subscription',
+            'date_start',
+            'date_end',
+            'created_at',
+            'updated_at'
+        )
         # account_schedule_event_ticket_Isnull filter can be used to differentiate class & event enrollment
         filter_fields = {
             'schedule_item': ['exact'],

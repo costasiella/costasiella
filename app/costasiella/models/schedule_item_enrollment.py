@@ -14,6 +14,7 @@ from .finance_invoice_item import FinanceInvoiceItem
 
 from .helpers import model_string
 
+
 # Create your models here
 class ScheduleItemEnrollment(models.Model):
     schedule_item = models.ForeignKey(ScheduleItem, related_name="enrollments", on_delete=models.CASCADE)

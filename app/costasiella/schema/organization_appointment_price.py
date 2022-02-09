@@ -53,6 +53,12 @@ class OrganizationAppointmentPriceNodeInterface(graphene.Interface):
 class OrganizationAppointmentPriceNode(DjangoObjectType):
     class Meta:
         model = OrganizationAppointmentPrice
+        fields = (
+            'account',
+            'organization_appointment',
+            'price',
+            'finance_tax_rate'
+        )
         filter_fields = {
             'account': ['exact'],
             'organization_appointment': ['exact'],

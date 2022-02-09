@@ -15,6 +15,18 @@ m = Messages()
 class OrganizationAnnouncementNode(DjangoObjectType):
     class Meta:
         model = OrganizationAnnouncement
+        fields = (
+            'display_public',
+            'display_shop',
+            'display_backend',
+            'title',
+            'content',
+            'date_start',
+            'date_end',
+            'priority',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['display_public', 'display_shop', 'display_backend']
         interfaces = (graphene.relay.Node, )
 

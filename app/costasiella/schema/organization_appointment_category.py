@@ -11,9 +11,15 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+
 class OrganizationAppointmentCategoryNode(DjangoObjectType):
     class Meta:
         model = OrganizationAppointmentCategory
+        fields = (
+            'archived',
+            'display_public',
+            'name'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 

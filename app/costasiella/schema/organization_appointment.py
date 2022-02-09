@@ -14,6 +14,14 @@ m = Messages()
 class OrganizationAppointmentNode(DjangoObjectType):
     class Meta:
         model = OrganizationAppointment
+        fields = (
+            'organization_appointment_category',
+            'archived',
+            'display_public',
+            'name',
+            'finance_glaccount',
+            'finance_costcenter'
+        )
         filter_fields = ['archived', 'organization_appointment_category']
         interfaces = (graphene.relay.Node, )
 

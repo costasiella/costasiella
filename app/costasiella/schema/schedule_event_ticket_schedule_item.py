@@ -48,6 +48,11 @@ class ScheduleEventTicketScheduleItemFilter(FilterSet):
 class ScheduleEventTicketScheduleItemNode(DjangoObjectType):
     class Meta:
         model = ScheduleEventTicketScheduleItem
+        fields = (
+            'schedule_event_ticket',
+            'schedule_item',
+            'included'
+        )
         filterset_class = ScheduleEventTicketScheduleItemFilter
         interfaces = (graphene.relay.Node,)
 
