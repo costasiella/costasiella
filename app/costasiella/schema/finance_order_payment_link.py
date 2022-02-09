@@ -36,19 +36,12 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
 
         from ..dudes.mollie_dude import MollieDude
 
-        print(info.context)
-        # print(info.context.build_absolute_uri())
-        
         user = info.context.user
         host = info.context.get_host()
         # https://docs.djangoproject.com/en/3.0/ref/request-response/
         # Check if the user owns this order
-        print(id)
-
         rid = get_rid(id)
         finance_order = FinanceOrder.objects.get(pk=rid.id)
-        print(finance_order.account.id)
-        print(user.id)
         if finance_order.account.id != user.id:
             raise GraphQLError(
                 m.finance_order_belongs_other_account, 
@@ -68,14 +61,11 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         
         # Gather mollie payment info
         redirect_url = 'https://' + host + '/#/shop/checkout/complete/' + id
-        print(redirect_url)
         mollie_customer_id = mollie_dude.get_account_mollie_customer_id(
           user,
           mollie
         )
-        print(mollie_customer_id)
         webhook_url = mollie_dude.get_webhook_url_from_request(info.context)
-        print(webhook_url)
 
         # Check recurring or not
         order_contains_subscription = finance_order.items_contain_subscription()
@@ -83,7 +73,6 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         if order_contains_subscription:
             # Check if we have a mandate
             mandates = mollie_dude.get_account_mollie_mandates(user, mollie)
-            print(mandates)
             # set default sequence type, change to recurring if a valid mandate is found.
             sequence_type = 'first'
             if mandates['count'] > 0:
@@ -95,7 +84,6 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
                         break
 
                 if valid_mandate:
-                    print("No sequence type... valid mandate found")
                     # Do a normal payment, probably an automatic payment failed somewhere in the process
                     # and customer should pay manually now
                     sequence_type = None
@@ -116,8 +104,6 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
                 'order_id': finance_order.pk
             }
         })
-
-        print(payment)
 
         #  Log payment info
         log = IntegrationLogMollie(

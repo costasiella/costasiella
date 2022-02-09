@@ -21,6 +21,16 @@ class FinanceInvoicePaymentInterface(graphene.Interface):
 class FinanceInvoicePaymentNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoicePayment
+        fields = (
+            'finance_invoice',
+            'date',
+            'amount',
+            'finance_payment_method',
+            'note',
+            'online_payment_id',
+            'online_refund_id',
+            'online_chargeback_id'
+        )
         filter_fields = {
             "id": ["exact"],
             "finance_invoice": ["exact"],

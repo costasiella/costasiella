@@ -45,6 +45,26 @@ class FinanceInvoiceItemFilter(FilterSet):
 class FinanceInvoiceItemNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoiceItem
+        fields = (
+            'finance_invoice',
+            'account_schedule_event_ticket',
+            'account_membership',
+            'account_classpass',
+            'account_subscription',
+            'subscription_year',
+            'subscription_month',
+            'line_number',
+            'product_name',
+            'description',
+            'quantity',
+            'price',
+            'finance_tax_rate',
+            'subtotal',
+            'tax',
+            'total',
+            'finance_glaccount',
+            'finance_costcenter'
+        )
         filter_fields = ['id', 'finance_invoice']
         interfaces = (graphene.relay.Node, FinanceInvoiceItemInterface, )
 

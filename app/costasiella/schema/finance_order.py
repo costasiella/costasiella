@@ -35,6 +35,17 @@ class FinanceOrderInterface(graphene.Interface):
 class FinanceOrderNode(DjangoObjectType):
     class Meta:
         model = FinanceOrder
+        fields = (
+            'finance_invoice',
+            'account',
+            'status',
+            'message',
+            'subtotal',
+            'tax',
+            'total',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = {
             'account': ['exact'],
             'status': ['exact'],

@@ -15,6 +15,10 @@ m = Messages()
 class FinanceInvoiceGroupDefaultNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoiceGroupDefault
+        fields = (
+            'item_type',
+            'finance_invoice_group'
+        )
         filter_fields = []
         interfaces = (graphene.relay.Node, )
 

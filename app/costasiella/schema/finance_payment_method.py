@@ -15,6 +15,12 @@ m = Messages()
 class FinancePaymentMethodNode(DjangoObjectType):
     class Meta:
         model = FinancePaymentMethod
+        fields = (
+            'archived',
+            'system_method',
+            'name',
+            'code'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 

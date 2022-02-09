@@ -15,6 +15,19 @@ m = Messages()
 class FinanceInvoiceGroupNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoiceGroup
+        fields = (
+            'archived',
+            'display_public',
+            'name',
+            'next_id',
+            'due_after_days',
+            'prefix',
+            'prefix_year',
+            'auto_reset_prefix_year',
+            'terms',
+            'footer',
+            'code'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 

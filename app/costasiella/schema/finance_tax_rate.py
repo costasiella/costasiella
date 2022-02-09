@@ -16,6 +16,13 @@ m = Messages()
 class FinanceTaxRateNode(DjangoObjectType):
     class Meta:
         model = FinanceTaxRate
+        fields = (
+            'archived',
+            'name',
+            'percentage',
+            'rate_type',
+            'code'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 

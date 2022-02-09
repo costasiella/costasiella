@@ -2,6 +2,7 @@ from django.utils.translation import gettext as _
 
 from django.db import models
 
+
 class FinancePaymentMethod(models.Model):
     archived = models.BooleanField(default=False)
     system_method = models.BooleanField(editable=False, default=False)
