@@ -44,7 +44,9 @@ class FinanceOrderNode(DjangoObjectType):
             'tax',
             'total',
             'created_at',
-            'updated_at'
+            'updated_at',
+            # Reverse relations
+            'items'
         )
         filter_fields = {
             'account': ['exact'],

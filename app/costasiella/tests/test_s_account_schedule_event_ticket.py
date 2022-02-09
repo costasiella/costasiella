@@ -277,12 +277,11 @@ class GQLAccountScheduleEventTicket(TestCase):
         data = executed.get('data')
         self.assertEqual(len(data['accountScheduleEventTickets']['edges']), 0)
 
-    def test_query_not_list_for_own_account(self):
+    def test_query_list_for_own_account(self):
         """ Query list of account account_schedule_events - allow listing of event tickets for own account """
         query = self.account_schedule_events_query
         user = self.account_schedule_event_ticket.account
 
-        # Create regular user
         executed = execute_test_client_api_query(query, user, variables=self.variables_query)
         data = executed.get('data')
         self.assertEqual(

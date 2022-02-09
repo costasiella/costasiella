@@ -57,7 +57,9 @@ class FinanceInvoiceNode(DjangoObjectType):
             'balance',
             'credit_invoice_for',
             'created_at',
-            'updated_at'
+            'updated_at',
+            # Reverse relations
+            'items'
         )
         filter_fields = {
             'account': ['exact'],

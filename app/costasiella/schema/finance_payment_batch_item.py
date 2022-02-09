@@ -21,6 +21,7 @@ class FinancePaymentBatchItemNode(DjangoObjectType):
     class Meta:
         model = FinancePaymentBatchItem
         fields = (
+            'finance_payment_batch',
             'account',
             'finance_invoice',
             'account_holder',

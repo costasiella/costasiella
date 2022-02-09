@@ -26,6 +26,8 @@ class AccountScheduleEventTicketNode(DjangoObjectType):
             'info_mail_sent',
             'created_at',
             'updated_at',
+            # reverse relations
+            'invoice_items'
         )
         filter_fields = ['account', 'schedule_event_ticket']
         interfaces = (graphene.relay.Node,)
@@ -36,6 +38,13 @@ class AccountScheduleEventTicketNode(DjangoObjectType):
         require_login_and_permission(user, 'costasiella.view_accountscheduleeventticket')
 
         return self._meta.model.objects.get(id=id)
+
+    def resolve_invoice_items(self, info, **kwargs):
+        user = info.context.user
+
+        # Allow users to resolve their own invoice items
+        if not user.id == self.account.id:
+            require_login_and_permission(user, 'costasiella.view_financeinvoiceitem')
 
 
 class AccountScheduleEventTicketQuery(graphene.ObjectType):

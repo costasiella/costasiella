@@ -24,6 +24,7 @@ class BusinessNode(DjangoObjectType):
             'address',
             'postcode',
             'city',
+            'country',
             'phone',
             'phone_2',
             'email_contact',

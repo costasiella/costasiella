@@ -22,6 +22,7 @@ class ScheduleItemAccountNode(DjangoObjectType):
         model = ScheduleItemAccount
         fields = (
             'schedule_item',
+            'account',
             'role',
             'account_2',
             'role_2',

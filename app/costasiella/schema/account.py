@@ -147,9 +147,11 @@ class AccountNode(DjangoObjectType):
 
     def resolve_address(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
     def resolve_city(self, info, **kwargs):
         user = info.context.user

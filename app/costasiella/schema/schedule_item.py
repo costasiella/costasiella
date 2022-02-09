@@ -41,6 +41,7 @@ class ScheduleItemNode(DjangoObjectType):
     class Meta:
         model = ScheduleItem
         fields = (
+            # model fields
             'schedule_event',
             'schedule_item_type',
             'frequency_type',
@@ -64,6 +65,9 @@ class ScheduleItemNode(DjangoObjectType):
             'account_2',
             'created_at',
             'updated_at',
+            # reverse relations
+            'attendances',
+            'enrollments'
         )
         filter_fields = ['schedule_item_type', 'schedule_event']
         interfaces = (graphene.relay.Node, ScheduleItemNodeInterface)

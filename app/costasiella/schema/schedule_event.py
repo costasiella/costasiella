@@ -16,6 +16,7 @@ class ScheduleEventNode(DjangoObjectType):
     class Meta:
         model = ScheduleEvent
         fields = (
+            # model fields
             'archived',
             'display_public',
             'display_shop',
@@ -34,7 +35,9 @@ class ScheduleEventNode(DjangoObjectType):
             'time_end',
             'info_mail_content',
             'created_at',
-            'updated_at'
+            'updated_at',
+            # Reverse relations
+            'schedule_items'
         )
         filter_fields = ['archived', 'display_public', 'display_shop']
         interfaces = (graphene.relay.Node, )

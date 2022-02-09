@@ -17,7 +17,7 @@ class FinancePaymentBatchCategoryNode(DjangoObjectType):
         model = FinancePaymentBatchCategory
         fields = (
             'archived',
-            'name'
+            'name',
             'batch_category_type',
             'description'
         )
