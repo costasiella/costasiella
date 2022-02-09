@@ -20,6 +20,15 @@ m = Messages()
 class AccountAcceptedDocumentNode(DjangoObjectType):   
     class Meta:
         model = AccountAcceptedDocument
+        # Fields to include
+        fields = (
+            'account',
+            'document',
+            'date_accepted',
+            'client_ip',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['account', 'date_accepted']
         interfaces = (graphene.relay.Node, )
 

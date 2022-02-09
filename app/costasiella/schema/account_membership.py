@@ -54,6 +54,17 @@ def validate_create_update_input(input, update=False):
 class AccountMembershipNode(DjangoObjectType):   
     class Meta:
         model = AccountMembership
+        # Fields to include
+        fields = (
+            'account',
+            'organization_membership',
+            'finance_payment_method',
+            'date_start',
+            'date_end',
+            'note',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['account', 'date_start', 'date_end']
         interfaces = (graphene.relay.Node, )
 

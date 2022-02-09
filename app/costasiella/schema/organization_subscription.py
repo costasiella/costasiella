@@ -30,15 +30,6 @@ def validate_create_update_input(input, update=False):
     if not len(input['name']):
         raise GraphQLError(_('Name is required'))
 
-    # Check OrganizationMembership
-    if 'organization_membership' in input:
-        if input['organization_membership']:
-            rid = get_rid(input['organization_membership'])
-            organization_membership = OrganizationMembership.objects.filter(id=rid.id).first()
-            result['organization_membership'] = organization_membership
-            if not organization_membership:
-                raise Exception(_('Invalid Organization Membership ID!'))            
-
     # Check GLAccount
     if 'finance_glaccount' in input:
         if input['finance_glaccount']: 
@@ -56,7 +47,6 @@ def validate_create_update_input(input, update=False):
             result['finance_costcenter'] = finance_costcenter
             if not finance_costcenter:
                 raise Exception(_('Invalid Finance Costcenter ID!'))
-
 
     return result
 
@@ -76,6 +66,25 @@ class OrganizationSubscriptionNodeInterface(graphene.Interface):
 class OrganizationSubscriptionNode(DjangoObjectType):   
     class Meta:
         model = OrganizationSubscription
+        fields = (
+            'archived',
+            'display_public',
+            'display_shop',
+            'name',
+            'description',
+            'sort_order',
+            'min_duration',
+            'classes',
+            'subscription_unit',
+            'reconciliation_classes',
+            'credit_accumulation_days',
+            'unlimited',
+            'terms_and_conditions',
+            'registration_fee',
+            'quick_stats_amount',
+            'finance_glaccount',
+            'finance_costcenter'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, OrganizationSubscriptionNodeInterface)
 
@@ -163,7 +172,6 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
         unlimited = graphene.Boolean(required=True, default_value=False)
         terms_and_conditions = graphene.String(required=False, default_value="")
         registration_fee = graphene.Decimal(required=False, default_value=0)
-        organization_membership = graphene.ID(required=False, default_value="")
         quick_stats_amount = graphene.Decimal(required=False, default_value=0)
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")      
@@ -196,9 +204,6 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
             quick_stats_amount=input.get('quick_stats_amount', None)
         )
 
-        if 'organization_membership' in result:
-            subscription.organization_membership = result['organization_membership']
-
         if 'finance_glaccount' in result:
             subscription.finance_glaccount = result['finance_glaccount']
 
@@ -226,7 +231,6 @@ class UpdateOrganizationSubscription(graphene.relay.ClientIDMutation):
         unlimited = graphene.Boolean(required=False)
         terms_and_conditions = graphene.String(required=False)
         registration_fee = graphene.Decimal(required=False)
-        organization_membership = graphene.ID(required=False)
         quick_stats_amount = graphene.Decimal(required=False)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)
@@ -287,16 +291,13 @@ class UpdateOrganizationSubscription(graphene.relay.ClientIDMutation):
         if 'quick_stats_amount' in input:
             subscription.quick_stats_amount = input['quick_stats_amount']
 
-        if 'organization_membership' in result:
-            subscription.organization_membership = result['organization_membership']
-
         if 'finance_glaccount' in result:
             subscription.finance_glaccount = result['finance_glaccount']
 
         if 'finance_costcenter' in result:
             subscription.finance_costcenter = result['finance_costcenter']
 
-        subscription.save(force_update=True)
+        subscription.save()
 
         return UpdateOrganizationSubscription(organization_subscription=subscription)
 
@@ -319,7 +320,7 @@ class ArchiveOrganizationSubscription(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Subscription ID!')
 
         subscription.archived = input['archived']
-        subscription.save(force_update=True)
+        subscription.save()
 
         return ArchiveOrganizationSubscription(organization_subscription=subscription)
 

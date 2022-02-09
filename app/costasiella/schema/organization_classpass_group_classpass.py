@@ -15,6 +15,10 @@ m = Messages()
 class OrganizationClasspassGroupClasspassNode(DjangoObjectType):
     class Meta:
         model = OrganizationClasspassGroupClasspass
+        fields = (
+            'organization_classpass_group',
+            'organization_classpass'
+        )
         interfaces = (graphene.relay.Node, )
 
     @classmethod

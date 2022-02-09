@@ -49,7 +49,17 @@ class AccountClasspassInterface(graphene.Interface):
 class AccountClasspassNode(DjangoObjectType):   
     class Meta:
         model = AccountClasspass
-        # filter_fields = ['account', 'date_start', 'date_end', 'organization_classpass__trial_pass']
+        # Fields to include
+        fields = (
+            'account',
+            'organization_classpass',
+            'date_start',
+            'date_end',
+            'note',
+            'classes_remaining',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = {
             'account': ['exact'],
             'date_start': ['exact', 'lte', 'gte'],

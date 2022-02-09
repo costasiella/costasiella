@@ -45,6 +45,17 @@ def validate_create_update_input(input, update=False):
 class AccountNoteNode(DjangoObjectType):
     class Meta:
         model = AccountNote
+        # Fields to include
+        fields = (
+            'account',
+            'note_by',
+            'note_type',
+            'note',
+            'injury',
+            'processed',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['account', 'note_type']
         interfaces = (graphene.relay.Node, )
 

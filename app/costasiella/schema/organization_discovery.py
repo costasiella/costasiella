@@ -15,6 +15,10 @@ m = Messages()
 class OrganizationDiscoveryNode(DjangoObjectType):
     class Meta:
         model = OrganizationDiscovery
+        fields = (
+            'archived',
+            'name'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 

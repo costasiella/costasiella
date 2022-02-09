@@ -43,6 +43,17 @@ class AccountSubscriptionAltPriceInterface(graphene.Interface):
 class AccountSubscriptionAltPriceNode(DjangoObjectType):
     class Meta:
         model = AccountSubscriptionAltPrice
+        # Fields to include
+        fields = (
+            'account_subscription',
+            'subscription_year',
+            'subscription_month',
+            'amount',
+            'description',
+            'note',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = {
             'account_subscription': ['exact'],
         }

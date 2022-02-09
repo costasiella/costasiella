@@ -6,6 +6,7 @@ from .helpers import model_string
 
 from .organization_location import OrganizationLocation
 
+
 class OrganizationHoliday(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()

@@ -34,6 +34,20 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
 
     class Meta:
         model = ScheduleItemAttendance
+        fields = (
+            'account',
+            'schedule_item',
+            'account_classpass',
+            'account_subscription',
+            'account_schedule_event_ticket',
+            'finance_invoice_item',
+            'attendance_type',
+            'date',
+            'online_booking',
+            'booking_status',
+            'created_at',
+            'updated_at'
+        )
         # account_schedule_event_ticket_Isnull filter can be used to differentiate class & event attendance
         filter_fields = {
             'schedule_item': ['exact', 'isnull'],

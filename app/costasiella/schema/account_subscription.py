@@ -66,6 +66,18 @@ class AccountSubscriptionNodeInterface(graphene.Interface):
 class AccountSubscriptionNode(DjangoObjectType):   
     class Meta:
         model = AccountSubscription
+        # Fields to include
+        fields = (
+            'account',
+            'organization_subscription',
+            'finance_payment_method',
+            'date_start',
+            'date_end',
+            'note',
+            'registration_fee_paid',
+            'created_at',
+            'updated_at',
+        )
         filter_fields = ['account', 'date_start', 'date_end']
         interfaces = (graphene.relay.Node, AccountSubscriptionNodeInterface,)
 

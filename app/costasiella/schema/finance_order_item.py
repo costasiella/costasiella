@@ -40,6 +40,27 @@ class FinanceOrderItemFilter(FilterSet):
 class FinanceOrderItemNode(DjangoObjectType):
     class Meta:
         model = FinanceOrderItem
+        fiels = (
+            'finance_order',
+            'schedule_event_ticket',
+            'organization_subscription',
+            'organization_classpass',
+            'attendance_type',
+            'attendance_date',
+            'schedule_item',
+            'product_name',
+            'description',
+            'quantity',
+            'price',
+            'finance_tax_rate',
+            'subtotal',
+            'tax',
+            'total',
+            'finance_glaccount',
+            'finance_costcenter',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['id', 'finance_order']
         interfaces = (graphene.relay.Node, FinanceOrderItemInterface, )
 

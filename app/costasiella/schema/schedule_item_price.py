@@ -19,6 +19,15 @@ class ScheduleItemPriceNode(DjangoObjectType):
 
     class Meta:
         model = ScheduleItemPrice
+        fields = (
+            'schedule_item',
+            'organization_classpass_dropin',
+            'organization_classpass_trial',
+            'date_start',
+            'date_end',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['schedule_item']
         interfaces = (graphene.relay.Node, )
 

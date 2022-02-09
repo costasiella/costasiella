@@ -23,6 +23,32 @@ class OrganizationNodeInterface(graphene.Interface):
 
 
 class OrganizationNode(DjangoObjectType):
+    class Meta:
+        model = Organization
+        fields = (
+            'archived',
+            'name',
+            'address',
+            'phone',
+            'email',
+            'registration',
+            'tax_registration',
+            'logo_login',
+            'logo_invoice',
+            'logo_email',
+            'logo_shop_header',
+            'logo_self_checkin'
+        )
+        filter_fields = ['archived', 'id']
+        interfaces = (graphene.relay.Node, OrganizationNodeInterface,)
+
+    @classmethod
+    def get_node(self, info, id):
+        # user = info.context.user
+        # require_login_and_permission(user, 'costasiella.view_organization')
+
+        return self._meta.model.objects.get(id=id)
+
     def resolve_url_logo_login(self, info):
         if self.logo_login:
             return self.logo_login.url
@@ -63,18 +89,6 @@ class OrganizationNode(DjangoObjectType):
     #         return get_thumbnail(self.logo_login, '50x50', crop='center', quality=99).url
     #     else:
     #         return ''
-
-    class Meta:
-        model = Organization
-        filter_fields = ['archived', 'id']
-        interfaces = (graphene.relay.Node, OrganizationNodeInterface,)
-
-    @classmethod
-    def get_node(self, info, id):
-        # user = info.context.user
-        # require_login_and_permission(user, 'costasiella.view_organization')
-
-        return self._meta.model.objects.get(id=id)
 
 
 class OrganizationQuery(graphene.ObjectType):

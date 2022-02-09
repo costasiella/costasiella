@@ -11,9 +11,16 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+
 class OrganizationLocationRoomNode(DjangoObjectType):
     class Meta:
         model = OrganizationLocationRoom
+        fields = (
+            'organization_location',
+            'archived',
+            'display_public',
+            'name'
+        )
         filter_fields = ['archived', 'organization_location']
         interfaces = (graphene.relay.Node, )
 

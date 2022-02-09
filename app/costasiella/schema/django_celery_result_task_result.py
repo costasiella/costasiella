@@ -10,9 +10,25 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+
 class DjangoCeleryResultTaskResultNode(DjangoObjectType):
     class Meta:
         model = TaskResult
+        fields = (
+            'task_id',
+            'status',
+            'content_type',
+            'content_encoding',
+            'result',
+            'date_done',
+            'traceback',
+            'meta',
+            'task_args',
+            'task_kwargs',
+            'task_name',
+            'worker',
+            'date_created'
+        )
         filter_fields = ['task_name', 'status', 'date_done']
         interfaces = (graphene.relay.Node, )
 

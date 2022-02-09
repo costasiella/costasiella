@@ -15,6 +15,11 @@ m = Messages()
 class FinanceGLAccountNode(DjangoObjectType):
     class Meta:
         model = FinanceGLAccount
+        fields = (
+            'archived',
+            'name',
+            'code'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 

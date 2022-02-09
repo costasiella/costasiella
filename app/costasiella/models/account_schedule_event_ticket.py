@@ -6,7 +6,6 @@ from .schedule_event_ticket import ScheduleEventTicket
 
 class AccountScheduleEventTicket(models.Model):
     # add additional fields in here
-
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="schedule_event_tickets")
     schedule_event_ticket = models.ForeignKey(ScheduleEventTicket, on_delete=models.CASCADE, related_name="accounts")
     cancelled = models.BooleanField(default=False)

@@ -15,6 +15,11 @@ m = Messages()
 class FinancePaymentBatchExportNode(DjangoObjectType):
     class Meta:
         model = FinancePaymentBatchExport
+        fields = (
+            'finance_payment_batch',
+            'account',
+            'created_at'
+        )
         filter_fields = ['finance_payment_batch']
         interfaces = (graphene.relay.Node, )
 

@@ -23,20 +23,16 @@ class OrganizationClasstypeNodeInterface(graphene.Interface):
 
 
 class OrganizationClasstypeNode(DjangoObjectType):
-    def resolve_url_image(self, info):
-        if self.image:
-            return self.image.url
-        else:
-            return ''
-
-    def resolve_url_image_thumbnail_small(self, info):
-        if self.image:
-            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
-        else:
-            return ''
-    
     class Meta:
         model = OrganizationClasstype
+        fields = (
+            'archived',
+            'display_public',
+            'name',
+            'description',
+            'url_website',
+            'image'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, OrganizationClasstypeNodeInterface)
 
@@ -48,6 +44,18 @@ class OrganizationClasstypeNode(DjangoObjectType):
         if user.has_perm('costasiella.view_organizationclasstype') or \
            (organization_classtype.display_public is True and organization_classtype.archived is False):
             return organization_classtype
+
+    def resolve_url_image(self, info):
+        if self.image:
+            return self.image.url
+        else:
+            return ''
+
+    def resolve_url_image_thumbnail_small(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
+        else:
+            return ''
 
 
 class OrganizationClasstypeQuery(graphene.ObjectType):

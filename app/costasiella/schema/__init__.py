@@ -10,7 +10,7 @@ from .account_document import AccountDocumentQuery, AccountDocumentMutation
 from .account_finance_payment_batch_category_item import \
     AccountFinancePaymentBatchCategoryItemQuery,\
     AccountFinancePaymentBatchCategoryItemMutation
-from .account_membership import AccountMembershipQuery, AccountMembershipMutation
+# from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_note import AccountNoteQuery, AccountNoteMutation
 from .account_schedule_event_ticket import AccountScheduleEventTicketQuery, AccountScheduleEventTicketMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
@@ -77,6 +77,7 @@ from .organization_subscription_price import OrganizationSubscriptionPriceQuery,
 from .schedule_appointment import ScheduleAppointmentQuery, ScheduleAppointmentMutation
 from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
 from .schedule_class_booking_option import ScheduleClassBookingOptionsQuery
+from .schedule_class_enrollment_option import ScheduleClassEnrollmentOptionsQuery
 from .schedule_item_weekly_otc import ScheduleItemWeeklyOTCQuery, ScheduleItemWeeklyOTCMutation
 from .schedule_event import ScheduleEventQuery, ScheduleEventMutation
 from .schedule_event_earlybird import ScheduleEventEarlybirdQuery, ScheduleEventEarlybirdMutation
@@ -86,6 +87,7 @@ from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItem
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 from .schedule_item_account import ScheduleItemAccountQuery, ScheduleItemAccountMutation
 from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemAttendanceMutation
+from .schedule_item_enrollment import ScheduleItemEnrollmentQuery, ScheduleItemEnrollmentMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutation
@@ -104,7 +106,6 @@ class Query(AccountQuery,
             AccountClasspassQuery,
             AccountDocumentQuery,
             AccountFinancePaymentBatchCategoryItemQuery,
-            AccountMembershipQuery,
             AccountNoteQuery,
             AccountScheduleEventTicketQuery,
             AccountSubscriptionQuery,
@@ -158,6 +159,7 @@ class Query(AccountQuery,
             ScheduleAppointmentQuery,
             ScheduleClassQuery,
             ScheduleClassBookingOptionsQuery,
+            ScheduleClassEnrollmentOptionsQuery,
             ScheduleEventQuery,
             ScheduleEventEarlybirdQuery,
             ScheduleEventMediaQuery,
@@ -166,6 +168,7 @@ class Query(AccountQuery,
             ScheduleItemQuery,
             ScheduleItemAccountQuery,
             ScheduleItemAttendanceQuery,
+            ScheduleItemEnrollmentQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemPriceQuery,
@@ -185,7 +188,6 @@ class Mutation(AccountMutation,
                AccountClasspassMutation,
                AccountDocumentMutation,
                AccountFinancePaymentBatchCategoryItemMutation,
-               AccountMembershipMutation,
                AccountNoteMutation,
                AccountSubscriptionMutation,
                AccountScheduleEventTicketMutation,
@@ -242,6 +244,7 @@ class Mutation(AccountMutation,
                ScheduleItemMutation,
                ScheduleItemAccountMutation,
                ScheduleItemAttendanceMutation,
+               ScheduleItemEnrollmentMutation,
                ScheduleItemOrganizationClasspassGroupMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
                ScheduleItemPriceMutation,

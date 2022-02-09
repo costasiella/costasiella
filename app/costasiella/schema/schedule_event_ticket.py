@@ -28,6 +28,21 @@ class ScheduleEventTicketNodeInterface(graphene.Interface):
 class ScheduleEventTicketNode(DjangoObjectType):
     class Meta:
         model = ScheduleEventTicket
+        fields = (
+            'schedule_event',
+            'full_event',
+            'deletable',
+            'display_public',
+            'name',
+            'description',
+            'price',
+            'schedule_items',
+            'finance_tax_rate',
+            'finance_glaccount',
+            'finance_costcenter',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['schedule_event']
         interfaces = (graphene.relay.Node, ScheduleEventTicketNodeInterface,)
 

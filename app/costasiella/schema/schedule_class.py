@@ -441,15 +441,19 @@ def get_url_booking(info, schedule_item_id, date):
     :param date: datetime.date object of class
     :return: String - booking url
     """
-    scheme = info.context.scheme
-    host = info.context.get_host()
+    try:
+        scheme = info.context.scheme
+        host = info.context.get_host()
 
-    url_booking = "{scheme}://{host}/#/shop/classes/book/{schedule_item_id}/{date}".format(
-        scheme=scheme,
-        host=host,
-        schedule_item_id=schedule_item_id,
-        date=str(date)
-    )
+        url_booking = "{scheme}://{host}/#/shop/classes/book/{schedule_item_id}/{date}".format(
+            scheme=scheme,
+            host=host,
+            schedule_item_id=schedule_item_id,
+            date=str(date)
+        )
+    except AttributeError:
+        # Eg. When calling from another part piece of code instead of the API, info.context won't be available
+        url_booking = ""
 
     return url_booking
 

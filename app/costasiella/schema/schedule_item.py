@@ -40,6 +40,35 @@ class ScheduleItemNode(DjangoObjectType):
 
     class Meta:
         model = ScheduleItem
+        fields = (
+            # model fields
+            'schedule_event',
+            'schedule_item_type',
+            'frequency_type',
+            'frequency_interval',
+            'organization_location_room',
+            'organization_classtype',
+            'organization_level',
+            'organization_shift',
+            'name',
+            'spaces',
+            'walk_in_spaces',
+            'date_start',
+            'date_end',
+            'time_start',
+            'time_end',
+            'display_public',
+            'organization_classpass_groups',
+            'organization_subscription_groups',
+            'info_mail_content',
+            'account',
+            'account_2',
+            'created_at',
+            'updated_at',
+            # reverse relations
+            'attendances',
+            'enrollments'
+        )
         filter_fields = ['schedule_item_type', 'schedule_event']
         interfaces = (graphene.relay.Node, ScheduleItemNodeInterface)
 
@@ -61,10 +90,18 @@ class ScheduleItemNode(DjangoObjectType):
             return schedule_item
 
     def resolve_count_attendance(self, info):
-        filter = Q(schedule_item_id=self.id) & ~Q(booking_status="cancelled")
+        filter = Q(schedule_item_id=self.id) & ~Q(booking_status="CANCELLED")
         count_attendance = ScheduleItemAttendance.objects.filter(filter).count()
 
         return count_attendance
+
+    def resolve_attendances(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_scheduleitemattendance')
+
+    def resolve_enrollments(self, info, **kwargs):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_scheduleitemenrollment')
 
 
 class ScheduleItemQuery(graphene.ObjectType):

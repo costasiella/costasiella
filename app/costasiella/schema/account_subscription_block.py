@@ -39,6 +39,15 @@ def validate_create_update_input(input, update=False):
 class AccountSubscriptionBlockNode(DjangoObjectType):
     class Meta:
         model = AccountSubscriptionBlock
+        # Fields to include
+        fields = (
+            'account_subscription',
+            'date_start',
+            'date_end',
+            'description',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = {
             'account_subscription': ['exact'],
         }

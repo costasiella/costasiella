@@ -15,6 +15,26 @@ m = Messages()
 class BusinessNode(DjangoObjectType):
     class Meta:
         model = Business
+        fields = (
+            'archived',
+            'b2b',
+            'supplier',
+            'vip',
+            'name',
+            'address',
+            'postcode',
+            'city',
+            'country',
+            'phone',
+            'phone_2',
+            'email_contact',
+            'email_billing',
+            'registration',
+            'tax_registration',
+            'mollie_customer_id',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = {
             'name': ['icontains', 'exact'],
             'b2b': ['exact'],

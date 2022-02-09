@@ -15,6 +15,10 @@ m = Messages()
 class OrganizationSubscriptionGroupSubscriptionNode(DjangoObjectType):
     class Meta:
         model = OrganizationSubscriptionGroupSubscription
+        fields = (
+            'organization_subscription_group',
+            'organization_subscription'
+        )
         interfaces = (graphene.relay.Node, )
 
     @classmethod

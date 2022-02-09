@@ -15,6 +15,10 @@ m = Messages()
 class OrganizationLevelNode(DjangoObjectType):
     class Meta:
         model = OrganizationLevel
+        fields = (
+            'archived',
+            'name'
+        )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 

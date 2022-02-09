@@ -29,6 +29,22 @@ class FinancePaymentBatchNodeInterface(graphene.Interface):
 class FinancePaymentBatchNode(DjangoObjectType):
     class Meta:
         model = FinancePaymentBatch
+        fields = (
+            'name',
+            'batch_type',
+            'finance_payment_batch_category',
+            'status',
+            'description',
+            'year',
+            'month',
+            'execution_date',
+            'include_zero_amounts',
+            'note',
+            'total',
+            'count_items',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['batch_type']
         interfaces = (graphene.relay.Node, FinancePaymentBatchNodeInterface,)
 

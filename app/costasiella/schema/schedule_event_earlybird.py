@@ -16,6 +16,14 @@ m = Messages()
 class ScheduleEventEarlybirdNode(DjangoObjectType):
     class Meta:
         model = ScheduleEventEarlybird
+        fields = (
+            'schedule_event',
+            'date_start',
+            'date_end',
+            'discount_percentage',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['schedule_event']
         interfaces = (graphene.relay.Node, )
 

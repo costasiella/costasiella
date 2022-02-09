@@ -10,6 +10,9 @@ from .account import Account
 from .organization_subscription import OrganizationSubscription
 from .finance_payment_method import FinancePaymentMethod
 
+from ..modules.cs_errors import CSClassBookingSubscriptionBlockedError, \
+    CSClassBookingSubscriptionPausedError, \
+    CSClassBookingSubscriptionNoCreditsError
 
 class AccountSubscription(models.Model):
     # add additional fields in here
@@ -144,6 +147,134 @@ class AccountSubscription(models.Model):
         account_subscription_credit.save()
 
         return account_subscription_credit
+
+    def get_enrollments_in_month(self, year, month):
+        """
+
+        :param year:
+        :param month:
+        :return:
+        """
+        from ..dudes import DateToolsDude
+        from .schedule_item_enrollment import ScheduleItemEnrollment
+
+        date_dude = DateToolsDude()
+        first_day_month = datetime.date(year, month, 1)
+        last_day_month = date_dude.get_last_day_month(first_day_month)
+
+        enrollments = ScheduleItemEnrollment.objects.filter(
+            Q(account_subscription=self) &
+            Q(date_start__lte=last_day_month) &
+            (Q(date_end__gte=first_day_month) | Q(date_end__isnull=True))
+        )
+
+        return enrollments
+
+    def find_enrolled_classes_in_month(self, year, month):
+        """
+
+        :return:
+        """
+        from graphql_relay import to_global_id
+
+        from ..dudes import DateToolsDude
+        from ..schema.schedule_class import ScheduleClassesDayType
+
+        date_dude = DateToolsDude()
+        enrollments = self.get_enrollments_in_month(year, month)
+
+        first_day_month = datetime.date(year, month, 1)
+        last_day_month = date_dude.get_last_day_month(first_day_month)
+
+        classes_in_month = []
+        date = first_day_month
+        while date <= last_day_month:
+            day = ScheduleClassesDayType()
+            day.date = date
+            day.attendance_count_type = 'ATTENDING_AND_BOOKED'
+            day.classes = day.resolve_classes(None)
+
+            if day.classes:
+                for schedule_class_type in day.classes:
+                    for enrollment in enrollments:
+                        # Possible optimization; do this only once for each enrollment... but well...
+                        # it's in the background
+                        schedule_item_node_id = to_global_id('ScheduleItemNode', enrollment.schedule_item.id)
+
+                        print("---")
+                        print(date)
+                        print(enrollment.date_start)
+                        print(schedule_item_node_id)
+                        print(schedule_class_type.schedule_item_id)
+
+                        if (schedule_class_type.schedule_item_id == schedule_item_node_id
+                            and date >= enrollment.date_start
+                        ):
+                            classes_in_month.append(schedule_class_type)
+                            print("added class")
+                        else:
+                            print("Skipped class")
+
+            date += datetime.timedelta(days=1)
+
+        return classes_in_month
+
+    def book_enrolled_classes_for_month(self, year, month):
+        """
+
+        :param year:
+        :param month:
+        :return:
+        """
+        from ..dudes import ClassCheckinDude, DateToolsDude
+        from ..modules.gql_tools import get_rid
+        from .schedule_item import ScheduleItem
+
+        class_checkin_dude = ClassCheckinDude()
+        date_dude = DateToolsDude()
+        first_day_month = datetime.date(year, month, 1)
+        last_day_month = date_dude.get_last_day_month(first_day_month)
+
+        classes_in_month = self.find_enrolled_classes_in_month(year, month)
+        for schedule_class_type in classes_in_month:
+            rid = get_rid(schedule_class_type.schedule_item_id)
+            schedule_item_id = rid.id
+            schedule_item = ScheduleItem.objects.get(pk=schedule_item_id)
+
+            # Try to book class, but continue on possible common errors, try to book as many as possible.
+            try:
+                class_checkin_dude.class_checkin_subscription(
+                    account=self.account,
+                    account_subscription=self,
+                    schedule_item=schedule_item,
+                    date=schedule_class_type.date,
+                    online_booking=False,
+                    booking_status="BOOKED"
+                )
+            except CSClassBookingSubscriptionBlockedError:
+                pass
+            except CSClassBookingSubscriptionPausedError:
+                pass
+            except CSClassBookingSubscriptionNoCreditsError:
+                pass
+
+
+    def cancel_booked_classes_after_enrollment_end(self, schedule_item_enrollment):
+        """
+
+        :param schedule_item_enrollment:
+        :return:
+        """
+        from .schedule_item_attendance import ScheduleItemAttendance
+
+        schedule_item = schedule_item_enrollment.schedule_item
+
+        if schedule_item_enrollment.date_end:
+            ScheduleItemAttendance.objects.filter(
+                schedule_item=schedule_item,
+                account_subscription=self,
+                date__gte=schedule_item_enrollment.date_end
+            ).update(booking_status='CANCELLED')
 
     def get_blocked_on_date(self, date):
         """

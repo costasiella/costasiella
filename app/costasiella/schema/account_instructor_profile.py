@@ -46,6 +46,20 @@ def validate_create_update_input(input, update=False):
 class AccountInstructorProfileNode(DjangoObjectType):   
     class Meta:
         model = AccountInstructorProfile
+        # Fields to include
+        fields = (
+            'account',
+            'classes',
+            'appointments',
+            'events',
+            'role',
+            'education',
+            'bio',
+            'url_bio',
+            'url_website',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = [
             'account', 
             'classes', 

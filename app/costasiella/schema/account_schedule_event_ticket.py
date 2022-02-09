@@ -17,6 +17,18 @@ m = Messages()
 class AccountScheduleEventTicketNode(DjangoObjectType):
     class Meta:
         model = AccountScheduleEventTicket
+        # Fields to include
+        fields = (
+            'account',
+            'schedule_event_ticket',
+            'cancelled',
+            'payment_confirmation',
+            'info_mail_sent',
+            'created_at',
+            'updated_at',
+            # reverse relations
+            'invoice_items'
+        )
         filter_fields = ['account', 'schedule_event_ticket']
         interfaces = (graphene.relay.Node,)
 
@@ -27,6 +39,13 @@ class AccountScheduleEventTicketNode(DjangoObjectType):
 
         return self._meta.model.objects.get(id=id)
 
+    def resolve_invoice_items(self, info, **kwargs):
+        user = info.context.user
+
+        # Allow users to resolve their own invoice items
+        if not user.id == self.account.id:
+            require_login_and_permission(user, 'costasiella.view_financeinvoiceitem')
+
 
 class AccountScheduleEventTicketQuery(graphene.ObjectType):
     account_schedule_event_tickets = DjangoFilterConnectionField(AccountScheduleEventTicketNode)
@@ -35,9 +54,6 @@ class AccountScheduleEventTicketQuery(graphene.ObjectType):
     def resolve_account_schedule_event_tickets(self, info, **kwargs):
         user = info.context.user
         require_login(user)
-
-        print(kwargs)
-        print('hello world')
 
         if "schedule_event_ticket" not in kwargs and "account" not in kwargs:
             raise Exception(_("schedule_event_ticket or account is a required parameter"))

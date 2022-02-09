@@ -21,6 +21,27 @@ class ScheduleItemWeeklyOTCNode(DjangoObjectType):
 
     class Meta:
         model = ScheduleItemWeeklyOTC
+        fields = (
+            'schedule_item',
+            'date',
+            'status',
+            'description',
+            'account',
+            'role',
+            'account_2',
+            'role_2',
+            'organization_location_room',
+            'organization_classtype',
+            'organization_level',
+            'organization_shift',
+            'time_start',
+            'time_end',
+            'spaces',
+            'walk_in_spaces',
+            'info_mail_content',
+            'created_at',
+            'updated_at'
+        )
         filter_fields = ['schedule_item', 'date']
         interfaces = (graphene.relay.Node, )
 

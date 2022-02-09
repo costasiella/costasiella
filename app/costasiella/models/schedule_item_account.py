@@ -13,7 +13,8 @@ from .helpers import model_string
 class ScheduleItemAccount(models.Model):
     INSTRUCTOR_ROLES = get_instructor_roles()
 
-    schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
+    schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE,
+                                      related_name="instructors")
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     role = models.CharField(default="", max_length=50, choices=INSTRUCTOR_ROLES)
     account_2 = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, related_name="account_2")
