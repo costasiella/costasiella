@@ -173,13 +173,12 @@ class AccountNode(DjangoObjectType):
         return self.country
 
     def resolve_customer(self, info, **kwargs):
-        return check_node_item_resolve_permission(
-            user=info.context.user,
-            node=self,
-            permission='costasiella.view_account',
-            ok_value=self.customer,
-            fail_value=False
-        )
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+        return self.customer
 
     def resolve_date_of_birth(self, info, **kwargs):
         user = info.context.user
@@ -198,33 +197,28 @@ class AccountNode(DjangoObjectType):
         return self.emergency
 
     def resolve_email(self, info, **kwargs):
-        return check_node_item_resolve_permission(
-            user=info.context.user,
-            node=self,
-            permission='costasiella.view_account',
-            ok_value=self.email,
-            fail_value="permission@denied.com"
-        )
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+        return self.email
 
     def resolve_employee(self, info, **kwargs):
-        return check_node_item_resolve_permission(
-            user=info.context.user,
-            node=self,
-            permission='costasiella.view_account',
-            ok_value=self.employee,
-            fail_value=False
-        )
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+        return self.employee
 
     def resolve_gender(self, info, **kwargs):
-        print(self.gender)
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
 
-        return check_node_item_resolve_permission(
-            user=info.context.user,
-            node=self,
-            permission='costasiella.view_account',
-            ok_value=self.gender,
-            fail_value=""
-        )
+        return self.gender
 
     def resolve_image(self, info, **kwargs):
         user = info.context.user
@@ -235,22 +229,20 @@ class AccountNode(DjangoObjectType):
         return self.image
 
     def resolve_instructor(self, info, **kwargs):
-        return check_node_item_resolve_permission(
-            user=info.context.user,
-            node=self,
-            permission='costasiella.view_account',
-            ok_value=self.instructor,
-            fail_value=False
-        )
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+        return self.instructor
 
     def resolve_is_active(self, info, **kwargs):
-        return check_node_item_resolve_permission(
-            user=info.context.user,
-            node=self,
-            permission='costasiella.view_account',
-            ok_value=self.is_active,
-            fail_value=False
-        )
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+        ])
+
+        return self.is_active
 
     def resolve_key_number(self, info, **kwargs):
         user = info.context.user
@@ -288,9 +280,13 @@ class AccountNode(DjangoObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountclasspass')
 
+        return self.classpasses
+
     def resolve_subscriptions(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountsubscription')
+
+        return self.subscriptions
 
 
 class GroupNode(DjangoObjectType):
