@@ -36,8 +36,10 @@ class ScheduleEventNode(DjangoObjectType):
             'info_mail_content',
             'created_at',
             'updated_at',
-            # Reverse relations
-            'schedule_items'
+            # Reverse relations,
+            'media',
+            'schedule_items',
+            'tickets'
         )
         filter_fields = ['archived', 'display_public', 'display_shop']
         interfaces = (graphene.relay.Node, )

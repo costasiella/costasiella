@@ -41,7 +41,9 @@ class ScheduleEventTicketNode(DjangoObjectType):
             'finance_glaccount',
             'finance_costcenter',
             'created_at',
-            'updated_at'
+            'updated_at',
+            # Reverse relations
+            'ticket_schedule_items'
         )
         filter_fields = ['schedule_event']
         interfaces = (graphene.relay.Node, ScheduleEventTicketNodeInterface,)
