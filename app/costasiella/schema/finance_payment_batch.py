@@ -43,7 +43,10 @@ class FinancePaymentBatchNode(DjangoObjectType):
             'total',
             'count_items',
             'created_at',
-            'updated_at'
+            'updated_at',
+            # Reverse relations
+            'exports',
+            'items'
         )
         filter_fields = ['batch_type']
         interfaces = (graphene.relay.Node, FinancePaymentBatchNodeInterface,)
