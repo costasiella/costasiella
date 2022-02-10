@@ -97,6 +97,7 @@ class AccountNode(DjangoObjectType):
             'image',
             'organization_discovery',
             'organization_language',
+            # Reverse relations
             'classpasses',
             'subscriptions'
         )
@@ -153,17 +154,23 @@ class AccountNode(DjangoObjectType):
                 'costasiella.view_account',
             ])
 
+        return self.address
+
     def resolve_city(self, info, **kwargs):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
             'costasiella.view_account',
         ])
 
+        return self.city
+
     def resolve_country(self, info, **kwargs):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
             'costasiella.view_account',
         ])
+
+        return self.country
 
     def resolve_customer(self, info, **kwargs):
         return check_node_item_resolve_permission(
@@ -180,11 +187,15 @@ class AccountNode(DjangoObjectType):
             'costasiella.view_account',
         ])
 
+        return self.date_of_birth
+
     def resolve_emergency(self, info, **kwargs):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
             'costasiella.view_account',
         ])
+
+        return self.emergency
 
     def resolve_email(self, info, **kwargs):
         return check_node_item_resolve_permission(
@@ -205,16 +216,23 @@ class AccountNode(DjangoObjectType):
         )
 
     def resolve_gender(self, info, **kwargs):
-        user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        print(self.gender)
+
+        return check_node_item_resolve_permission(
+            user=info.context.user,
+            node=self,
+            permission='costasiella.view_account',
+            ok_value=self.gender,
+            fail_value=""
+        )
 
     def resolve_image(self, info, **kwargs):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
             'costasiella.view_account',
         ])
+
+        return self.image
 
     def resolve_instructor(self, info, **kwargs):
         return check_node_item_resolve_permission(
@@ -240,11 +258,15 @@ class AccountNode(DjangoObjectType):
             'costasiella.view_account',
         ])
 
+        return self.key_number
+
     def resolve_mobile(self, info, **kwargs):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
             'costasiella.view_account',
         ])
+
+        return self.mobile
 
     def resolve_phone(self, info, **kwargs):
         user = info.context.user
@@ -252,11 +274,15 @@ class AccountNode(DjangoObjectType):
             'costasiella.view_account',
         ])
 
+        return self.mobile
+
     def resolve_postcode(self, info, **kwargs):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
             'costasiella.view_account',
         ])
+
+        return self.postcode
 
     def resolve_classpasses(self, info, **kwargs):
         user = info.context.user
@@ -467,7 +493,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login(user)
-        # print(input)
+        print(input)
 
         rid = get_rid(input['id'])
         account = get_user_model().objects.filter(id=rid.id).first()
