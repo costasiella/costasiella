@@ -19,7 +19,7 @@ class OrganizationClasspassGroupNode(DjangoObjectType):
         fields = (
             'name',
             'description',
-            'organization_classpass'
+            'organization_classpasses'
         )
         filter_fields = []
         interfaces = (graphene.relay.Node, )
