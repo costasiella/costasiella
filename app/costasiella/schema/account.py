@@ -158,133 +158,150 @@ class AccountNode(DjangoObjectType):
 
     def resolve_city(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.city
 
     def resolve_country(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.country
 
     def resolve_customer(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.customer
 
     def resolve_date_of_birth(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.date_of_birth
 
     def resolve_emergency(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.emergency
 
     def resolve_email(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.email
 
     def resolve_employee(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.employee
 
     def resolve_gender(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.gender
 
     def resolve_image(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.image
 
     def resolve_instructor(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.instructor
 
     def resolve_is_active(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.is_active
 
     def resolve_key_number(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.key_number
 
     def resolve_mobile(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.mobile
 
     def resolve_phone(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.mobile
 
     def resolve_postcode(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.postcode
 
     def resolve_classpasses(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountclasspass')
+        if not user.id == self.id:
+            require_login_and_permission(user, 'costasiella.view_accountclasspass')
 
         return self.classpasses
 
     def resolve_subscriptions(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountsubscription')
+        if not user.id == self.id:
+            require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
         return self.subscriptions
 

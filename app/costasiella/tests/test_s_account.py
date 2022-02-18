@@ -340,7 +340,6 @@ class GQLAccount(TransactionTestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_create_account_permission_granted(self):
         """ Allow creating accounts for users with permissions """
         query = self.account_create_mutation
@@ -348,6 +347,8 @@ class GQLAccount(TransactionTestCase):
 
         # Create regular user
         user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
         permission = Permission.objects.get(codename=self.permission_add)
         user.user_permissions.add(permission)
         user.save()
@@ -359,7 +360,6 @@ class GQLAccount(TransactionTestCase):
         )
         data = executed.get('data')
         self.assertEqual(data['createAccount']['account']['firstName'], variables['input']['firstName'])
-
 
     def test_create_account_permission_denied(self):
         """ Check create account permission denied error message """
@@ -549,6 +549,8 @@ class GQLAccount(TransactionTestCase):
         variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
         # Grant permissions
+        permission = Permission.objects.get(codename=self.permission_view)
+        other_user.user_permissions.add(permission)
         permission = Permission.objects.get(codename=self.permission_delete)
         other_user.user_permissions.add(permission)
         other_user.save()
@@ -558,6 +560,7 @@ class GQLAccount(TransactionTestCase):
             other_user,
             variables=variables
         )
+
         data = executed.get('data')
         self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
 
