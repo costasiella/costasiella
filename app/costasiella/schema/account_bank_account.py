@@ -51,7 +51,9 @@ class AccountBankAccountNode(DjangoObjectType):
             'holder',
             'bic',
             'created_at',
-            'updated_at'
+            'updated_at',
+            # Reverse relations
+            'mandates'
         )
         filter_fields = ['account']
         interfaces = (graphene.relay.Node, )
