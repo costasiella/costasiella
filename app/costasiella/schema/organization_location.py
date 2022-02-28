@@ -18,39 +18,22 @@ class OrganizationLocationNode(DjangoObjectType):
         fields = (
             'archived',
             'display_public',
-            'name'
+            'name',
+            # Reverse relations
+            'rooms'
         )
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
     def get_node(self, info, id):
-        print("info:")
-        print(info)
         user = info.context.user
-        print('user authenticated:')
-        print(user.is_authenticated)
-        print(user)
-        print(user.is_anonymous)
         # require_login_and_permission(user, 'costasiella.view_organizationlocation')
 
         organization_location = self._meta.model.objects.get(id=id)
         if user.has_perm('costasiella.view_organizationlocation') or \
            (organization_location.display_public is True and organization_location.archived is False):
             return organization_location
-
-        # # Return only public non-archived locations
-        # return self._meta.model.objects.get(id=id)
-
-
-# class ValidationErrorMessage(graphene.ObjectType):
-#     field = graphene.String(required=True)
-#     message = graphene.String(required=True)
-
-
-# class ValidationErrors(graphene.ObjectType):
-# 	validation_errors = graphene.List(ValidationErrorMessage)
-#     # error_message = graphene.String(required=True)
 
 
 class OrganizationLocationQuery(graphene.ObjectType):

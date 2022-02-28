@@ -4,7 +4,9 @@ from .organization_location import OrganizationLocation
 
 # Create your models here.
 class OrganizationLocationRoom(models.Model):
-    organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE)
+    organization_location = models.ForeignKey(OrganizationLocation,
+                                              on_delete=models.CASCADE,
+                                              related_name='rooms')
     archived = models.BooleanField(default=False)
     display_public = models.BooleanField(default=True)
     name = models.CharField(max_length=255)

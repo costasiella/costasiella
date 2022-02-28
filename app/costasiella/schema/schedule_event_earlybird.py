@@ -41,7 +41,6 @@ class ScheduleEventEarlybirdNode(DjangoObjectType):
             return schedule_event_earlybird
 
 
-
 class ScheduleEventEarlybirdQuery(graphene.ObjectType):
     schedule_event_earlybirds = DjangoFilterConnectionField(ScheduleEventEarlybirdNode)
     schedule_event_earlybird = graphene.relay.Node.Field(ScheduleEventEarlybirdNode)
@@ -56,7 +55,7 @@ class ScheduleEventEarlybirdQuery(graphene.ObjectType):
         # Earlybird discounts public status is linked to schedule event public status
         if not user.has_perm(permission):
             qs = qs.filter((Q(schedule_event__display_public=True) or Q(schedule_event__display_shop=True)))
-            
+
         return qs.order_by('-date_start')
 
 
