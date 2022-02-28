@@ -46,6 +46,8 @@ class AccountScheduleEventTicketNode(DjangoObjectType):
         if not user.id == self.account.id:
             require_login_and_permission(user, 'costasiella.view_financeinvoiceitem')
 
+        return self.invoice_items
+
 
 class AccountScheduleEventTicketQuery(graphene.ObjectType):
     account_schedule_event_tickets = DjangoFilterConnectionField(AccountScheduleEventTicketNode)
