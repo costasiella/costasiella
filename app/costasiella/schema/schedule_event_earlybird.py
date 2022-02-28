@@ -31,10 +31,15 @@ class ScheduleEventEarlybirdNode(DjangoObjectType):
     def get_node(self, info, id):
         user = info.context.user
 
+        permission = 'costasiella.view_scheduleeventearlybird'
+
         schedule_event_earlybird = self._meta.model.objects.get(id=id)
-        if (schedule_event_earlybird.schedule_event.display_public or
-            schedule_event_earlybird.schedule_event.display_shop):
+        if user.has_perm(permission):
             return schedule_event_earlybird
+        elif (schedule_event_earlybird.schedule_event.display_public or
+              schedule_event_earlybird.schedule_event.display_shop):
+            return schedule_event_earlybird
+
 
 
 class ScheduleEventEarlybirdQuery(graphene.ObjectType):
@@ -43,13 +48,16 @@ class ScheduleEventEarlybirdQuery(graphene.ObjectType):
 
     def resolve_schedule_event_earlybirds(self, info, schedule_event, **kwargs):
         user = info.context.user
+        permission = 'costasiella.view_scheduleeventearlybird'
+
         rid = get_rid(schedule_event)
+        qs = ScheduleEventEarlybird.objects.filter(Q(schedule_event=rid.id))
 
         # Earlybird discounts public status is linked to schedule event public status
-        return ScheduleEventEarlybird.objects.filter(
-            Q(schedule_event=rid.id),
-            (Q(schedule_event__display_public=True) or Q(schedule_event__display_shop=True))
-        ).order_by('-date_start')
+        if not user.has_perm(permission):
+            qs = qs.filter((Q(schedule_event__display_public=True) or Q(schedule_event__display_shop=True)))
+            
+        return qs.order_by('-date_start')
 
 
 def validate_create_update_input(input, update=False):
