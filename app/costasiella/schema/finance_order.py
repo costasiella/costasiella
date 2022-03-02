@@ -212,8 +212,6 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login(user)
 
-        print(input)
-
         validation_result = validate_create_update_input(input, user)
         finance_order = FinanceOrder(
             account=user,
@@ -243,6 +241,10 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
 
         # Accept terms and privacy policy
         create_finance_order_log_accepted_documents(info)
+
+        # Deliver order in case it's free, no need for a payment
+        if finance_order.total == 0:
+            finance_order.deliver()
 
         # Notify user of receiving order
         mail_dude = MailDude(account=user,
