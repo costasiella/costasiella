@@ -32,6 +32,7 @@ def export_excel_finance_invoices(request, token, date_from, date_until, status,
     wb = openpyxl.Workbook(write_only=True)
     ws_header = [
         _('InvoiceID'),
+        _('Invoice group'),
         _('Account ID'),
         _('Account Name'),
         _('Date Created'),
