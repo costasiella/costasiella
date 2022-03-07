@@ -38,21 +38,22 @@ def export_excel_finance_invoices(request, token, date_from, date_until, status,
         _('Date Created'),
         _('Date Due'),
         _('Status'),
-        _('Description'),
-        _('G/L Account'),
-        _('Costcenter'),
+        _('Summary'),
         _('Item #'),
         _('Item Name'),
         _('Item Description'),
         _('Qty'),
         _('Price (each)'),
-        _('Tax %'),
         _('Tax name'),
+        _('Tax %'),
+        _('Tax type'),
         _('Total excl. VAT'),
         _('VAT'),
         _('Total incl. VAT'),
+        _('G/L Account'),
+        _('Cost center'),
         _('Payment Method'),
-        _('Organization Subscription ID'),
+        _('Account Subscription ID'),
         _('Organization Subscription Name'),
         _('Subscription Year'),
         _('Subscription Month'),
@@ -75,9 +76,42 @@ def export_excel_finance_invoices(request, token, date_from, date_until, status,
 
     for invoice_item in invoice_items:
         finance_invoice = invoice_item.finance_invoice
+        finance_invoice_group = finance_invoice.finance_invoice_group
+        finance_tax_rate = invoice_item.finance_tax_rate
+
+        account_subscription_id = ""
+        organization_subscription_name = ""
+        if invoice_item.account_subscription:
+            account_subscription_id = invoice_item.account_subscription.id
+            organization_subscription_name = invoice_item.account_subscription.organization_subscription.name
 
         ws.append([
-            finance_invoice.invoice_number
+            finance_invoice.invoice_number,
+            finance_invoice_group.name,
+            finance_invoice.account.id,
+            finance_invoice.account.full_name,
+            finance_invoice.date_sent,
+            finance_invoice.date_due,
+            finance_invoice.status,
+            finance_invoice.summary,
+            invoice_item.line_number,
+            invoice_item.product_name,
+            invoice_item.description,
+            invoice_item.quantity,
+            invoice_item.price,
+            finance_tax_rate.name if finance_tax_rate else "",
+            finance_tax_rate.percentage if finance_tax_rate else "",
+            finance_tax_rate.rate_type if finance_tax_rate else "",
+            invoice_item.subtotal,
+            invoice_item.tax,
+            invoice_item.total,
+            invoice_item.finance_glaccount.code if invoice_item.finance_glaccount else "",
+            invoice_item.finance_costcenter.code if invoice_item.finance_costcenter else "",
+            finance_invoice.finance_payment_method.name if finance_invoice.finance_payment_method else "",
+            account_subscription_id,
+            organization_subscription_name,
+            invoice_item.subscription_year or "",
+            invoice_item.subscription_month or ""
         ])
 
     # # Create a file-like buffer to receive xlsx data.
