@@ -95,6 +95,7 @@ from .schedule_item_instructor_available import ScheduleItemInstructorAvailableQ
 from .schedule_shift import ScheduleShiftQuery, ScheduleShiftMutation
 
 from .system_feature_shop import SystemFeatureShopQuery, SystemFeatureShopMutation
+from .system_mailchimp_list import SystemMailChimpListQuery, SystemMailChimpListMutation
 from .system_mail_template import SystemMailTemplateQuery, SystemMailTemplateMutation
 from .system_setting import SystemSettingQuery, SystemSettingMutation
 
@@ -176,6 +177,7 @@ class Query(AccountQuery,
             ScheduleItemWeeklyOTCQuery,
             ScheduleShiftQuery,
             SystemFeatureShopQuery,
+            SystemMailChimpListQuery,
             SystemMailTemplateQuery,
             SystemSettingQuery,
             graphene.ObjectType):
@@ -252,6 +254,7 @@ class Mutation(AccountMutation,
                ScheduleItemWeeklyOTCMutation,
                ScheduleShiftMutation,
                SystemFeatureShopMutation,
+               SystemMailChimpListMutation,
                SystemMailTemplateMutation,
                SystemSettingMutation,
                graphene.ObjectType):
