@@ -789,7 +789,7 @@ class Command(BaseCommand):
 
             organization_subscription_group = m.OrganizationSubscriptionGroup(
                 name=record['name'],
-                description=record['description'],
+                description=record['description'] or "",
             )
             organization_subscription_group.save()
             records_imported += 1

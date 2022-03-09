@@ -1,18 +1,10 @@
 import io
 import openpyxl
-from calendar import timegm
-from datetime import datetime
 
-from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
-from django.utils import timezone
-from django.shortcuts import redirect, render
-from django.http import Http404, StreamingHttpResponse, FileResponse
-from django.db.models import Q
-from django.template.loader import get_template, render_to_string
+from django.http import Http404, FileResponse
 
-from ...models import Account, AccountSubscriptionCredit, AccountInstructorProfile
-
+from ...models import AccountSubscriptionCredit, AccountInstructorProfile
 # Django-graphql-jwt imports begin
 from ...modules.graphql_jwt_tools import get_user_by_token
 # Django-graphql-jwt imports end
@@ -25,7 +17,6 @@ def export_account_data(request, token, **kwargs):
     :param: POST: token - JWT access token
     """
     user = get_user_by_token(token, request)
-    print(user)
     if not user:
         raise Http404(_("Please sign in to export your account data."))
 

@@ -315,6 +315,53 @@ class GQLFinanceOrder(TestCase):
             to_global_id('AccountNode', order.account.id)
         )
 
+    def test_create_order_free_classpass(self):
+        """ Create finance order with free class pass"""
+        query = self.order_create_mutation
+
+        terms_and_conditions = f.OrganizationDocumentFactory.create()
+        privacy_policy = f.OrganizationDocumentPrivacyPolicyFactory.create()
+        organization_classpass = f.OrganizationClasspassFactory.create(
+            price=0,
+            finance_tax_rate=None
+        )
+        variables = self.variables_create
+        variables['input']['organizationClasspass'] = to_global_id(
+            'OrganizationClasspassNode', organization_classpass.id
+        )
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Get order
+        rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
+        order = models.FinanceOrder.objects.get(pk=rid.id)
+
+        self.assertEqual(
+            data['createFinanceOrder']['financeOrder']['account']['id'],
+            to_global_id('AccountNode', self.admin_user.pk)
+        )
+
+        # Verify that classpass item was added to the order
+        first_item = order.items.first()
+        self.assertEqual(first_item.product_name, "Class pass")
+        self.assertEqual(first_item.total, organization_classpass.price)
+        self.assertEqual(first_item.description, organization_classpass.name)
+        self.assertEqual(first_item.quantity, 1)
+
+        # Verify that the order was delivered
+        self.assertEqual(order.status, "DELIVERED")
+
+        qs_account_classpass = models.AccountClasspass.objects.filter(
+            account=self.admin_user,
+            organization_classpass=organization_classpass
+        )
+        self.assertEqual(qs_account_classpass.exists(), True)
+
     def test_create_order_classpass(self):
         """ Create finance order with class pass"""
         query = self.order_create_mutation

@@ -21,7 +21,6 @@ from datetime import datetime
 import django
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
-
 import jwt
 
 from .jwt_settings import jwt_settings
@@ -35,15 +34,7 @@ def _verifiy_permission_or_account(request, token, finance_invoice, **kwargs):
     :param finance_invoice:
     :return:
     """
-    # user = request.user # This should work, but doesn't at 05-02-2021 for some reason. Check again later
-    # Fetch token using some code from djano-graphql-jwt
-    user = None
-    # token = get_credentials(request, **kwargs)
-    # print(token)
-    # if token is not None:
     user = get_user_by_token(token, request)
-
-    print(user)
 
     if not user:
         return False
