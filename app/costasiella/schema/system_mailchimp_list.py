@@ -5,11 +5,17 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
+from ..dudes import IntegrationMailChimpDude
 from ..models import SystemMailChimpList
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
+
+
+class SystemMailChimpListNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    subscribed = graphene.Boolean()
 
 
 class SystemMailChimpListNode(DjangoObjectType):
@@ -22,7 +28,7 @@ class SystemMailChimpListNode(DjangoObjectType):
             'mailchimp_list_id'
         )
         filter_fields = ['id']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, SystemMailChimpListNodeInterface,)
 
     @classmethod
     def get_node(self, info, id):
@@ -31,6 +37,24 @@ class SystemMailChimpListNode(DjangoObjectType):
         # require_login_and_permission(user, 'costasiella.view_systemmailchimplist')
 
         return self._meta.model.objects.get(id=id)
+
+    def resolve_subscribed(self, info):
+        if not info.context.user:
+            return None
+
+        account = info.context.user
+        mailchimp_dude = IntegrationMailChimpDude()
+        result = mailchimp_dude.get_account_subscribed_to_list(
+            self.mailchimp_list_id,
+            account
+        )
+
+        subscribed = False
+        if not result['error']:
+            if result['subscription_status'] == 'subscribed':
+                subscribed = True
+
+        return subscribed
 
 
 class SystemMailChimpListQuery(graphene.ObjectType):
