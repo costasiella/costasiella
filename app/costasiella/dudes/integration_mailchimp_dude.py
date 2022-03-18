@@ -5,7 +5,8 @@ from mailchimp_marketing.api_client import ApiClientError
 
 
 class IntegrationMailChimpDude:
-    def get_client(self):
+    @staticmethod
+    def get_client():
         from .system_setting_dude import SystemSettingDude
 
         system_setting_dude = SystemSettingDude()
@@ -26,35 +27,32 @@ class IntegrationMailChimpDude:
 
         return mailchimp
 
-
-    def list_member_add(self, list_id, account):
+    def list_member_subscribe(self, list_id, account):
         """
-            Add a member to a list
+            Subscribe a member to a list
         """
-        subscriber_hash = account.get_mailchimp_email_hash()
         mailchimp = self.get_client()
-        error = False
 
+        error = False
+        message = _('Successfully Subscribed to list')
         try:
-            mailchimp.lists.members.create_or_update(
+            # set_list_member = add or update
+            response = mailchimp.lists.set_list_member(
                 list_id=list_id,
-                subscriber_hash=subscriber_hash,
-                data={
-                    'email_address': account.email,
-                    'status': 'subscribed',
-                    'status_if_new': 'pending',
+                subscriber_hash=account.get_mailchimp_email_hash(),
+                body={
+                    "email_address": account.email,
+                    "status_if_new": "subscribed",
+                    "status": "subscribed",
                     'merge_fields': {
                         'FNAME': account.first_name,
                         'LNAME': account.last_name,
                     }
                 }
             )
-            message = _('Subscription successful, please check your inbox at {email}').format(
-                email=account.email
-            )
         except ApiClientError as e:
             error = True
-            message = _("We encountered an error while trying to subscribe you to this list. \
+            message = _("We encountered an error while trying to unsubscribe you to this list. \
                 Please try again later or contact us when the error persists.")
 
         return {
@@ -62,19 +60,28 @@ class IntegrationMailChimpDude:
             'message': message
         }
 
-
-    def list_member_delete(self, list_id, account):
+    def list_member_unsubscribe(self, list_id, account):
         """
-            Delete a member from a list
+            Unsubscribe a member from a list
         """
         mailchimp = self.get_client()
 
         error = False
         message = _('Successfully unsubscribed from list')
         try:
-            mailchimp.lists.members.delete(
+            # set_list_member = add or update
+            response = mailchimp.lists.set_list_member(
                 list_id=list_id,
-                subscriber_hash=account.get_email_hash('md5')
+                subscriber_hash=account.get_mailchimp_email_hash(),
+                body={
+                    "email_address": account.email,
+                    "status_if_new": "unsubscribed",
+                    "status": "unsubscribed",
+                    'merge_fields': {
+                        'FNAME': account.first_name,
+                        'LNAME': account.last_name,
+                    }
+                }
             )
         except ApiClientError as e:
             error = True
@@ -88,13 +95,9 @@ class IntegrationMailChimpDude:
 
     def get_account_subscribed_to_list(self, list_id, account):
         """
-        :param: mailchimp: MailChimp object (mailchimp3)
-        :param cuID: db.auth_user.id
-        :return: boolean
+        Get current subscription status for a given account
         """
         mailchimp = self.get_client()
-
-        print(list_id)
 
         error = False
         error_message = ''
@@ -104,12 +107,10 @@ class IntegrationMailChimpDude:
                 list_id=list_id,
                 subscriber_hash=account.get_mailchimp_email_hash()
             )
-            print(member)
             subscription_status = member['status']
         except ApiClientError as e:
             error = True
             error_message = e.text
-            print(error_message)
 
         return {
             'error': error,

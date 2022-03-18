@@ -133,6 +133,44 @@ class UpdateSystemMailChimpList(graphene.relay.ClientIDMutation):
         return UpdateSystemMailChimpList(system_mailchimp_list=system_mailchimp_list)
 
 
+class UpdateSystemMailChimpListSubscriptionStatus(graphene.relay.ClientIDMutation):
+    class Input:
+        mailchimp_list_id = graphene.String(required=True)
+
+    subscription_status = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login(user)
+
+        from ..dudes import IntegrationMailChimpDude
+
+        mailchimp_dude = IntegrationMailChimpDude()
+        mailchimp_list_id = input['mailchimp_list_id']
+
+        result = mailchimp_dude.get_account_subscribed_to_list(
+            mailchimp_list_id,
+            user
+        )
+
+        subscription_status = result['subscription_status']
+        if subscription_status == 'subscribed':
+            result = mailchimp_dude.list_member_unsubscribe(mailchimp_list_id, user)
+        else:
+            result = mailchimp_dude.list_member_subscribe(mailchimp_list_id, user)
+
+        # Refresh status before returning it
+        result = mailchimp_dude.get_account_subscribed_to_list(
+            mailchimp_list_id,
+            user
+        )
+
+        subscription_status = result['subscription_status']
+
+        return UpdateSystemMailChimpListSubscriptionStatus(subscription_status=subscription_status)
+
+
 class DeleteSystemMailChimpList(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
@@ -158,3 +196,4 @@ class SystemMailChimpListMutation(graphene.ObjectType):
     delete_system_mailchimp_list = DeleteSystemMailChimpList.Field()
     create_system_mailchimp_list = CreateSystemMailChimpList.Field()
     update_system_mailchimp_list = UpdateSystemMailChimpList.Field()
+    update_system_mailchimp_list_subscription_status = UpdateSystemMailChimpListSubscriptionStatus.Field()
