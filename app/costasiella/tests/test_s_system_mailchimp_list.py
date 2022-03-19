@@ -138,59 +138,32 @@ class GQLSystemMailChimpList(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one(self):
-    #     """ Query one mailchimp_list """
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #
-    #     # First query mailchimp_lists to get node id easily
-    #     node_id = self.get_node_id_of_first_mailchimp_list()
-    #
-    #     # Now query single mailchimp_list and check
-    #     query = self.mailchimp_list_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationShift']['name'], mailchimp_list.name)
-    #     self.assertEqual(data['organizationShift']['archived'], mailchimp_list.archived)
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission to view archived mailchimp_lists for anon users Query one mailchimp_list """
-    #     query = self.mailchimp_list_query
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     mailchimp_list.archived = True
-    #     mailchimp_list.save()
-    #     node_id = to_global_id("OrganizationShiftNode", mailchimp_list.id)
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ None returned when user lacks authorization to view mailchimp_lists """
-    #     query = self.mailchimp_list_query
-    #
-    #     user = f.RegularUserFactory.create()
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     node_id = to_global_id("OrganizationShiftNode", mailchimp_list.id)
-    #
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     query = self.mailchimp_list_query
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_systemmailchimplist')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     node_id = self.get_node_id_of_first_mailchimp_list()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationShift']['name'], mailchimp_list.name)
+
+    def test_query_one(self):
+        """ Query one mailchimp_list """
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+
+        # First query mailchimp_lists to get node id easily
+        node_id = to_global_id('SystemMailChimpListNode', mailchimp_list.id)
+
+        # Now query single mailchimp_list and check
+        query = self.mailchimp_list_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['systemMailchimpList']['name'], mailchimp_list.name)
+        self.assertEqual(data['systemMailchimpList']['frequency'], mailchimp_list.frequency)
+        self.assertEqual(data['systemMailchimpList']['description'], mailchimp_list.description)
+        self.assertEqual(data['systemMailchimpList']['mailchimpListId'], mailchimp_list.mailchimp_list_id)
+
+    def test_query_one_anon_user(self):
+        """ Deny permission to view archived mailchimp_lists for anon users Query one mailchimp_list """
+        query = self.mailchimp_list_query
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+
+        node_id = to_global_id("SystemMailChimpListNode", mailchimp_list.id)
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
     #
     # def test_create_mailchimp_list(self):
     #     """ Create a mailchimp_list """
