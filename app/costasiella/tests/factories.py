@@ -1144,6 +1144,16 @@ class ScheduleItemOrganizationClasspassGroupAllowFactory(factory.DjangoModelFact
     attend = True
 
 
+class SystemMailChimpListFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.system_mailchimp_list
+
+    name = "Newsletter"
+    description = "A short description of our newsletter"
+    frequency = "Once or twice a month"
+    mailchimp_list_id = "abc124f0"
+
+
 class SystemSettingFinanceCurrencyFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.SystemSetting
