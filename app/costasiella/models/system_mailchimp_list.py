@@ -1,4 +1,3 @@
-from django.utils.translation import gettext as _
 from django.db import models
 
 from .helpers import model_string

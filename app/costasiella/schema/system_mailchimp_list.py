@@ -39,14 +39,13 @@ class SystemMailChimpListNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
     def resolve_subscribed(self, info):
-        if not info.context.user:
-            return None
+        user = info.context.user
+        require_login(user)
 
-        account = info.context.user
         mailchimp_dude = IntegrationMailChimpDude()
         result = mailchimp_dude.get_account_subscribed_to_list(
             self.mailchimp_list_id,
-            account
+            user
         )
 
         subscribed = False
