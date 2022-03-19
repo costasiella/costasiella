@@ -240,78 +240,83 @@ class GQLSystemMailChimpList(TestCase):
         )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_mailchimp_list(self):
-    #     """ Update a mailchimp_list as admin user """
-    #     query = self.mailchimp_list_update_mutation
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_mailchimp_list()
-    #
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationShift']['organizationShift']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationShift']['organizationShift']['archived'], False)
-    #
-    # def test_update_mailchimp_list_anon_user(self):
-    #     """ Update a mailchimp_list as anonymous user """
-    #     query = self.mailchimp_list_update_mutation
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_mailchimp_list()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_mailchimp_list_permission_granted(self):
-    #     """ Update a mailchimp_list as user with permission """
-    #     query = self.mailchimp_list_update_mutation
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_mailchimp_list()
-    #
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationShift']['organizationShift']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationShift']['organizationShift']['archived'], False)
-    #
-    # def test_update_mailchimp_list_permission_denied(self):
-    #     """ Update a mailchimp_list as user without permissions """
-    #     query = self.mailchimp_list_update_mutation
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_mailchimp_list()
-    #
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_mailchimp_list(self):
+        """ Update a mailchimp_list as admin user """
+        query = self.mailchimp_list_update_mutation
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SystemMailChimpNode", mailchimp_list.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSystemMailchimpList']['systemMailchimpList']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['updateSystemMailchimpList']['systemMailchimpList']['frequency'],
+                         variables['input']['frequency'])
+        self.assertEqual(data['updateSystemMailchimpList']['systemMailchimpList']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['updateSystemMailchimpList']['systemMailchimpList']['mailchimpListId'],
+                         variables['input']['mailchimpListId'])
+
+    def test_update_mailchimp_list_anon_user(self):
+        """ Update a mailchimp_list as anonymous user """
+        query = self.mailchimp_list_update_mutation
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SystemMailChimpNode", mailchimp_list.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_mailchimp_list_permission_granted(self):
+        """ Update a mailchimp_list as user with permission """
+        query = self.mailchimp_list_update_mutation
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SystemMailChimpNode", mailchimp_list.id)
+
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSystemMailchimpList']['systemMailchimpList']['name'],
+                         variables['input']['name'])
+
+    def test_update_mailchimp_list_permission_denied(self):
+        """ Update a mailchimp_list as user without permissions """
+        query = self.mailchimp_list_update_mutation
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SystemMailChimpNode", mailchimp_list.id)
+
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_archive_mailchimp_list(self):
     #     """ Archive a mailchimp_list """
