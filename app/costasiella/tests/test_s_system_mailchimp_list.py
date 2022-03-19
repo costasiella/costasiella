@@ -112,13 +112,11 @@ class GQLSystemMailChimpList(TestCase):
 '''
 
         self.mailchimp_list_delete_mutation = '''
-  mutation UpdateSystemMailChimpList($input:UpdateSystemMailChimpListInput!) {
-    updateSystemMailchimpList(input: $input) {
-      systemMailchimpList{
-        id
-      }
-    }
+mutation DeleteSystemMailChimpList($input: DeleteSystemMailChimpListInput!) {
+  deleteSystemMailchimpList(input: $input) {
+    ok
   }
+}
 '''
 
     def tearDown(self):
@@ -139,7 +137,7 @@ class GQLSystemMailChimpList(TestCase):
         self.assertEqual(item['mailchimpListId'], mailchimp_list.mailchimp_list_id)
 
     def test_query_anon_user(self):
-        """ Query list of mailchimp_lists as anon user - archived shouldn't be visible"""
+        """ Query list of mailchimp_lists as anon user - deleted shouldn't be visible"""
         query = self.mailchimp_lists_query
         mailchimp_list = f.SystemMailChimpListFactory.create()
 
@@ -164,7 +162,7 @@ class GQLSystemMailChimpList(TestCase):
         self.assertEqual(data['systemMailchimpList']['mailchimpListId'], mailchimp_list.mailchimp_list_id)
 
     def test_query_one_anon_user(self):
-        """ Deny permission to view archived mailchimp_lists for anon users Query one mailchimp_list """
+        """ Deny permission to view deleted mailchimp_lists for anon users Query one mailchimp_list """
         query = self.mailchimp_list_query
         mailchimp_list = f.SystemMailChimpListFactory.create()
 
@@ -317,74 +315,74 @@ class GQLSystemMailChimpList(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_archive_mailchimp_list(self):
-    #     """ Archive a mailchimp_list """
-    #     query = self.mailchimp_list_archive_mutation
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_mailchimp_list()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationShift']['organizationShift']['archived'], variables['input']['archived'])
-    #
-    # def test_archive_mailchimp_list_anon_user(self):
-    #     """ Archive a mailchimp_list """
-    #     query = self.mailchimp_list_archive_mutation
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_mailchimp_list()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_archive_mailchimp_list_permission_granted(self):
-    #     """ Allow archiving mailchimp_lists for users with permissions """
-    #     query = self.mailchimp_list_archive_mutation
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_mailchimp_list()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationShift']['organizationShift']['archived'], variables['input']['archived'])
-    #
-    # def test_archive_mailchimp_list_permission_denied(self):
-    #     """ Check archive mailchimp_list permission denied error message """
-    #     query = self.mailchimp_list_archive_mutation
-    #     mailchimp_list = f.SystemMailChimpListFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_mailchimp_list()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_mailchimp_list(self):
+        """ Archive a mailchimp_list """
+        query = self.mailchimp_list_delete_mutation
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("SystemMailChimpNode", mailchimp_list.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteSystemMailchimpList']['ok'], True)
+
+    def test_delete_mailchimp_list_anon_user(self):
+        """ Archive a mailchimp_list """
+        query = self.mailchimp_list_delete_mutation
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("SystemMailChimpNode", mailchimp_list.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_mailchimp_list_permission_granted(self):
+        """ Allow archiving mailchimp_lists for users with permissions """
+        query = self.mailchimp_list_delete_mutation
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("SystemMailChimpNode", mailchimp_list.id)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteSystemMailchimpList']['ok'], True)
+
+    def test_delete_mailchimp_list_permission_denied(self):
+        """ Check delete mailchimp_list permission denied error message """
+        query = self.mailchimp_list_delete_mutation
+        mailchimp_list = f.SystemMailChimpListFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("SystemMailChimpNode", mailchimp_list.id)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
