@@ -88,6 +88,10 @@ class GQLSystemMailChimpList(TestCase):
     createSystemMailchimpList(input: $input) {
       systemMailchimpList{
         id
+        name
+        frequency
+        description
+        mailchimpListId
       }
     }
   }
@@ -98,6 +102,10 @@ class GQLSystemMailChimpList(TestCase):
     updateSystemMailchimpList(input: $input) {
       systemMailchimpList{
         id
+        name    
+        frequency
+        description
+        mailchimpListId
       }
     }
   }
@@ -164,68 +172,74 @@ class GQLSystemMailChimpList(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_mailchimp_list(self):
-    #     """ Create a mailchimp_list """
-    #     query = self.mailchimp_list_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationShift']['organizationShift']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationShift']['organizationShift']['archived'], False)
-    #
-    # def test_create_mailchimp_list_anon_user(self):
-    #     """ Create a mailchimp_list with anonymous user, check error message """
-    #     query = self.mailchimp_list_create_mutation
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_mailchimp_list_permission_granted(self):
-    #     """ Create a mailchimp_list with a user having the add permission """
-    #     query = self.mailchimp_list_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationShift']['organizationShift']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationShift']['organizationShift']['archived'], False)
-    #
-    # def test_create_mailchimp_list_permission_denied(self):
-    #     """ Create a mailchimp_list with a user not having the add permission """
-    #     query = self.mailchimp_list_create_mutation
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_create
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_create_mailchimp_list(self):
+        """ Create a mailchimp_list """
+        query = self.mailchimp_list_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSystemMailchimpList']['systemMailchimpList']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createSystemMailchimpList']['systemMailchimpList']['frequency'],
+                         variables['input']['frequency'])
+        self.assertEqual(data['createSystemMailchimpList']['systemMailchimpList']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['createSystemMailchimpList']['systemMailchimpList']['mailchimpListId'],
+                         variables['input']['mailchimpListId'])
+
+    def test_create_mailchimp_list_anon_user(self):
+        """ Create a mailchimp_list with anonymous user, check error message """
+        query = self.mailchimp_list_create_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_mailchimp_list_permission_granted(self):
+        """ Create a mailchimp_list with a user having the add permission """
+        query = self.mailchimp_list_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSystemMailchimpList']['systemMailchimpList']['name'],
+                         variables['input']['name'])
+
+    def test_create_mailchimp_list_permission_denied(self):
+        """ Create a mailchimp_list with a user not having the add permission """
+        query = self.mailchimp_list_create_mutation
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_create
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_update_mailchimp_list(self):
     #     """ Update a mailchimp_list as admin user """
