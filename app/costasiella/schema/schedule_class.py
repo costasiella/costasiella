@@ -340,7 +340,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 ON coho.organization_location_id = csi_ol.id
             WHERE csi.schedule_item_type = "CLASS" 
                 AND (
-                        /* Selection on specific days /*
+                        /* Selection on specific days */
                         (csi.frequency_type = "SPECIFIC" AND csi.date_start = %(class_date)s ) OR
                         /* Weekly selection */
                         ( csi.frequency_type = "WEEKLY" AND 
