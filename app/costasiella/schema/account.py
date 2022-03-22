@@ -280,7 +280,7 @@ class AccountNode(DjangoObjectType):
                 'costasiella.view_account',
             ])
 
-        return self.mobile
+        return self.phone
 
     def resolve_postcode(self, info, **kwargs):
         user = info.context.user
