@@ -323,10 +323,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     account_2_id,
                     role_2
                 FROM costasiella_scheduleitemaccount
-                WHERE date_start <= %(class_date)s AND (
-                      date_end >= %(class_date)s OR date_end IS NULL)
+                WHERE date_start <= %(class_date)s AND 
+                      (date_end >= %(class_date)s OR date_end IS NULL)
                 ORDER BY date_start
-                LIMIT 2
+                # LIMIT 1
                 ) csia
                 ON csia.schedule_item_id = csi.id
             LEFT JOIN

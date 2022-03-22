@@ -235,7 +235,6 @@ class ScheduleShiftsDayType(graphene.ObjectType):
                   WHERE date_start <= %(shift_date)s AND 
                         (date_end >= %(shift_date)s OR date_end IS NULL)
                   ORDER BY date_start
-                  LIMIT 2
                 ) csia
                 ON csia.schedule_item_id = csi.id
             LEFT JOIN
