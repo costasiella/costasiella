@@ -85,7 +85,7 @@ class OrganizationSubscriptionNode(DjangoObjectType):
             'finance_glaccount',
             'finance_costcenter'
         )
-        filter_fields = ['archived']
+        filter_fields = ['archived', 'display_shop', 'display_public']
         interfaces = (graphene.relay.Node, OrganizationSubscriptionNodeInterface)
 
     def resolve_subscription_unit_display(self, info):
