@@ -599,8 +599,8 @@ class FinanceInvoice(models.Model):
         amounts_tax = []
 
         tax_rates = FinanceTaxRate.objects.filter(
-            financeinvoiceitem__finance_invoice=self,
-        ).annotate(invoice_amount=Sum("financeinvoiceitem__tax"))
+            invoice_items__finance_invoice=self,
+        ).annotate(invoice_amount=Sum("invoice_items__tax"))
 
         # print(tax_rates)
 
