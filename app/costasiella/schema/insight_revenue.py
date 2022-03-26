@@ -1,20 +1,10 @@
-import datetime
-
-
 from django.utils.translation import gettext as _
 from django.utils import timezone
-from django.db.models import Q, FilteredRelation, OuterRef, Subquery
 
 import graphene
-from graphene_django import DjangoObjectType
-from graphene_django.filter import DjangoFilterConnectionField
-from graphql import GraphQLError
-from graphql_relay import to_global_id
 
 from ..dudes import InsightRevenueDude
-
 from ..modules.gql_tools import require_login_and_permission
-
 
 
 class RevenueTotalType(graphene.ObjectType):
@@ -31,7 +21,7 @@ class RevenueTotalType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_total_year(self.year)
+        data = insight_revenue_dude.get_revenue_total_year(year)
         amounts = []
         for month in data:
             amounts.append(data[month])
@@ -53,7 +43,7 @@ class RevenueSubTotalType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_subtotal_year(self.year)
+        data = insight_revenue_dude.get_revenue_subtotal_year(year)
         amounts = []
         for month in data:
             amounts.append(data[month])
