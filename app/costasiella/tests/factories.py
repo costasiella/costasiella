@@ -1122,7 +1122,8 @@ class ScheduleItemOrganizationClasspassGroupDenyFactory(factory.DjangoModelFacto
         initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
 
     schedule_item = factory.LazyAttribute(
-        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+        lambda o: o.initial_schedule_item if o.initial_schedule_item
+            else factory.SubFactory(SchedulePublicWeeklyClassFactory)
     )
     organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
     shop_book = False
@@ -1137,11 +1138,22 @@ class ScheduleItemOrganizationClasspassGroupAllowFactory(factory.DjangoModelFact
         initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
 
     schedule_item = factory.LazyAttribute(
-        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+        lambda o: o.initial_schedule_item if o.initial_schedule_item
+            else factory.SubFactory(SchedulePublicWeeklyClassFactory)
     )
     organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
     shop_book = True
     attend = True
+
+
+class SystemMailChimpListFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SystemMailChimpList
+
+    name = "Newsletter"
+    description = "A short description of our newsletter"
+    frequency = "Once or twice a month"
+    mailchimp_list_id = "abc124f0"
 
 
 class SystemSettingFinanceCurrencyFactory(factory.DjangoModelFactory):

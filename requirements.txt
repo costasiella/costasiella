@@ -8,7 +8,7 @@ cairocffi==1.1.0
 CairoSVG==2.5.1
 celery==5.2.2
 certifi==2018.11.29
-cffi==1.12.3
+cffi==1.15.0
 chardet==3.0.4
 click==8.0.3
 click-didyoumean==0.0.3
@@ -45,6 +45,7 @@ idna==2.8
 importlib-metadata==0.19
 jdcal==1.4.1
 kombu==5.2.3
+mailchimp-marketing==3.0.74
 mollie-api-python==2.3.1
 more-itertools==7.2.0
 mysqlclient==2.0.3

@@ -259,7 +259,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         self.assertEqual(data['createOrganizationShift']['organizationShift']['name'], variables['input']['name'])
         self.assertEqual(data['createOrganizationShift']['organizationShift']['archived'], False)
 
-
     def test_create_shift_anon_user(self):
         """ Create a shift with anonymous user, check error message """
         query = self.shift_create_mutation
@@ -272,7 +271,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_create_shift_permission_granted(self):
         """ Create a shift with a user having the add permission """
@@ -294,7 +292,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         self.assertEqual(data['createOrganizationShift']['organizationShift']['name'], variables['input']['name'])
         self.assertEqual(data['createOrganizationShift']['organizationShift']['archived'], False)
 
-
     def test_create_shift_permission_denied(self):
         """ Create a shift with a user not having the add permission """
         query = self.shift_create_mutation
@@ -309,7 +306,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_update_shift(self):
         """ Update a shift as admin user """
@@ -328,7 +324,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         self.assertEqual(data['updateOrganizationShift']['organizationShift']['name'], variables['input']['name'])
         self.assertEqual(data['updateOrganizationShift']['organizationShift']['archived'], False)
 
-
     def test_update_shift_anon_user(self):
         """ Update a shift as anonymous user """
         query = self.shift_update_mutation
@@ -344,7 +339,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_update_shift_permission_granted(self):
         """ Update a shift as user with permission """
@@ -367,7 +361,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         self.assertEqual(data['updateOrganizationShift']['organizationShift']['name'], variables['input']['name'])
         self.assertEqual(data['updateOrganizationShift']['organizationShift']['archived'], False)
 
-
     def test_update_shift_permission_denied(self):
         """ Update a shift as user without permissions """
         query = self.shift_update_mutation
@@ -386,7 +379,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_archive_shift(self):
         """ Archive a shift """
         query = self.shift_archive_mutation
@@ -401,7 +393,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         )
         data = executed.get('data')
         self.assertEqual(data['archiveOrganizationShift']['organizationShift']['archived'], variables['input']['archived'])
-
 
     def test_archive_shift_anon_user(self):
         """ Archive a shift """
@@ -418,7 +409,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_archive_shift_permission_granted(self):
         """ Allow archiving shifts for users with permissions """
@@ -441,7 +431,6 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         data = executed.get('data')
         self.assertEqual(data['archiveOrganizationShift']['organizationShift']['archived'], variables['input']['archived'])
 
-
     def test_archive_shift_permission_denied(self):
         """ Check archive shift permission denied error message """
         query = self.shift_archive_mutation
@@ -460,5 +449,3 @@ mutation ArchiveOrganizationShift($input: ArchiveOrganizationShiftInput!) {
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-

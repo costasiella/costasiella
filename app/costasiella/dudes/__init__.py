@@ -5,6 +5,8 @@ from .class_schedule_dude import ClassScheduleDude
 
 from .date_tools_dude import DateToolsDude
 
+from .integration_mailchimp_dude import IntegrationMailChimpDude
+
 from .insight_account_classpasses_dude import InsightAccountClasspassesDude
 from .insight_account_subscriptions_dude import InsightAccountSubscriptionsDude
 from .insight_class_attendance_dude import InsightClassAttendanceDude

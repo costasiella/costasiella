@@ -25,6 +25,7 @@ services:
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
+      - backend
   celery-beat:
     restart: always
     build: .
@@ -34,4 +35,6 @@ services:
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
+      - celery
+      - backend
 

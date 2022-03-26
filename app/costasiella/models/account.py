@@ -152,3 +152,14 @@ class Account(AbstractUser):
             has_paid_registration_fee = True
 
         return  has_paid_registration_fee
+
+    def get_mailchimp_email_hash(self):
+        """
+            Return email hash (required for MailChimp integration)
+        """
+        import hashlib
+
+        md5 = hashlib.md5()
+        md5.update(str.encode(self.email.lower()))
+
+        return md5.hexdigest()
