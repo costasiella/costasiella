@@ -1,30 +1,13 @@
 from django.utils.translation import gettext as _
 from django.utils import timezone
-from django.db.models import Q, FilteredRelation, OuterRef, Subquery
-
-
 import graphene
-from graphene_django import DjangoObjectType
-from graphene_django.filter import DjangoFilterConnectionField
-from graphql import GraphQLError
-from graphql_relay import to_global_id
 
-from ..models import ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
-from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
-from .account import AccountNode
-from .organization_classtype import OrganizationClasstypeNode
-from .organization_level import OrganizationLevelNode
-from .organization_location_room import OrganizationLocationRoomNode
-from .schedule_item import ScheduleItemNode
-
 from ..dudes import InsightAccountSubscriptionsDude
 
 
 m = Messages()
-
-import datetime
 
 
 class AccountSubscriptionsSoldType(graphene.ObjectType):
@@ -41,7 +24,7 @@ class AccountSubscriptionsSoldType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_account_subscriptions_dude.get_subscriptions_sold_year_summary_count(self.year)
+        data = insight_account_subscriptions_dude.get_subscriptions_sold_year_summary_count(year)
 
         return data
 
@@ -60,7 +43,7 @@ class AccountSubscriptionsActiveType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_account_subscriptions_dude.get_subscriptions_active_year_summary_count(self.year)
+        data = insight_account_subscriptions_dude.get_subscriptions_active_year_summary_count(year)
 
         return data
 
@@ -70,29 +53,28 @@ class InsightSubscriptionsQuery(graphene.ObjectType):
     insight_account_subscriptions_active = graphene.Field(AccountSubscriptionsActiveType, year=graphene.Int())
 
 
-    def resolve_insight_account_subscriptions_sold(self, 
-                                                 info, 
-                                                 year=graphene.Int(required=True, default_value=timezone.now().year)):
+    def resolve_insight_account_subscriptions_sold(self,
+                                                   info,
+                                                   year=graphene.Int(required=True,
+                                                                     default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightsubscriptionssold')
 
-        print('############ resolve')
-        print(locals())
+        print(year)
 
         account_subscriptions_sold = AccountSubscriptionsSoldType()
         account_subscriptions_sold.year = year
 
         return account_subscriptions_sold
 
-
-    def resolve_insight_account_subscriptions_active(self, 
-                                                    info, 
-                                                    year=graphene.Int(required=True, default_value=timezone.now().year)):
+    def resolve_insight_account_subscriptions_active(self,
+                                                     info,
+                                                     year=graphene.Int(required=True,
+                                                                       default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightsubscriptionsactive')
 
-        print('############ resolve')
-        print(locals())
+        print(year)
 
         account_subscriptions_active = AccountSubscriptionsActiveType()
         account_subscriptions_active.year = year
