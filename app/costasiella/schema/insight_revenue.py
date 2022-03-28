@@ -78,7 +78,6 @@ class InsightRevenueQuery(graphene.ObjectType):
     insight_revenue_subtotal = graphene.Field(RevenueSubTotalType, year=graphene.Int())
     insight_revenue_tax = graphene.Field(RevenueTaxType, year=graphene.Int())
 
-
     def resolve_insight_revenue_total(self,
                                       info,
                                       year=graphene.Int(required=True, default_value=timezone.now().year)):
