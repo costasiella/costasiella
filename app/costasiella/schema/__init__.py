@@ -50,6 +50,7 @@ from .insight_finance_tax_rate_summary import InsightFinanceTaxRateSummaryQuery
 from .insight_subscriptions import InsightSubscriptionsQuery
 from .insight_revenue import InsightRevenueQuery
 from .insight_revenue_subscriptions import InsightRevenueSubscriptionsQuery
+from .insight_revenue_classpasses import InsightRevenueClasspassesQuery
 
 from .organization import OrganizationQuery, OrganizationMutation
 from .organization_announcement import OrganizationAnnouncementQuery, OrganizationAnnouncementMutation
@@ -138,6 +139,7 @@ class Query(AccountQuery,
             InsightClassAttendanceQuery,
             InsightFinanceTaxRateSummaryQuery,
             InsightRevenueQuery,
+            InsightRevenueClasspassesQuery,
             InsightRevenueSubscriptionsQuery,
             InsightSubscriptionsQuery,
             OrganizationQuery,

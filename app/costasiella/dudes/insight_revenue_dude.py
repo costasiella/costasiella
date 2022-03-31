@@ -82,20 +82,22 @@ class InsightRevenueDude:
         if category not in categories:
             raise Exception(_("Category not one of SUBSCRIPTIONS, CLASSPASSES, EVENTTICKETS or OTHER"))
 
+        # Define basic query set
         sums = FinanceInvoiceItem.objects.filter(
             ~(Q(finance_invoice__status='CANCELLED') | Q(finance_invoice__status='DRAFT')),
             finance_invoice__date_sent__gte=date_from,
             finance_invoice__date_sent__lte=date_until,
         )
 
+        # Add category filter to query set
         if category == 'SUBSCRIPTIONS':
-            sums.filter(account_subscription__isnull=False)
+            sums = sums.filter(account_subscription__isnull=False)
         elif category == "CLASSPASSES":
-            sums.filter(account_classpass__isnull=False)
+            sums = sums.filter(account_classpass__isnull=False)
         elif category == "EVENTTICKETS":
-            sums.filter(account_schedule_event_ticket__isnull=False)
+            sums = sums.filter(account_schedule_event_ticket__isnull=False)
         elif category == "OTHER":
-            sums.filter(
+            sums = sums.filter(
                 account_subscription__isnull=True,
                 account_classpass__isnull=True,
                 account_schedule_event_ticket__isnull=True
