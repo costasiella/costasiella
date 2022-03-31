@@ -90,7 +90,16 @@ class InsightRevenueDude:
 
         if category == 'SUBSCRIPTIONS':
             sums.filter(account_subscription__isnull=False)
-        #TODO: Add the other categories here
+        elif category == "CLASSPASSES":
+            sums.filter(account_classpass__isnull=False)
+        elif category == "EVENTTICKETS":
+            sums.filter(account_schedule_event_ticket__isnull=False)
+        elif category == "OTHER":
+            sums.filter(
+                account_subscription__isnull=True,
+                account_classpass__isnull=True,
+                account_schedule_event_ticket__isnull=True
+            )
 
         sums = sums.aggregate(Sum('total'), Sum('subtotal'), Sum('tax'))
 
