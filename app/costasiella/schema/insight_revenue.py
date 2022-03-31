@@ -90,8 +90,8 @@ class InsightRevenueQuery(graphene.ObjectType):
         return revenue_total
 
     def resolve_insight_revenue_subtotal(self,
-                                      info,
-                                      year=graphene.Int(required=True, default_value=timezone.now().year)):
+                                         info,
+                                         year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
 
@@ -101,8 +101,8 @@ class InsightRevenueQuery(graphene.ObjectType):
         return revenue_subtotal
 
     def resolve_insight_revenue_tax(self,
-                                      info,
-                                      year=graphene.Int(required=True, default_value=timezone.now().year)):
+                                    info,
+                                    year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
 
