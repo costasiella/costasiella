@@ -11,8 +11,7 @@ class RevenueTotalSubscriptionsType(graphene.ObjectType):
     data = graphene.List(graphene.Decimal)
     year = graphene.Int()
 
-    @staticmethod
-    def resolve_description(info):
+    def resolve_description(self, info):
         return _("revenue_total_subscriptions")
 
     def resolve_data(self, info):       
@@ -43,7 +42,7 @@ class RevenueSubTotalSubscriptionsType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_total_in_category_for_year(self.year, 'SUBSCRIPTIONS')
+        data = insight_revenue_dude.get_revenue_subtotal_in_category_for_year(self.year, 'SUBSCRIPTIONS')
         amounts = []
         for month in data:
             amounts.append(data[month])
@@ -81,9 +80,9 @@ class InsightRevenueSubscriptionsQuery(graphene.ObjectType):
     insight_revenue_tax_subscriptions = graphene.Field(RevenueTaxSubscriptionsType,
                                                        year=graphene.Int())
 
-    @staticmethod
-    def resolve_insight_revenue_total(info,
-                                      year=graphene.Int(required=True, default_value=timezone.now().year)):
+    def resolve_insight_revenue_total_subscriptions(self,
+                                                    info,
+                                                    year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
 
@@ -92,8 +91,7 @@ class InsightRevenueSubscriptionsQuery(graphene.ObjectType):
 
         return revenue_total_subscriptions
 
-    @staticmethod
-    def resolve_insight_revenue_subtotal(info,
+    def resolve_insight_revenue_subtotal_subscriptions(self, info,
                                          year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
@@ -103,8 +101,7 @@ class InsightRevenueSubscriptionsQuery(graphene.ObjectType):
 
         return revenue_subtotal_subscriptions
 
-    @staticmethod
-    def resolve_insight_revenue_tax(info,
+    def resolve_insight_revenue_tax_subscriptions(self, info,
                                     year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
