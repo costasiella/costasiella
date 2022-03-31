@@ -20,6 +20,8 @@ class InsightRevenueDude:
             date_sent__lte=date_until,
         ).aggregate(Sum('total'), Sum('subtotal'), Sum('tax'))
 
+        # print(sums)
+
         return sums
 
     def get_revenue_total_year(self, year):
@@ -90,7 +92,7 @@ class InsightRevenueDude:
             sums.filter(account_subscription__isnull=False)
         #TODO: Add the other categories here
 
-        sums.aggregate(Sum('total'), Sum('subtotal'), Sum('tax'))
+        sums = sums.aggregate(Sum('total'), Sum('subtotal'), Sum('tax'))
 
         return sums
 
