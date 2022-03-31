@@ -6,13 +6,13 @@ from ..dudes import InsightRevenueDude
 from ..modules.gql_tools import require_login_and_permission
 
 
-class RevenueTotalSubscriptionsType(graphene.ObjectType):
+class RevenueTotalClasspassesType(graphene.ObjectType):
     description = graphene.String()
     data = graphene.List(graphene.Decimal)
     year = graphene.Int()
 
     def resolve_description(self, info):
-        return _("revenue_total_subscriptions")
+        return _("revenue_total_classpasses")
 
     def resolve_data(self, info):       
         insight_revenue_dude = InsightRevenueDude()
@@ -20,7 +20,7 @@ class RevenueTotalSubscriptionsType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_total_in_category_for_year(year, 'SUBSCRIPTIONS')
+        data = insight_revenue_dude.get_revenue_total_in_category_for_year(year, 'CLASSPASSES')
         amounts = []
         for month in data:
             amounts.append(data[month])
@@ -28,13 +28,13 @@ class RevenueTotalSubscriptionsType(graphene.ObjectType):
         return amounts
 
 
-class RevenueSubTotalSubscriptionsType(graphene.ObjectType):
+class RevenueSubTotalClasspassesType(graphene.ObjectType):
     description = graphene.String()
     data = graphene.List(graphene.Decimal)
     year = graphene.Int()
 
     def resolve_description(self, info):
-        return _("revenue_subtotal_subscriptions")
+        return _("revenue_subtotal_classpasses")
 
     def resolve_data(self, info):
         insight_revenue_dude = InsightRevenueDude()
@@ -42,7 +42,7 @@ class RevenueSubTotalSubscriptionsType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_subtotal_in_category_for_year(self.year, 'SUBSCRIPTIONS')
+        data = insight_revenue_dude.get_revenue_subtotal_in_category_for_year(self.year, 'CLASSPASSES')
         amounts = []
         for month in data:
             amounts.append(data[month])
@@ -50,13 +50,13 @@ class RevenueSubTotalSubscriptionsType(graphene.ObjectType):
         return amounts
 
 
-class RevenueTaxSubscriptionsType(graphene.ObjectType):
+class RevenueTaxClasspassesType(graphene.ObjectType):
     description = graphene.String()
     data = graphene.List(graphene.Decimal)
     year = graphene.Int()
 
     def resolve_description(self, info):
-        return _("revenue_tax_subscriptions")
+        return _("revenue_tax_classpasses")
 
     def resolve_data(self, info):
         insight_revenue_dude = InsightRevenueDude()
@@ -64,7 +64,7 @@ class RevenueTaxSubscriptionsType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_tax_in_category_for_year(self.year, 'SUBSCRIPTIONS')
+        data = insight_revenue_dude.get_revenue_tax_in_category_for_year(self.year, 'CLASSPASSES')
         amounts = []
         for month in data:
             amounts.append(data[month])
@@ -72,41 +72,41 @@ class RevenueTaxSubscriptionsType(graphene.ObjectType):
         return amounts
 
 
-class InsightRevenueSubscriptionsQuery(graphene.ObjectType):
-    insight_revenue_total_subscriptions = graphene.Field(RevenueTotalSubscriptionsType,
+class InsightRevenueClasspassesQuery(graphene.ObjectType):
+    insight_revenue_total_classpasses = graphene.Field(RevenueTotalClasspassesType,
                                                          year=graphene.Int())
-    insight_revenue_subtotal_subscriptions = graphene.Field(RevenueSubTotalSubscriptionsType,
+    insight_revenue_subtotal_classpasses = graphene.Field(RevenueSubTotalClasspassesType,
                                                             year=graphene.Int())
-    insight_revenue_tax_subscriptions = graphene.Field(RevenueTaxSubscriptionsType,
+    insight_revenue_tax_classpasses = graphene.Field(RevenueTaxClasspassesType,
                                                        year=graphene.Int())
 
-    def resolve_insight_revenue_total_subscriptions(self,
+    def resolve_insight_revenue_total_classpasses(self,
                                                     info,
                                                     year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
 
-        revenue_total_subscriptions = RevenueTotalSubscriptionsType()
-        revenue_total_subscriptions.year = year
+        revenue_total_classpasses = RevenueTotalClasspassesType()
+        revenue_total_classpasses.year = year
 
-        return revenue_total_subscriptions
+        return revenue_total_classpasses
 
-    def resolve_insight_revenue_subtotal_subscriptions(self, info,
+    def resolve_insight_revenue_subtotal_classpasses(self, info,
                                          year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
 
-        revenue_subtotal_subscriptions = RevenueSubTotalSubscriptionsType()
-        revenue_subtotal_subscriptions.year = year
+        revenue_subtotal_classpasses = RevenueSubTotalClasspassesType()
+        revenue_subtotal_classpasses.year = year
 
-        return revenue_subtotal_subscriptions
+        return revenue_subtotal_classpasses
 
-    def resolve_insight_revenue_tax_subscriptions(self, info,
+    def resolve_insight_revenue_tax_classpasses(self, info,
                                     year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
 
-        revenue_tax_subscriptions = RevenueTaxSubscriptionsType()
-        revenue_tax_subscriptions.year = year
+        revenue_tax_classpasses = RevenueTaxClasspassesType
+        revenue_tax_classpasses.year = year
 
-        return revenue_tax_subscriptions
+        return revenue_tax_classpasses
