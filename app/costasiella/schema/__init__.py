@@ -51,6 +51,7 @@ from .insight_subscriptions import InsightSubscriptionsQuery
 from .insight_revenue import InsightRevenueQuery
 from .insight_revenue_classpasses import InsightRevenueClasspassesQuery
 from .insight_revenue_event_tickets import InsightRevenueEventTicketsQuery
+from .insight_revenue_other import InsightRevenueOtherQuery
 from .insight_revenue_subscriptions import InsightRevenueSubscriptionsQuery
 
 
@@ -143,6 +144,7 @@ class Query(AccountQuery,
             InsightRevenueQuery,
             InsightRevenueClasspassesQuery,
             InsightRevenueEventTicketsQuery,
+            InsightRevenueOtherQuery,
             InsightRevenueSubscriptionsQuery,
             InsightSubscriptionsQuery,
             OrganizationQuery,

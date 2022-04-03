@@ -42,7 +42,7 @@ class RevenueSubTotalSubscriptionsType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_subtotal_in_category_for_year(self.year, 'SUBSCRIPTIONS')
+        data = insight_revenue_dude.get_revenue_subtotal_in_category_for_year(year, 'SUBSCRIPTIONS')
         amounts = []
         for month in data:
             amounts.append(data[month])
@@ -64,7 +64,7 @@ class RevenueTaxSubscriptionsType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_tax_in_category_for_year(self.year, 'SUBSCRIPTIONS')
+        data = insight_revenue_dude.get_revenue_tax_in_category_for_year(year, 'SUBSCRIPTIONS')
         amounts = []
         for month in data:
             amounts.append(data[month])
