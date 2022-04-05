@@ -45,7 +45,7 @@ class GQLScheduleClassBookingOptions(TestCase):
         self.account = self.account_classpass.account
 
         # Create subscription
-        self.account_subscription = f.AccountSubscriptionFactory.create(initial_account=self.account)
+        self.account_subscription = f.AccountSubscriptionFactory.create(account=self.account)
 
         # Create organization class pass group
         self.schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
