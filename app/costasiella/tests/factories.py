@@ -680,12 +680,7 @@ class AccountClasspassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountClasspass
 
-    class Params:
-        initial_account = factory.SubFactory(RegularUserFactory)
-
-    account = factory.LazyAttribute(
-        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
-    )
+    account = factory.SubFactory(RegularUserFactory)
     organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
     date_start = datetime.date(2019, 1, 1)
     date_end = datetime.date(2019, 3, 31)
