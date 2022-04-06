@@ -6,7 +6,7 @@ from ..dudes import InsightRevenueDude
 from ..modules.gql_tools import require_login_and_permission
 
 
-class RevenueTotalClasspassesType(graphene.ObjectType):
+class RevenueClasspassesType(graphene.ObjectType):
     description = graphene.String()
     year = graphene.Int()
     total = graphene.List(graphene.Decimal)
@@ -14,7 +14,7 @@ class RevenueTotalClasspassesType(graphene.ObjectType):
     tax = graphene.List(graphene.Decimal)
 
     def resolve_description(self, info):
-        return _("revenue_total_classpasses")
+        return _("revenue_classpasses")
 
     def resolve_total(self, info):
         insight_revenue_dude = InsightRevenueDude()
@@ -56,7 +56,7 @@ class RevenueTotalClasspassesType(graphene.ObjectType):
         return amounts
 
 class InsightRevenueClasspassesQuery(graphene.ObjectType):
-    insight_revenue_classpasses = graphene.Field(RevenueTotalClasspassesType, year=graphene.Int())
+    insight_revenue_classpasses = graphene.Field(RevenueClasspassesType, year=graphene.Int())
 
     def resolve_insight_revenue_classpasses(self,
                                                   info,
@@ -64,7 +64,7 @@ class InsightRevenueClasspassesQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
 
-        revenue_total_classpasses = RevenueTotalClasspassesType()
-        revenue_total_classpasses.year = year
+        revenue_classpasses = RevenueClasspassesType()
+        revenue_classpasses.year = year
 
-        return revenue_total_classpasses
+        return revenue_classpasses

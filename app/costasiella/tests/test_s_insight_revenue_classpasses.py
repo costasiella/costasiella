@@ -69,7 +69,7 @@ class GQLInsightRevenueClasspasses(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightRevenueClasspasses']['description'], 'revenue_total_classpasses')
+        self.assertEqual(data['insightRevenueClasspasses']['description'], 'revenue_classpasses')
         self.assertEqual(data['insightRevenueClasspasses']['year'], self.variables_query['year'])
 
         # Total
