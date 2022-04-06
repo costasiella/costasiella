@@ -52,7 +52,6 @@ def invoice_html(node_id):
     from ..dudes import SystemSettingDude
 
     rid = get_rid(node_id)
-    print(rid)
     finance_invoice = FinanceInvoice.objects.get(id=rid.id)
 
     if not finance_invoice:
@@ -67,15 +66,11 @@ def invoice_html(node_id):
     items = FinanceInvoiceItem.objects.filter(
         finance_invoice=finance_invoice
     )
-
     tax_rates = finance_invoice.tax_rates_amounts()
-
-    print(finance_invoice)
-    print(tax_rates)
 
     template_path = 'system/invoices/export_invoice_pdf.html'
     t = get_template(template_path)
-    print(t)
+
     rendered_template = render_to_string(
         template_path,
         {

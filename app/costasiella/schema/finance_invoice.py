@@ -4,6 +4,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
+from graphql_relay import to_global_id
 
 from ..models import Account, AccountSubscription, FinanceInvoice, FinanceInvoiceGroup, FinancePaymentMethod
 from ..modules.gql_tools import require_login, require_login_and_permission, require_permission, get_rid
@@ -23,6 +24,7 @@ class FinanceInvoiceInterface(graphene.Interface):
     paid_display = graphene.String()
     balance_display = graphene.String()
     credit_invoice_number = graphene.String()
+    credit_invoice_id = graphene.ID()
 
 
 class FinanceInvoiceNode(DjangoObjectType):
@@ -91,6 +93,14 @@ class FinanceInvoiceNode(DjangoObjectType):
         if self.credit_invoice_for:
             credit_finance_invoice = FinanceInvoice.objects.get(id=self.credit_invoice_for)
             return_value = credit_finance_invoice.invoice_number
+
+        return return_value
+
+    def resolve_credit_invoice_id(self, info):
+        return_value = ""
+        if self.credit_invoice_for:
+            credit_finance_invoice = FinanceInvoice.objects.get(id=self.credit_invoice_for)
+            return_value = to_global_id("FinanceInvoiceNode", credit_finance_invoice.id)
 
         return return_value
 
