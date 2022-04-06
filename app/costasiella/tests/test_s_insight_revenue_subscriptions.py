@@ -46,31 +46,14 @@ class GQLInsightRevenueSubscriptions(TestCase):
             'year': 2020
         }   
 
-        self.query_revenue_total = '''
-  query InsightRevenueTotalSubscriptions($year: Int!) {
-    insightRevenueTotalSubscriptions(year: $year) {
+        self.query_revenue_subscriptions = '''
+  query InsightRevenueSubscriptions($year: Int!) {
+    insightRevenueSubscriptions(year: $year) {
       description
-      data
       year
-    }
-  }
-'''
-
-        self.query_revenue_subtotal = '''
-  query InsightRevenueSubTotalSubscriptions($year: Int!) {
-    insightRevenueSubtotalSubscriptions(year: $year) {
-      description
-      data
-      year
-    }
-  }
-'''
-        self.query_revenue_tax = '''
-  query InsightRevenueTaxSubscriptions($year: Int!) {
-    insightRevenueTaxSubscriptions(year: $year) {
-      description
-      data
-      year
+      total
+      subtotal
+      tax
     }
   }
 '''
@@ -81,29 +64,37 @@ class GQLInsightRevenueSubscriptions(TestCase):
 
     def test_query_revenue_total(self):
         """ Query total revenue for subscriptions for a year """
-        query = self.query_revenue_total
+        query = self.query_revenue_subscriptions
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['description'], 'revenue_total_subscriptions')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['year'], self.variables_query['year'])
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][0], format(self.finance_invoice.total, ".2f"))
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][1], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][2], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][3], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][4], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][5], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][6], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][7], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][8], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][9], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][10], '0')
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['data'][11], '0')
+        self.assertEqual(data['insightRevenueSubscriptions']['description'], 'revenue_subscriptions')
+        self.assertEqual(data['insightRevenueSubscriptions']['year'], self.variables_query['year'])
+
+        # Total
+        self.assertEqual(data['insightRevenueSubscriptions']['total'][0], format(self.finance_invoice.total, ".2f"))
+        # Check data for other months
+        for i in range(1, 12):
+            self.assertEqual(data['insightRevenueSubscriptions']['total'][i], '0')
+
+        # Subtotal
+        self.assertEqual(data['insightRevenueSubscriptions']['subtotal'][0],
+                         format(self.finance_invoice.subtotal, ".2f"))
+        # Check data for other months
+        for i in range(1, 12):
+            self.assertEqual(data['insightRevenueSubscriptions']['subtotal'][i], '0')
+
+        # Total
+        self.assertEqual(data['insightRevenueSubscriptions']['tax'][0],
+                         format(self.finance_invoice.tax, ".2f"))
+        # Check data for other months
+        for i in range(1, 12):
+            self.assertEqual(data['insightRevenueSubscriptions']['tax'][i], '0')
 
     def test_query_total_permission_denied(self):
         """ Query total revenue for subscriptionsfor a year - check permission denied """
-        query = self.query_revenue_total
+        query = self.query_revenue_subscriptions
 
         # Create regular user
         user = self.finance_invoice.account
@@ -114,7 +105,7 @@ class GQLInsightRevenueSubscriptions(TestCase):
 
     def test_query_total_permission_granted(self):
         """ Query total revenue for subscriptions for a year - check permission granted """
-        query = self.query_revenue_total
+        query = self.query_revenue_subscriptions
 
         # Create regular user
         user = self.finance_invoice.account
@@ -125,123 +116,11 @@ class GQLInsightRevenueSubscriptions(TestCase):
         executed = execute_test_client_api_query(query, user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightRevenueTotalSubscriptions']['year'], self.variables_query['year'])
+        self.assertEqual(data['insightRevenueSubscriptions']['year'], self.variables_query['year'])
 
     def test_query_total_anon_user(self):
         """ Query total revenue for a year - anon user """
-        query = self.query_revenue_total
-
-        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_query_revenue_subtotal(self):
-        """ Query subtotal revenue for a year """
-        query = self.query_revenue_subtotal
-
-        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
-        data = executed.get('data')
-
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['description'], 'revenue_subtotal_subscriptions')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['year'], self.variables_query['year'])
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][0], format(self.finance_invoice.subtotal, ".2f"))
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][1], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][2], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][3], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][4], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][5], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][6], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][7], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][8], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][9], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][10], '0')
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['data'][11], '0')
-
-    def test_query_subtotal_permission_denied(self):
-        """ Query subtotal revenue for a year - check permission denied """
-        query = self.query_revenue_subtotal
-
-        # Create regular user
-        user = self.finance_invoice.account
-        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-        errors = executed.get('errors')
-
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_query_subtotal_permission_granted(self):
-        """ Query subtotal revenue for a year - greant view permission """
-        query = self.query_revenue_subtotal
-
-        # Create regular user
-        user = self.finance_invoice.account
-        permission = Permission.objects.get(codename=self.permission_view)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-        data = executed.get('data')
-
-        self.assertEqual(data['insightRevenueSubtotalSubscriptions']['year'], self.variables_query['year'])
-
-    def test_query_subtotal_anon_user(self):
-        """ Query subtotal revenue for a year - anon user """
-        query = self.query_revenue_subtotal
-
-        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_query_revenue_tax(self):
-        """ Query revenue tax for a year """
-        query = self.query_revenue_tax
-
-        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
-        data = executed.get('data')
-
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['description'], 'revenue_tax_subscriptions')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['year'], self.variables_query['year'])
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][0], format(self.finance_invoice.tax, ".2f"))
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][1], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][2], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][3], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][4], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][5], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][6], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][7], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][8], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][9], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][10], '0')
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['data'][11], '0')
-
-    def test_query_tax_permission_denied(self):
-        """ Query revenue tax for a year - check permission denied """
-        query = self.query_revenue_tax
-
-        # Create regular user
-        user = self.finance_invoice.account
-        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-        errors = executed.get('errors')
-
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_query_tax_permission_granted(self):
-        """ Query revenue tax for a year - greant view permission """
-        query = self.query_revenue_tax
-
-        # Create regular user
-        user = self.finance_invoice.account
-        permission = Permission.objects.get(codename=self.permission_view)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-        data = executed.get('data')
-
-        self.assertEqual(data['insightRevenueTaxSubscriptions']['year'], self.variables_query['year'])
-
-    def test_query_tax_anon_user(self):
-        """ Query revenue tax for a year - anon user """
-        query = self.query_revenue_tax
+        query = self.query_revenue_subscriptions
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
         errors = executed.get('errors')
