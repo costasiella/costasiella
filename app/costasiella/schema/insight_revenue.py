@@ -9,13 +9,15 @@ from ..modules.gql_tools import require_login_and_permission
 
 class RevenueTotalType(graphene.ObjectType):
     description = graphene.String()
-    data = graphene.List(graphene.Decimal)
     year = graphene.Int()
+    total = graphene.List(graphene.Decimal)
+    subtotal = graphene.List(graphene.Decimal)
+    tax = graphene.List(graphene.Decimal)
 
     def resolve_description(self, info):
         return _("revenue_total")
 
-    def resolve_data(self, info):       
+    def resolve_total(self, info):
         insight_revenue_dude = InsightRevenueDude()
         year = self.year
         if not year:
@@ -28,16 +30,7 @@ class RevenueTotalType(graphene.ObjectType):
 
         return amounts
 
-
-class RevenueSubTotalType(graphene.ObjectType):
-    description = graphene.String()
-    data = graphene.List(graphene.Decimal)
-    year = graphene.Int()
-
-    def resolve_description(self, info):
-        return _("revenue_subtotal")
-
-    def resolve_data(self, info):
+    def resolve_subtotal(self, info):
         insight_revenue_dude = InsightRevenueDude()
         year = self.year
         if not year:
@@ -50,16 +43,7 @@ class RevenueSubTotalType(graphene.ObjectType):
 
         return amounts
 
-
-class RevenueTaxType(graphene.ObjectType):
-    description = graphene.String()
-    data = graphene.List(graphene.Decimal)
-    year = graphene.Int()
-
-    def resolve_description(self, info):
-        return _("revenue_tax")
-
-    def resolve_data(self, info):
+    def resolve_tax(self, info):
         insight_revenue_dude = InsightRevenueDude()
         year = self.year
         if not year:
@@ -75,8 +59,6 @@ class RevenueTaxType(graphene.ObjectType):
 
 class InsightRevenueQuery(graphene.ObjectType):
     insight_revenue_total = graphene.Field(RevenueTotalType, year=graphene.Int())
-    insight_revenue_subtotal = graphene.Field(RevenueSubTotalType, year=graphene.Int())
-    insight_revenue_tax = graphene.Field(RevenueTaxType, year=graphene.Int())
 
     def resolve_insight_revenue_total(self,
                                       info,
@@ -88,38 +70,3 @@ class InsightRevenueQuery(graphene.ObjectType):
         revenue_total.year = year
 
         return revenue_total
-
-    def resolve_insight_revenue_subtotal(self,
-                                         info,
-                                         year=graphene.Int(required=True, default_value=timezone.now().year)):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_insightrevenue')
-
-        revenue_subtotal = RevenueSubTotalType()
-        revenue_subtotal.year = year
-
-        return revenue_subtotal
-
-    def resolve_insight_revenue_tax(self,
-                                    info,
-                                    year=graphene.Int(required=True, default_value=timezone.now().year)):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_insightrevenue')
-
-        revenue_tax = RevenueTaxType()
-        revenue_tax.year = year
-
-        return revenue_tax
-
-
-    # def resolve_insight_account_classpasses_active(self,
-    #                                                 info,
-    #                                                 year=graphene.Int(required=True, default_value=timezone.now().year)):
-    #     user = info.context.user
-    #     require_login_and_permission(user, 'costasiella.view_insightclasspassesactive')
-    #
-    #     account_classpasses_active = AccountClasspassesActiveType()
-    #     account_classpasses_active.year = year
-    #
-    #     return account_classpasses_active
-
