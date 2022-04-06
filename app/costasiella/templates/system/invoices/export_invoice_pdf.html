@@ -202,10 +202,10 @@
                 <td>{{ item.product_name }}</td>
                 <td>{{ item.description }}</td>
                 <td><span class="right">{{ item.quantity }}</span></td>
-                <td><span class="right">{{ item.price }}</span></td>
-                <td><span class="right">{{ item.subtotal }}</span></td>
+                <td><span class="right">{{ currency_symbol}} {{ item.price }}</span></td>
+                <td><span class="right">{{ currency_symbol}} {{ item.subtotal }}</span></td>
                 <td><span class="right">{{ item.finance_tax_rate.name }} ({{ item.finance_tax_rate.rate_type }})</span></td>
-                <td><span class="right">{{ item.total}}</span></td>
+                <td><span class="right">{{ currency_symbol}} {{ item.total}}</span></td>
             </tr>
         {% endfor %}
         <tr class="border-top">
@@ -215,7 +215,7 @@
             <td></td>
             <td></td>
             <td><span class="right">Subtotal</span></td>
-            <td><span class="right">{{ invoice.subtotal }}</span></td>
+            <td><span class="right">{{ currency_symbol}} {{ invoice.subtotal }}</span></td>
         </tr>
         {% for tax_rate in tax_rates %}
             <tr>
@@ -225,7 +225,7 @@
             <td></td>
             <td></td>
             <td><span class="right">{{ tax_rate.name }} ({{ tax_rate.rate_type }})</span></td>
-            <td><span class="right">{{ tax_rate.invoice_amount }}</span></td>
+            <td><span class="right">{{ currency_symbol}} {{ tax_rate.invoice_amount }}</span></td>
             </tr>
         {% endfor %}
         <tr>
@@ -235,7 +235,7 @@
             <td></td>
             <td></td>
             <td class="border-top"><span class="right">Total</span></td>
-            <td class="border-top"><span class="right">{{ invoice.total }}</span></td>
+            <td class="border-top"><span class="right">{{ currency_symbol}} {{ invoice.total }}</span></td>
         </tr>
         </tbody>
         

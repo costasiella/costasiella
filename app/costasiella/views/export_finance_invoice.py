@@ -49,12 +49,17 @@ def invoice_html(node_id):
     """
     Return rendered invoice html template
     """
+    from ..dudes import SystemSettingDude
+
     rid = get_rid(node_id)
     print(rid)
     finance_invoice = FinanceInvoice.objects.get(id=rid.id)
 
     if not finance_invoice:
         raise Http404(_("Invoice not found..."))
+
+    system_settings_dude = SystemSettingDude()
+    currency_symbol = system_settings_dude.get("finance_currency_symbol") or "€"
 
     app_settings = AppSettings.objects.get(id=1)
     organization = Organization.objects.get(id=100)
@@ -74,6 +79,7 @@ def invoice_html(node_id):
     rendered_template = render_to_string(
         template_path,
         {
+            "currency_symbol": currency_symbol,
             "logo_url": logo_url,
             "studio": {
                 "name": "studio name",
