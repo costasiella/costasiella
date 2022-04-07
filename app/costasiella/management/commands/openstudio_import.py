@@ -1101,7 +1101,7 @@ class Command(BaseCommand):
 
             try:
                 account = m.Account(
-                    is_active=not self._web2py_bool_to_python(record['trashed']), # We need to invert this
+                    is_active=not self._web2py_bool_to_python(record['trashed']),  # We need to invert this
                     customer=self._web2py_bool_to_python(record['customer']),
                     instructor=self._web2py_bool_to_python(record['teacher']),
                     employee=self._web2py_bool_to_python(record['teacher']),
@@ -1122,6 +1122,7 @@ class Command(BaseCommand):
                     key_number=record['keynr'] or "",
                     organization_discovery=self.school_discovery_map.get(record['school_discovery_id'], None),
                     organization_language=self.school_languages_map.get(record['school_languages_id'], None),
+                    mollie_customer_id=record['mollie_customer_id'] or ""
                 )
                 account.save()
 
