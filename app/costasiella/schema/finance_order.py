@@ -272,7 +272,7 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         if not finance_order:
             raise Exception('Invalid Finance Order ID!')
 
-        validation_result = validate_create_update_input(input, update=True)
+        validation_result = validate_create_update_input(input, None, update=True)
 
         # To change an order, permissions or ownership is required.
         if not user.has_perm('costasiella.change_financeorder'):
