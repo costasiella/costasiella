@@ -17,7 +17,7 @@ def cancel_booked_classes_after_enrollment_end(schedule_item_enrollment_id):
     """
     from .....models import ScheduleItemEnrollment
 
-    logging.info("Cancelling classes booked after end date for schedule_item_enrollment: %s" %
+    logger.info("Cancelling classes booked after end date for schedule_item_enrollment: %s" %
                  schedule_item_enrollment_id)
 
     schedule_item_enrollment = ScheduleItemEnrollment.objects.get(id=schedule_item_enrollment_id)
