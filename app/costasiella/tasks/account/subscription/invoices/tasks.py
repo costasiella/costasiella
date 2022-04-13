@@ -56,6 +56,9 @@ def send_mail_recurring_payment_failed(account, finance_invoice):
     """
     from .....dudes import MailDude
 
+    logger.info("Sending notification of failed recurring payment for invoice with ID %s to %s" % (
+        (finance_invoice.id, account)
+    ))
     mail_dude = MailDude(email_template="recurring_payment_failed",
                          account=account,
                          finance_invoice=finance_invoice)
@@ -101,6 +104,7 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
     success = 0
     failed = 0
     if not qs.exists():
+        logging.info("No account subscriptions with payment method Mollie found for %s-%s" % (year, month))
         return _("No invoices added for mollie subscriptions")
     else:
         # Request recurring mollie recurring payment creation
@@ -168,9 +172,8 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
                         success += 1
 
                     except MollieError as e:
-                        print(e)
                         logger.warning(
-                            _("Received a MollieError when processing a recurring payment for account %s. %s") %
+                            "Received a MollieError when processing a recurring payment for account %s. %s" %
                             (account, e)
                         )
                         # send mail to ask customer to pay manually
@@ -180,7 +183,7 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
                         failed += 1
             else:
                 # send mail to ask customer to pay manually
-                logger.warning(_("No mandates found for account: %s") % account)
+                logger.warning("No mandates found for account: %s" % account)
 
                 send_mail_recurring_payment_failed(account=account,
                                                    finance_invoice=finance_invoice)
