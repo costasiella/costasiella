@@ -1,5 +1,8 @@
 from django.utils.translation import gettext as _
+from mollie.api.error import Error as MollieError
+
 from .system_setting_dude import SystemSettingDude
+
 
 class MollieDude:
     def get_api_key(self):
@@ -77,10 +80,15 @@ class MollieDude:
         :param mollie: mollie client object
         :return:
         """
+
         # check if we have a mollie customer id
         if not account.mollie_customer_id:
             return
 
-        mandates = mollie.customer_mandates.with_parent_id(account.mollie_customer_id).list()
+        mandates = None
+        try:
+            mandates = mollie.customer_mandates.with_parent_id(account.mollie_customer_id).list()
+        except MollieError as e:
+            print(e)
 
         return mandates

@@ -31,9 +31,6 @@ def account_subscription_invoices_add_for_month(year, month, description='', inv
          Q(date_end__isnull=True))
     )
 
-    print("**** invoices found")
-    print(qs)
-
     for account_subscription in qs:
         result = account_subscription.create_invoice_for_month(
             year, month, description=description, invoice_date=invoice_date
@@ -98,9 +95,7 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
             Q(date_end__isnull=True)
         )
     )
-
-    print(qs)
-
+    
     success = 0
     failed = 0
     if not qs.exists():
