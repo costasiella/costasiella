@@ -18,7 +18,11 @@ import MySQLdb.converters
 
 import logging
 
-logfile = os.path.join('logs', "openstudio_import_%s.log" % timezone.now().strftime("%Y-%m-%d_%H:%M"))
+logfile = os.path.join(
+    'logs',
+    'openstudio_import',
+    "openstudio_import_%s.log" % timezone.now().strftime("%Y-%m-%d_%H:%M")
+)
 logging.basicConfig(filename=logfile, level=logging.INFO)
 
 

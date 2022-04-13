@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from celery import shared_task
 from django.utils.translation import gettext as _
@@ -6,6 +7,8 @@ from django.db.models import Q
 
 from .....models import AccountSubscription, AccountSubscriptionCredit
 from .....dudes import DateToolsDude
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
@@ -67,7 +70,6 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
     :param month:
     :return:
     """
-    #TODO: Add function to send mail for failed payment collection
     from mollie.api.client import Client
     from mollie.api.error import Error as MollieError
 
@@ -95,7 +97,7 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
             Q(date_end__isnull=True)
         )
     )
-    
+
     success = 0
     failed = 0
     if not qs.exists():
@@ -167,6 +169,10 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
 
                     except MollieError as e:
                         print(e)
+                        logger.warning(
+                            _("Received a MollieError when processing a recurring payment for account %s. %s") %
+                            (account, e)
+                        )
                         # send mail to ask customer to pay manually
                         send_mail_recurring_payment_failed(account=account,
                                                            finance_invoice=finance_invoice)
@@ -174,6 +180,8 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
                         failed += 1
             else:
                 # send mail to ask customer to pay manually
+                logger.warning(_("No mandates found for account: %s") % account)
+
                 send_mail_recurring_payment_failed(account=account,
                                                    finance_invoice=finance_invoice)
 

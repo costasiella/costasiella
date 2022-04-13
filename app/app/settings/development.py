@@ -14,6 +14,44 @@ if len(sys.argv) >= 1:
     if sys.argv[1] == 'test':
         TESTING = True
 
+# Logging configuration
+LOGGING = {
+    'version': 1,                       # the dictConfig format version
+    'disable_existing_loggers': False,  # retain the default loggers
+    'formatters': {
+        'verbose': {
+            'format': '{asctime}: {name} {levelname} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'simple'
+        },
+        'tasks_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 10,
+            'filename': 'logs/tasks.log',
+            'level': 'DEBUG',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'costasiella.tasks': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'tasks_file'],
+            'propagate': True
+        }
+    }
+}
+
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
