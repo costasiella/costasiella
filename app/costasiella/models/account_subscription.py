@@ -1,4 +1,5 @@
 import datetime
+import logging
 from collections import namedtuple
 
 from django.utils.translation import gettext as _
@@ -13,6 +14,9 @@ from .finance_payment_method import FinancePaymentMethod
 from ..modules.cs_errors import CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
     CSClassBookingSubscriptionNoCreditsError
+
+logger = logging.getLogger(__name__)
+
 
 class AccountSubscription(models.Model):
     # add additional fields in here
@@ -258,7 +262,6 @@ class AccountSubscription(models.Model):
             except CSClassBookingSubscriptionNoCreditsError:
                 pass
 
-
     def cancel_booked_classes_after_enrollment_end(self, schedule_item_enrollment):
         """
 
@@ -275,6 +278,9 @@ class AccountSubscription(models.Model):
                 account_subscription=self,
                 date__gte=schedule_item_enrollment.date_end
             ).update(booking_status='CANCELLED')
+
+            logger.info("Enrollment ended: cancelled classes booked after %s on subscription %s" %
+                        (schedule_item_enrollment.date_end, self.id))
 
     def get_blocked_on_date(self, date):
         """
