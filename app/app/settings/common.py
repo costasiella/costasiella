@@ -292,3 +292,78 @@ CORS_ALLOW_CREDENTIALS = True
 #     # "http://example.com",
 #     # "http://www.example.com",
 # ]
+
+
+# Logging configuration
+LOGGING = {
+    'version': 1,                       # the dictConfig format version
+    'disable_existing_loggers': False,  # retain the default loggers
+    'formatters': {
+        'verbose': {
+            'format': '{asctime}: {name} {levelname} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'filters': ['require_debug_true'],
+            'level': 'DEBUG',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        },
+        'costasiella_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 10,
+            'filename': 'logs/costasiella.log',
+            'level': 'DEBUG',
+            'formatter': 'verbose'
+        },
+        'costasiella_error_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 10,
+            'filename': 'logs/error.log',
+            'level': 'WARNING',
+            'formatter': 'verbose'
+        },
+        'tasks_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 10,
+            'filename': 'logs/tasks.log',
+            'level': 'DEBUG',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'costasiella': {
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'handlers': ['console', 'costasiella_file', 'costasiella_error_file'],
+        },
+        'costasiella.tasks': {
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'handlers': ['console', 'tasks_file'],
+            'propagate': False
+        },
+    }
+}
