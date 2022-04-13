@@ -14,6 +14,9 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
 
+## System error reports get sent to
+# Admins = [('John', 'john@example.com'), ('Mary', 'mary@example.com')]
+
 ## Server error notifications
 # All mail addresses listed in the ADMINS setting will receive server error notifications when DEBUG=False
 ##
