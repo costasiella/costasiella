@@ -347,7 +347,16 @@ class ScheduleClassesDayType(graphene.ObjectType):
                           csi.frequency_interval = %(iso_week_day)s AND 
                           csi.date_start <= %(class_date)s AND
                          (csi.date_end >= %(class_date)s OR csi.date_end IS NULL)
-                        )            
+                        ) OR
+                        /* Last weekday of month */
+                        ( csi.frequency_type = "LAST_WEEKDAY_OF_MONTH" AND
+                          csi.frequency_interval = %(iso_week_day)s AND 
+                           DATE_FORMAT(
+                            LAST_DAY(NOW()) - ((7 + WEEKDAY(LAST_DAY(NOW())) - ( %(iso_week_day)s - 1)) %% 7), 
+                            %(date_format)s) = %(class_date)s AND 
+                          csi.date_start <= %(class_date)s AND
+                          (csi.date_end >= %(class_date)s OR csi.date_end IS NULL)
+                        )
                     )
                 {where_sql}
             ORDER BY {order_by_sql}
@@ -358,19 +367,15 @@ class ScheduleClassesDayType(graphene.ObjectType):
         )
 
         #
-        # print(query)
+        print(query)
 
-        ## 
-        # At this time 27 Aug 2019, params don't seem to be working from a dictionary
-        # https://docs.djangoproject.com/en/3.0/topics/db/sql/
-        # the query should be formatted using %(class_date)s 
-        ##
         params = {
             "class_date": str(self.date),
             "iso_week_day": iso_week_day,
             "filter_id_organization_classtype": self.filter_id_organization_classtype,
             "filter_id_organization_location": self.filter_id_organization_location,
             "filter_id_organization_level": self.filter_id_organization_level,
+            "date_format": "'%Y-%m-%d'"
         }
         schedule_items = ScheduleItem.objects.raw(query, params=params)
 
