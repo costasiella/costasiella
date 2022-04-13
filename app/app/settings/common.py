@@ -348,6 +348,14 @@ LOGGING = {
             'filename': 'logs/tasks.log',
             'level': 'DEBUG',
             'formatter': 'verbose'
+        },
+        'tasks_error_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 10,
+            'filename': 'logs/tasks_error.log',
+            'level': 'WARNING',
+            'formatter': 'verbose'
         }
     },
     'loggers': {
@@ -362,7 +370,7 @@ LOGGING = {
         },
         'costasiella.tasks': {
             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-            'handlers': ['console', 'tasks_file'],
+            'handlers': ['console', 'tasks_file', 'tasks_error_file'],
             'propagate': False
         },
     }
