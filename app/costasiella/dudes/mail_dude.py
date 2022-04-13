@@ -1,4 +1,5 @@
 import html2text
+import logging
 
 from django.utils.translation import gettext as _
 from django.core.mail import send_mail
@@ -6,6 +7,8 @@ from django.core.mail import send_mail
 # https://docs.djangoproject.com/en/2.2/topics/email/
 
 from .mail_template_dude import MailTemplateDude
+
+logger = logging.getLogger(__name__)
 
 
 class MailDude:
@@ -37,6 +40,8 @@ class MailDude:
 
         if template.get('error', False):
             # Don't send an email when we have a render error
+            logger.warning("Error rendering template %s, mail not sent to %s" %
+                           (self.email_template, self.account.email))
             return
 
         # Send mail
