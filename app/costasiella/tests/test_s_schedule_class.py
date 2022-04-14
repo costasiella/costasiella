@@ -549,9 +549,6 @@ class GQLScheduleClass(TestCase):
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        print("##############")
-        print(executed)
-
         # List all scheduleclasses
         self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
         self.assertEqual(
@@ -878,8 +875,6 @@ class GQLScheduleClass(TestCase):
             self.admin_user,
             variables=variables
         )
-        print("@@@@@@@@@@@@@")
-        print(executed)
 
         data = executed.get('data')
         self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
