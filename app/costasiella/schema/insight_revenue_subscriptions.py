@@ -4,12 +4,14 @@ import graphene
 
 from ..dudes import InsightRevenueDude
 from ..modules.gql_tools import require_login_and_permission
+from ..modules.finance_tools import display_float_as_amount
 
 
 class RevenueSubscriptionsType(graphene.ObjectType):
     description = graphene.String()
     year = graphene.Int()
     total = graphene.List(graphene.Decimal)
+    total_display = graphene.List(graphene.String)
     subtotal = graphene.List(graphene.Decimal)
     tax = graphene.List(graphene.Decimal)
 
@@ -26,6 +28,19 @@ class RevenueSubscriptionsType(graphene.ObjectType):
         amounts = []
         for month in data:
             amounts.append(data[month])
+
+        return amounts
+
+    def resolve_total_display(self, info):
+        insight_revenue_dude = InsightRevenueDude()
+        year = self.year
+        if not year:
+            year = timezone.now().year
+
+        data = insight_revenue_dude.get_revenue_total_in_category_for_year(year, 'SUBSCRIPTIONS')
+        amounts = []
+        for month in data:
+            amounts.append(display_float_as_amount(data[month]))
 
         return amounts
 
