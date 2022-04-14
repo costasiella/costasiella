@@ -785,8 +785,25 @@ def validate_schedule_class_create_update_input(input, update=False):
     """ 
     result = {}
 
-    # TODO: If frequency type = LAST_WEEKDAY_OF_MONTH, should be checked that delta start & end date is at least
-    # 31 days.
+    # If frequency type = LAST_WEEKDAY_OF_MONTH, should be checked that delta start & end date is at least 31 days.
+    if 'frequency_type' in input:
+        frequency_type = input['frequency_type']
+        if frequency_type == 'LAST_WEEKDAY_OF_MONTH':
+            if 'date_end' in input:
+                date_end = input['date_end']
+                if date_end is not None:
+                    date_start = input['date_start']
+                    delta = date_end - date_start
+                    if delta.days < 31:
+                        raise Exception(_('There should be at least 31 days between start and end dates!'))
+        elif frequency_type == "WEEKLY":
+            if 'date_end' in input:
+                date_end = input['date_end']
+                if date_end is not None:
+                    date_start = input['date_start']
+                    delta = date_end - date_start
+                    if delta.days < 7:
+                        raise Exception(_('There should be at least 7 days between start and end dates!'))
 
     # Check OrganizationLocationRoom
     if 'organization_location_room' in input:
