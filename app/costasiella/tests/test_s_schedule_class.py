@@ -897,8 +897,8 @@ class GQLScheduleClass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'There should be at least 31 days between start and end dates!')
 
-    def test_create_scheduleclass(self):
-        """ Create a scheduleclass """
+    def test_create_scheduleclass_weekly(self):
+        """ Create a weekly scheduleclass """
         query = self.scheduleclass_create_mutation
         variables = self.variables_create
 
@@ -930,7 +930,38 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'],
                          variables['input']['displayPublic'])
 
+    def test_create_scheduleclass_last_weekday_of_month(self):
+        """ Create a weekly scheduleclass """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create_last_weekday_of_month
 
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLocationRoom']['id'],
+                         variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationClasstype']['id'],
+                         variables['input']['organizationClasstype'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLevel']['id'],
+                         variables['input']['organizationLevel'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateStart'],
+                         variables['input']['dateStart'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateEnd'],
+                         variables['input']['dateEnd'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeStart'],
+                         variables['input']['timeStart'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'],
+                         variables['input']['timeEnd'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'],
+                         variables['input']['displayPublic'])
 
     def test_create_schedule_class_add_all_non_archived_organization_subscription_groups(self):
       """
