@@ -40,6 +40,13 @@ class GQLScheduleClass(TestCase):
             'attendanceCountType': "ATTENDING_AND_BOOKED"
         }
 
+        a_last_friday_of_the_month = datetime.date(2022, 4, 29)
+        self.variables_query_last_weekday_of_month_list = {
+            'dateFrom': str(a_last_friday_of_the_month),
+            'dateUntil': str(a_last_friday_of_the_month + datetime.timedelta(days=6)),
+            'attendanceCountType': "ATTENDING_AND_BOOKED"
+        }
+
         status_monday = datetime.date(2030, 12, 30)
         self.variables_query_list_status = {
             'dateFrom': str(status_monday),
@@ -54,7 +61,24 @@ class GQLScheduleClass(TestCase):
         self.variables_create = {
             "input": {
                 "frequencyType": "WEEKLY",
-                "frequencyInterval": 1, # Monday,
+                "frequencyInterval": 1,  # Monday,
+                "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
+                "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
+                "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
+                "dateStart": "2019-01-01",
+                "dateEnd": "2999-12-31",
+                "timeStart": "11:00:00",
+                "timeEnd": "12:30:00",
+                "spaces": 20,
+                "walkInSpaces": 5,
+                "displayPublic": True
+            }
+        }
+
+        self.variables_create_last_weekday_of_month = {
+            "input": {
+                "frequencyType": "LAST_WEEKDAY_OF_MONTH",
+                "frequencyInterval": 1,  # Monday,
                 "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
                 "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
                 "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
@@ -71,7 +95,24 @@ class GQLScheduleClass(TestCase):
         self.variables_update = {
             "input": {
                 "frequencyType": "WEEKLY",
-                "frequencyInterval": 2, # Tuesday,
+                "frequencyInterval": 2,  # Tuesday,
+                "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
+                "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
+                "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
+                "dateStart": "1999-01-01",
+                "dateEnd": "2999-12-31",
+                "timeStart": "16:00:00",
+                "timeEnd": "17:30:00",
+                "spaces": 20,
+                "walkInSpaces": 5,
+                "displayPublic": True
+            }
+        }
+
+        self.variables_update_last_weekday_of_month = {
+            "input": {
+                "frequencyType": "LAST_WEEKDAY_OF_MONTH",
+                "frequencyInterval": 2,  # Tuesday,
                 "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
                 "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
                 "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
@@ -287,13 +328,53 @@ class GQLScheduleClass(TestCase):
 
         self.assertEqual(errors[0]['message'], "dateFrom and dateUntil can't be more then 7 days apart")
 
-    def test_query(self):
-        """ Query list of scheduleclasses """
+    def test_query_weekly(self):
+        """ Query list of weekly scheduleclasses """
         query = self.scheduleclasses_query
 
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
 
         variables = self.variables_query_list
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+            to_global_id('ScheduleItemNode', schedule_class.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['organizationClasstype']['id'],
+            to_global_id('OrganizationClasstypeNode', schedule_class.organization_classtype.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['organizationLocationRoom']['id'],
+            to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['organizationLevel']['id'],
+            to_global_id('OrganizationLevelNode', schedule_class.organization_level.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['timeStart'],
+            str(schedule_class.time_start)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['timeEnd'],
+            str(schedule_class.time_end)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['displayPublic'],
+            schedule_class.display_public
+        )
+
+    def test_query_last_weekday_of_month(self):
+        """ Query list of monthly classes within the last week """
+        query = self.scheduleclasses_query
+
+        schedule_class = f.SchedulePublicLastWeekdayOfMonthClassFactory.create()
+
+        variables = self.variables_query_last_weekday_of_month_list
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
