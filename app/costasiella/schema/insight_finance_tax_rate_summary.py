@@ -32,6 +32,7 @@ class FinanceTaxRateSummaryDataType(graphene.ObjectType):
     def resolve_tax_display(self, info):
         return display_float_as_amount(self.tax)
 
+
 class FinanceTaxRateSummaryType(graphene.ObjectType):
     date_start = graphene.types.datetime.Date()
     date_end = graphene.types.datetime.Date()
@@ -53,6 +54,7 @@ class FinanceTaxRateSummaryType(graphene.ObjectType):
 
         return data
 
+
 def validate_input(date_start, date_end):
     """
     Validate input
@@ -63,6 +65,7 @@ def validate_input(date_start, date_end):
         raise Exception(_('dateEnd should be >= dateStart'))
 
     return result
+
 
 class InsightFinanceTaxRateSummaryQuery(graphene.ObjectType):
     insight_finance_tax_rate_summary = graphene.Field(FinanceTaxRateSummaryType,
