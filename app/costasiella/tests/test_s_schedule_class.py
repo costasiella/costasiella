@@ -865,6 +865,38 @@ class GQLScheduleClass(TestCase):
     #     data = executed.get('data')
     #     self.assertEqual(data['scheduleItem']['id'], node_id)
 
+    def test_create_scheduleclass_weekly_min_7_days_delta_start_and_end_date(self):
+        """ Check that at least 7 days should be between start & end for weekly classes """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create
+        variables['input']['dateStart'] = "2022-01-01"
+        variables['input']['dateEnd'] = "2022-01-04"
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'There should be at least 7 days between start and end dates!')
+
+    def test_create_scheduleclass_last_weekday_of_month_min_7_days_delta_start_and_end_date(self):
+        """ Check that at least 31 days should be between start & end for last weekday of month classes """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create_last_weekday_of_month
+        variables['input']['dateStart'] = "2022-01-01"
+        variables['input']['dateEnd'] = "2022-01-04"
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'There should be at least 31 days between start and end dates!')
+
     def test_create_scheduleclass(self):
         """ Create a scheduleclass """
         query = self.scheduleclass_create_mutation
@@ -877,16 +909,28 @@ class GQLScheduleClass(TestCase):
         )
 
         data = executed.get('data')
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLocationRoom']['id'], variables['input']['organizationLocationRoom'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationClasstype']['id'], variables['input']['organizationClasstype'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLevel']['id'], variables['input']['organizationLevel'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateStart'], variables['input']['dateStart'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeStart'], variables['input']['timeStart'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLocationRoom']['id'],
+                         variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationClasstype']['id'],
+                         variables['input']['organizationClasstype'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLevel']['id'],
+                         variables['input']['organizationLevel'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateStart'],
+                         variables['input']['dateStart'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateEnd'],
+                         variables['input']['dateEnd'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeStart'],
+                         variables['input']['timeStart'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'],
+                         variables['input']['timeEnd'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'],
+                         variables['input']['displayPublic'])
+
+
 
     def test_create_schedule_class_add_all_non_archived_organization_subscription_groups(self):
       """
@@ -1073,7 +1117,7 @@ class GQLScheduleClass(TestCase):
             user,
             variables=variables
         )
-        data = executed.get('data')
+
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
