@@ -4,6 +4,10 @@ from django.utils import timezone
 from django.db import models
 from django.db.models import Q
 
+from django.dispatch import receiver
+
+from graphql_jwt.refresh_token.signals import refresh_token_rotated
+
 from allauth.account.signals import user_signed_up
 from .models.account_accepted_document import AccountAcceptedDocument
 from .models.organization_document import OrganizationDocument
@@ -31,16 +35,23 @@ def new_signup(request, user, **kwargs):
     document_types = get_organization_document_types()
     for document_type in document_types:
         documents = OrganizationDocument.objects.filter((
-            Q(document_type = document_type[0]) &
-            Q(date_start__lte = today) &
-            (Q(date_end__gte = today) | Q(date_end__isnull = True))           
+            Q(document_type=document_type[0]) &
+            Q(date_start__lte=today) &
+            (Q(date_end__gte=today) | Q(date_end__isnull = True))
         ))
 
         for document in documents:
             accepted_document = AccountAcceptedDocument(
-                account = user,
-                document = document,
-                client_ip = client_ip
+                account=user,
+                document=document,
+                client_ip=client_ip
             )
             accepted_document.save()
-        
+
+
+@receiver(refresh_token_rotated)
+def revoke_refresh_token(sender, request, refresh_token, **kwargs):
+    """
+    Revoke refresh tokens after usage
+    """
+    refresh_token.revoke(request)

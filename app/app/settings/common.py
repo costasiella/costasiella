@@ -209,8 +209,8 @@ GRAPHENE = {
 # GraphQL JWT settings
 GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': timedelta(minutes=2),  # Default = 5 minutes
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(minutes=120),  # Default = 7 days
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=5),  # Default = 5 minutes
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),  # Default = 7 days
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
 }
 
