@@ -381,9 +381,6 @@ class AccountSubscription(models.Model):
         from .finance_invoice_item import FinanceInvoiceItem
         from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 
-        print("$$$$$$$$$$")
-        print("Creating invoices for month")
-
         app_settings_dude = AppSettingsDude()
         date_dude = DateToolsDude()
 

@@ -340,8 +340,6 @@ class GQLBusiness(TestCase):
             self.admin_user,
             variables=variables
         )
-        print("$$$$$$$4")
-        print(executed)
 
         data = executed.get('data')
         self.assertEqual(data['createBusiness']['business']['archived'], False)

@@ -412,8 +412,6 @@ class GQLAccountNote(TestCase):
             self.admin_user,
             variables=variables
         )
-        print("$$$$$$$")
-        print(executed)
 
         data = executed.get('data')
 
