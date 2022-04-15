@@ -278,7 +278,7 @@ class ArchiveOrganizationClasspass(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Classpass ID!')
 
         classpass.archived = input['archived']
-        classpass.save(force_update=True)
+        classpass.save()
 
         return ArchiveOrganizationClasspass(organization_classpass=classpass)
 

@@ -114,7 +114,7 @@ class DeleteOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
         if not organization_classpass_group:
             raise Exception('Invalid Organization Classpass Group ID!')
 
-        ok = organization_classpass_group.delete()
+        ok = bool(organization_classpass_group.delete())
 
         return DeleteOrganizationClasspassGroup(ok=ok)
 

@@ -117,7 +117,7 @@ class ArchiveOrganizationLevel(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Level ID!')
 
         organization_level.archived = input['archived']
-        organization_level.save(force_update=True)
+        organization_level.save()
 
         return ArchiveOrganizationLevel(organization_level=organization_level)
 

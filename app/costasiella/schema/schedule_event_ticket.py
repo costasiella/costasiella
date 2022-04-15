@@ -268,7 +268,7 @@ class DeleteScheduleEventTicket(graphene.relay.ClientIDMutation):
             #  Don't delete the full event ticket; it should always be there.
             ok = False
         else:
-            ok = schedule_event_ticket.delete()
+            ok = bool(schedule_event_ticket.delete())
 
         return DeleteScheduleEventTicket(ok=ok)
 

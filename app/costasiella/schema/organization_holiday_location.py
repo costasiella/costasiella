@@ -91,7 +91,7 @@ class DeleteOrganizationHolidayLocation(graphene.relay.ClientIDMutation):
             organization_location = organization_location
         ).first()
 
-        ok = organization_holiday_location.delete()
+        ok = bool(organization_holiday_location.delete())
 
         return DeleteOrganizationHolidayLocation(
             ok=ok

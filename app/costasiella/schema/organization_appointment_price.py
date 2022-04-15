@@ -164,7 +164,7 @@ class DeleteOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
         if not organization_appointment_price:
             raise Exception('Invalid Organization Appointment ID!')
 
-        ok = organization_appointment_price.delete()
+        ok = bool(organization_appointment_price.delete())
 
         return DeleteOrganizationAppointmentPrice(ok=ok)
 

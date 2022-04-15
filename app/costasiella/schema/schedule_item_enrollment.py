@@ -202,7 +202,7 @@ class DeleteScheduleItemEnrollment(graphene.relay.ClientIDMutation):
             task = cancel_booked_classes_after_enrollment_end.delay(schedule_item_enrollment.id)
 
         # Actually remove
-        ok = schedule_item_enrollment.delete()
+        ok = bool(schedule_item_enrollment.delete())
 
         return DeleteScheduleItemEnrollment(ok=ok)
 

@@ -138,7 +138,7 @@ class ArchiveFinanceTaxRate(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Tax Rate ID!')
 
         finance_tax_rate.archived = input['archived']
-        finance_tax_rate.save(force_update=True)
+        finance_tax_rate.save()
 
         return ArchiveFinanceTaxRate(finance_tax_rate=finance_tax_rate)
 

@@ -201,7 +201,7 @@ class DeleteAccountClasspass(graphene.relay.ClientIDMutation):
         if not account_classpass:
             raise Exception('Invalid Account Classpass ID!')
 
-        ok = account_classpass.delete()
+        ok = bool(account_classpass.delete())
 
         return DeleteAccountClasspass(ok=ok)
 

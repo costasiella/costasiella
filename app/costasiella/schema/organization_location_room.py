@@ -135,7 +135,7 @@ class ArchiveOrganizationLocationRoom(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Location Room ID!')
 
         organization_location_room.archived = input['archived']
-        organization_location_room.save(force_update=True)
+        organization_location_room.save()
 
         return ArchiveOrganizationLocationRoom(organization_location_room=organization_location_room)
 

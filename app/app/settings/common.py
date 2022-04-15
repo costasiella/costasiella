@@ -206,14 +206,6 @@ GRAPHENE = {
     'RELAY_CONNECTION_MAX_LIMIT': 1000,
 }
 
-# GraphQL JWT settings
-GRAPHQL_JWT = {
-    'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': timedelta(minutes=5),  # Default = 5 minutes
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),  # Default = 7 days
-    'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
-}
-
 # Where to go after login, well... let's just go home and take care of things from there :).
 LOGIN_URL = '/#/user/login'
 LOGIN_REDIRECT_URL = '/#/'
@@ -279,12 +271,7 @@ DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH = 191
 # Cors setttings
 ##
 
-CSRF_TRUSTED_ORIGINS = [
-    "my57",
-    "my57:3000"
-]
-
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOWED_ORIGINS = [
 #     # add your website domain here in case you'd like your website to be able to access the graphQL API
@@ -293,6 +280,9 @@ CORS_ALLOW_CREDENTIALS = True
 #     # "http://www.example.com",
 # ]
 
+# CSRF_TRUSTED_ORIGINS = [
+#     "example.com"
+# ]
 
 # Logging configuration
 LOGGING = {

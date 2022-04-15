@@ -116,7 +116,7 @@ class DeleteOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
         if not organization_subscription_group:
             raise Exception('Invalid Organization Subscription Group ID!')
 
-        ok = organization_subscription_group.delete()
+        ok = bool(organization_subscription_group.delete())
 
         return DeleteOrganizationSubscriptionGroup(ok=ok)
 

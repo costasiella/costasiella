@@ -30,6 +30,16 @@ DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
 ##
 # SERVER_EMAIL = 'user@yourdomain.com'
 
+# GraphQL JWT settings
+GRAPHQL_JWT = {
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=5),  # Default = 5 minutes
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),  # Default = 7 days
+    'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
+    'JWT_COOKIE_SECURE': True,
+    'JWT_COOKIE_SAMESITE': 'Lax'
+}
+
 # Static files config
 STATIC_ROOT = "/opt/static"
 MEDIA_ROOT = "/opt/media"

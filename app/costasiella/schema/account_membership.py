@@ -180,7 +180,7 @@ class DeleteAccountMembership(graphene.relay.ClientIDMutation):
         if not account_membership:
             raise Exception('Invalid Account Membership ID!')
 
-        ok = account_membership.delete()
+        ok = bool(account_membership.delete())
 
         return DeleteAccountMembership(ok=ok)
 

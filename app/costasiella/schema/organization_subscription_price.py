@@ -194,7 +194,7 @@ class DeleteOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         if not organization_subscription_price:
             raise Exception('Invalid Organization Subscription ID!')
 
-        ok = organization_subscription_price.delete()
+        ok = bool(organization_subscription_price.delete())
 
         return DeleteOrganizationSubscriptionPrice(ok=ok)
 

@@ -350,7 +350,7 @@ class DeleteScheduleItemAttendance(graphene.relay.ClientIDMutation):
              account_classpass = schedule_item_attendance.account_classpass
 
         # Actually remove
-        ok = schedule_item_attendance.delete()
+        ok = bool(schedule_item_attendance.delete())
 
         if account_classpass:
             account_classpass.update_classes_remaining()

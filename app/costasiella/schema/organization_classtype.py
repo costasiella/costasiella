@@ -199,7 +199,7 @@ class ArchiveOrganizationClasstype(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Classtype ID!')
 
         classtype.archived = input['archived']
-        classtype.save(force_update=True)
+        classtype.save()
 
         return ArchiveOrganizationClasstype(organization_classtype=classtype)
 

@@ -209,7 +209,7 @@ class DeleteAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
         if not account_schedule_event_ticket:
             raise Exception('Invalid Account Schedule Event Ticket ID!')
 
-        ok = account_schedule_event_ticket.delete()
+        ok = bool(account_schedule_event_ticket.delete())
 
         return DeleteAccountScheduleEventTicket(ok=ok)
 

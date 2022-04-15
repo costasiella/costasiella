@@ -155,7 +155,7 @@ class DeleteScheduleEventEarlybird(graphene.relay.ClientIDMutation):
         if not schedule_event_earlybird:
             raise Exception('Invalid Schedule Event Earlybird ID!')
 
-        ok = schedule_event_earlybird.delete()
+        ok = bool(schedule_event_earlybird.delete())
 
         return DeleteScheduleEventEarlybird(ok=ok)
 

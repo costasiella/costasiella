@@ -163,7 +163,7 @@ class DeleteOrganizationDocument(graphene.relay.ClientIDMutation):
         if not organization_document:
             raise Exception('Invalid Organization Document ID!')
 
-        ok = organization_document.delete()
+        ok = bool(organization_document.delete())
 
         return DeleteOrganizationDocument(ok=ok)
 

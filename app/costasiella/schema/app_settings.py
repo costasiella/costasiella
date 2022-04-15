@@ -92,7 +92,6 @@ class UpdateAppSettings(graphene.relay.ClientIDMutation):
         if 'time_format' in input:
             app_settings.time_format = input['time_format']
 
-
         app_settings.save()
 
         return UpdateAppSettings(app_settings=app_settings)

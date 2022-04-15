@@ -120,7 +120,7 @@ class ArchiveFinanceCostCenter(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Costcenter ID!')
 
         finance_costcenter.archived = input['archived']
-        finance_costcenter.save(force_update=True)
+        finance_costcenter.save()
 
         return ArchiveFinanceCostCenter(finance_costcenter=finance_costcenter)
 

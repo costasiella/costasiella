@@ -174,7 +174,7 @@ class DeleteAccountNote(graphene.relay.ClientIDMutation):
         if not account_note:
             raise Exception('Invalid Account Note ID!')
 
-        ok = account_note.delete()
+        ok = bool(account_note.delete())
 
         return DeleteAccountNote(ok=ok)
 

@@ -113,7 +113,7 @@ class ArchiveOrganizationLanguage(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Language ID!')
 
         organization_language.archived = input['archived']
-        organization_language.save(force_update=True)
+        organization_language.save()
 
         return ArchiveOrganizationLanguage(organization_language=organization_language)
 

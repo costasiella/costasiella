@@ -331,7 +331,7 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
             i.save()
 
         # Actually delete item
-        ok = finance_invoice_item.delete()
+        ok = bool(finance_invoice_item.delete())
         
         # Update amounts
         finance_invoice.update_amounts()

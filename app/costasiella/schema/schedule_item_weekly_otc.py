@@ -315,7 +315,7 @@ class DeleteScheduleItemWeeklyOTC(graphene.relay.ClientIDMutation):
             raise Exception('No changes found, nothing deleted.')
 
         # Actually remove
-        ok = schedule_item_weekly_otc.delete()
+        ok = bool(schedule_item_weekly_otc.delete())
 
         return DeleteScheduleItemWeeklyOTC(ok=ok)
 

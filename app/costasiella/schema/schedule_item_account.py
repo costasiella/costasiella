@@ -199,7 +199,7 @@ class DeleteScheduleItemAccount(graphene.relay.ClientIDMutation):
         if not schedule_item_account:
             raise Exception('Invalid Schedule Item Instructor ID!')
 
-        ok = schedule_item_account.delete()
+        ok = bool(schedule_item_account.delete())
 
         return DeleteScheduleItemAccount(ok=ok)
 

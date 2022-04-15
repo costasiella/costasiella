@@ -149,7 +149,7 @@ class DeleteAccountSubscriptionBlock(graphene.relay.ClientIDMutation):
         if not account_subscription_block:
             raise Exception('Invalid Account Subscription Block ID!')
 
-        ok = account_subscription_block.delete()
+        ok = bool(account_subscription_block.delete())
 
         return DeleteAccountSubscriptionBlock(ok=ok)
 

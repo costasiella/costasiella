@@ -315,7 +315,7 @@ class DeleteFinanceOrder(graphene.relay.ClientIDMutation):
         if not finance_order:
             raise Exception('Invalid Finance Order ID!')
 
-        ok = finance_order.delete()
+        ok = bool(finance_order.delete())
 
         return DeleteFinanceOrder(ok=ok)
 

@@ -246,7 +246,7 @@ class DeleteBusiness(graphene.relay.ClientIDMutation):
         if not business:
             raise Exception('Invalid Account ID!')
 
-        ok = business.delete()
+        ok = bool(business.delete())
 
         return DeleteBusiness(ok=ok)
 

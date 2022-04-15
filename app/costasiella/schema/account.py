@@ -334,7 +334,7 @@ class PermissionNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
 
-class AccountQuery(graphene.AbstractType):
+class AccountQuery(graphene.ObjectType):
     user = graphene.Field(UserType)
     account = graphene.relay.Node.Field(AccountNode)
     accounts = DjangoFilterConnectionField(AccountNode)
@@ -693,7 +693,7 @@ class DeleteAccount(graphene.relay.ClientIDMutation):
                 extensions={'code': get_error_code('USER_CURRENTLY_LOGGED_IN')}
             )
 
-        ok = account.delete()
+        ok = bool(account.delete())
 
         return DeleteAccount(ok=ok)
 

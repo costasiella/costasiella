@@ -354,9 +354,9 @@ class DeleteScheduleItem(graphene.relay.ClientIDMutation):
         rid = get_rid(input['id'])
         schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
         if not schedule_item:
-            raise Exception('Invalid Organization Level ID!')
+            raise Exception('Invalid Schedule Item ID!')
 
-        ok = schedule_item.delete()
+        ok = bool(schedule_item.delete())
 
         return DeleteScheduleItem(ok=ok)
 

@@ -92,12 +92,9 @@ class DeleteOrganizationClasspassGroupClasspass(graphene.relay.ClientIDMutation)
             organization_classpass = organization_classpass
         ).first()
 
+        ok = bool(organization_classpass_group_classpass.delete())
 
-        ok = organization_classpass_group_classpass.delete()
-
-        return DeleteOrganizationClasspassGroupClasspass(
-            ok=ok
-        )
+        return DeleteOrganizationClasspassGroupClasspass(ok=ok)
 
 
 class OrganizationClasspassGroupClasspassMutation(graphene.ObjectType):

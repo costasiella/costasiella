@@ -333,7 +333,7 @@ class DeleteScheduleAppointment(graphene.relay.ClientIDMutation):
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
-        ok = schedule_item.delete()
+        ok = bool(schedule_item.delete())
 
         return DeleteScheduleAppointment(ok=ok)
 
