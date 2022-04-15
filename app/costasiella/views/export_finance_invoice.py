@@ -10,7 +10,7 @@ from ..modules.gql_tools import require_login_and_permission, get_rid
 from django.utils.translation import gettext as _
 
 from ..modules.graphql_jwt_tools import get_user_from_cookie
-# Django-graphql-jwt imports end
+
 
 def _verifiy_permission_or_account(request, finance_invoice, **kwargs):
     """
