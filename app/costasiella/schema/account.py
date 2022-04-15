@@ -103,9 +103,7 @@ class AccountNode(DjangoObjectType):
             'organization_language',
             # Reverse relations
             'classpasses',
-            'subscriptions',
-            'classpasses_latest'
-            'subscriptions_latest'
+            'subscriptions'
         )
         filter_fields = {
             'full_name': ['icontains', 'exact'],
