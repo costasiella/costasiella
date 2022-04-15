@@ -73,8 +73,9 @@ urlpatterns = [
     path('d/export/invoices/<str:date_from>/<str:date_until>/<str:status>',
          views.export_excel_finance_invoices,
          name="export_invoices"),
-    # path('d/graphql/', jwt_cookie(GraphQLView.as_view(graphiql=settings.DEBUG)), name="graphql"),
-    path('d/graphql/', csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=settings.DEBUG))), name="graphql"),
+    path('d/graphql/', jwt_cookie(GraphQLView.as_view(graphiql=settings.DEBUG)), name="graphql"),
+    # This path can be uncommented instead of the one above to troubleshoot CSRF issues... do I have one or not?
+    # path('d/graphql/', csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=settings.DEBUG))), name="graphql"),
     path('d/mollie/webhook/', csrf_exempt(views.mollie_webhook), name="mollie_webhook"),
     path('d/update/', views.update, name="update"),
     path('d/setup/', views.setup, name="setup"),

@@ -267,6 +267,9 @@ CELERY_CACHE_BACKEND = 'django-cache'
 
 DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH = 191
 
+# CSRF_TRUSTED_ORIGINS = ['localhost']
+
+
 ##
 # Cors setttings
 ##
