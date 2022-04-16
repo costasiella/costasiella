@@ -50,7 +50,6 @@ def validate_create_update_input(input, update=False):
             if not finance_costcenter:
                 raise Exception(_('Invalid Finance Costcenter ID!'))
 
-
     return result
 
 
