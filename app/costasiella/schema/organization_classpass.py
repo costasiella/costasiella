@@ -109,7 +109,10 @@ class OrganizationClasspassQuery(graphene.ObjectType):
         # Has permission: return everything
 
         order_by = 'name'
-        archived = kwargs.get('archived', False)
+        archived = kwargs.get('archived')
+        if archived is None:
+            archived = False
+
         display_shop = kwargs.get('display_shop', None)
 
         objects = OrganizationClasspass.objects

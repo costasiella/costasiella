@@ -103,7 +103,7 @@ class AccountSubscriptionQuery(graphene.ObjectType):
         # require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
         user = info.context.user
-        if user.has_perm('costasiella.view_accountsubscription') and 'account' in kwargs:
+        if user.has_perm('costasiella.view_accountsubscription') and 'account' in kwargs and kwargs['account']:
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
         else:

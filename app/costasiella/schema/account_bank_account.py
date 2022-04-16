@@ -84,7 +84,7 @@ class AccountBankAccountQuery(graphene.ObjectType):
         user = info.context.user
         require_login(user)
 
-        if user.has_perm('costasiella.view_accountbankaccount') and 'account' in kwargs:
+        if user.has_perm('costasiella.view_accountbankaccount') and 'account' in kwargs and kwargs['account']:
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
         else:
