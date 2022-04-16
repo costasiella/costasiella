@@ -267,15 +267,15 @@ CELERY_CACHE_BACKEND = 'django-cache'
 
 DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH = 191
 
-
-CSRF_COOKIE_HTTPONLY = True
+##
+# CSRF Settings
+##
 # CSRF_TRUSTED_ORIGINS = ['localhost']
 
 
 ##
-# Cors setttings
+# CORS Setttings
 ##
-
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOWED_ORIGINS = [
@@ -285,88 +285,89 @@ CORS_ALLOW_CREDENTIALS = True
 #     # "http://www.example.com",
 # ]
 
-# CSRF_TRUSTED_ORIGINS = [
-#     "example.com"
-# ]
-
 # Logging configuration
-# LOGGING = {
-#     'version': 1,                       # the dictConfig format version
-#     'disable_existing_loggers': False,  # retain the default loggers
-#     'formatters': {
-#         'verbose': {
-#             'format': '{asctime}: {name} {levelname} {module} {message}',
-#             'style': '{',
-#         },
-#         'simple': {
-#             'format': '{levelname} {message}',
-#             'style': '{',
-#         },
-#     },
-#     'filters': {
-#         'require_debug_true': {
-#             '()': 'django.utils.log.RequireDebugTrue',
-#         },
-#     },
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'filters': ['require_debug_true'],
-#             'level': 'DEBUG',
-#             'formatter': 'simple'
-#         },
-#         'mail_admins': {
-#             'level': 'ERROR',
-#             'class': 'django.utils.log.AdminEmailHandler',
-#             'include_html': True,
-#         },
-#         'costasiella_file': {
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'maxBytes': 1024 * 1024 * 10,  # 10MB
-#             'backupCount': 10,
-#             'filename': 'logs/costasiella.log',
-#             'level': 'DEBUG',
-#             'formatter': 'verbose'
-#         },
-#         'costasiella_error_file': {
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'maxBytes': 1024 * 1024 * 10,  # 10MB
-#             'backupCount': 10,
-#             'filename': 'logs/error.log',
-#             'level': 'WARNING',
-#             'formatter': 'verbose'
-#         },
-#         'tasks_file': {
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'maxBytes': 1024 * 1024 * 10,  # 10MB
-#             'backupCount': 10,
-#             'filename': 'logs/tasks.log',
-#             'level': 'DEBUG',
-#             'formatter': 'verbose'
-#         },
-#         'tasks_error_file': {
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'maxBytes': 1024 * 1024 * 10,  # 10MB
-#             'backupCount': 10,
-#             'filename': 'logs/tasks_error.log',
-#             'level': 'WARNING',
-#             'formatter': 'verbose'
-#         }
-#     },
-#     'loggers': {
-#         'django.request': {
-#             'handlers': ['mail_admins'],
-#             'level': 'ERROR',
-#             'propagate': False,
-#         },
-#         'costasiella': {
-#             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-#             'handlers': ['console', 'costasiella_file', 'costasiella_error_file'],
-#         },
-#         'costasiella.tasks': {
-#             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-#             'handlers': ['console', 'tasks_file', 'tasks_error_file'],
-#             'propagate': False
-#         },
-#     }
-# }
+LOGGING = {
+    'version': 1,                       # the dictConfig format version
+    'disable_existing_loggers': False,  # retain the default loggers
+    'formatters': {
+        'verbose': {
+            'format': '{asctime}: {name} {levelname} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'filters': ['require_debug_true'],
+            'level': 'DEBUG',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        },
+        'costasiella_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 10,
+            'filename': 'logs/costasiella.log',
+            'level': 'DEBUG',
+            'formatter': 'verbose'
+        },
+        'costasiella_error_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 10,
+            'filename': 'logs/error.log',
+            'level': 'WARNING',
+            'formatter': 'verbose'
+        },
+        'tasks_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 10,
+            'filename': 'logs/tasks.log',
+            'level': 'DEBUG',
+            'formatter': 'verbose'
+        },
+        'tasks_error_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 10,
+            'filename': 'logs/tasks_error.log',
+            'level': 'WARNING',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'formatter': 'simple'
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'costasiella': {
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'handlers': ['console', 'costasiella_file', 'costasiella_error_file'],
+        },
+        'costasiella.tasks': {
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'handlers': ['console', 'tasks_file', 'tasks_error_file'],
+            'propagate': False
+        },
+    }
+}
