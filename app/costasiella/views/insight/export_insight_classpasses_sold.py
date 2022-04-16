@@ -3,11 +3,7 @@ import io
 from django.utils.translation import gettext as _
 from django.http import Http404, HttpResponse, FileResponse
 
-import jwt
-from .jwt_settings import jwt_settings
-
 from ...modules.graphql_jwt_tools import get_user_from_cookie
-from ...models import AppSettings
 from ...dudes.insight_account_classpasses_dude import InsightAccountClasspassesDude
 
 
