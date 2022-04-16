@@ -1,14 +1,10 @@
 """
 We probably don't need it, but for some reason the middleware doesn't seem to pass users properly with the current
 versions. So it can be here for now, until it's fixed upstream.
-Everything below here can be deleted again once request.user works.
+Everything below here can be deleted again once request.user returns something.
 
-You'll probably just want to import the "get_user_by_token" function into a view.
 """
 
-import jwt
-from graphql_jwt import exceptions
-from graphql_jwt.settings import jwt_settings
 from graphql_jwt.utils import get_credentials, get_payload, get_user_by_payload
 
 
