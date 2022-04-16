@@ -88,8 +88,6 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             (Q(date_end__gte=self.date ) | Q(date_end__isnull=True))
         )
 
-        print(qs)
-
         if qs.exists():
             return qs.first()
         else:
@@ -199,7 +197,7 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
         permission = user.has_perm('costasiella.view_scheduleitem') or user.has_perm('costasiella.view_selfcheckin')
 
         account = to_global_id('AccountNode', user.id)
-        if 'account' in kwargs and permission:
+        if 'account' in kwargs and kwargs['account'] and permission:
             # An account has been specified and the current user has permission to view booking options
             # for other accounts
             account = kwargs['account']
