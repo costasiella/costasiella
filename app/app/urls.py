@@ -70,7 +70,7 @@ urlpatterns = [
     path('d/export/invoice/pdf/<str:node_id>', views.invoice_pdf, name="export_invoice_pdf"),
     path('d/export/invoice/pdf/preview/<str:node_id>', views.invoice_pdf_preview,
          name="export_invoice_pdf_preview"),
-    path('d/export/invoices/<str:date_from>/<str:date_until>/<str:status>',
+    path('d/export/invoices/<str:date_from>/<str:date_until>/<str:status>/',
          views.export_excel_finance_invoices,
          name="export_invoices"),
     path('d/graphql/', jwt_cookie(GraphQLView.as_view(graphiql=settings.DEBUG)), name="graphql"),

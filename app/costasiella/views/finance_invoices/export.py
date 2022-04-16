@@ -8,26 +8,20 @@ import openpyxl
 
 from ...models import FinanceInvoiceItem
 
-from ...modules.graphql_jwt_tools import get_user_by_token
+from ...modules.graphql_jwt_tools import get_user_from_cookie
 
 
-def export_excel_finance_invoices(request, token, date_from, date_until, status, **kwargs):
+def export_excel_finance_invoices(request, date_from, date_until, status, **kwargs):
     """
     Export invoices as Excel
     """
-    print(token)
     print(date_from)
     print(date_until)
     print(status)
 
-    user = get_user_by_token(token, request)
+    user = get_user_from_cookie(request)
     if not user.has_perm('costasiella.view_financeinvoice'):
         raise Http404("Permission denied")
-
-
-    # iac_dude = InsightAccountClasspassesDude()
-    # data = iac_dude.get_classpasses_sold_year_data(year)
-    # print(data)
 
     wb = openpyxl.Workbook(write_only=True)
     ws_header = [

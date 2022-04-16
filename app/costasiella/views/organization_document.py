@@ -6,6 +6,7 @@ from django.db.models import Q
 
 from ..models import OrganizationDocument
 
+
 # Create your views here.
 def terms_and_conditions(request):
     now = timezone.now()
