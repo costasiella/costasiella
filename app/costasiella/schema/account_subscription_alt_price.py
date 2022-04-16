@@ -169,7 +169,7 @@ class DeleteAccountSubscriptionAltPrice(graphene.relay.ClientIDMutation):
         if not account_subscription_alt_price:
             raise Exception('Invalid Account Subscription Alt Price ID!')
 
-        ok = account_subscription_alt_price.delete()
+        ok = bool(account_subscription_alt_price.delete())
 
         return DeleteAccountSubscriptionAltPrice(ok=ok)
 

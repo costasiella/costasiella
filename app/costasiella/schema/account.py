@@ -18,7 +18,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from sorl.thumbnail import get_thumbnail
 
 from allauth.account.models import EmailAddress
-from ..models import AccountBankAccount, AccountInstructorProfile, OrganizationDiscovery, OrganizationLanguage
+from ..models import AccountClasspass, AccountSubscription, OrganizationDiscovery, OrganizationLanguage
 
 from ..modules.gql_tools import \
     check_node_item_resolve_permission, \
@@ -32,6 +32,8 @@ from ..modules.gql_tools import \
     get_content_file_from_base64_str
 
 from ..modules.encrypted_fields import EncryptedTextField
+from .account_classpass import AccountClasspassNode
+from .account_subscription import AccountSubscriptionNode
 
 
 @convert_django_field.register(EncryptedTextField)
@@ -69,6 +71,8 @@ class AccountNodeInterface(graphene.Interface):
     has_reached_trial_limit = graphene.Boolean()
     # url_image = graphene.String()
     url_image_thumbnail_small = graphene.String()
+    classpasses_latest = graphene.List(AccountClasspassNode)
+    subscriptions_latest = graphene.List(AccountSubscriptionNode)
 
 
 class AccountNode(DjangoObjectType):
@@ -298,12 +302,26 @@ class AccountNode(DjangoObjectType):
 
         return self.classpasses
 
+    def resolve_classpasses_latest(self, info, **kwargs):
+        user = info.context.user
+        if not user.id == self.id:
+            require_login_and_permission(user, 'costasiella.view_accountclasspass')
+
+        return AccountClasspass.objects.filter(account=self.id).order_by('-date_start')[:2]
+
     def resolve_subscriptions(self, info, **kwargs):
         user = info.context.user
         if not user.id == self.id:
             require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
         return self.subscriptions
+
+    def resolve_subscriptions_latest(self, info, **kwargs):
+        user = info.context.user
+        if not user.id == self.id:
+            require_login_and_permission(user, 'costasiella.view_accountsubscription')
+
+        return AccountSubscription.objects.filter(account=self.id).order_by('-date_start')[:2]
 
 
 class GroupNode(DjangoObjectType):
@@ -334,7 +352,7 @@ class PermissionNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
 
-class AccountQuery(graphene.AbstractType):
+class AccountQuery(graphene.ObjectType):
     user = graphene.Field(UserType)
     account = graphene.relay.Node.Field(AccountNode)
     accounts = DjangoFilterConnectionField(AccountNode)
@@ -693,7 +711,7 @@ class DeleteAccount(graphene.relay.ClientIDMutation):
                 extensions={'code': get_error_code('USER_CURRENTLY_LOGGED_IN')}
             )
 
-        ok = account.delete()
+        ok = bool(account.delete())
 
         return DeleteAccount(ok=ok)
 

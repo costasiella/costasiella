@@ -18,7 +18,6 @@ from .. import schema
 from ..modules.gql_tools import get_rid
 
 
-
 class GQLFinanceInvoiceItem(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     fixtures = ['finance_invoice_group.json', 'finance_payment_methods.json']

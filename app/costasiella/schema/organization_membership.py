@@ -228,7 +228,7 @@ class ArchiveOrganizationMembership(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Membership ID!')
 
         membership.archived = input['archived']
-        membership.save(force_update=True)
+        membership.save()
 
         return ArchiveOrganizationMembership(organization_membership=membership)
 

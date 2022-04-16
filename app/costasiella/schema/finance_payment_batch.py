@@ -247,7 +247,7 @@ class DeleteFinancePaymentBatch(graphene.relay.ClientIDMutation):
         if not finance_payment_batch:
             raise Exception(_('Invalid Finance Payment Batch ID!'))
 
-        ok = finance_payment_batch.delete()
+        ok = bool(finance_payment_batch.delete())
 
         return DeleteFinancePaymentBatch(ok=ok)
 

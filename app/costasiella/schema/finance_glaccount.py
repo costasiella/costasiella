@@ -120,7 +120,7 @@ class ArchiveFinanceGLAccount(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance GLAccount ID!')
 
         finance_glaccount.archived = input['archived']
-        finance_glaccount.save(force_update=True)
+        finance_glaccount.save()
 
         return ArchiveFinanceGLAccount(finance_glaccount=finance_glaccount)
 

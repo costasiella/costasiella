@@ -3,10 +3,10 @@ from django.views.static import serve
 from django.http import HttpResponse
 from graphql_jwt.exceptions import JSONWebTokenError
 
-from ..modules.graphql_jwt_tools import get_user_by_token
+from ..modules.graphql_jwt_tools import get_user_from_cookie
 
 
-def serve_protected_file(request, path, token, document_root=None, show_indexes=False):
+def serve_protected_file(request, path, document_root=None, show_indexes=False):
     """
     Authenticate user using token before serving a file
     :param request: Django request
@@ -17,7 +17,7 @@ def serve_protected_file(request, path, token, document_root=None, show_indexes=
     :return:
     """
     try:
-        user = get_user_by_token(token, request)
+        user = get_user_from_cookie(request)
         if user:
             return serve(request, path, document_root, show_indexes)
     except JSONWebTokenError as e:

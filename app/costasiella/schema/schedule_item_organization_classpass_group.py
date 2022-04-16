@@ -122,8 +122,7 @@ class DeleteScheduleItemOrganizationClasspassGroup(graphene.relay.ClientIDMutati
         if not schedule_item_organization_classpass_group:
             raise Exception('Invalid Schedule Item Organization Classpass Group ID!')
 
-
-        ok = schedule_item_organization_classpass_group.delete()
+        ok = bool(schedule_item_organization_classpass_group.delete())
 
         return DeleteScheduleItemOrganizationClasspassGroup(
             ok=ok

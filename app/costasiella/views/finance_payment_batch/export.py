@@ -6,24 +6,24 @@ from django.http import Http404, StreamingHttpResponse
 
 from ...models import AppSettings, FinancePaymentBatch, FinancePaymentBatchExport
 from ...modules.gql_tools import require_login_and_permission, get_rid
-from ...modules.graphql_jwt_tools import get_user_by_token
+from ...modules.graphql_jwt_tools import get_user_from_cookie
 
 
-def _verifiy_permission(token, request):
+def _verifiy_permission(request):
     """
 
     :param request:
     :param finance_invoice:
     :return:
     """
-    user = get_user_by_token(token, request)
+    user = get_user_from_cookie(request)
     if not user:
         return False
 
     return user.has_perm('costasiella.view_financepaymentbatch')
 
 
-def export_csv_finance_payment_batch(request, token, node_id, **kwargs):
+def export_csv_finance_payment_batch(request, node_id, **kwargs):
     """
     Export invoice as PDF
 
@@ -36,11 +36,11 @@ def export_csv_finance_payment_batch(request, token, node_id, **kwargs):
     rid = get_rid(node_id)
     print(rid)
     finance_payment_batch = FinancePaymentBatch.objects.get(id=rid.id)
-    if not _verifiy_permission(token, request):
+    if not _verifiy_permission(request):
         raise Http404(_("Finance Payment Batch not found..."))
 
     # Log export into exports table
-    user = get_user_by_token(token, request)
+    user = get_user_from_cookie(request)
     finance_payment_batch_export = FinancePaymentBatchExport(
         finance_payment_batch=finance_payment_batch,
         account=user

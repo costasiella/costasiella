@@ -347,7 +347,16 @@ class ScheduleClassesDayType(graphene.ObjectType):
                           csi.frequency_interval = %(iso_week_day)s AND 
                           csi.date_start <= %(class_date)s AND
                          (csi.date_end >= %(class_date)s OR csi.date_end IS NULL)
-                        )            
+                        ) OR
+                        /* Last weekday of month */
+                        ( csi.frequency_type = "LAST_WEEKDAY_OF_MONTH" AND
+                          csi.frequency_interval = %(iso_week_day)s AND 
+                           DATE_FORMAT(
+                            LAST_DAY(%(class_date)s) - ((7 + WEEKDAY(LAST_DAY(%(class_date)s)) - ( %(iso_week_day)s - 1)) %% 7), 
+                            %(date_format)s) = %(class_date)s AND 
+                          csi.date_start <= %(class_date)s AND
+                          (csi.date_end >= %(class_date)s OR csi.date_end IS NULL)
+                        )
                     )
                 {where_sql}
             ORDER BY {order_by_sql}
@@ -357,39 +366,28 @@ class ScheduleClassesDayType(graphene.ObjectType):
             order_by_sql=order_by_sql
         )
 
-        #
         # print(query)
 
-        ## 
-        # At this time 27 Aug 2019, params don't seem to be working from a dictionary
-        # https://docs.djangoproject.com/en/3.0/topics/db/sql/
-        # the query should be formatted using %(class_date)s 
-        ##
         params = {
             "class_date": str(self.date),
             "iso_week_day": iso_week_day,
             "filter_id_organization_classtype": self.filter_id_organization_classtype,
             "filter_id_organization_location": self.filter_id_organization_location,
             "filter_id_organization_level": self.filter_id_organization_level,
+            "date_format": "%Y-%m-%d"
         }
         schedule_items = ScheduleItem.objects.raw(query, params=params)
+        # if str(self.date) == "2022-04-25":
+        #     print(schedule_items)
 
+        # from django.db import connection as conn
+        # print(conn.queries)
+
+        # print(self.date)
         classes_list = []
         for item in schedule_items:
-            # print("#############")
-            # print(item)
-            # print(item.date_start)
-            # print(item.date_end)
-            # print(item.time_start)
-            # print(item.time_end)
-            # print(item.status)
-            # print(item.organization_holiday_id)
-            # print(item.organization_holiday_name)
-            # print(item.description)
-            # print(item.account)
-            # print(item.account_id)
-            # print(item.role)
-            # print(item.count_attendance)
+            # if str(self.date) == "2022-04-25":
+            #     print(item)
 
             holiday = False
             holiday_name = ""
@@ -787,6 +785,26 @@ def validate_schedule_class_create_update_input(input, update=False):
     """ 
     result = {}
 
+    # If frequency type = LAST_WEEKDAY_OF_MONTH, should be checked that delta start & end date is at least 31 days.
+    if 'frequency_type' in input:
+        frequency_type = input['frequency_type']
+        if frequency_type == 'LAST_WEEKDAY_OF_MONTH':
+            if 'date_end' in input:
+                date_end = input['date_end']
+                if date_end is not None:
+                    date_start = input['date_start']
+                    delta = date_end - date_start
+                    if delta.days < 31:
+                        raise Exception(_('There should be at least 31 days between start and end dates!'))
+        elif frequency_type == "WEEKLY":
+            if 'date_end' in input:
+                date_end = input['date_end']
+                if date_end is not None:
+                    date_start = input['date_start']
+                    delta = date_end - date_start
+                    if delta.days < 7:
+                        raise Exception(_('There should be at least 7 days between start and end dates!'))
+
     # Check OrganizationLocationRoom
     if 'organization_location_room' in input:
         if input['organization_location_room']:
@@ -975,7 +993,7 @@ class DeleteScheduleClass(graphene.relay.ClientIDMutation):
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
-        ok = schedule_item.delete()
+        ok = bool(schedule_item.delete())
 
         return DeleteScheduleClass(ok=ok)
 

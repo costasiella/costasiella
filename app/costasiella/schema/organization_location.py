@@ -194,7 +194,7 @@ class ArchiveOrganizationLocation(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Location ID!')
 
         organization_location.archived = input['archived']
-        organization_location.save(force_update=True)
+        organization_location.save()
 
         return ArchiveOrganizationLocation(organization_location=organization_location)
 

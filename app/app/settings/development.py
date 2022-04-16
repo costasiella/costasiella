@@ -37,9 +37,10 @@ ORPHANED_APPS_MEDIABASE_DIRS = {
 # GraphQL JWT settings with long expiration. Uncomment during development if useful for graphiQL auth for example.
 GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': timedelta(minutes=240),  # Default = 5 minutes
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),  # Default = 7 days
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=5),  # Default = 5 minutes
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(minutes=30),  # Default = 7 days
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
+    'JWT_COOKIE_SAMESITE': 'Lax'
 }
 
 # Django-defender & celery use

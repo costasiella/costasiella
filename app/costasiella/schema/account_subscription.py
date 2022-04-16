@@ -103,7 +103,7 @@ class AccountSubscriptionQuery(graphene.ObjectType):
         # require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
         user = info.context.user
-        if user.has_perm('costasiella.view_accountsubscription') and 'account' in kwargs:
+        if user.has_perm('costasiella.view_accountsubscription') and 'account' in kwargs and kwargs['account']:
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
         else:
@@ -235,7 +235,7 @@ class DeleteAccountSubscription(graphene.relay.ClientIDMutation):
         if not account_subscription:
             raise Exception('Invalid Account Subscription ID!')
 
-        ok = account_subscription.delete()
+        ok = bool(account_subscription.delete())
 
         return DeleteAccountSubscription(ok=ok)
 
@@ -281,7 +281,6 @@ class CreateAccountSubscriptionInvoicesForMonth(graphene.relay.ClientIDMutation)
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financeinvoice')
 
-        print(input)
         year = input['year']
         month = input['month']
         description = input['description']
@@ -293,7 +292,6 @@ class CreateAccountSubscriptionInvoicesForMonth(graphene.relay.ClientIDMutation)
             invoice_date=invoice_date,
             description=description
         )
-        print(task)
         ok = True
 
         return CreateAccountSubscriptionInvoicesForMonth(ok=ok)
@@ -313,12 +311,10 @@ class CreateAccountSubscriptionInvoicesMollieCollectionForMonth(graphene.relay.C
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financeinvoice')
 
-        print(input)
         year = input['year']
         month = input['month']
 
         task = account_subscription_invoices_add_for_month_mollie_collection.delay(year=year, month=month)
-        print(task)
         ok = True
 
         return CreateAccountSubscriptionInvoicesMollieCollectionForMonth(ok=ok)

@@ -84,7 +84,7 @@ class AccountBankAccountQuery(graphene.ObjectType):
         user = info.context.user
         require_login(user)
 
-        if user.has_perm('costasiella.view_accountbankaccount') and 'account' in kwargs:
+        if user.has_perm('costasiella.view_accountbankaccount') and 'account' in kwargs and kwargs['account']:
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
         else:
@@ -178,7 +178,7 @@ class DeleteAccountBankAccount(graphene.relay.ClientIDMutation):
         if not account_bank_account:
             raise Exception('Invalid Account Bank Account ID!')
 
-        ok = account_bank_account.delete()
+        ok = bool(account_bank_account.delete())
 
         return DeleteAccountBankAccount(ok=ok)
 

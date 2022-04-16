@@ -104,7 +104,7 @@ class ArchiveOrganizationShift(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Shift ID!')
 
         organization_shift.archived = input['archived']
-        organization_shift.save(force_update=True)
+        organization_shift.save()
 
         return ArchiveOrganizationShift(organization_shift=organization_shift)
 

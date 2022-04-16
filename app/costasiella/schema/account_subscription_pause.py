@@ -174,7 +174,7 @@ class DeleteAccountSubscriptionPause(graphene.relay.ClientIDMutation):
         if not account_subscription_pause:
             raise Exception('Invalid Account Subscription Pause ID!')
 
-        ok = account_subscription_pause.delete()
+        ok = bool(account_subscription_pause.delete())
 
         return DeleteAccountSubscriptionPause(ok=ok)
 

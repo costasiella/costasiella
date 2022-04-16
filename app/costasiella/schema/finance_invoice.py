@@ -129,7 +129,7 @@ class FinanceInvoiceQuery(graphene.ObjectType):
         require_login(user)
         view_permission = user.has_perm('costasiella.view_financeinvoice')
 
-        if view_permission and 'account' in kwargs:
+        if view_permission and 'account' in kwargs and kwargs['account']:
             # Allow user to filter by any account
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
@@ -386,7 +386,7 @@ class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
         if not finance_invoice:
             raise Exception('Invalid Finance Invoice ID!')
 
-        ok = finance_invoice.delete()
+        ok = bool(finance_invoice.delete())
 
         return DeleteFinanceInvoice(ok=ok)
 

@@ -92,8 +92,7 @@ class DeleteOrganizationSubscriptionGroupSubscription(graphene.relay.ClientIDMut
             organization_subscription = organization_subscription
         ).first()
 
-
-        ok = organization_subscription_group_subscription.delete()
+        ok = bool(organization_subscription_group_subscription.delete())
 
         return DeleteOrganizationSubscriptionGroupSubscription(
             ok=ok

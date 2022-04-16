@@ -205,7 +205,7 @@ class DeleteScheduleItemPrice(graphene.relay.ClientIDMutation):
         if not schedule_item_price:
             raise Exception('Invalid Schedule Item Price ID!')
 
-        ok = schedule_item_price.delete()
+        ok = bool(schedule_item_price.delete())
 
         return DeleteScheduleItemPrice(ok=ok)
 

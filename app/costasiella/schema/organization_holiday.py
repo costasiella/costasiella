@@ -135,7 +135,7 @@ class DeleteOrganizationHoliday(graphene.relay.ClientIDMutation):
         if not organization_holiday:
             raise Exception('Invalid Organization Holiday ID!')
 
-        ok = organization_holiday.delete()
+        ok = bool(organization_holiday.delete())
 
         return DeleteOrganizationHoliday(ok=ok)
 

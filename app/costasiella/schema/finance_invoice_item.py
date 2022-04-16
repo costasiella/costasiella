@@ -107,7 +107,9 @@ class FinanceInvoiceItemQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeinvoiceitem')
 
-        order_by = kwargs.get('orderBy', ['line_number'])
+        order_by = kwargs.get('orderBy')
+        if not order_by:
+            order_by = ['line_number']
 
         # example gql
         # financeInvoiceItems(..., orderBy: ["-finance_invoice__date_sent"]) {
@@ -331,7 +333,7 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
             i.save()
 
         # Actually delete item
-        ok = finance_invoice_item.delete()
+        ok = bool(finance_invoice_item.delete())
         
         # Update amounts
         finance_invoice.update_amounts()

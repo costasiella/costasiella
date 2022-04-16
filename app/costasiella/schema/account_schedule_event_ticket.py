@@ -61,11 +61,12 @@ class AccountScheduleEventTicketQuery(graphene.ObjectType):
             raise Exception(_("schedule_event_ticket or account is a required parameter"))
 
         if "schedule_event_ticket" in kwargs:
-            require_login_and_permission(user, 'costasiella.view_accountscheduleeventticket')
-            rid = get_rid(kwargs["schedule_event_ticket"])
-            return AccountScheduleEventTicket.objects.filter(
-                schedule_event_ticket=rid.id
-            ).order_by('account__full_name')
+            if kwargs['schedule_event_ticket']:
+                require_login_and_permission(user, 'costasiella.view_accountscheduleeventticket')
+                rid = get_rid(kwargs["schedule_event_ticket"])
+                return AccountScheduleEventTicket.objects.filter(
+                    schedule_event_ticket=rid.id
+                ).order_by('account__full_name')
 
         if "account" in kwargs:
             if user.has_perm('costasiella.view_accountscheduleevent') and 'account' in kwargs:
@@ -209,7 +210,7 @@ class DeleteAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
         if not account_schedule_event_ticket:
             raise Exception('Invalid Account Schedule Event Ticket ID!')
 
-        ok = account_schedule_event_ticket.delete()
+        ok = bool(account_schedule_event_ticket.delete())
 
         return DeleteAccountScheduleEventTicket(ok=ok)
 

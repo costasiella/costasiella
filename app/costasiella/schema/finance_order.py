@@ -85,7 +85,7 @@ class FinanceOrderQuery(graphene.ObjectType):
 
         view_permission = user.has_perm('costasiella.view_financeorder')
 
-        if view_permission and 'account' in kwargs:
+        if view_permission and 'account' in kwargs and kwargs['account']:
             # Allow user to filter by any account
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
@@ -315,7 +315,7 @@ class DeleteFinanceOrder(graphene.relay.ClientIDMutation):
         if not finance_order:
             raise Exception('Invalid Finance Order ID!')
 
-        ok = finance_order.delete()
+        ok = bool(finance_order.delete())
 
         return DeleteFinanceOrder(ok=ok)
 

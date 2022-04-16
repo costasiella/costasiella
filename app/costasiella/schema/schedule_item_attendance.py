@@ -98,7 +98,7 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
         view_permission = user.has_perm('costasiella.view_scheduleitemattendance') or \
             user.has_perm('costasiella.view_selfcheckin')
 
-        if view_permission and 'account' in kwargs:
+        if view_permission and 'account' in kwargs and kwargs['account']:
             # Allow user to filter by any account
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
@@ -350,7 +350,7 @@ class DeleteScheduleItemAttendance(graphene.relay.ClientIDMutation):
              account_classpass = schedule_item_attendance.account_classpass
 
         # Actually remove
-        ok = schedule_item_attendance.delete()
+        ok = bool(schedule_item_attendance.delete())
 
         if account_classpass:
             account_classpass.update_classes_remaining()

@@ -848,6 +848,23 @@ class SchedulePublicWeeklyClassOTCFactory(factory.DjangoModelFactory):
     time_end = datetime.time(12, 30)
 
 
+class SchedulePublicLastWeekdayOfMonthClassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItem
+
+    schedule_item_type = "CLASS"
+    frequency_type = "LAST_WEEKDAY_OF_MONTH"
+    frequency_interval = 5  # Friday
+    organization_location_room = factory.SubFactory(OrganizationLocationRoomFactory)
+    organization_classtype = factory.SubFactory(OrganizationClasstypeFactory)
+    organization_level = factory.SubFactory(OrganizationLevelFactory)
+    date_start = datetime.date(2014, 1, 1)
+    date_end = datetime.date(2099, 12, 31)
+    time_start = datetime.time(6, 0)
+    time_end = datetime.time(9, 0)
+    display_public = True
+
+
 class ScheduleWeeklyShiftFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItem

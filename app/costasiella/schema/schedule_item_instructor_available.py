@@ -157,7 +157,7 @@ class DeleteScheduleItemInstructorAvailable(graphene.relay.ClientIDMutation):
         if not schedule_item_instructor_available:
             raise Exception('Invalid Schedule Item Instructor Available ID!')
 
-        ok = schedule_item_instructor_available.delete()
+        ok = bool(schedule_item_instructor_available.delete())
 
         return DeleteScheduleItemInstructorAvailable(ok=ok)
 

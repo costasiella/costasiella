@@ -188,7 +188,7 @@ class DeleteFinanceInvoicePayment(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Invoice Payment ID!')
 
         finance_invoice = finance_invoice_payment.finance_invoice
-        ok = finance_invoice_payment.delete()
+        ok = bool(finance_invoice_payment.delete())
         
         # Update amounts
         finance_invoice.update_amounts()

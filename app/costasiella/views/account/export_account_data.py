@@ -6,17 +6,17 @@ from django.http import Http404, FileResponse
 
 from ...models import AccountSubscriptionCredit, AccountInstructorProfile
 # Django-graphql-jwt imports begin
-from ...modules.graphql_jwt_tools import get_user_by_token
+from ...modules.graphql_jwt_tools import get_user_from_cookie
 # Django-graphql-jwt imports end
 
 
-def export_account_data(request, token, **kwargs):
+def export_account_data(request, **kwargs):
     """
     Export account data
 
     :param: POST: token - JWT access token
     """
-    user = get_user_by_token(token, request)
+    user = get_user_from_cookie(request)
     if not user:
         raise Http404(_("Please sign in to export your account data."))
 

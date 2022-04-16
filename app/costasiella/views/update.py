@@ -17,9 +17,6 @@ def update(request):
     current_version = float(version_dude.version)
 
     # compare version update
-    if current_version <= 0.2:
-        print('updating to 0.2')
-
     if current_version < 2021.02:
         _update_to_2021_02()
 

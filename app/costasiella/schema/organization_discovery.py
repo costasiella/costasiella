@@ -113,7 +113,7 @@ class ArchiveOrganizationDiscovery(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Discovery ID!')
 
         organization_discovery.archived = input['archived']
-        organization_discovery.save(force_update=True)
+        organization_discovery.save()
 
         return ArchiveOrganizationDiscovery(organization_discovery=organization_discovery)
 

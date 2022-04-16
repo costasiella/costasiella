@@ -129,8 +129,7 @@ class DeleteScheduleItemOrganizationSubscriptionGroup(graphene.relay.ClientIDMut
         if not schedule_item_organization_subscription_group:
             raise Exception('Invalid Schedule Item Organization Subscription Group ID!')
 
-
-        ok = schedule_item_organization_subscription_group.delete()
+        ok = bool(schedule_item_organization_subscription_group.delete())
 
         return DeleteScheduleItemOrganizationSubscriptionGroup(
             ok=ok

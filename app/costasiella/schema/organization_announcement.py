@@ -180,7 +180,7 @@ class DeleteOrganizationAnnouncement(graphene.relay.ClientIDMutation):
         if not organization_announcement:
             raise Exception('Invalid Organization Announcement ID!')
 
-        ok = organization_announcement.delete()
+        ok = bool(organization_announcement.delete())
 
         return DeleteOrganizationAnnouncement(ok=ok)
 

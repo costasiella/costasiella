@@ -50,7 +50,6 @@ def validate_create_update_input(input, update=False):
             if not finance_costcenter:
                 raise Exception(_('Invalid Finance Costcenter ID!'))
 
-
     return result
 
 
@@ -109,7 +108,10 @@ class OrganizationClasspassQuery(graphene.ObjectType):
         # Has permission: return everything
 
         order_by = 'name'
-        archived = kwargs.get('archived', False)
+        archived = kwargs.get('archived')
+        if archived is None:
+            archived = False
+
         display_shop = kwargs.get('display_shop', None)
 
         objects = OrganizationClasspass.objects
@@ -278,7 +280,7 @@ class ArchiveOrganizationClasspass(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization Classpass ID!')
 
         classpass.archived = input['archived']
-        classpass.save(force_update=True)
+        classpass.save()
 
         return ArchiveOrganizationClasspass(organization_classpass=classpass)
 

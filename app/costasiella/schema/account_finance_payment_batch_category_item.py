@@ -201,7 +201,7 @@ class DeleteAccountFinancePaymentBatchCategoryItem(graphene.relay.ClientIDMutati
         if not account_finance_payment_batch_category_item:
             raise Exception('Invalid Account Finance Payment Batch Category Item ID!')
 
-        ok = account_finance_payment_batch_category_item.delete()
+        ok = bool(account_finance_payment_batch_category_item.delete())
 
         return DeleteAccountFinancePaymentBatchCategoryItem(ok=ok)
 

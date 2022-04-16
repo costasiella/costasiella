@@ -186,7 +186,7 @@ class DeleteSystemMailChimpList(graphene.relay.ClientIDMutation):
         if not system_mailchimp_list:
             raise Exception('Invalid Organization Discovery ID!')
 
-        ok = system_mailchimp_list.delete()
+        ok = bool(system_mailchimp_list.delete())
 
         return DeleteSystemMailChimpList(ok=ok)
 

@@ -100,7 +100,7 @@ class CreateFinanceInvoicePaymentLink(graphene.Mutation):
                 'value': str(amount)
             },
             'description': description,
-            'sequenceType': sequence_type.upper() if sequence_type else None,
+            'sequenceType': sequence_type,
             'customerId': mollie_customer_id,
             'redirectUrl': redirect_url,
             'webhookUrl': webhook_url,

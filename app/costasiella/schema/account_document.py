@@ -154,7 +154,7 @@ class DeleteAccountDocument(graphene.relay.ClientIDMutation):
         if not account_document:
             raise Exception('Invalid Account Document ID!')
 
-        ok = account_document.delete()
+        ok = bool(account_document.delete())
 
         return DeleteAccountDocument(ok=ok)
 

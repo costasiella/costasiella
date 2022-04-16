@@ -170,7 +170,7 @@ class DeleteAccountBankAccountMandate(graphene.relay.ClientIDMutation):
         if not account_bank_account_mandate:
             raise Exception('Invalid Account Bank Account Mandate ID!')
 
-        ok = account_bank_account_mandate.delete()
+        ok = bool(account_bank_account_mandate.delete())
 
         return DeleteAccountBankAccountMandate(ok=ok)
 

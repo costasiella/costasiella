@@ -103,7 +103,7 @@ class AccountClasspassQuery(graphene.ObjectType):
         user = info.context.user
         require_login(user)
 
-        if user.has_perm('costasiella.view_accountclasspass') and 'account' in kwargs:
+        if user.has_perm('costasiella.view_accountclasspass') and 'account' in kwargs and kwargs['account']:
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
             qs = AccountClasspass.objects.filter(account=account_id)
@@ -201,7 +201,7 @@ class DeleteAccountClasspass(graphene.relay.ClientIDMutation):
         if not account_classpass:
             raise Exception('Invalid Account Classpass ID!')
 
-        ok = account_classpass.delete()
+        ok = bool(account_classpass.delete())
 
         return DeleteAccountClasspass(ok=ok)
 

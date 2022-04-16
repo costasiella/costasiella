@@ -40,6 +40,13 @@ class GQLScheduleClass(TestCase):
             'attendanceCountType': "ATTENDING_AND_BOOKED"
         }
 
+        a_last_friday_of_the_month = datetime.date(2022, 4, 29)
+        self.variables_query_last_weekday_of_month_list = {
+            'dateFrom': str(a_last_friday_of_the_month),
+            'dateUntil': str(a_last_friday_of_the_month + datetime.timedelta(days=6)),
+            'attendanceCountType': "ATTENDING_AND_BOOKED"
+        }
+
         status_monday = datetime.date(2030, 12, 30)
         self.variables_query_list_status = {
             'dateFrom': str(status_monday),
@@ -54,7 +61,24 @@ class GQLScheduleClass(TestCase):
         self.variables_create = {
             "input": {
                 "frequencyType": "WEEKLY",
-                "frequencyInterval": 1, # Monday,
+                "frequencyInterval": 1,  # Monday,
+                "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
+                "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
+                "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
+                "dateStart": "2019-01-01",
+                "dateEnd": "2999-12-31",
+                "timeStart": "11:00:00",
+                "timeEnd": "12:30:00",
+                "spaces": 20,
+                "walkInSpaces": 5,
+                "displayPublic": True
+            }
+        }
+
+        self.variables_create_last_weekday_of_month = {
+            "input": {
+                "frequencyType": "LAST_WEEKDAY_OF_MONTH",
+                "frequencyInterval": 1,  # Monday,
                 "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
                 "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
                 "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
@@ -71,7 +95,24 @@ class GQLScheduleClass(TestCase):
         self.variables_update = {
             "input": {
                 "frequencyType": "WEEKLY",
-                "frequencyInterval": 2, # Tuesday,
+                "frequencyInterval": 2,  # Tuesday,
+                "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
+                "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
+                "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
+                "dateStart": "1999-01-01",
+                "dateEnd": "2999-12-31",
+                "timeStart": "16:00:00",
+                "timeEnd": "17:30:00",
+                "spaces": 20,
+                "walkInSpaces": 5,
+                "displayPublic": True
+            }
+        }
+
+        self.variables_update_last_weekday_of_month = {
+            "input": {
+                "frequencyType": "LAST_WEEKDAY_OF_MONTH",
+                "frequencyInterval": 2,  # Tuesday,
                 "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
                 "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
                 "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
@@ -287,13 +328,53 @@ class GQLScheduleClass(TestCase):
 
         self.assertEqual(errors[0]['message'], "dateFrom and dateUntil can't be more then 7 days apart")
 
-    def test_query(self):
-        """ Query list of scheduleclasses """
+    def test_query_weekly(self):
+        """ Query list of weekly scheduleclasses """
         query = self.scheduleclasses_query
 
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
 
         variables = self.variables_query_list
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+            to_global_id('ScheduleItemNode', schedule_class.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['organizationClasstype']['id'],
+            to_global_id('OrganizationClasstypeNode', schedule_class.organization_classtype.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['organizationLocationRoom']['id'],
+            to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['organizationLevel']['id'],
+            to_global_id('OrganizationLevelNode', schedule_class.organization_level.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['timeStart'],
+            str(schedule_class.time_start)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['timeEnd'],
+            str(schedule_class.time_end)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['displayPublic'],
+            schedule_class.display_public
+        )
+
+    def test_query_last_weekday_of_month(self):
+        """ Query list of monthly classes within the last week """
+        query = self.scheduleclasses_query
+
+        schedule_class = f.SchedulePublicLastWeekdayOfMonthClassFactory.create()
+
+        variables = self.variables_query_last_weekday_of_month_list
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
@@ -467,9 +548,6 @@ class GQLScheduleClass(TestCase):
         variables = self.variables_query_list
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
-
-        print("##############")
-        print(executed)
 
         # List all scheduleclasses
         self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
@@ -787,8 +865,40 @@ class GQLScheduleClass(TestCase):
     #     data = executed.get('data')
     #     self.assertEqual(data['scheduleItem']['id'], node_id)
 
-    def test_create_scheduleclass(self):
-        """ Create a scheduleclass """
+    def test_create_scheduleclass_weekly_min_7_days_delta_start_and_end_date(self):
+        """ Check that at least 7 days should be between start & end for weekly classes """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create
+        variables['input']['dateStart'] = "2022-01-01"
+        variables['input']['dateEnd'] = "2022-01-04"
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'There should be at least 7 days between start and end dates!')
+
+    def test_create_scheduleclass_last_weekday_of_month_min_7_days_delta_start_and_end_date(self):
+        """ Check that at least 31 days should be between start & end for last weekday of month classes """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create_last_weekday_of_month
+        variables['input']['dateStart'] = "2022-01-01"
+        variables['input']['dateEnd'] = "2022-01-04"
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'There should be at least 31 days between start and end dates!')
+
+    def test_create_scheduleclass_weekly(self):
+        """ Create a weekly scheduleclass """
         query = self.scheduleclass_create_mutation
         variables = self.variables_create
 
@@ -797,20 +907,61 @@ class GQLScheduleClass(TestCase):
             self.admin_user,
             variables=variables
         )
-        print("@@@@@@@@@@@@@")
-        print(executed)
 
         data = executed.get('data')
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLocationRoom']['id'], variables['input']['organizationLocationRoom'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationClasstype']['id'], variables['input']['organizationClasstype'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLevel']['id'], variables['input']['organizationLevel'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateStart'], variables['input']['dateStart'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeStart'], variables['input']['timeStart'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
-        self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLocationRoom']['id'],
+                         variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationClasstype']['id'],
+                         variables['input']['organizationClasstype'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLevel']['id'],
+                         variables['input']['organizationLevel'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateStart'],
+                         variables['input']['dateStart'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateEnd'],
+                         variables['input']['dateEnd'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeStart'],
+                         variables['input']['timeStart'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'],
+                         variables['input']['timeEnd'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'],
+                         variables['input']['displayPublic'])
+
+    def test_create_scheduleclass_last_weekday_of_month(self):
+        """ Create a weekly scheduleclass """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create_last_weekday_of_month
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLocationRoom']['id'],
+                         variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationClasstype']['id'],
+                         variables['input']['organizationClasstype'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['organizationLevel']['id'],
+                         variables['input']['organizationLevel'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateStart'],
+                         variables['input']['dateStart'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['dateEnd'],
+                         variables['input']['dateEnd'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeStart'],
+                         variables['input']['timeStart'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'],
+                         variables['input']['timeEnd'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'],
+                         variables['input']['displayPublic'])
 
     def test_create_schedule_class_add_all_non_archived_organization_subscription_groups(self):
       """
@@ -913,11 +1064,42 @@ class GQLScheduleClass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    def test_update_scheduleclass(self):
-        """ Update a scheduleclass """
+    def test_update_scheduleclass_weekly(self):
+        """ Update a weekly scheduleclass """
         query = self.scheduleclass_update_mutation
         scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['id'], variables['input']['id'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLocationRoom']['id'],
+                         variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationClasstype']['id'],
+                         variables['input']['organizationClasstype'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLevel']['id'],
+                         variables['input']['organizationLevel'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeStart'], variables['input']['timeStart'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['displayPublic'],
+                         variables['input']['displayPublic'])
+
+    def test_update_scheduleclass_last_weekday_of_month(self):
+        """ Update a scheduleclass """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_update_last_weekday_of_month
         variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
         executed = execute_test_client_api_query(
@@ -997,7 +1179,7 @@ class GQLScheduleClass(TestCase):
             user,
             variables=variables
         )
-        data = executed.get('data')
+
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 

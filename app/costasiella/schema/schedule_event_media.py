@@ -178,7 +178,7 @@ class DeleteScheduleEventMedia(graphene.relay.ClientIDMutation):
         if not schedule_event_media:
             raise Exception('Invalid Schedule Event Media ID!')
 
-        ok = schedule_event_media.delete()
+        ok = bool(schedule_event_media.delete())
 
         return DeleteScheduleEventMedia(ok=ok)
 

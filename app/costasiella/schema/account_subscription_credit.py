@@ -152,7 +152,7 @@ class DeleteAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
         if not account_subscription_credit:
             raise Exception('Invalid Account Subscription Credit ID!')
 
-        ok = account_subscription_credit.delete()
+        ok = bool(account_subscription_credit.delete())
 
         return DeleteAccountSubscriptionCredit(ok=ok)
 
