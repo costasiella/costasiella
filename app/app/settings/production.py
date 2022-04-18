@@ -15,14 +15,12 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
 
-## System error reports get sent to
-# Admins = [('John', 'john@example.com'), ('Mary', 'mary@example.com')]
-
 ## Server error notifications
 # All mail addresses listed in the ADMINS setting will receive server error notifications when DEBUG=False
 ##
 # ADMINS = [
-#     ('Full name', 'user@example.com')
+#     ('Full name', 'user@example.com'),
+#     ('John', 'john@example.com')
 # ]
 
 ## By default server error notifications are sent from root@localhost.
@@ -52,7 +50,7 @@ ORPHANED_APPS_MEDIABASE_DIRS = {
         'skip': (               # optional iterable of subfolders to preserve, e.g. sorl.thumbnail cache
             path.join(MEDIA_ROOT, 'cache'),
         ),
-        'exclude': ('.gitignore',) # optional iterable of files to preserve
+        'exclude': ('.gitignore',)  # optional iterable of files to preserve
     }
 }
 
