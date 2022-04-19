@@ -58,7 +58,9 @@ class AccountClasspassNode(DjangoObjectType):
             'note',
             'classes_remaining',
             'created_at',
-            'updated_at'
+            'updated_at',
+            # Reverse relations
+            'classes'
         )
         filter_fields = {
             'account': ['exact'],
