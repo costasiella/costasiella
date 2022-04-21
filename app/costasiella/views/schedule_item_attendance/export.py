@@ -56,7 +56,7 @@ def export_excel_schedule_item_attendance_mailinglist(request, schedule_item_nod
     buffer.seek(0)
 
     # Set some variables to format the export filename
-    location = schedule_item.organization_location_room.name
+    location = schedule_item.organization_location_room.organization_location.name
     classtype = schedule_item.organization_classtype.name
     starttime = str(schedule_item.time_start)
 
