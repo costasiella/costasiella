@@ -25,6 +25,9 @@ from .insight.export_insight_subscriptions_sold import export_excel_insight_subs
 # Mollie
 from .integration.mollie_webhook import mollie_webhook
 
+# Schedule Item Attendance exports
+from .schedule_item_attendance.export import export_excel_schedule_item_attendance_mailinglist
+
 # Protected static files
 from .serve_protected_file import serve_protected_file
 
