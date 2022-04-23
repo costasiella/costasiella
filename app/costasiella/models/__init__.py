@@ -7,8 +7,6 @@ from .account_document import AccountDocument
 from .account_finance_payment_batch_category_item import AccountFinancePaymentBatchCategoryItem
 from .account_membership import AccountMembership
 from .account_note import AccountNote
-from .account_report_inactive import AccountReportInactive
-from .account_report_inactive_account import AccountReportInactiveAccount
 from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .account_subscription import AccountSubscription
 from .account_subscription_alt_price import AccountSubscriptionAltPrice
@@ -38,6 +36,9 @@ from .finance_payment_method import FinancePaymentMethod
 from .finance_tax_rate import FinanceTaxRate
 
 from .integration_log_mollie import IntegrationLogMollie
+
+from .insight_account_inactive import InsightAccountInactive
+from .insight_account_inactive_account import InsightAccountInactiveAccount
 
 from .organization import Organization
 from .organization_announcement import OrganizationAnnouncement
