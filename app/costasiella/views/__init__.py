@@ -5,6 +5,7 @@ from .csrf_token import csrf
 from .cs_allauth import CSEmailVerifiedView, CSEmailVerificationSentView, CSPasswordResetView, CSSignUpView
 
 # GDPR Account data export
+from .account.export import export_excel_accounts_active
 from .account.export_account_data import export_account_data
 
 # Document exports
