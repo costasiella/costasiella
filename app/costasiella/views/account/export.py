@@ -17,11 +17,21 @@ def _export_excel_accounts_active_get_header_mailinglist():
         _('Email'),
     ]
 
+
 def _export_excel_accounts_active_get_header_info():
     return [
         _('First name'),
         _('Last name'),
         _('Email'),
+        _('Phone'),
+        _('Mobile'),
+        _('Emergency'),
+        _('Date of birth'),
+        _('Address'),
+        _('Postcode'),
+        _('City'),
+        _('Country'),
+        _('Door keynr')
     ]
 
 
@@ -34,9 +44,6 @@ def export_excel_accounts_active(request,**kwargs):
         raise Http404("Permission denied")
 
     wb = openpyxl.Workbook(write_only=True)
-
-
-
     ws_info = wb.create_sheet(_("Active accounts"))
     ws_info.append(_export_excel_accounts_active_get_header_info())
     ws_mailinglist = wb.create_sheet(_("Mailing List"))
@@ -56,7 +63,16 @@ def export_excel_accounts_active(request,**kwargs):
         ws_info.append([
             account.first_name,
             account.last_name,
-            account.email
+            account.email,
+            account.phone,
+            account.mobile,
+            account.emergency,
+            account.date_of_birth,
+            account.address,
+            account.postcode,
+            account.city,
+            account.country,
+            account.key_number
         ])
 
     # # Create a file-like buffer to receive xlsx data.
