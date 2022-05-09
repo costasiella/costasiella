@@ -4,8 +4,6 @@ import logging
 from celery import shared_task
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.db import models
-from django.db.models import Q, Sum
 
 from .....models import ScheduleItemAttendance
 from .....dudes import DateToolsDude, MailDude
