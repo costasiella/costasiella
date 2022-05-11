@@ -6,7 +6,7 @@ from django.db.models import Q
 
 from django.dispatch import receiver
 
-from graphql_jwt.signals import token_issued, token_refreshed
+from graphql_jwt.signals import token_issued
 from graphql_jwt.refresh_token.signals import refresh_token_rotated
 
 from allauth.account.signals import user_signed_up
@@ -51,22 +51,13 @@ def new_signup(request, user, **kwargs):
 
 
 @receiver(token_issued)
-def update_account_last_login_on_token_issue(sender, request, user, **kwargs):
+def on_token_issue(sender, request, user, **kwargs):
     """ Update last_login on token issue """
     user.last_login = timezone.now()
     user.save()
 
 
-@receiver(token_refreshed)
-def update_account_last_login_on_token_issue(sender, request, user, **kwargs):
-    """ Update last_login on token refresh """
-    user.last_login = timezone.now()
-    user.save()
-
-
 @receiver(refresh_token_rotated)
-def revoke_refresh_token(sender, request, refresh_token, **kwargs):
-    """
-    Revoke refresh tokens after usage
-    """
+def on_refresh_token_rotated(sender, request, refresh_token, refresh_token_issued, **kwargs):
+    """ Revoke refresh tokens after usage to lessen chance of abuse"""
     refresh_token.revoke(request)
