@@ -6,6 +6,7 @@ from django.db.models import Q
 
 from django.dispatch import receiver
 
+from graphql_jwt.signals import token_issued, token_refreshed
 from graphql_jwt.refresh_token.signals import refresh_token_rotated
 
 from allauth.account.signals import user_signed_up
@@ -47,6 +48,20 @@ def new_signup(request, user, **kwargs):
                 client_ip=client_ip
             )
             accepted_document.save()
+
+
+@receiver(token_issued)
+def update_account_last_login_on_token_issue(sender, request, user, **kwargs):
+    """ Update last_login on token issue """
+    user.last_login = timezone.now()
+    user.save()
+
+
+@receiver(token_refreshed)
+def update_account_last_login_on_token_issue(sender, request, user, **kwargs):
+    """ Update last_login on token refresh """
+    user.last_login = timezone.now()
+    user.save()
 
 
 @receiver(refresh_token_rotated)
