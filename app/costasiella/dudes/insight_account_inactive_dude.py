@@ -2,9 +2,13 @@ from django.db.models import Q
 
 from ..models import Account, \
     AccountClasspass, \
+    AccountNote, \
     AccountSubscription, \
     AccountScheduleEventTicket, \
-    InsightAccountInactiveAccount
+    FinanceOrder, \
+    FinanceInvoice, \
+    InsightAccountInactiveAccount, \
+    ScheduleItemAttendance
 
 
 class InsightAccountClasspassesDude:
@@ -23,6 +27,10 @@ class InsightAccountClasspassesDude:
             if self._account_is_teacher_or_employee(account):
                 continue
 
+            # Check if the account was created or updated after date
+            if self._account_has_been_created_or_updated_on_or_after_date(account, date):
+                continue
+
             # Check when the last sign in was, if any
             if self._account_has_logged_in_on_or_after_date(account, date):
                 continue
@@ -39,7 +47,23 @@ class InsightAccountClasspassesDude:
             if self._account_has_event_ticket_on_or_after_date(account, date):
                 continue
 
-            # When all checks have been passed, we've found an inactive account.
+            # Check if there's at least one note created or updated on or after date
+            if self._account_has_note_on_or_after_date(account, date):
+                continue
+
+            # Check if there's at least one class booking on or after date
+            if self._account_has_class_booking_on_or_after_date(account, date):
+                continue
+
+            # Check if there's at least one order created or updated on or after date
+            if self._account_has_order_on_or_after_date(account, date):
+                continue
+
+            # Check if there's at least one invoice created or updated on or after date
+            if self._account_has_invoice_on_or_after_date(account, date):
+                continue
+
+            # When all guard clauses have been passed, we've found an inactive account.
             insight_account_inactive_account = InsightAccountInactiveAccount(
                 insight_account_inactive=insight_account_inactive,
                 account=account,
@@ -58,6 +82,15 @@ class InsightAccountClasspassesDude:
             is_teacher_or_employee = True
 
         return is_teacher_or_employee
+
+    @staticmethod
+    def _account_has_been_created_or_updated_on_or_after_date(account, date):
+        mutation_after_date = False
+
+        if account.created_at >= date or account.updated_at >= date:
+            mutation_after_date = True
+
+        return mutation_after_date
 
     @staticmethod
     def _account_has_logged_in_on_or_after_date(account, date):
@@ -108,3 +141,56 @@ class InsightAccountClasspassesDude:
             event_ticket_found = True
 
         return event_ticket_found
+
+    @staticmethod
+    def _account_has_note_on_or_after_date(account, date):
+        notes_found = False
+
+        qs = AccountNote.objects.filter(
+            Q(account=account),
+            (Q(created_at__gte=date) | Q(updated_at__gte=date))
+        )
+        if qs.exists():
+            notes_found = True
+
+        return notes_found
+
+    @staticmethod
+    def _account_has_class_booking_on_or_after_date(account, date):
+        class_booking_found = False
+
+        qs = ScheduleItemAttendance.objects.filter(
+            Q(account=account),
+            Q(date__gte=date),
+            ~Q(booking_status="CANCELLED")
+        )
+        if qs.exists():
+            class_booking_found = True
+
+        return class_booking_found
+
+    @staticmethod
+    def _account_has_order_on_or_after_date(account, date):
+        order_found = False
+
+        qs = FinanceOrder.objects.filter(
+            Q(account=account),
+            Q(created_at__gte=date),
+        )
+        if qs.exists():
+            order_found = True
+
+        return order_found
+
+    @staticmethod
+    def _account_has_invoice_on_or_after_date(account, date):
+        invoice_found = False
+
+        qs = FinanceInvoice.objects.filter(
+            Q(account=account),
+            Q(date_sent__gte=date),
+        )
+        if qs.exists():
+            invoice_found = True
+
+        return invoice_found
