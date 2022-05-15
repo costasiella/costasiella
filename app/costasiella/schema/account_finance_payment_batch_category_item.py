@@ -1,5 +1,5 @@
 import graphene
-import validators
+from decimal import Decimal
 
 from django.utils.translation import gettext as _
 from graphene_django import DjangoObjectType
@@ -104,7 +104,7 @@ class CreateAccountFinancePaymentBatchCategoryItem(graphene.relay.ClientIDMutati
         finance_payment_batch_category = graphene.ID(required=True)
         year = graphene.Int(required=True)
         month = graphene.Int(required=True)
-        amount = graphene.Decimal(required=True, default_value=0)
+        amount = graphene.Decimal(required=True, default_value=Decimal(0))
         description = graphene.String(required=False)
 
     account_finance_payment_batch_category_item = graphene.Field(AccountFinancePaymentBatchCategoryItemNode)

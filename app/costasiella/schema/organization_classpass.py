@@ -1,6 +1,8 @@
 from django.utils.translation import gettext as _
 
 import graphene
+from decimal import Decimal
+
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
@@ -151,13 +153,13 @@ class CreateOrganizationClasspass(graphene.relay.ClientIDMutation):
         trial_times = graphene.String(required=False)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
-        price = graphene.Decimal(required=True, default_value=0)
+        price = graphene.Decimal(required=True, default_value=Decimal(0))
         finance_tax_rate = graphene.ID(required=True)
         validity = graphene.Int(required=True, default_value=1)
         validity_unit = graphene.String(required=True)
         classes = graphene.Int(required=True, default_value=1)
         unlimited = graphene.Boolean(required=True, default_value=False)
-        quick_stats_amount = graphene.Decimal(required=False, default_value=0)
+        quick_stats_amount = graphene.Decimal(required=False, default_value=Decimal(0))
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
 
@@ -209,13 +211,13 @@ class UpdateOrganizationClasspass(graphene.relay.ClientIDMutation):
         trial_times = graphene.String(required=False)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
-        price = graphene.Decimal(required=True, default_value=0)
+        price = graphene.Decimal(required=True, default_valu=Decimal(0))
         finance_tax_rate = graphene.ID(required=True)
         validity = graphene.Int(required=True, default_value=1)
         validity_unit = graphene.String(required=True)
         classes = graphene.Int(required=True, default_value=1)
         unlimited = graphene.Boolean(required=True, default_value=False)
-        quick_stats_amount = graphene.Decimal(required=False, default_value=0)
+        quick_stats_amount = graphene.Decimal(required=False, default_value=Decimal(0))
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
 

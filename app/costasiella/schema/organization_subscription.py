@@ -3,6 +3,8 @@ from django.utils import timezone
 
 
 import graphene
+from decimal import Decimal
+
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
@@ -171,8 +173,8 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
         credit_accumulation_days = graphene.Int(required=False, default_value=0)
         unlimited = graphene.Boolean(required=True, default_value=False)
         terms_and_conditions = graphene.String(required=False, default_value="")
-        registration_fee = graphene.Decimal(required=False, default_value=0)
-        quick_stats_amount = graphene.Decimal(required=False, default_value=0)
+        registration_fee = graphene.Decimal(required=False, default_value=Decimal(0))
+        quick_stats_amount = graphene.Decimal(required=False, default_value=Decimal(0))
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")      
         

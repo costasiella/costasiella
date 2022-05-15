@@ -2,6 +2,8 @@ from django.utils.translation import gettext as _
 from django.utils import timezone
 
 import graphene
+from decimal import Decimal
+
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
@@ -161,7 +163,7 @@ class CreateScheduleEventTicket(graphene.relay.ClientIDMutation):
         schedule_event = graphene.ID(required=True)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
-        price = graphene.Decimal(required=False, default_value=0)
+        price = graphene.Decimal(required=False, default_value=Decimal(0))
         finance_tax_rate = graphene.ID(required=False)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)
