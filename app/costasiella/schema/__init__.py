@@ -275,3 +275,6 @@ class Mutation(AccountMutation,
     # Long running refresh tokens
     delete_refresh_token_cookie = graphql_jwt.DeleteRefreshTokenCookie.Field()
 
+
+# Main schema definition
+schema = graphene.Schema(query=Query, mutation=Mutation)

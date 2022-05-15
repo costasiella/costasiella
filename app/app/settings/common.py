@@ -199,7 +199,7 @@ MEDIA_PROTECTED_URL = '/d/media_protected/'
 # Graphene settings
 # https://docs.graphene-python.org/projects/django/en/latest/settings/
 GRAPHENE = {
-    'SCHEMA': 'src.schema.schema',
+    'SCHEMA': 'costasiella.schema.schema',
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],
