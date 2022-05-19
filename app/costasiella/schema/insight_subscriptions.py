@@ -58,7 +58,7 @@ class InsightSubscriptionsQuery(graphene.ObjectType):
                                                    year=graphene.Int(required=True,
                                                                      default_value=timezone.now().year)):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_insightsubscriptionssold')
+        require_login_and_permission(user, 'costasiella.view_insightsubscriptions')
 
         print(year)
 
@@ -72,7 +72,7 @@ class InsightSubscriptionsQuery(graphene.ObjectType):
                                                      year=graphene.Int(required=True,
                                                                        default_value=timezone.now().year)):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_insightsubscriptionsactive')
+        require_login_and_permission(user, 'costasiella.view_insightsubscriptions')
 
         print(year)
 

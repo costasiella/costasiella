@@ -27,8 +27,7 @@ class Account(AbstractUser):
             ('view_insightclasspasses', _("Can view insight classpasses active")),
             ('view_insightfinancetaxratesummary', _("Can view insight finance tax rates summary")),
             ('view_insightrevenue', _("Can view insight subscriptions sold")),
-            ('view_insightsubscriptionsactive', _("Can view insight subscriptions active")),
-            ('view_insightsubscriptionssold', _("Can view insight subscriptions sold")),
+            ('view_insightsubscriptions', _("Can view insight subscriptions")),
             ('view_insighttrialpasses', _("Can view insight trial passes")),
             ('view_selfcheckin', _("Can use the selfcheckin feature")),
         ]
