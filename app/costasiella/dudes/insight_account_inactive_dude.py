@@ -23,7 +23,7 @@ class InsightAccountInactiveDude:
                 continue
 
             # Check if the account is a teacher or employee
-            if self._account_is_teacher_or_employee(account):
+            if self._account_is_instructor_or_employee(account):
                 continue
 
             # Check if the account was created or updated after date
@@ -78,19 +78,19 @@ class InsightAccountInactiveDude:
         return account.is_superuser
 
     @staticmethod
-    def _account_is_teacher_or_employee(account):
-        is_teacher_or_employee = False
+    def _account_is_instructor_or_employee(account):
+        is_instructor_or_employee = False
 
-        if account.employee or account.teacher:
-            is_teacher_or_employee = True
+        if account.employee or account.instructor:
+            is_instructor_or_employee = True
 
-        return is_teacher_or_employee
+        return is_instructor_or_employee
 
     @staticmethod
     def _account_has_been_created_or_updated_on_or_after_date(account, date):
         mutation_after_date = False
 
-        if account.created_at >= date or account.updated_at >= date:
+        if account.created_at.date() >= date or account.updated_at.date() >= date:
             mutation_after_date = True
 
         return mutation_after_date
@@ -100,7 +100,7 @@ class InsightAccountInactiveDude:
         last_login_after_date = False
 
         if account.last_login:
-            if account.last_login >= date:
+            if account.last_login.date() >= date:
                 last_login_after_date = True
 
         return last_login_after_date
@@ -113,7 +113,7 @@ class InsightAccountInactiveDude:
 
         qs = AccountClasspass.objects.filter(
             Q(account=account),
-            (Q(date_end__gte=date) | Q(date_end_isnull=True))
+            (Q(date_end__gte=date) | Q(date_end__isnull=True))
         )
         if qs.exists():
             active_classpass_found = True
@@ -128,7 +128,7 @@ class InsightAccountInactiveDude:
 
         qs = AccountSubscription.objects.filter(
             Q(account=account),
-            (Q(date_end__gte=date) | Q(date_end_isnull=True))
+            (Q(date_end__gte=date) | Q(date_end__isnull=True))
         )
         if qs.exists():
             active_subscription_found = True
@@ -143,8 +143,8 @@ class InsightAccountInactiveDude:
 
         qs = AccountScheduleEventTicket.objects.filter(
             Q(account=account),
-            (Q(schedule_event_ticket__schedule_event_date_end__gte=date) |
-             Q(schedule_event_ticket__schedule_event_date_end__isnull=True))
+            (Q(schedule_event_ticket__schedule_event__date_end__gte=date) |
+             Q(schedule_event_ticket__schedule_event__date_end__isnull=True))
         )
         if qs.exists():
             event_ticket_found = True
