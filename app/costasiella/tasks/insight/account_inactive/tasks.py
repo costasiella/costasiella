@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from django.db.models import Q, Sum
 
 from ....models import AccountSubscription, InsightAccountInactive
-from ....dudes import DateToolsDude
+from ....dudes import DateToolsDude, InsightAccountInactiveDude
 
 logger = logging.getLogger(__name__)
 
@@ -19,9 +19,14 @@ def insight_account_inactive_populate_accounts(insight_account_inactive_id):
     :param insight_account_inactive_id: InsightAccountInactive.id
     :return: string - number of inactive accounts found & added
     """
-    count_inactive_accounts = 0
-
     insight_account_inactive = InsightAccountInactive.objects.get(id=insight_account_inactive_id)
+    insight_account_inactive_dude = InsightAccountInactiveDude()
+
+    count_inactive_accounts = \
+        insight_account_inactive_dude.populate_accounts_for_insight_account_inactive_from_date(
+            insight_account_inactive
+        )
+
 
 
     return _(f'Found {count_inactive_accounts} inactive accounts')

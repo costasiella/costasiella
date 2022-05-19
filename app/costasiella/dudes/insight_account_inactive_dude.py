@@ -1,20 +1,19 @@
 from django.db.models import Q
 
-from ..models import Account, \
-    AccountClasspass, \
-    AccountNote, \
-    AccountSubscription, \
-    AccountScheduleEventTicket, \
-    FinanceOrder, \
-    FinanceInvoice, \
-    InsightAccountInactiveAccount, \
-    ScheduleItemAttendance
 
+class InsightAccountInactiveDude:
+    def populate_accounts_for_insight_account_inactive_from_date(self, insight_account_inactive):
+        """
+        param: insight_account_inactive: InsightAccountInactive model object
+        param: date: datetime.date object
+        return: count of inactive accounts found
+        """
+        from ..models import Account, InsightAccountInactiveAccount
 
-class InsightAccountClasspassesDude:
-    def get_inactive_accounts_for_insight_account_inactive_from_date(self, insight_account_inactive, date):
+        count_inactive_accounts_found = 0
         # Loop over all accounts and for each account perform a number of checks.
         accounts = Account.objects.all()
+        date = insight_account_inactive.no_activity_after_date
 
         # TODO: set up debug logging for the guard clauses
         # If any check returns true, the account isn't seen as inactive
@@ -70,6 +69,10 @@ class InsightAccountClasspassesDude:
             )
             insight_account_inactive_account.save()
 
+            count_inactive_accounts_found += 1
+
+        return count_inactive_accounts_found
+
     @staticmethod
     def _account_is_superuser(account):
         return account.is_superuser
@@ -104,6 +107,8 @@ class InsightAccountClasspassesDude:
 
     @staticmethod
     def _account_has_active_classpass_on_or_after_date(account, date):
+        from ..models import AccountClasspass
+
         active_classpass_found = False
 
         qs = AccountClasspass.objects.filter(
@@ -117,6 +122,8 @@ class InsightAccountClasspassesDude:
 
     @staticmethod
     def _account_has_active_subscription_on_or_after_date(account, date):
+        from ..models import AccountSubscription
+
         active_subscription_found = False
 
         qs = AccountSubscription.objects.filter(
@@ -130,6 +137,8 @@ class InsightAccountClasspassesDude:
 
     @staticmethod
     def _account_has_event_ticket_on_or_after_date(account, date):
+        from ..models import AccountScheduleEventTicket
+
         event_ticket_found = False
 
         qs = AccountScheduleEventTicket.objects.filter(
@@ -144,6 +153,8 @@ class InsightAccountClasspassesDude:
 
     @staticmethod
     def _account_has_note_on_or_after_date(account, date):
+        from ..models import AccountNote
+
         notes_found = False
 
         qs = AccountNote.objects.filter(
@@ -157,6 +168,8 @@ class InsightAccountClasspassesDude:
 
     @staticmethod
     def _account_has_class_booking_on_or_after_date(account, date):
+        from ..models import ScheduleItemAttendance
+
         class_booking_found = False
 
         qs = ScheduleItemAttendance.objects.filter(
@@ -171,6 +184,8 @@ class InsightAccountClasspassesDude:
 
     @staticmethod
     def _account_has_order_on_or_after_date(account, date):
+        from ..models import FinanceOrder
+
         order_found = False
 
         qs = FinanceOrder.objects.filter(
@@ -184,6 +199,8 @@ class InsightAccountClasspassesDude:
 
     @staticmethod
     def _account_has_invoice_on_or_after_date(account, date):
+        from ..models import FinanceInvoice
+
         invoice_found = False
 
         qs = FinanceInvoice.objects.filter(

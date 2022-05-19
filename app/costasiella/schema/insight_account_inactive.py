@@ -1,15 +1,18 @@
+import os
 import graphene
 import validators
 
 from django.utils.translation import gettext as _
+from django.conf import settings
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import Account, InsightAccountInactive
-from ..modules.gql_tools import require_login, require_login_and_permission, require_permission, get_rid
+from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..dudes.system_setting_dude import SystemSettingDude
+from ..tasks import insight_account_inactive_populate_accounts
 
 m = Messages()
 
@@ -46,10 +49,12 @@ class InsightAccountInactiveNode(DjangoObjectType):
         model = InsightAccountInactive
         # Fields to include
         fields = (
-            'date_no_activity_after'
+            'no_activity_after_date',
             'created_at',
+            # Reverse relations
+            'accounts'
         )
-        # filter_fields = ['account']
+        filter_fields = ['id']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -84,7 +89,7 @@ class InsightAccountInactiveQuery(graphene.ObjectType):
 
 class CreateInsightAccountInactive(graphene.relay.ClientIDMutation):
     class Input:
-        no_activity_after_date = graphene.graphene.types.datetime.Date(required=True)
+        no_activity_after_date = graphene.types.datetime.Date(required=True)
 
     insight_account_inactive = graphene.Field(InsightAccountInactiveNode)
 
@@ -97,6 +102,10 @@ class CreateInsightAccountInactive(graphene.relay.ClientIDMutation):
             no_activity_after_date=input['no_activity_after_date']
         )
         insight_account_inactive.save()
+
+        # Call background task to add accounts to inactive on date list when we're not in CI test mode
+        if 'GITHUB_WORKFLOW' not in os.environ and not getattr(settings, 'TESTING', False):
+            task = insight_account_inactive_populate_accounts.delay(insight_account_inactive.id)
 
         return CreateInsightAccountInactive(insight_account_inactive=insight_account_inactive)
 
