@@ -351,13 +351,14 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
-            'formatter': 'simple'
+            'formatter': 'simple',
+            'propagate': False
         },
         'django.request': {
             'handlers': ['mail_admins'],
