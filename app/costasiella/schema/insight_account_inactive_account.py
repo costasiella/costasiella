@@ -42,4 +42,4 @@ class InsightAccountInactiveAccountQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_insightaccountinactive')
 
         # Allow user to specify account
-        return InsightAccountInactiveAccount.objects.all(order_by="created_at")
+        return InsightAccountInactiveAccount.objects.all().order_by("created_at")

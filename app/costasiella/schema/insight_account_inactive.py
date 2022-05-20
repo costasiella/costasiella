@@ -84,7 +84,7 @@ class InsightAccountInactiveQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_insightaccountinactive')
 
         # Allow user to specify account
-        return InsightAccountInactive.objects.all(order_by="created_at")
+        return InsightAccountInactive.objects.all().order_by("created_at")
 
 
 class CreateInsightAccountInactive(graphene.relay.ClientIDMutation):
@@ -122,7 +122,7 @@ class DeleteInsightAccountInactive(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_insightaccountinactive')
 
         rid = get_rid(input['id'])
-        insight_account_inactive = InsightAccountInactive.objects.filter(id=rid.id).first()
+        insight_account_inactive = InsightAccountInactive.objects.get(id=rid.id)
         if not insight_account_inactive:
             raise Exception('Invalid Insight Account Inactive ID!')
 
