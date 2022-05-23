@@ -81,6 +81,7 @@ class AccountNode(DjangoObjectType):
         # Fields to include
         fields = (
             'is_active',
+            'last_login',
             'customer',
             'instructor',
             'employee',
@@ -101,6 +102,7 @@ class AccountNode(DjangoObjectType):
             'image',
             'organization_discovery',
             'organization_language',
+            'created_at',
             # Reverse relations
             'classpasses',
             'subscriptions'
