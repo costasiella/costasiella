@@ -7,7 +7,8 @@ from .account.subscription.enrollments.tasks import cancel_booked_classes_after_
 from .account.subscription.invoices.tasks import account_subscription_invoices_add_for_month
 from .account.subscription.invoices.tasks import account_subscription_invoices_add_for_month_mollie_collection
 
-from .insight.account_inactive.tasks import insight_account_inactive_populate_accounts
+from .insight.account_inactive.tasks import insight_account_inactive_populate_accounts, \
+    insight_account_inactive_delete_accounts
 
 from .finance.payment_batch.tasks import \
     finance_payment_batch_generate_items, \

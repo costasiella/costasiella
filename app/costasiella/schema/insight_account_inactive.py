@@ -12,7 +12,8 @@ from ..models import Account, InsightAccountInactive
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..dudes.system_setting_dude import SystemSettingDude
-from ..tasks import insight_account_inactive_populate_accounts
+from ..tasks import insight_account_inactive_delete_accounts, \
+    insight_account_inactive_populate_accounts
 
 m = Messages()
 
@@ -132,6 +133,31 @@ class DeleteInsightAccountInactive(graphene.relay.ClientIDMutation):
         return DeleteInsightAccountInactive(ok=ok)
 
 
+class DeleteInsightAccountInactiveAccounts(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_insightaccountinactiveaccount')
+
+        rid = get_rid(input['id'])
+        insight_account_inactive = InsightAccountInactive.objects.get(id=rid.id)
+        if not insight_account_inactive:
+            raise Exception('Invalid Insight Account Inactive ID!')
+
+        # Call background task to add accounts to inactive on date list when we're not in CI test mode
+        if 'GITHUB_WORKFLOW' not in os.environ and not getattr(settings, 'TESTING', False):
+            task = insight_account_inactive_delete_accounts.delay(insight_account_inactive.id)
+
+        # Always return ok as the actual removal of inactive accounts is handled by a bg task
+        return DeleteInsightAccountInactiveAccounts(ok=True)
+
+
 class InsightAccountInactiveMutation(graphene.ObjectType):
     create_insight_account_inactive = CreateInsightAccountInactive.Field()
     delete_insight_account_inactive = DeleteInsightAccountInactive.Field()
+    delete_insight_account_inactive_accounts = DeleteInsightAccountInactiveAccounts.Field()
