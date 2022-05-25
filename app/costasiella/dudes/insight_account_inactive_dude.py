@@ -71,6 +71,9 @@ class InsightAccountInactiveDude:
 
             count_inactive_accounts_found += 1
 
+        insight_account_inactive.count_inactive_accounts = count_inactive_accounts_found
+        insight_account_inactive.save()
+
         return count_inactive_accounts_found
 
     @staticmethod
