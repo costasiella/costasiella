@@ -57,7 +57,7 @@ Pillow==9.0.1
 promise==2.2.1
 prompt-toolkit==3.0.9
 pycparser==2.19
-PyJWT==2.3.0
+PyJWT==2.4.0
 pyparsing==3.0.6
 Pyphen==0.9.5
 python-crontab==2.3.8
