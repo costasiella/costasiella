@@ -52,6 +52,7 @@ class InsightAccountInactiveNode(DjangoObjectType):
         fields = (
             'no_activity_after_date',
             'count_inactive_accounts',
+            'count_deleted_inactive_accounts',
             'created_at',
             # Reverse relations
             'accounts'
