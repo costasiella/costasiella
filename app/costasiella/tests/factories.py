@@ -674,8 +674,8 @@ class AccountMembershipFactory(factory.DjangoModelFactory):
     date_start = datetime.date(2019, 1, 1)
     date_end = datetime.date(2019, 12, 31)
     note = "Membership note here"
-    
-    
+
+
 class AccountClasspassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountClasspass
@@ -828,7 +828,7 @@ class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     time_start = datetime.time(6, 0)
     time_end = datetime.time(9, 0)
     display_public = True
-    
+
 
 class SchedulePublicWeeklyClassOTCFactory(factory.DjangoModelFactory):
     class Meta:
@@ -898,7 +898,7 @@ class ScheduleWeeklyShiftOTCFactory(factory.DjangoModelFactory):
 class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItemAttendance
-    
+
     account_classpass = factory.SubFactory(AccountClasspassFactory)
     account = factory.SelfAttribute('account_classpass.account')
     schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
@@ -1061,7 +1061,7 @@ class ScheduleEventTicketScheduleItemIncludedFactory(factory.DjangoModelFactory)
 
     included = True
 
-    
+
 class ScheduleItemAccountFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItemAccount
@@ -1072,7 +1072,7 @@ class ScheduleItemAccountFactory(factory.DjangoModelFactory):
     role_2 = "ASSISTANT"
     date_start = datetime.date(2014, 1, 1)
 
-    
+
 class ScheduleItemPriceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItemPrice
@@ -1151,6 +1151,21 @@ class ScheduleItemOrganizationClasspassGroupAllowFactory(factory.DjangoModelFact
     organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
     shop_book = True
     attend = True
+
+
+class InsightAccountInactiveFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.InsightAccountInactive
+
+    no_activity_after_date = timezone.now().date()
+
+
+class InsightAccountInactiveAccountFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.InsightAccountInactive
+
+    account = factory.SubFactory(RegularUserFactory)
+    insight_account_inactive = factory.SubFactory(InsightAccountInactiveFactory)
 
 
 class SystemMailChimpListFactory(factory.DjangoModelFactory):
