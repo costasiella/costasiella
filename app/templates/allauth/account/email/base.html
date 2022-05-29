@@ -1,0 +1,30 @@
+{% load cs_tags %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <!-- http://dev.w3.org/html5/markup/meta.name.html -->
+    <meta name="application-name" content="{{ current_site.name }}" />
+    <style>
+        @page { size: a4; }
+        img.logo {
+            max-height:250px;
+            max-width:250px;
+            height:auto;
+            width:auto;
+        }
+    </style>
+</head>
+<body style="font-size: 12px; font-family: sans-serif; line-height: 1.3em; color: #333;">
+    <div style="text-align: center;">
+    	<img class="logo" src="{% cs_email_logo_url %}">
+	    {% block content %}
+	    {% endblock %}
+    </div>
+    <div style="text-align: center; font-size: 10px; padding-top: 30px;">
+        {% block footer %}
+        {% endblock %}
+    </div>
+</body>
+</html>
