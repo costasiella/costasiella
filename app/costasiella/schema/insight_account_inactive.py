@@ -18,33 +18,6 @@ from ..tasks import insight_account_inactive_delete_accounts, \
 m = Messages()
 
 
-def validate_create_update_input(input, update=False):
-    """
-    Validate input
-    """ 
-    result = {}
-
-    # Fetch & check account
-    if not update:
-        # Create only
-        rid = get_rid(input['account'])
-        account = Account.objects.filter(id=rid.id).first()
-        result['account'] = account
-        if not account:
-            raise Exception(_('Invalid Account ID!'))
-
-    if 'number' in input:
-        system_setting_dude = SystemSettingDude()
-        finance_bank_accounts_iban = system_setting_dude.get('finance_bank_accounts_iban')
-
-        if finance_bank_accounts_iban == 'true':
-            number = input['number'].strip()
-            if not validators.iban(number):
-                raise Exception(_('Number is not a valid IBAN!'))
-
-    return result
-
-
 class InsightAccountInactiveNode(DjangoObjectType):
     class Meta:
         model = InsightAccountInactive
