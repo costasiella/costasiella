@@ -45,7 +45,6 @@ class GQLInsightClasspasses(TestCase):
   }
 '''
 
-
         self.query_classpasses_sold = '''
   query InsightAccountClasspassesSold($year: Int!) {
     insightAccountClasspassesSold(year: $year) {
@@ -56,11 +55,9 @@ class GQLInsightClasspasses(TestCase):
   }
 '''
 
-
     def tearDown(self):
         # This is run after every test
         pass
-
 
     def test_query_active(self):
         """ Query list of classpasses """
@@ -85,7 +82,6 @@ class GQLInsightClasspasses(TestCase):
         self.assertEqual(data['insightAccountClasspassesActive']['data'][10], 0)
         self.assertEqual(data['insightAccountClasspassesActive']['data'][11], 0)
 
-
     def test_query_active_permission_denied(self):
         """ Query list of classpasses - check permission denied """
         query = self.query_classpasses_active
@@ -98,7 +94,6 @@ class GQLInsightClasspasses(TestCase):
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
         
-
     def test_query_active_permission_granted(self):
         """ Query list of classpasses with view permission """
         query = self.query_classpasses_active
@@ -106,7 +101,7 @@ class GQLInsightClasspasses(TestCase):
 
         # Create regular user
         user = classpass.account
-        permission = Permission.objects.get(codename='view_insightclasspassesactive')
+        permission = Permission.objects.get(codename='view_insightclasspasses')
         user.user_permissions.add(permission)
         user.save()
 
@@ -114,7 +109,6 @@ class GQLInsightClasspasses(TestCase):
         data = executed.get('data')
 
         self.assertEqual(data['insightAccountClasspassesActive']['year'], self.variables_query['year'])
-
 
     def test_query_active_anon_user(self):
         """ Query list of classpasses - anon user """
@@ -125,7 +119,6 @@ class GQLInsightClasspasses(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_query_sold(self):
         """ Query list of classpasses """
         query = self.query_classpasses_sold
@@ -133,8 +126,6 @@ class GQLInsightClasspasses(TestCase):
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
-
-        print(executed)
 
         self.assertEqual(data['insightAccountClasspassesSold']['description'], 'account_classpasses_sold')
         self.assertEqual(data['insightAccountClasspassesSold']['year'], self.variables_query['year'])
@@ -151,7 +142,6 @@ class GQLInsightClasspasses(TestCase):
         self.assertEqual(data['insightAccountClasspassesSold']['data'][10], 0)
         self.assertEqual(data['insightAccountClasspassesSold']['data'][11], 0)
 
-
     def test_query_permission_denied(self):
         """ Query list of classpasses - check permission denied """
         query = self.query_classpasses_sold
@@ -163,7 +153,6 @@ class GQLInsightClasspasses(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-        
 
     def test_query_permission_granted(self):
         """ Query list of classpasses with view permission """
@@ -172,7 +161,7 @@ class GQLInsightClasspasses(TestCase):
 
         # Create regular user
         user = classpass.account
-        permission = Permission.objects.get(codename='view_insightclasspassessold')
+        permission = Permission.objects.get(codename='view_insightclasspasses')
         user.user_permissions.add(permission)
         user.save()
 
@@ -180,7 +169,6 @@ class GQLInsightClasspasses(TestCase):
         data = executed.get('data')
 
         self.assertEqual(data['insightAccountClasspassesSold']['year'], self.variables_query['year'])
-
 
     def test_query_anon_user(self):
         """ Query list of classpasses - anon user """
@@ -190,4 +178,3 @@ class GQLInsightClasspasses(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-

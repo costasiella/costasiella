@@ -80,8 +80,10 @@ urlpatterns = [
          views.export_excel_schedule_item_attendance_mailinglist,
          name="export_schedule_item_mailinglist"),
     path('d/graphql/', jwt_cookie(GraphQLView.as_view(graphiql=settings.DEBUG)), name="graphql"),
-    # This path can be uncommented instead of the one above to troubleshoot CSRF issues... do I have one or not?
-    # path('d/graphql/', csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=settings.DEBUG))), name="graphql"),
+    # graphql_app path is meant for apps, it uses header authentication
+    # "Authorization": "JWT <token"> instead of cookie authentication and doesn't require a csrf token.
+    # This path can also be used instead of the one above to troubleshoot CSRF issues... do I have one or not?
+    path('d/graphql_app/', csrf_exempt(GraphQLView.as_view(graphiql=settings.DEBUG)), name="graphql"),
     path('d/mollie/webhook/', csrf_exempt(views.mollie_webhook), name="mollie_webhook"),
     path('d/update/', views.update, name="update"),
     path('d/setup/', views.setup, name="setup"),

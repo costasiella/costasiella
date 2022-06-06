@@ -1,6 +1,8 @@
 from django.utils.translation import gettext as _
 
 import graphene
+from decimal import Decimal
+
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
@@ -118,7 +120,7 @@ class CreateOrganizationMembership(graphene.relay.ClientIDMutation):
         display_shop = graphene.Boolean(required=True, default_value=True)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
-        price = graphene.Decimal(required=True, default_value=0)
+        price = graphene.Decimal(required=True, default_value=Decimal(0))
         finance_tax_rate = graphene.ID(required=True)
         validity = graphene.Int(required=True, default_value=1)
         validity_unit = graphene.String(required=True)
@@ -166,7 +168,7 @@ class UpdateOrganizationMembership(graphene.relay.ClientIDMutation):
         display_shop = graphene.Boolean(required=True, default_value=True)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
-        price = graphene.Decimal(rquired=True, default_value=0)
+        price = graphene.Decimal(rquired=True, default_value=Decimal(0))
         finance_tax_rate = graphene.ID(required=True)
         validity = graphene.Int(required=True, default_value=1)
         validity_unit = graphene.String(required=True)

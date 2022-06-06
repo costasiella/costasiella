@@ -199,7 +199,7 @@ MEDIA_PROTECTED_URL = '/d/media_protected/'
 # Graphene settings
 # https://docs.graphene-python.org/projects/django/en/latest/settings/
 GRAPHENE = {
-    'SCHEMA': 'src.schema.schema',
+    'SCHEMA': 'costasiella.schema.schema',
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],
@@ -351,13 +351,14 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
-            'formatter': 'simple'
+            'formatter': 'simple',
+            'propagate': False
         },
         'django.request': {
             'handlers': ['mail_admins'],

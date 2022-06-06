@@ -37,6 +37,9 @@ from .finance_tax_rate import FinanceTaxRate
 
 from .integration_log_mollie import IntegrationLogMollie
 
+from .insight_account_inactive import InsightAccountInactive
+from .insight_account_inactive_account import InsightAccountInactiveAccount
+
 from .organization import Organization
 from .organization_announcement import OrganizationAnnouncement
 from .organization_appointment import OrganizationAppointment

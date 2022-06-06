@@ -2,6 +2,8 @@ from django.utils.translation import gettext as _
 
 import datetime
 import graphene
+from decimal import Decimal
+
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
@@ -93,7 +95,7 @@ class CreateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
     class Input:
         organization_appointment = graphene.ID(required=True)
         account = graphene.ID(required=True)
-        price = graphene.Decimal(required=True, default_value=0)
+        price = graphene.Decimal(required=True, default_value=Decimal(0))
         finance_tax_rate = graphene.ID(required=True)
    
     organization_appointment_price = graphene.Field(OrganizationAppointmentPriceNode)
@@ -120,7 +122,7 @@ class UpdateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         account = graphene.ID(required=True)
-        price = graphene.Decimal(required=True, default_value=0)
+        price = graphene.Decimal(required=True, default_value=Decimal(0))
         finance_tax_rate = graphene.ID(required=True)
         
     organization_appointment_price = graphene.Field(OrganizationAppointmentPriceNode)

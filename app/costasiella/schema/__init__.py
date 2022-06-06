@@ -44,6 +44,8 @@ from .finance_payment_batch_item import FinancePaymentBatchItemQuery
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
+from .insight_account_inactive import InsightAccountInactiveQuery, InsightAccountInactiveMutation
+from .insight_account_inactive_account import InsightAccountInactiveAccountQuery
 from .insight_classpasses import InsightClasspassesQuery
 from .insight_class_attendance import InsightClassAttendanceQuery
 from .insight_finance_tax_rate_summary import InsightFinanceTaxRateSummaryQuery
@@ -138,6 +140,8 @@ class Query(AccountQuery,
             FinancePaymentBatchItemQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
+            InsightAccountInactiveQuery,
+            InsightAccountInactiveAccountQuery,
             InsightClasspassesQuery,
             InsightClassAttendanceQuery,
             InsightFinanceTaxRateSummaryQuery,
@@ -223,6 +227,7 @@ class Mutation(AccountMutation,
                FinancePaymentBatchCategoryMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
+               InsightAccountInactiveMutation,
                OrganizationMutation,
                OrganizationAnnouncementMutation,
                OrganizationAppointmentMutation,
@@ -275,3 +280,6 @@ class Mutation(AccountMutation,
     # Long running refresh tokens
     delete_refresh_token_cookie = graphql_jwt.DeleteRefreshTokenCookie.Field()
 
+
+# Main schema definition
+schema = graphene.Schema(query=Query, mutation=Mutation)

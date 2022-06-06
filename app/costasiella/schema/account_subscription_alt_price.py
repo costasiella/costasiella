@@ -1,6 +1,8 @@
 from django.utils.translation import gettext as _
 
 import graphene
+from decimal import Decimal
+
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
@@ -89,7 +91,7 @@ class CreateAccountSubscriptionAltPrice(graphene.relay.ClientIDMutation):
         account_subscription = graphene.ID(required=True)
         subscription_year = graphene.Int(required=True)
         subscription_month = graphene.Int(required=True)
-        amount = graphene.Decimal(required=False, default_value=0)
+        amount = graphene.Decimal(required=False, default_value=Decimal(0))
         description = graphene.String(required=False, default_value="")
         note = graphene.String(required=False, default_value="")
 
@@ -124,7 +126,7 @@ class UpdateAccountSubscriptionAltPrice(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         subscription_year = graphene.Int(required=True)
         subscription_month = graphene.Int(required=True)
-        amount = graphene.Decimal(required=False, default_value=0)
+        amount = graphene.Decimal(required=False, default_value=Decimal(0))
         description = graphene.String(required=False, default_value="")
         note = graphene.String(required=False, default_value="")
         
