@@ -35,7 +35,6 @@ class GQLSystemSetting(TestCase):
             }
         }
 
-
         self.settings_query = '''
   query SystemSettings($setting: String!) {
     systemSettings(setting: $setting) {
@@ -274,7 +273,7 @@ class GQLSystemSetting(TestCase):
         self.assertEqual(data['updateSystemSetting']['systemSetting']['setting'], variables['input']['setting'])
         self.assertEqual(data['updateSystemSetting']['systemSetting']['value'], variables['input']['value'])
 
-    def test_create_level_permission_denied(self):
+    def test_create_update_setting_permission_denied(self):
         """ Create a setting with a user not having the add permission """
         query = self.setting_update_mutation
 
