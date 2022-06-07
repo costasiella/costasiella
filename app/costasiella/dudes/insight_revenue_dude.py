@@ -7,6 +7,46 @@ from django.db.models import Q, Sum
 
 
 class InsightRevenueDude:
+    def get_data(self, year):
+        """
+        Add data to a list, easily consumed by the javascript recharts library
+        """
+        data = []
+
+        data_total = self.get_revenue_total_year(year)
+        data_subtotal = self.get_revenue_subtotal_year(year)
+        data_tax = self.get_revenue_tax_year(year)
+
+        for i in range(1, 13):
+            data.append({
+                'month': i,
+                'total': data_total[i],
+                'subtotal': data_subtotal[i],
+                'tax': data_tax[i],
+            })
+
+        return data
+
+    def get_data_in_category(self, year, category):
+        """
+        Add data to a list, easily consumed by the javascript recharts library
+        """
+        data = []
+
+        data_total = self.get_revenue_total_in_category_for_year(year)
+        data_subtotal = self.get_revenue_subtotal_in_category_for_year(year)
+        data_tax = self.get_revenue_tax_in_category_for_year(year)
+
+        for i in range(0, 12):
+            data.append({
+                'month': i + 1,
+                'total': data_total[i],
+                'subtotal': data_subtotal[i],
+                'tax': data_tax[i],
+            })
+
+        return data
+
     @staticmethod
     def get_revenue_total_period(date_from, date_until):
         """
