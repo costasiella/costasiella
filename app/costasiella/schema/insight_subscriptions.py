@@ -9,68 +9,44 @@ from ..dudes import InsightAccountSubscriptionsDude
 m = Messages()
 
 
-class AccountSubscriptionsSoldType(graphene.ObjectType):
-    description = graphene.String()
-    data = graphene.List(graphene.Int)
+class InsightAccountSubscriptionsMonthType(graphene.ObjectType):
+    month = graphene.Int()
+    sold = graphene.Int()
+    active = graphene.Int()
+
+
+class InsightAccountSubscriptionsYearType(graphene.ObjectType):
     year = graphene.Int()
+    months = graphene.List(InsightAccountSubscriptionsMonthType)
 
-    def resolve_description(self, info):
-        return _("account_subscriptions_sold")
-
-    def resolve_data(self, info):       
+    def resolve_months(self, info):
         insight_account_subscriptions_dude = InsightAccountSubscriptionsDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
 
-        data = insight_account_subscriptions_dude.get_subscriptions_sold_year_summary_count(year)
+        unprocessed_data = insight_account_subscriptions_dude.get_data(self.year)
 
-        return data
+        months = []
+        for item in unprocessed_data:
+            insight_subscriptions_month_type = InsightAccountSubscriptionsMonthType()
+            insight_subscriptions_month_type.month = item['month']
+            insight_subscriptions_month_type.sold = item['sold']
+            insight_subscriptions_month_type.active = item['active']
 
+            months.append(insight_subscriptions_month_type)
 
-class AccountSubscriptionsActiveType(graphene.ObjectType):
-    description = graphene.String()
-    data = graphene.List(graphene.Int)
-    year = graphene.Int()
-
-    def resolve_description(self, info):
-        return _("account_subscriptions_active")
-
-    def resolve_data(self, info):       
-        insight_account_subscriptions_dude = InsightAccountSubscriptionsDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
-
-        data = insight_account_subscriptions_dude.get_subscriptions_active_year_summary_count(year)
-
-        return data
+        return months
 
 
 class InsightSubscriptionsQuery(graphene.ObjectType):
-    insight_account_subscriptions_sold = graphene.Field(AccountSubscriptionsSoldType, year=graphene.Int())
-    insight_account_subscriptions_active = graphene.Field(AccountSubscriptionsActiveType, year=graphene.Int())
+    insight_account_subscriptions = graphene.Field(InsightAccountSubscriptionsYearType, year=graphene.Int())
 
-    def resolve_insight_account_subscriptions_sold(self,
-                                                   info,
-                                                   year=graphene.Int(required=True,
-                                                                     default_value=timezone.now().year)):
+    def resolve_insight_account_subscriptions(self,
+                                              info,
+                                              year=graphene.Int(required=True,
+                                                                default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightsubscriptions')
 
-        account_subscriptions_sold = AccountSubscriptionsSoldType()
-        account_subscriptions_sold.year = year
+        account_subscriptions_year = InsightAccountSubscriptionsYearType()
+        account_subscriptions_year.year = year
 
-        return account_subscriptions_sold
-
-    def resolve_insight_account_subscriptions_active(self,
-                                                     info,
-                                                     year=graphene.Int(required=True,
-                                                                       default_value=timezone.now().year)):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_insightsubscriptions')
-
-        account_subscriptions_active = AccountSubscriptionsActiveType()
-        account_subscriptions_active.year = year
-
-        return account_subscriptions_active
+        return account_subscriptions_year

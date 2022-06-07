@@ -15,7 +15,7 @@ class InsightAccountClasspassesDude:
         data_sold = self.get_classpasses_sold_year_summary_count(year)
         data_active = self.get_classpasses_active_year_summary_count(year)
 
-        for i in range(0,12):
+        for i in range(0, 12):
             data.append({
                 'month': i + 1,
                 'sold': data_sold[i],
