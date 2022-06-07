@@ -11,67 +11,44 @@ from ..dudes import InsightAccountClasspassesDude
 m = Messages()
 
 
-class AccountClasspassesSoldType(graphene.ObjectType):
-    description = graphene.String()
-    data = graphene.List(graphene.Int)
+class InsightClasspassesMonthType(graphene.ObjectType):
+    month = graphene.Int()
+    sold = graphene.Int()
+    active = graphene.Int()
+
+
+class InsightClasspassesYearType(graphene.ObjectType):
     year = graphene.Int()
+    months = graphene.List(InsightClasspassesMonthType)
 
-    def resolve_description(self, info):
-        return _("account_classpasses_sold")
-
-    def resolve_data(self, info):       
+    def resolve_months(self, info):
         insight_account_classpasses_dude = InsightAccountClasspassesDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
 
-        data = insight_account_classpasses_dude.get_classpasses_sold_year_summary_count(self.year)
+        unprocessed_data = insight_account_classpasses_dude.get_data(self.year)
 
-        return data
+        months = []
+        for item in unprocessed_data:
+            insight_classpasses_month_type = InsightClasspassesMonthType()
+            insight_classpasses_month_type.month = item['month']
+            insight_classpasses_month_type.sold = item['sold']
+            insight_classpasses_month_type.active = item['active']
 
+            months.append(insight_classpasses_month_type)
 
-class AccountClasspassesActiveType(graphene.ObjectType):
-    description = graphene.String()
-    data = graphene.List(graphene.Int)
-    year = graphene.Int()
-
-    def resolve_description(self, info):
-        return _("account_classpasses_active")
-
-    def resolve_data(self, info):       
-        insight_account_classpasses_dude = InsightAccountClasspassesDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
-
-        data = insight_account_classpasses_dude.get_classpasses_active_year_summary_count(self.year)
-
-        return data
+        return months
 
 
 class InsightClasspassesQuery(graphene.ObjectType):
-    insight_account_classpasses_sold = graphene.Field(AccountClasspassesSoldType, year=graphene.Int())
-    insight_account_classpasses_active = graphene.Field(AccountClasspassesActiveType, year=graphene.Int())
+    insight_account_classpasses = graphene.Field(InsightClasspassesYearType, year=graphene.Int())
 
-    def resolve_insight_account_classpasses_sold(self, 
-                                                 info, 
-                                                 year=graphene.Int(required=True, default_value=timezone.now().year)):
+    def resolve_insight_account_classpasses(self,
+                                            info,
+                                            year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightclasspasses')
 
-        account_classpasses_sold = AccountClasspassesSoldType()
-        account_classpasses_sold.year = year
+        account_classpasses_year = InsightClasspassesYearType()
+        account_classpasses_year.year = year
 
-        return account_classpasses_sold
-
-    def resolve_insight_account_classpasses_active(self, 
-                                                    info, 
-                                                    year=graphene.Int(required=True, default_value=timezone.now().year)):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_insightclasspasses')
-
-        account_classpasses_active = AccountClasspassesActiveType()
-        account_classpasses_active.year = year
-
-        return account_classpasses_active
+        return account_classpasses_year
 

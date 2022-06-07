@@ -6,6 +6,24 @@ from django.db.models import Q
 
 
 class InsightAccountClasspassesDude:
+    def get_data(self, year):
+        """
+        Add data to a list, easily consumed by the javascript recharts library
+        """
+        data = []
+
+        data_sold = self.get_classpasses_sold_year_summary_count(year)
+        data_active = self.get_classpasses_active_year_summary_count(year)
+
+        for i in range(0,12):
+            data.append({
+                'month': i + 1,
+                'sold': data_sold[i],
+                'active': data_active[i]
+            })
+
+        return data
+
     def get_classpasses_sold_period_count(self, date_from, date_until):
         """
         Return count of sold classpasses in a period
