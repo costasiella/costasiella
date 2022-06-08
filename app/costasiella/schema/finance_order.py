@@ -70,9 +70,14 @@ class FinanceOrderNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_financeorder')
 
-        return self._meta.model.objects.get(id=id)
+        finance_order = self._meta.model.objects.get(id=id)
+
+        # Accounts can get details for their own orders
+        if not finance_order.account.id == user.id:
+            require_login_and_permission(user, 'costasiella.view_financeorder')
+
+        return finance_order
 
 
 class FinanceOrderQuery(graphene.ObjectType):

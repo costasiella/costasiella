@@ -138,10 +138,16 @@ class OrganizationSubscriptionNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organizationsubscription')
+        require_login(user)
 
-        # Return only public non-archived subscriptions
-        return self._meta.model.objects.get(id=id)
+        # Return only public non-archived subscriptions without a further permission check
+        organization_subscription = self._meta.model.objects.get(id=id)
+
+        if (not organization_subscription.display_public and not organization_subscription.display_shop) or \
+                organization_subscription.archived:
+            require_login_and_permission(user, 'costasiella.view_organizationsubscription')
+
+        return organization_subscription
 
 
 class OrganizationSubscriptionQuery(graphene.ObjectType):
@@ -177,7 +183,6 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
         quick_stats_amount = graphene.Decimal(required=False, default_value=Decimal(0))
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")      
-        
 
     organization_subscription = graphene.Field(OrganizationSubscriptionNode)
 

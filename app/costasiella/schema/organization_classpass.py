@@ -95,10 +95,16 @@ class OrganizationClasspassNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organizationclasspass')
+        require_login(user)
 
-        # Return only public non-archived memberships
-        return self._meta.model.objects.get(id=id)
+        # Return only public non-archived subscriptions without a further permission check
+        organization_classpass = self._meta.model.objects.get(id=id)
+
+        if (not organization_classpass.display_shop and not organization_classpass.display_shop) or \
+                organization_classpass.archived:
+            require_login_and_permission(user, 'costasiella.view_organizationclasspass')
+
+        return organization_classpass
 
 
 class OrganizationClasspassQuery(graphene.ObjectType):

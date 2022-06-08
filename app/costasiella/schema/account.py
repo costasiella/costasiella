@@ -118,9 +118,12 @@ class AccountNode(DjangoObjectType):
 
     def resolve_has_reached_trial_limit(self, info):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-        ])
+
+        # Accounts can view their own status
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
 
         return self.has_reached_trial_limit()
 
