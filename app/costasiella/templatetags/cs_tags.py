@@ -17,4 +17,8 @@ def cs_email_logo_url():
 
     organization = Organization.objects.get(id=100)
 
-    return "https://" + system_hostname + organization.logo_email.url
+    if system_hostname and organization.logo_email:
+        return "https://" + system_hostname + organization.logo_email.url
+
+    # Catch all in case the sytem hostname or logo haven't been set
+    return ""
