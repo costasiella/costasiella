@@ -8,10 +8,10 @@
 <br>
 You're receiving this e-mail because an account has been requested for {{ user_display }}.<br>
 <br>
-To confirm this is correct, please go to {{ activate_url }}<br>
+To confirm this is correct, please click <a href="{{ activate_url }}">here</a>.<br>
 {% endblocktrans %}
 {% endautoescape %} 
 <br><br>
-{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Thank you, 
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Thank you, <br>
 the {{ site_name }} team{% endblocktrans %}
 {% endblock %}
