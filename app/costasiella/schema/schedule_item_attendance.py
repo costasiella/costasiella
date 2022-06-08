@@ -60,14 +60,18 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
     @classmethod
     def get_node(cls, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitemattendance')
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_scheduleitemattendance',
-            'costasiella.view_selfcheckin'
-        ])
+        require_login(user)
 
-        # Return only public non-archived location rooms
-        return cls._meta.model.objects.get(id=id)
+        schedule_item_attendance = cls._meta.model.objects.get(id=id)
+
+        # Accounts can view their own attendance
+        if not schedule_item_attendance.account.id == user.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_scheduleitemattendance',
+                'costasiella.view_selfcheckin'
+            ])
+
+        return schedule_item_attendance
 
     def resolve_cancellation_until(self, info):
         """
@@ -242,8 +246,6 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             if not validation_result['account_subscription']:
                 raise Exception(_('accountSubscription field is mandatory when doing a subscription check-in'))
 
-            print("SUBSCRIPTION checkin")
-
             account_subscription = validation_result['account_subscription']
             schedule_item_attendance = class_checkin_dude.class_checkin_subscription(
                 account=validation_result['account'],
@@ -286,15 +288,19 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.change_scheduleitemattendance',
-            'costasiella.view_selfcheckin'
-        ])
+        require_login(user)
 
         rid = get_rid(input['id'])
         schedule_item_attendance = ScheduleItemAttendance.objects.filter(id=rid.id).first()
         if not schedule_item_attendance:
             raise Exception('Invalid Schedule Item Attendance ID!')
+
+        # Accounts can modify the booking status of their own bookings
+        if not schedule_item_attendance.account.id == user.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.change_scheduleitemattendance',
+                'costasiella.view_selfcheckin'
+            ])
 
         validation_result = validate_schedule_item_attendance_create_update_input(input)
         
