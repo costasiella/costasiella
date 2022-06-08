@@ -151,6 +151,7 @@ class MailTemplateDude:
         content_context = Context({
             "mail_content": mail_content
         })
+        # remember, the content here also needs to be marked as "safe" using | safe in the template variable
         content_template = Template(mail_template.content)
         content = content_template.render(content_context)
 
