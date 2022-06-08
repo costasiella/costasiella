@@ -22,7 +22,7 @@ class InsightRevenueEventTicketsYearType(graphene.ObjectType):
     def resolve_months(self, info):
         insight_revenue_dude = InsightRevenueDude()
 
-        unprocessed_data = insight_revenue_dude.get_data_in_category(self.year, 'CLASSPASSES')
+        unprocessed_data = insight_revenue_dude.get_data_in_category(self.year, 'EVENTTICKETS')
 
         months = []
         for item in unprocessed_data:

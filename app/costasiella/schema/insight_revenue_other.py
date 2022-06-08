@@ -7,72 +7,39 @@ from ..modules.gql_tools import require_login_and_permission
 from ..modules.finance_tools import display_float_as_amount
 
 
-class RevenueOtherType(graphene.ObjectType):
-    description = graphene.String()
+class InsightRevenueOtherMonthType(graphene.ObjectType):
+    month = graphene.Int()
+    total = graphene.Decimal()
+    total_display = graphene.String()
+    subtotal = graphene.Decimal()
+    tax = graphene.Decimal()
+
+
+class InsightRevenueOtherYearType(graphene.ObjectType):
     year = graphene.Int()
-    total = graphene.List(graphene.Decimal)
-    total_display = graphene.List(graphene.String)
-    subtotal = graphene.List(graphene.Decimal)
-    tax = graphene.List(graphene.Decimal)
+    months = graphene.List(InsightRevenueOtherMonthType)
 
-    def resolve_description(self, info):
-        return _("revenue_other")
-
-    def resolve_total(self, info):
+    def resolve_months(self, info):
         insight_revenue_dude = InsightRevenueDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_total_in_category_for_year(year, 'OTHER')
-        amounts = []
-        for month in data:
-            amounts.append(data[month])
+        unprocessed_data = insight_revenue_dude.get_data_in_category(self.year, 'OTHER')
 
-        return amounts
+        months = []
+        for item in unprocessed_data:
+            insight_revenue_other_month_type = InsightRevenueOtherMonthType()
+            insight_revenue_other_month_type.month = item['month']
+            insight_revenue_other_month_type.total = item['total']
+            insight_revenue_other_month_type.total_display = display_float_as_amount(item['total'])
+            insight_revenue_other_month_type.subtotal = item['subtotal']
+            insight_revenue_other_month_type.tax = item['tax']
 
-    def resolve_total_display(self, info):
-        insight_revenue_dude = InsightRevenueDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
+            months.append(insight_revenue_other_month_type)
 
-        data = insight_revenue_dude.get_revenue_total_in_category_for_year(year, 'OTHER')
-        amounts = []
-        for month in data:
-            amounts.append(display_float_as_amount(data[month]))
-
-        return amounts
-
-    def resolve_subtotal(self, info):
-        insight_revenue_dude = InsightRevenueDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
-
-        data = insight_revenue_dude.get_revenue_subtotal_in_category_for_year(year, 'OTHER')
-        amounts = []
-        for month in data:
-            amounts.append(data[month])
-
-        return amounts
-
-    def resolve_tax(self, info):
-        insight_revenue_dude = InsightRevenueDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
-
-        data = insight_revenue_dude.get_revenue_tax_in_category_for_year(year, 'OTHER')
-        amounts = []
-        for month in data:
-            amounts.append(data[month])
-
-        return amounts
+        return months
 
 
 class InsightRevenueOtherQuery(graphene.ObjectType):
-    insight_revenue_other = graphene.Field(RevenueOtherType, year=graphene.Int())
+    insight_revenue_other = graphene.Field(InsightRevenueOtherYearType, year=graphene.Int())
 
     def resolve_insight_revenue_other(self,
                                       info,
@@ -80,7 +47,7 @@ class InsightRevenueOtherQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
 
-        revenue_other = RevenueOtherType()
-        revenue_other.year = year
+        revenue_other_year = InsightRevenueOtherYearType()
+        revenue_other_year.year = year
 
-        return revenue_other
+        return revenue_other_year
