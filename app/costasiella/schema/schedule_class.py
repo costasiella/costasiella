@@ -93,6 +93,7 @@ class ScheduleClassType(graphene.ObjectType):
     time_end = graphene.types.datetime.Time()
     display_public = graphene.Boolean()
     info_mail_content = graphene.String()
+    spaces = graphene.Int()
     available_spaces_online = graphene.Int()
     available_spaces_total = graphene.Int()
     booking_open_on = graphene.types.datetime.Date()
@@ -421,6 +422,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     time_start=item.time_start,
                     time_end=item.time_end,
                     display_public=item.display_public,
+                    spaces=total_spaces,
                     available_spaces_online=available_online_spaces,
                     available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
                     booking_open_on=booking_open_on,
@@ -709,6 +711,7 @@ class ScheduleClassQuery(graphene.ObjectType):
             time_start=schedule_item.time_start,
             time_end=schedule_item.time_end,
             info_mail_content=schedule_item.info_mail_content,
+            spaces=total_spaces,
             available_spaces_online=available_online_spaces,
             available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
             booking_open_on=booking_open_on,
@@ -729,8 +732,6 @@ class ScheduleClassQuery(graphene.ObjectType):
                                  attendance_count_type="attending_and_booked"
                                  ):
         user = info.context.user
-        print("RESOLVE SCHEDULE CLASSES")
-        print(user)
         user_has_view_permission = check_if_user_has_permission(user, [
             'costasiella.view_scheduleclass',
             'costasiella.view_selfcheckin'
