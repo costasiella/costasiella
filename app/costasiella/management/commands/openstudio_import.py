@@ -18,12 +18,7 @@ import MySQLdb.converters
 
 import logging
 
-logfile = os.path.join(
-    'logs',
-    'openstudio_import',
-    "openstudio_import_%s.log" % timezone.now().strftime("%Y-%m-%d_%H:%M")
-)
-logging.basicConfig(filename=logfile, level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -455,10 +450,10 @@ class Command(BaseCommand):
             organization.save()
 
             self.stdout.write("Import default organization: " + self.style.SUCCESS("OK"))
-            logging.info("Import default organization: OK")
+            logger.info("Import default organization: OK")
         else:
             self.stdout.write("Import default organization: " + self.style.ERROR("No default organization found."))
-            logging.error("Import default organization: No default organization found")
+            logger.error("Import default organization: No default organization found")
 
     def _import_accounting_glaccounts(self):
         """
@@ -486,7 +481,7 @@ class Command(BaseCommand):
 
         log_message = "Import accounting_glaccounts: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -516,7 +511,7 @@ class Command(BaseCommand):
 
         log_message = "Import accounting_costcenters: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -548,7 +543,7 @@ class Command(BaseCommand):
 
         log_message = "Import tax_rates: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -584,7 +579,7 @@ class Command(BaseCommand):
 
         log_message = "Import payment methods: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -623,7 +618,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization memberships: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -668,7 +663,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization classpasses: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -697,7 +692,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization classpass groups: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -728,7 +723,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization classpass groups classcards: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -772,7 +767,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization subscriptions: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -802,7 +797,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization subscription groups: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -832,7 +827,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization subscription groups subscriptions: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -864,7 +859,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization subscription prices: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -901,7 +896,7 @@ class Command(BaseCommand):
                         # Set the media attribute of the article, but under an other path/filename
                         organization_classtype.image.save(record['picture'], file_content)
             except FileNotFoundError:
-                logging.error("Could not locate classtype image: %s" % os_file)
+                logger.error("Could not locate classtype image: %s" % os_file)
             except TypeError:
                 pass
 
@@ -913,7 +908,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization classtypes: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -943,7 +938,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization discovery: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -973,7 +968,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization languages: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1003,7 +998,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization levels: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1033,7 +1028,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization shift: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1075,7 +1070,7 @@ class Command(BaseCommand):
 
         log_message = "Import organization locations: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return {
             'id_map_locations': id_map_locations,
@@ -1138,7 +1133,7 @@ class Command(BaseCommand):
                             # Set the media attribute of the article, but under an other path/filename
                             account.image.save(record['picture'], file_content)
                 except FileNotFoundError:
-                    logging.error("Could not locate auth_user picture: %s" % os_file)
+                    logger.error("Could not locate auth_user picture: %s" % os_file)
                 except TypeError:
                     pass
 
@@ -1155,7 +1150,7 @@ class Command(BaseCommand):
 
                 records_imported += 1
             except django.db.utils.IntegrityError as e:
-                logging.error("Import auth_user error for user id: %s %s : %s" % (
+                logger.error("Import auth_user error for user id: %s %s : %s" % (
                     record['id'],
                     record['email'],
                     e
@@ -1163,7 +1158,7 @@ class Command(BaseCommand):
 
         log_message = "Import auth_user: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return {
             'id_map_auth_user': id_map_auth_user,
@@ -1208,7 +1203,7 @@ class Command(BaseCommand):
 
         log_message = "Import businesses: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1257,7 +1252,7 @@ class Command(BaseCommand):
                 id_map[record['id']] = account_classpass
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import customer classcard error for user id: %s classcard id: %s : %s" % (
+                logger.error("Import customer classcard error for user id: %s classcard id: %s : %s" % (
                     record['auth_customer_id'],
                     record['id'],
                     e
@@ -1265,7 +1260,7 @@ class Command(BaseCommand):
 
         log_message = "Import customer class cards: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1299,7 +1294,7 @@ class Command(BaseCommand):
                 id_map[record['id']] = account_subscription
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import customer subscription error for user id: %s subscription id: %s : %s" % (
+                logger.error("Import customer subscription error for user id: %s subscription id: %s : %s" % (
                     record['auth_customer_id'],
                     record['id'],
                     e
@@ -1307,7 +1302,7 @@ class Command(BaseCommand):
 
         log_message = "Import customer subscriptions: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1342,14 +1337,14 @@ class Command(BaseCommand):
                 id_map[record['id']] = account_subscription_alt_price
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import customer subscription alt price error subscription alt price id: %s: %s" % (
+                logger.error("Import customer subscription alt price error subscription alt price id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import customer subscriptions alt prices: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1380,7 +1375,7 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = account_subscription_block
             except django.db.utils.IntegrityError as e:
-                logging.error("Import customer subscription block error for subscription id: %s : %s: %s" % (
+                logger.error("Import customer subscription block error for subscription id: %s : %s: %s" % (
                     record['customers_subscriptions_id'],
                     record['id'],
                     e
@@ -1388,7 +1383,7 @@ class Command(BaseCommand):
 
         log_message = "Import customer subscriptions block: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1419,7 +1414,7 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = account_subscription_pause
             except django.db.utils.IntegrityError as e:
-                logging.error("Import customer subscription pause error for subscription id: %s : %s: %s" % (
+                logger.error("Import customer subscription pause error for subscription id: %s : %s: %s" % (
                     record['customers_subscriptions_id'],
                     record['id'],
                     e
@@ -1427,7 +1422,7 @@ class Command(BaseCommand):
 
         log_message = "Import customer subscriptions pause: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1447,7 +1442,7 @@ class Command(BaseCommand):
             record = {k.lower(): v for k, v in record.items()}
 
             note_type = "BACKOFFICE"
-            if record['instructornote'] == "T":
+            if record['teachernote'] == "T":
                 note_type = "INSTRUCTORS"
 
             try:
@@ -1464,7 +1459,7 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = account_note
             except django.db.utils.IntegrityError as e:
-                logging.error("Import customer note error for user id: %s note id: %s : %s" % (
+                logger.error("Import customer note error for user id: %s note id: %s : %s" % (
                     record['auth_customer_id'],
                     record['id'],
                     e
@@ -1472,7 +1467,7 @@ class Command(BaseCommand):
 
         log_message = "Import customers notes: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1496,7 +1491,7 @@ class Command(BaseCommand):
 
             account = self.auth_user_map.get(record['auth_customer_id'], None)
             if not account:
-                logging.error("Import customer document for user id: %s" % (
+                logger.error("Import customer document for user id: %s" % (
                     record['auth_customer_id'],
                 ))
                 continue
@@ -1512,7 +1507,7 @@ class Command(BaseCommand):
                         # Set the media attribute of the article, but under an other path/filename
                         account_document.document.save(record['documentfile'], file_content)
             except FileNotFoundError:
-                logging.error("Could not locate customer document: %s" % os_file)
+                logger.error("Could not locate customer document: %s" % os_file)
                 account_document.description = account_document.description = " (File not found)"
             except TypeError:
                 pass
@@ -1525,7 +1520,7 @@ class Command(BaseCommand):
 
         log_message = "Import account documents: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1545,7 +1540,7 @@ class Command(BaseCommand):
 
             account = self.auth_user_map.get(record['auth_customer_id'], None)
             if not account:
-                logging.error("Import customer payment info error for user id: %s" % (
+                logger.error("Import customer payment info error for user id: %s" % (
                     record['auth_customer_id'],
                 ))
                 continue
@@ -1562,7 +1557,7 @@ class Command(BaseCommand):
 
         log_message = "Import customers payment info (bank accounts): "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1597,7 +1592,7 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = account_bank_account_mandate
             except django.db.utils.IntegrityError as e:
-                logging.error("Import customer payment info mandate error for payment info id: %s note id: %s : %s" % (
+                logger.error("Import customer payment info mandate error for payment info id: %s note id: %s : %s" % (
                     record['customers_payment_info_id'],
                     record['id'],
                     e
@@ -1605,7 +1600,7 @@ class Command(BaseCommand):
 
         log_message = "Import customers payment info (bank accounts) mandates: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1647,14 +1642,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = schedule_item
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for class id: %s: %s" % (
+                logger.error("Import error for class id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import classes: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1692,14 +1687,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = schedule_item_attendance
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for class attendance: %s: %s" % (
+                logger.error("Import error for class attendance: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import classes attendance: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1748,14 +1743,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = schedule_item_weekly_otc
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for class otc id: %s: %s" % (
+                logger.error("Import error for class otc id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import classes otc: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1781,20 +1776,20 @@ class Command(BaseCommand):
 
             if qs.exists():
                 schedule_item_weekly_otc = qs.first()
-                schedule_item_weekly_otc.info_mail_content = record['mailcontent']
+                schedule_item_weekly_otc.info_mail_content = record['mailcontent'] or ""
                 schedule_item_weekly_otc.save()
 
                 records_imported += 1
 
                 id_map[record['id']] = schedule_item_weekly_otc
             else:
-                logging.error("Import error for class otc mail id: %s: Not found" % (
+                logger.error("Import error for class otc mail id: %s: Not found" % (
                     record['id'],
                 ))
 
         log_message = "Import classes otc mail: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1826,14 +1821,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = siocg
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for class school classcards group id: %s: %s" % (
+                logger.error("Import error for class school classcards group id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import classes school classcards groups: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1866,14 +1861,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = siosg
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for class school subscriptions group id: %s: %s" % (
+                logger.error("Import error for class school subscriptions group id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import classes school subscriptions groups: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1907,14 +1902,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = schedule_item_account
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for class teacher id: %s: %s" % (
+                logger.error("Import error for class teacher id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import classes teachers: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -1951,14 +1946,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = schedule_item
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for shift id: %s: %s" % (
+                logger.error("Import error for shift id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import shifts: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2002,14 +1997,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = schedule_item_weekly_otc
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for class otc id: %s: %s" % (
+                logger.error("Import error for class otc id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import shifts otc: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2041,14 +2036,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = schedule_item_account
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for shift staff id: %s: %s" % (
+                logger.error("Import error for shift staff id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import shift staff: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2086,14 +2081,14 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = account_subscription_credit
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for customers subscriptions credits id: %s: %s" % (
+                logger.error("Import error for customers subscriptions credits id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import customers subscriptions credits: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2121,9 +2116,9 @@ class Command(BaseCommand):
                     schedule_event_media.save()
 
         except FileNotFoundError:
-            logging.error("Could not locate schedule event image: %s" % os_file)
+            logger.error("Could not locate schedule event image: %s" % os_file)
         except TypeError as e:
-            logging.error("Caught a type error when importing schedule event image: %s : %s" % (os_file, e))
+            logger.error("Caught a type error when importing schedule event image: %s : %s" % (os_file, e))
 
     def _import_workshops(self):
         """
@@ -2185,14 +2180,14 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                     self._import_workshop_picture(schedule_event, record['picture_5'], 4)
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for workshop id: %s: %s" % (
+                logger.error("Import error for workshop id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import workshops: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2232,14 +2227,14 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 id_map[record['id']] = schedule_item
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for workshop activity id: %s: %s" % (
+                logger.error("Import error for workshop activity id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import workshops activities: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2280,14 +2275,14 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 id_map[record['id']] = schedule_event_ticket
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for workshop product id: %s: %s" % (
+                logger.error("Import error for workshop product id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import workshops products: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2321,7 +2316,7 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
 
         log_message = "Import workshops products activities: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2361,14 +2356,14 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 id_map[record['id']] = account_schedule_event_ticket
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for workshop product customer id: %s: %s" % (
+                logger.error("Import error for workshop product customer id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import workshops product customers: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2402,13 +2397,13 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
 
                 id_map[record['id']] = schedule_item_attendance
             else:
-                logging.error("Import error for workshop activities customer id: %s" % (
+                logger.error("Import error for workshop activities customer id: %s" % (
                     record['id'],
                 ))
 
         log_message = "Import workshops activities customers: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2448,14 +2443,14 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 id_map[record['id']] = organization_announcement
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for announcement id: %s: %s" % (
+                logger.error("Import error for announcement id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import announcements: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2499,14 +2494,14 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 id_map[record['id']] = organization_announcement
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for customer profile announcement id: %s: %s" % (
+                logger.error("Import error for customer profile announcement id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import customer profile announcements: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2548,7 +2543,7 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 finance_invoice_group.save()
                 records_imported += 1
 
-                logging.info("Imported default finance invoice group info")
+                logger.info("Imported default finance invoice group info")
             else:
                 # Import non-default group
                 try:
@@ -2570,14 +2565,14 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
 
                     id_map[record['id']] = finance_invoice_group
                 except django.db.utils.IntegrityError as e:
-                    logging.error("Import error for invoice group: %s: %s" % (
+                    logger.error("Import error for invoice group: %s: %s" % (
                         record['id'],
                         e
                     ))
 
         log_message = "Import invoice groups: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2609,19 +2604,19 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
 
                 id_map[record['id']] = finance_invoice_group_default
             except AttributeError as e:
-                logging.error("Import error for invoice group default: %s: %s" % (
+                logger.error("Import error for invoice group default: %s: %s" % (
                     record['id'],
                     e
                 ))
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for invoice group default: %s: %s" % (
+                logger.error("Import error for invoice group default: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import invoice group defaults: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2685,14 +2680,14 @@ ORDER BY i.id
 
                 id_map[record['id']] = finance_invoice
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for finance invoice: %s: %s" % (
+                logger.error("Import error for finance invoice: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import finance invoices: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2759,14 +2754,14 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
 
                 id_map[record['id']] = finance_invoice_item
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for finance invoice item: %s: %s" % (
+                logger.error("Import error for finance invoice item: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import finance invoices items: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2802,14 +2797,14 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
                 id_map[record['id']] = finance_invoice_payment
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for invoice payments id: %s: %s" % (
+                logger.error("Import error for invoice payments id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import invoice payments: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2842,14 +2837,14 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
                 id_map[record['id']] = integration_log_mollie
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for invoices mollie payment id: %s: %s" % (
+                logger.error("Import error for invoices mollie payment id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import invoice mollie payments: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2887,14 +2882,14 @@ LEFT JOIN invoices_customers_orders ico ON ico.customers_orders_id = co.id
 
                 id_map[record['id']] = finance_order
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for finance order: %s: %s" % (
+                logger.error("Import error for finance order: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import finance order id: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2938,14 +2933,14 @@ SELECT * FROM customers_orders_items ii
                 id_map[record['id']] = finance_order_item
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for customer order item: %s: %s" % (
+                logger.error("Import error for customer order item: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import customer order items: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -2978,14 +2973,14 @@ SELECT * FROM customers_orders_items ii
                 id_map[record['id']] = integration_log_mollie
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for customers orders mollie payment id: %s: %s" % (
+                logger.error("Import error for customers orders mollie payment id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import customers orders mollie payments: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -3017,14 +3012,14 @@ SELECT * FROM customers_orders_items ii
                 id_map[record['id']] = finance_payment_batch_category
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for finance payment batch category: %s: %s" % (
+                logger.error("Import error for finance payment batch category: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import payment batch categories: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -3060,14 +3055,14 @@ SELECT * FROM customers_orders_items ii
                 id_map[record['id']] = account_finance_payment_batch_category_item
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for alternativepayment: %s: %s" % (
+                logger.error("Import error for alternativepayment: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import alternativepayments: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -3112,14 +3107,14 @@ SELECT * FROM customers_orders_items ii
                 id_map[record['id']] = finance_payment_batch
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for finance payment batch: %s: %s" % (
+                logger.error("Import error for finance payment batch: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import payment batches: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -3150,14 +3145,14 @@ SELECT * FROM customers_orders_items ii
                 id_map[record['id']] = finance_payment_batch_export
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for finance payment batch export: %s: %s" % (
+                logger.error("Import error for finance payment batch export: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import payment batches exports: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -3187,7 +3182,7 @@ SELECT * FROM customers_orders_items ii
                     mandate_reference=record['mandatereference'] or '',
                     amount=record['amount'] or 0,
                     currency=record['currency'],
-                    description=record['description']
+                    description=record['description'] or ''
                 )
                 finance_payment_batch_item.save()
                 # Increase counter
@@ -3196,14 +3191,14 @@ SELECT * FROM customers_orders_items ii
                 id_map[record['id']] = finance_payment_batch_item
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for finance payment batch item: %s: %s" % (
+                logger.error("Import error for finance payment batch item: %s: %s" % (
                     record['id'],
                     e
                 ))
 
         log_message = "Import payment batches items: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
@@ -3220,4 +3215,4 @@ SELECT * FROM customers_orders_items ii
 
         log_message = "Calculate number of classes remaining on passes: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_updated, len(classpasses)))
-        logging.info(log_message + self.get_records_import_status_display(records_updated, len(classpasses), raw=True))
+        logger.info(log_message + self.get_records_import_status_display(records_updated, len(classpasses), raw=True))
