@@ -3,6 +3,7 @@ import logging
 
 from celery import shared_task
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from django.db.models import Q
 
 from .....models import AccountSubscription, AccountSubscriptionCredit
@@ -66,7 +67,7 @@ def send_mail_recurring_payment_failed(account, finance_invoice):
 
 
 @shared_task
-def account_subscription_invoices_add_for_month_mollie_collection(year, month):
+def account_subscription_invoices_add_for_month_mollie_collection(year=None, month=None):
     """
 
     :param year:
@@ -79,6 +80,13 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
     from .....models import AccountSubscription, IntegrationLogMollie
     from .....modules.finance_tools import get_currency
     from .....dudes import MollieDude, date_tools_dude
+
+    # Set year & month to current year & month if not set
+    today = timezone.now().date()
+    if not year:
+        year = today.year
+    if not month:
+        month = today.month
 
     date_tools_dude = DateToolsDude()
     mollie_dude = MollieDude()
