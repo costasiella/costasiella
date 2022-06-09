@@ -16,6 +16,7 @@ if len(sys.argv) >= 1:
 
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
 
 # Media root
 # https://docs.djangoproject.com/en/2.1/topics/files/
