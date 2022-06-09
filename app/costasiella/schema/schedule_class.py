@@ -94,6 +94,7 @@ class ScheduleClassType(graphene.ObjectType):
     display_public = graphene.Boolean()
     info_mail_content = graphene.String()
     spaces = graphene.Int()
+    count_attendance = graphene.Int()
     available_spaces_online = graphene.Int()
     available_spaces_total = graphene.Int()
     booking_open_on = graphene.types.datetime.Date()
@@ -423,6 +424,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     time_end=item.time_end,
                     display_public=item.display_public,
                     spaces=total_spaces,
+                    count_attendance=count_attendance,
                     available_spaces_online=available_online_spaces,
                     available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
                     booking_open_on=booking_open_on,
@@ -712,6 +714,7 @@ class ScheduleClassQuery(graphene.ObjectType):
             time_end=schedule_item.time_end,
             info_mail_content=schedule_item.info_mail_content,
             spaces=total_spaces,
+            count_attendance=count_attendance,
             available_spaces_online=available_online_spaces,
             available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
             booking_open_on=booking_open_on,
