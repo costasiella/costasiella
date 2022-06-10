@@ -110,7 +110,7 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
             # return all
             account_id = None
         else:
-            # A user can only query their own orders
+            # A user can only query their own attendances
             account_id = user.id
 
         if account_id:

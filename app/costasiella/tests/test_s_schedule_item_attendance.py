@@ -336,7 +336,23 @@ class GQLScheduleItemAttendance(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_query_one_permission_denied(self):
+    def test_query_one_permission_denied_other_user(self):
+        """ Permission denied message when user lacks authorization to query one schedule item attendance """
+        # Create regular user
+        query = self.schedule_item_attendance_query
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        user = f.Instructor2Factory.create()
+
+        variables = {
+            "id": to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted_own_account(self):
         """ Permission denied message when user lacks authorization to query one schedule item attendance """
         # Create regular user
         query = self.schedule_item_attendance_query
@@ -349,8 +365,9 @@ class GQLScheduleItemAttendance(TestCase):
 
         # Now query single subscription and check
         executed = execute_test_client_api_query(query, user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        data = executed.get('data')
+        self.assertEqual(data['scheduleItemAttendance']['id'],
+                         to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id))
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """
