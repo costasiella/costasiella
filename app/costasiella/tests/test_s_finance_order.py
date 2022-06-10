@@ -281,7 +281,7 @@ class GQLFinanceOrder(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_query_one_permission_denied(self):
+    def test_query_one_permission_granted_own_account(self):
         """ Permission denied message when user lacks authorization """
         # Create regular user
         order = f.FinanceOrderFactory.create()
@@ -293,8 +293,11 @@ class GQLFinanceOrder(TestCase):
 
         # Now query single order and check
         executed = execute_test_client_api_query(self.order_query, user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        data = executed.get('data')
+        self.assertEqual(
+            data['financeOrder']['account']['id'],
+            to_global_id('AccountNode', order.account.id)
+        )
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """
@@ -314,6 +317,21 @@ class GQLFinanceOrder(TestCase):
             data['financeOrder']['account']['id'],
             to_global_id('AccountNode', order.account.id)
         )
+
+    def test_query_one_permission_denied_other_account(self):
+        """ Permission denied message when user lacks authorization """
+        # Create regular user
+        order = f.FinanceOrderFactory.create()
+        user = f.Instructor2Factory.create()
+
+        variables = {
+            "id": to_global_id("FinanceOrderNode", order.id),
+        }
+
+        # Now query single order and check
+        executed = execute_test_client_api_query(self.order_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
     def test_create_order_free_classpass(self):
         """ Create finance order with free class pass"""
