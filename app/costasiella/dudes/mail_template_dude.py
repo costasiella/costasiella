@@ -44,8 +44,6 @@ class MailTemplateDude:
         """
         from ..models import SystemMailTemplate
 
-        print("mail template render called")
-
         functions = {
             "class_info_mail": self._render_class_info_mail,
             "event_info_mail": self._render_event_info_mail,
