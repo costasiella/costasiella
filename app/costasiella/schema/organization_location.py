@@ -42,18 +42,14 @@ class OrganizationLocationQuery(graphene.ObjectType):
 
     def resolve_organization_locations(self, info, archived=False, **kwargs):
         user = info.context.user
-        # print('user authenticated:')
-        # print(user.is_authenticated)
-        # if user.is_anonymous:
-        #     raise Exception(m.user_not_logged_in)
-        # if not info.context.user.is_authenticated:
-            # return OrganizationLocation.objects.none()
-        # else:
-            # return OrganizationLocation.objects.all()
+        if archived is None:
+            archived = False
+
         ## return everything:
         if user.has_perm('costasiella.view_organizationlocation') or \
            user.has_perm('costasiella.view_selfcheckin'):
             print('user has view permission')
+            # return OrganizationLocation.objects.filter(archived=archived).order_by('name')
             return OrganizationLocation.objects.filter(archived=archived).order_by('name')
 
         # Return only public non-archived locations

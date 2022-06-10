@@ -55,8 +55,8 @@ class CreateOrganizationHolidayLocation(graphene.relay.ClientIDMutation):
         # Don't insert duplicate records in the DB. If this records exist, fetch and return it
         if not query_set.exists():
             organization_holiday_location = OrganizationHolidayLocation(
-                organization_holiday = organization_holiday,
-                organization_location = organization_location
+                organization_holiday=organization_holiday,
+                organization_location=organization_location
             )
 
             organization_holiday_location.save()
