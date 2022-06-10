@@ -990,7 +990,7 @@ class GQLScheduleItemAttendance(TestCase):
           variables['input']['bookingStatus']
         )
 
-    def test_update_schedule_item_attendance_permission_denied(self):
+    def test_update_schedule_item_attendance_granted_own_account(self):
         """ Update a class attendance status permission denied """
         query = self.schedule_item_attendance_update_mutation
 
@@ -1006,9 +1006,29 @@ class GQLScheduleItemAttendance(TestCase):
             variables=variables
         )
         data = executed.get('data')
+        self.assertEqual(
+          data['updateScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'],
+          variables['input']['bookingStatus']
+        )
+
+    def test_update_schedule_item_attendance_permission_denied_other_account(self):
+        """ Update a class attendance status permission denied """
+        query = self.schedule_item_attendance_update_mutation
+
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        variables = self.variables_update_classpass
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+
+        user = f.Instructor2Factory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_delete_schedule_item_attendance(self):
         """ Delete schedule item attendance """
