@@ -6,6 +6,28 @@ from django.db.models import Q, Sum
 
 
 class InsightClassAttendanceDude:
+    def get_data(self, schedule_item, year):
+        """
+        Add data to a list, easily consumed by the javascript recharts library
+        """
+        data = []
+
+        data_year = self.get_attendance_count_recurring_class_year(schedule_item, year)
+        data_previous_year = self.get_attendance_count_recurring_class_year(schedule_item, year - 1)
+
+        for i in range(0, 53):
+            # Use .get with a default value of 0 to catch week 53 in case it doesn't exist for a year.
+            week_count_selected_year = data_year.get(i, 0)
+            week_count_previous_year = data_previous_year.get(i, 0)
+
+            data.append({
+                'week': i + 1,
+                'attendance_count_current_year': week_count_selected_year,
+                'attendance_count_previous_year': week_count_previous_year
+            })
+
+        return data
+
     def get_attendance_count_class(self, schedule_item, date):
         """
         Return count of sold (new) subscriptions in a period
