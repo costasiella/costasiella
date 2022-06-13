@@ -4,8 +4,9 @@ from ..modules.cs_errors import CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
     CSClassBookingSubscriptionNoCreditsError
 
+
 class ClassCheckinDude:
-    def _send_info_mail(self, account, schedule_item, date):
+    def send_info_mail(self, account, schedule_item, date):
         """
         Send info mail to customer, if configured.
         :param account: models.Account object
@@ -153,7 +154,7 @@ class ClassCheckinDude:
         account_classpass.update_classes_remaining()
         account_classpass.save()
 
-        self._send_info_mail(
+        self.send_info_mail(
             account=account,
             schedule_item=schedule_item,
             date=date,
@@ -366,7 +367,7 @@ class ClassCheckinDude:
 
         self.class_checkin_subscription_subtract_credit(schedule_item_attendance)
 
-        self._send_info_mail(
+        self.send_info_mail(
             account=account,
             schedule_item=schedule_item,
             date=date,
