@@ -1007,47 +1007,7 @@ class DeleteScheduleClass(graphene.relay.ClientIDMutation):
         return DeleteScheduleClass(ok=ok)
 
 
-class ResendInfoMailScheduleClass(graphene.relay.ClientIDMutation):
-    class Input:
-        id = graphene.ID(required=True)
-        account = graphene.ID(required=True)
-        date = graphene.Date(required=True)
-
-    ok = graphene.Boolean()
-
-    @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_scheduleclass')
-
-        from ..dudes import ClassCheckinDude, ClassScheduleDude
-
-        rid = get_rid(input['id'])
-        schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
-        if not schedule_item:
-            raise Exception('Invalid Schedule Item ID!')
-
-        rid = get_rid(input['account'])
-        account = Account.objects.filter(id=rid.id).first()
-        if not account:
-            raise Exception('Invalid Account ID!')
-
-        date = input['date']
-
-        class_schedule_dude = ClassScheduleDude()
-        if not class_schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
-            raise Exception("Class doesn't take place on this date!")
-
-        class_checkin_dude = ClassCheckinDude()
-        class_checkin_dude.send_info_mail(account, schedule_item, date)
-
-        ok = True
-
-        return ResendInfoMailScheduleClass(ok=ok)
-
-
 class ScheduleClassMutation(graphene.ObjectType):
     create_schedule_class = CreateScheduleClass.Field()
     update_schedule_class = UpdateScheduleClass.Field()
     delete_schedule_class = DeleteScheduleClass.Field()
-    resend_info_mail_schedule_class = ResendInfoMailScheduleClass.Field()

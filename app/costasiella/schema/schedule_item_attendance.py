@@ -364,7 +364,42 @@ class DeleteScheduleItemAttendance(graphene.relay.ClientIDMutation):
         return DeleteScheduleItemAttendance(ok=ok)
 
 
+class ResendInfoMailScheduleItemAttendance(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.change_scheduleitemattendance')
+
+        from ..dudes import ClassCheckinDude, ClassScheduleDude
+
+        rid = get_rid(input['id'])
+        schedule_item_attendance = ScheduleItemAttendance.objects.filter(id=rid.id).first()
+        if not schedule_item_attendance:
+            raise Exception('Invalid Schedule Item Attendance ID!')
+
+        schedule_item = schedule_item_attendance.schedule_item
+        account = schedule_item_attendance.account
+        date = schedule_item_attendance.date
+
+        class_schedule_dude = ClassScheduleDude()
+        if not class_schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
+            raise Exception("Class doesn't take place on this date!")
+
+        class_checkin_dude = ClassCheckinDude()
+        class_checkin_dude.send_info_mail(account, schedule_item, date)
+
+        ok = True
+
+        return ResendInfoMailScheduleItemAttendance(ok=ok)
+
+
 class ScheduleItemAttendanceMutation(graphene.ObjectType):
     delete_schedule_item_attendance = DeleteScheduleItemAttendance.Field()
     create_schedule_item_attendance = CreateScheduleItemAttendance.Field()
     update_schedule_item_attendance = UpdateScheduleItemAttendance.Field()
+    resend_info_mail_schedule_item_attendance = ResendInfoMailScheduleItemAttendance.Field()
