@@ -41,11 +41,16 @@ class GQLInsightSubscriptions(TestCase):
 
         self.query_class_attendance = '''
   query InsightClassAttendanceQuery($year: Int!, $scheduleItem: ID!) {
-    insightClassAttendanceCountYear(year: $year, scheduleItem: $scheduleItem) {
-      description
-      dataCurrent
-      dataPrevious
+    insightClassAttendanceCountYear(scheduleItem: $scheduleItem, year: $year) {
       year
+      scheduleItem {
+        id
+      }
+      weeks {
+        week
+        attendanceCountCurrentYear
+        attendanceCountPreviousYear
+      }
     }
   }
 '''
@@ -54,7 +59,6 @@ class GQLInsightSubscriptions(TestCase):
         # This is run after every test
         pass
 
-
     def test_query_class_attendance(self):
         """ Query class attendance for given year """
         query = self.query_class_attendance
@@ -62,13 +66,17 @@ class GQLInsightSubscriptions(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightClassAttendanceCountYear']['description'], 'class_attendance_year_count')
         self.assertEqual(data['insightClassAttendanceCountYear']['year'], self.variables_query['year'])
-        self.assertEqual(data['insightClassAttendanceCountYear']['dataCurrent'][0], 1)
-        self.assertEqual(data['insightClassAttendanceCountYear']['dataCurrent'][1], 0)
-        self.assertEqual(data['insightClassAttendanceCountYear']['dataPrevious'][0], 0)
-        self.assertEqual(data['insightClassAttendanceCountYear']['dataPrevious'][52], 1)
-
+        self.assertEqual(data['insightClassAttendanceCountYear']['scheduleItem']['id'],
+                         self.variables_query['scheduleItem'])
+        self.assertEqual(data['insightClassAttendanceCountYear']['weeks'][0]['attendanceCountCurrentYear'], 1)
+        self.assertEqual(data['insightClassAttendanceCountYear']['weeks'][1]['attendanceCountCurrentYear'], 0)
+        self.assertEqual(data['insightClassAttendanceCountYear']['weeks'][0]['attendanceCountPreviousYear'], 0)
+        self.assertEqual(data['insightClassAttendanceCountYear']['weeks'][52]['attendanceCountPreviousYear'], 1)
+        # self.assertEqual(data['insightClassAttendanceCountYear']['dataCurrent'][0], 1)
+        # self.assertEqual(data['insightClassAttendanceCountYear']['dataCurrent'][1], 0)
+        # self.assertEqual(data['insightClassAttendanceCountYear']['dataPrevious'][0], 0)
+        # self.assertEqual(data['insightClassAttendanceCountYear']['dataPrevious'][52], 1)
 
     def test_query_total_permission_denied(self):
         """ Query class attendance for given year - check permission denied """
@@ -80,7 +88,6 @@ class GQLInsightSubscriptions(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_total_permission_granted(self):
         """ Query class attendance for given year - check permission granted """
@@ -96,7 +103,6 @@ class GQLInsightSubscriptions(TestCase):
         data = executed.get('data')
 
         self.assertEqual(data['insightClassAttendanceCountYear']['year'], self.variables_query['year'])
-
 
     def test_query_total_anon_user(self):
         """ Query class attendance for given year - anon user """

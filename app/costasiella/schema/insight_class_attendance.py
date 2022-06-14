@@ -15,6 +15,7 @@ from ..dudes import InsightClassAttendanceDude
 from ..models import ScheduleItem
 
 from ..modules.gql_tools import get_rid, require_login_and_permission
+from .schedule_item import ScheduleItemNode
 
 
 class ClassAttendanceWeekCountType(graphene.ObjectType):
@@ -25,7 +26,7 @@ class ClassAttendanceWeekCountType(graphene.ObjectType):
 
 class InsightClassAttendanceYearType(graphene.ObjectType):
     year = graphene.Int()
-    schedule_item = graphene.ID()
+    schedule_item = graphene.Field(ScheduleItemNode)
     weeks = graphene.List(ClassAttendanceWeekCountType)
 
     def resolve_weeks(self, info):
