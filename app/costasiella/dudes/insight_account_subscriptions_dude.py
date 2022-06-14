@@ -6,6 +6,24 @@ from django.db.models import Q
 
 
 class InsightAccountSubscriptionsDude:
+    def get_data(self, year):
+        """
+        Add data to a list, easily consumed by the javascript recharts library
+        """
+        data = []
+
+        data_sold = self.get_subscriptions_sold_year_summary_count(year)
+        data_active = self.get_subscriptions_active_year_summary_count(year)
+
+        for i in range(0, 12):
+            data.append({
+                'month': i + 1,
+                'sold': data_sold[i],
+                'active': data_active[i]
+            })
+
+        return data
+
     def get_subscriptions_sold_period_count(self, date_from, date_until):
         """
         Return count of sold (new) subscriptions in a period
@@ -19,7 +37,6 @@ class InsightAccountSubscriptionsDude:
 
         print(count)
         return count
-
 
     def get_subscriptions_sold_year_summary_count(self, year):
         """
@@ -39,7 +56,6 @@ class InsightAccountSubscriptionsDude:
 
         return data
 
-
     def get_subscriptions_sold_period_data(self, date_from, date_until):
         """
         Return data list of sold (new) subscriptions in a period
@@ -53,7 +69,6 @@ class InsightAccountSubscriptionsDude:
 
         return qs
 
-
     def get_subscriptions_sold_year_data(self, year):
         """
         Get subscriptions sold (new) year data
@@ -61,8 +76,6 @@ class InsightAccountSubscriptionsDude:
         from collections import OrderedDict
 
         data = OrderedDict()
-
-        print(year)
 
         for i in range(1, 13):
             date_from = datetime.date(year, i, 1)
@@ -75,7 +88,6 @@ class InsightAccountSubscriptionsDude:
             # print(data)
 
         return data
-
 
     def get_subscriptions_active_period_count(self, date_from, date_until):
         """
@@ -91,14 +103,11 @@ class InsightAccountSubscriptionsDude:
         print(count)
         return count
 
-
     def get_subscriptions_active_year_summary_count(self, year):
         """
         Return monthly counts of active passes
         """
         data = []
-
-        print(year)
 
         for i in range(1, 13):
             date_from = datetime.date(year, i, 1)
@@ -109,7 +118,6 @@ class InsightAccountSubscriptionsDude:
             data.append(sold_in_month)
 
         return data
-
 
     def get_subscriptions_active_period_data(self, date_from, date_until):
         """
@@ -124,7 +132,6 @@ class InsightAccountSubscriptionsDude:
 
         return qs
 
-
     def get_subscriptions_active_year_data(self, year):
         """
         Get subscriptions active year data
@@ -132,8 +139,6 @@ class InsightAccountSubscriptionsDude:
         from collections import OrderedDict
 
         data = OrderedDict()
-
-        print(year)
 
         for i in range(1, 13):
             date_from = datetime.date(year, i, 1)

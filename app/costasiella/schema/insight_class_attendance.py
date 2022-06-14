@@ -17,45 +17,36 @@ from ..models import ScheduleItem
 from ..modules.gql_tools import get_rid, require_login_and_permission
 
 
-class ClassAttendanceYearCountType(graphene.ObjectType):
-    description = graphene.String()
-    data_current = graphene.List(graphene.Int)
-    data_previous = graphene.List(graphene.Int)
+class ClassAttendanceWeekCountType(graphene.ObjectType):
+    week = graphene.Int()
+    attendance_count_current_year = graphene.Int()
+    attendance_count_previous_year = graphene.Int()
+
+
+class InsightClassAttendanceYearType(graphene.ObjectType):
     year = graphene.Int()
     schedule_item = graphene.ID()
+    weeks = graphene.List(ClassAttendanceWeekCountType)
 
-    def resolve_description(self, info):
-        return _("class_attendance_year_count")
-
-    def resolve_data_current(self, info):
+    def resolve_weeks(self, info):
         insight_class_attendance_dude = InsightClassAttendanceDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
 
-        data = insight_class_attendance_dude.get_attendance_count_recurring_class_year(self.schedule_item, self.year)
-        counts = []
-        for week in data:
-            counts.append(data[week])
+        unprocessed_data = insight_class_attendance_dude.get_data(self.schedule_item, self.year)
 
-        return counts
+        weeks = []
+        for item in unprocessed_data:
+            class_attendance_week_count_type = ClassAttendanceWeekCountType()
+            class_attendance_week_count_type.week = item['week']
+            class_attendance_week_count_type.attendance_count_current_year = item['attendance_count_current_year']
+            class_attendance_week_count_type.attendance_count_previous_year = item['attendance_count_previous_year']
 
-    def resolve_data_previous(self, info):
-        insight_class_attendance_dude = InsightClassAttendanceDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
+            weeks.append(class_attendance_week_count_type)
 
-        data = insight_class_attendance_dude.get_attendance_count_recurring_class_year(self.schedule_item, self.year-1)
-        counts = []
-        for week in data:
-            counts.append(data[week])
-
-        return counts
+        return weeks
 
 
 class InsightClassAttendanceQuery(graphene.ObjectType):
-    insight_class_attendance_count_year = graphene.Field(ClassAttendanceYearCountType,
+    insight_class_attendance_count_year = graphene.Field(InsightClassAttendanceYearType,
                                                          year=graphene.Int(),
                                                          schedule_item=graphene.ID())
 
@@ -73,7 +64,7 @@ class InsightClassAttendanceQuery(graphene.ObjectType):
         if not schedule_item:
             raise Exception('Invalid ScheduleItem ID!')
 
-        class_attendance_year_count = ClassAttendanceYearCountType()
+        class_attendance_year_count = InsightClassAttendanceYearType()
         class_attendance_year_count.year = year
         class_attendance_year_count.schedule_item = schedule_item
 

@@ -35,116 +35,84 @@ class GQLInsightClasspasses(TestCase):
             'year': 2019
         }   
 
-        self.query_classpasses_active = '''
-  query InsightAccountClasspassesActive($year: Int!) {
-    insightAccountClasspassesActive(year: $year) {
-      description
-      data
-      year
+        self.query_classpasses = '''
+    query InsightAccountClasspasses($year: Int!) {
+      insightAccountClasspasses(year: $year) {
+        year
+        months {
+          month
+          sold
+          active
+        }
+      }
     }
-  }
-'''
-
-        self.query_classpasses_sold = '''
-  query InsightAccountClasspassesSold($year: Int!) {
-    insightAccountClasspassesSold(year: $year) {
-      description
-      data
-      year
-    }
-  }
 '''
 
     def tearDown(self):
         # This is run after every test
         pass
 
-    def test_query_active(self):
+    def test_query(self):
         """ Query list of classpasses """
-        query = self.query_classpasses_active
+        query = self.query_classpasses
         classpass = f.AccountClasspassFactory.create()
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightAccountClasspassesActive']['description'], 'account_classpasses_active')
-        self.assertEqual(data['insightAccountClasspassesActive']['year'], self.variables_query['year'])
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][0], 1)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][1], 1)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][2], 1)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][3], 0)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][4], 0)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][5], 0)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][6], 0)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][7], 0)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][8], 0)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][9], 0)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][10], 0)
-        self.assertEqual(data['insightAccountClasspassesActive']['data'][11], 0)
-
-    def test_query_active_permission_denied(self):
-        """ Query list of classpasses - check permission denied """
-        query = self.query_classpasses_active
-        classpass = f.AccountClasspassFactory.create()
-
-        # Create regular user
-        user = classpass.account
-        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-        errors = executed.get('errors')
-
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-        
-    def test_query_active_permission_granted(self):
-        """ Query list of classpasses with view permission """
-        query = self.query_classpasses_active
-        classpass = f.AccountClasspassFactory.create()      
-
-        # Create regular user
-        user = classpass.account
-        permission = Permission.objects.get(codename='view_insightclasspasses')
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-        data = executed.get('data')
-
-        self.assertEqual(data['insightAccountClasspassesActive']['year'], self.variables_query['year'])
-
-    def test_query_active_anon_user(self):
-        """ Query list of classpasses - anon user """
-        query = self.query_classpasses_active
-        classpass = f.AccountClasspassFactory.create()  
-
-        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_query_sold(self):
-        """ Query list of classpasses """
-        query = self.query_classpasses_sold
-        classpass = f.AccountClasspassFactory.create()
-
-        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
-        data = executed.get('data')
-
-        self.assertEqual(data['insightAccountClasspassesSold']['description'], 'account_classpasses_sold')
-        self.assertEqual(data['insightAccountClasspassesSold']['year'], self.variables_query['year'])
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][0], 1)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][1], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][2], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][3], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][4], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][5], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][6], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][7], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][8], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][9], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][10], 0)
-        self.assertEqual(data['insightAccountClasspassesSold']['data'][11], 0)
+        self.assertEqual(data['insightAccountClasspasses']['year'], self.variables_query['year'])
+        # January
+        self.assertEqual(data['insightAccountClasspasses']['months'][0]['month'], 1)
+        self.assertEqual(data['insightAccountClasspasses']['months'][0]['active'], 1)
+        self.assertEqual(data['insightAccountClasspasses']['months'][0]['sold'], 1)
+        # February
+        self.assertEqual(data['insightAccountClasspasses']['months'][1]['month'], 2)
+        self.assertEqual(data['insightAccountClasspasses']['months'][1]['active'], 1)
+        self.assertEqual(data['insightAccountClasspasses']['months'][1]['sold'], 0)
+        # March
+        self.assertEqual(data['insightAccountClasspasses']['months'][2]['month'], 3)
+        self.assertEqual(data['insightAccountClasspasses']['months'][2]['active'], 1)
+        self.assertEqual(data['insightAccountClasspasses']['months'][2]['sold'], 0)
+        # April
+        self.assertEqual(data['insightAccountClasspasses']['months'][3]['month'], 4)
+        self.assertEqual(data['insightAccountClasspasses']['months'][3]['active'], 0)
+        self.assertEqual(data['insightAccountClasspasses']['months'][3]['sold'], 0)
+        # May
+        self.assertEqual(data['insightAccountClasspasses']['months'][4]['month'], 5)
+        self.assertEqual(data['insightAccountClasspasses']['months'][4]['active'], 0)
+        self.assertEqual(data['insightAccountClasspasses']['months'][4]['sold'], 0)
+        # June
+        self.assertEqual(data['insightAccountClasspasses']['months'][5]['month'], 6)
+        self.assertEqual(data['insightAccountClasspasses']['months'][5]['active'], 0)
+        self.assertEqual(data['insightAccountClasspasses']['months'][5]['sold'], 0)
+        # July
+        self.assertEqual(data['insightAccountClasspasses']['months'][6]['month'], 7)
+        self.assertEqual(data['insightAccountClasspasses']['months'][6]['active'], 0)
+        self.assertEqual(data['insightAccountClasspasses']['months'][6]['sold'], 0)
+        # August
+        self.assertEqual(data['insightAccountClasspasses']['months'][7]['month'], 8)
+        self.assertEqual(data['insightAccountClasspasses']['months'][7]['active'], 0)
+        self.assertEqual(data['insightAccountClasspasses']['months'][7]['sold'], 0)
+        # September
+        self.assertEqual(data['insightAccountClasspasses']['months'][8]['month'], 9)
+        self.assertEqual(data['insightAccountClasspasses']['months'][8]['active'], 0)
+        self.assertEqual(data['insightAccountClasspasses']['months'][8]['sold'], 0)
+        # October
+        self.assertEqual(data['insightAccountClasspasses']['months'][9]['month'], 10)
+        self.assertEqual(data['insightAccountClasspasses']['months'][9]['active'], 0)
+        self.assertEqual(data['insightAccountClasspasses']['months'][9]['sold'], 0)
+        # November
+        self.assertEqual(data['insightAccountClasspasses']['months'][10]['month'], 11)
+        self.assertEqual(data['insightAccountClasspasses']['months'][10]['active'], 0)
+        self.assertEqual(data['insightAccountClasspasses']['months'][10]['sold'], 0)
+        # December
+        self.assertEqual(data['insightAccountClasspasses']['months'][11]['month'], 12)
+        self.assertEqual(data['insightAccountClasspasses']['months'][11]['active'], 0)
+        self.assertEqual(data['insightAccountClasspasses']['months'][11]['sold'], 0)
 
     def test_query_permission_denied(self):
         """ Query list of classpasses - check permission denied """
-        query = self.query_classpasses_sold
+        query = self.query_classpasses
         classpass = f.AccountClasspassFactory.create()
 
         # Create regular user
@@ -156,8 +124,8 @@ class GQLInsightClasspasses(TestCase):
 
     def test_query_permission_granted(self):
         """ Query list of classpasses with view permission """
-        query = self.query_classpasses_sold
-        classpass = f.AccountClasspassFactory.create()      
+        query = self.query_classpasses
+        classpass = f.AccountClasspassFactory.create()
 
         # Create regular user
         user = classpass.account
@@ -168,12 +136,12 @@ class GQLInsightClasspasses(TestCase):
         executed = execute_test_client_api_query(query, user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightAccountClasspassesSold']['year'], self.variables_query['year'])
+        self.assertEqual(data['insightAccountClasspasses']['year'], self.variables_query['year'])
 
     def test_query_anon_user(self):
         """ Query list of classpasses - anon user """
-        query = self.query_classpasses_sold
-        classpass = f.AccountClasspassFactory.create()  
+        query = self.query_classpasses
+        classpass = f.AccountClasspassFactory.create()
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
         errors = executed.get('errors')

@@ -7,79 +7,47 @@ from ..modules.gql_tools import require_login_and_permission
 from ..modules.finance_tools import display_float_as_amount
 
 
-class RevenueClasspassesType(graphene.ObjectType):
-    description = graphene.String()
+class InsightRevenueClasspassesMonthType(graphene.ObjectType):
+    month = graphene.Int()
+    total = graphene.Decimal()
+    total_display = graphene.String()
+    subtotal = graphene.Decimal()
+    tax = graphene.Decimal()
+
+
+class InsightRevenueClasspassesYearType(graphene.ObjectType):
     year = graphene.Int()
-    total = graphene.List(graphene.Decimal)
-    total_display = graphene.List(graphene.String)
-    subtotal = graphene.List(graphene.Decimal)
-    tax = graphene.List(graphene.Decimal)
+    months = graphene.List(InsightRevenueClasspassesMonthType)
 
-    def resolve_description(self, info):
-        return _("revenue_classpasses")
-
-    def resolve_total(self, info):
+    def resolve_months(self, info):
         insight_revenue_dude = InsightRevenueDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
 
-        data = insight_revenue_dude.get_revenue_total_in_category_for_year(year, 'CLASSPASSES')
-        amounts = []
-        for month in data:
-            amounts.append(data[month])
+        unprocessed_data = insight_revenue_dude.get_data_in_category(self.year, 'CLASSPASSES')
 
-        return amounts
+        months = []
+        for item in unprocessed_data:
+            insight_revenue_classpasses_month_type = InsightRevenueClasspassesMonthType()
+            insight_revenue_classpasses_month_type.month = item['month']
+            insight_revenue_classpasses_month_type.total = item['total']
+            insight_revenue_classpasses_month_type.total_display = display_float_as_amount(item['total'])
+            insight_revenue_classpasses_month_type.subtotal = item['subtotal']
+            insight_revenue_classpasses_month_type.tax = item['tax']
 
-    def resolve_total_display(self, info):
-        insight_revenue_dude = InsightRevenueDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
+            months.append(insight_revenue_classpasses_month_type)
 
-        data = insight_revenue_dude.get_revenue_total_in_category_for_year(year, 'CLASSPASSES')
-        amounts = []
-        for month in data:
-            amounts.append(display_float_as_amount(data[month]))
+        return months
 
-        return amounts
-
-    def resolve_subtotal(self, info):
-        insight_revenue_dude = InsightRevenueDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
-
-        data = insight_revenue_dude.get_revenue_subtotal_in_category_for_year(year, 'CLASSPASSES')
-        amounts = []
-        for month in data:
-            amounts.append(data[month])
-
-        return amounts
-
-    def resolve_tax(self, info):
-        insight_revenue_dude = InsightRevenueDude()
-        year = self.year
-        if not year:
-            year = timezone.now().year
-
-        data = insight_revenue_dude.get_revenue_tax_in_category_for_year(year, 'CLASSPASSES')
-        amounts = []
-        for month in data:
-            amounts.append(data[month])
-
-        return amounts
 
 class InsightRevenueClasspassesQuery(graphene.ObjectType):
-    insight_revenue_classpasses = graphene.Field(RevenueClasspassesType, year=graphene.Int())
+    insight_revenue_classpasses = graphene.Field(InsightRevenueClasspassesYearType, year=graphene.Int())
 
     def resolve_insight_revenue_classpasses(self,
-                                                  info,
-                                                  year=graphene.Int(required=True, default_value=timezone.now().year)):
+                                            info,
+                                            year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightrevenue')
 
-        revenue_classpasses = RevenueClasspassesType()
-        revenue_classpasses.year = year
+        revenue_classpasses_year = InsightRevenueClasspassesYearType()
+        revenue_classpasses_year.year = year
 
-        return revenue_classpasses
+        return revenue_classpasses_year
