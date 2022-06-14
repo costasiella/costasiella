@@ -45,11 +45,14 @@ class GQLInsightRevenueOther(TestCase):
         self.query_revenue_total = '''
   query InsightRevenueOther($year: Int!) {
     insightRevenueOther(year: $year) {
-      description
       year
-      total
-      subtotal
-      tax
+      months {
+        month
+        total
+        totalDisplay
+        subtotal
+        tax
+      }
     }
   }
 '''
@@ -65,28 +68,27 @@ class GQLInsightRevenueOther(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightRevenueOther']['description'], 'revenue_other')
         self.assertEqual(data['insightRevenueOther']['year'], self.variables_query['year'])
 
         # Total
-        self.assertEqual(data['insightRevenueOther']['total'][0], format(self.finance_invoice.total, ".2f"))
+        self.assertEqual(data['insightRevenueOther']['months'][0]['total'], format(self.finance_invoice.total, ".2f"))
         # Check data for other months
         for i in range(1, 12):
-            self.assertEqual(data['insightRevenueOther']['total'][i], '0')
+            self.assertEqual(data['insightRevenueOther']['months'][i]['total'], '0')
 
         # Subtotal
-        self.assertEqual(data['insightRevenueOther']['subtotal'][0],
+        self.assertEqual(data['insightRevenueOther']['months'][0]['subtotal'],
                          format(self.finance_invoice.subtotal, ".2f"))
         # Check data for other months
         for i in range(1, 12):
-            self.assertEqual(data['insightRevenueOther']['subtotal'][i], '0')
+            self.assertEqual(data['insightRevenueOther']['months'][i]['subtotal'], '0')
 
         # Total
-        self.assertEqual(data['insightRevenueOther']['tax'][0],
+        self.assertEqual(data['insightRevenueOther']['months'][0]['tax'],
                          format(self.finance_invoice.tax, ".2f"))
         # Check data for other months
         for i in range(1, 12):
-            self.assertEqual(data['insightRevenueOther']['tax'][i], '0')
+            self.assertEqual(data['insightRevenueOther']['months'][i]['tax'], '0')
 
     def test_query_total_permission_denied(self):
         """ Query total revenue for otherfor a year - check permission denied """
