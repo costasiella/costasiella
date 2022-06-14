@@ -17,31 +17,21 @@ class GQLInsightSubscriptions(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view_active = 'view_insightsubscriptionsactive'
-        self.permission_view_sold = 'view_insightsubscriptionssold'
-
         # self.organization_membership = f.OrganizationMembershipFactory.create()
 
         self.variables_query = {
             'year': 2019
         }   
 
-        self.query_subscriptions_active = '''
-  query InsightAccountSubscriptionsActive($year: Int!) {
-    insightAccountSubscriptionsActive(year: $year) {
-      description
-      data
+        self.query_subscriptions = '''
+  query InsightAccountSubscriptions($year: Int!) {
+    insightAccountSubscriptions(year: $year) {
       year
-    }
-  }
-'''
-
-        self.query_subscriptions_sold = '''
-  query InsightAccountSubscriptionsSold($year: Int!) {
-    insightAccountSubscriptionsSold(year: $year) {
-      description
-      data
-      year
+      months {
+        month
+        sold
+        active
+      }
     }
   }
 '''
@@ -49,93 +39,68 @@ class GQLInsightSubscriptions(TestCase):
     def tearDown(self):
         # This is run after every test
         pass
-
-    def test_query_active(self):
+    
+    def test_query(self):
         """ Query list of subscriptions """
-        query = self.query_subscriptions_active
+        query = self.query_subscriptions
         subscription = f.AccountSubscriptionFactory.create()
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightAccountSubscriptionsActive']['description'], 'account_subscriptions_active')
-        self.assertEqual(data['insightAccountSubscriptionsActive']['year'], self.variables_query['year'])
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][0], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][1], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][2], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][3], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][4], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][5], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][6], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][7], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][8], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][9], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][10], 1)
-        self.assertEqual(data['insightAccountSubscriptionsActive']['data'][11], 1)
-
-    def test_query_active_permission_denied(self):
-        """ Query list of subscriptions - check permission denied """
-        query = self.query_subscriptions_active
-        subscription = f.AccountSubscriptionFactory.create()
-
-        # Create regular user
-        user = subscription.account
-        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-        errors = executed.get('errors')
-
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_query_active_permission_granted(self):
-        """ Query list of subscriptions with view permission """
-        query = self.query_subscriptions_active
-        subscription = f.AccountSubscriptionFactory.create()      
-
-        # Create regular user
-        user = subscription.account
-        permission = Permission.objects.get(codename='view_insightsubscriptions')
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-        data = executed.get('data')
-
-        self.assertEqual(data['insightAccountSubscriptionsActive']['year'], self.variables_query['year'])
-
-    def test_query_active_anon_user(self):
-        """ Query list of subscriptions - anon user """
-        query = self.query_subscriptions_active
-        subscription = f.AccountSubscriptionFactory.create()  
-
-        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_query_sold(self):
-        """ Query list of subscriptions """
-        query = self.query_subscriptions_sold
-        subscription = f.AccountSubscriptionFactory.create()
-
-        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
-        data = executed.get('data')
-
-        self.assertEqual(data['insightAccountSubscriptionsSold']['description'], 'account_subscriptions_sold')
-        self.assertEqual(data['insightAccountSubscriptionsSold']['year'], self.variables_query['year'])
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][0], 1)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][1], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][2], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][3], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][4], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][5], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][6], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][7], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][8], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][9], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][10], 0)
-        self.assertEqual(data['insightAccountSubscriptionsSold']['data'][11], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['year'], self.variables_query['year'])
+        # January
+        self.assertEqual(data['insightAccountSubscriptions']['months'][0]['month'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][0]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][0]['sold'], 1)
+        # February
+        self.assertEqual(data['insightAccountSubscriptions']['months'][1]['month'], 2)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][1]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][1]['sold'], 0)
+        # March
+        self.assertEqual(data['insightAccountSubscriptions']['months'][2]['month'], 3)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][2]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][2]['sold'], 0)
+        # April
+        self.assertEqual(data['insightAccountSubscriptions']['months'][3]['month'], 4)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][3]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][3]['sold'], 0)
+        # May
+        self.assertEqual(data['insightAccountSubscriptions']['months'][4]['month'], 5)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][4]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][4]['sold'], 0)
+        # June
+        self.assertEqual(data['insightAccountSubscriptions']['months'][5]['month'], 6)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][5]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][5]['sold'], 0)
+        # July
+        self.assertEqual(data['insightAccountSubscriptions']['months'][6]['month'], 7)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][6]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][6]['sold'], 0)
+        # August
+        self.assertEqual(data['insightAccountSubscriptions']['months'][7]['month'], 8)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][7]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][7]['sold'], 0)
+        # September
+        self.assertEqual(data['insightAccountSubscriptions']['months'][8]['month'], 9)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][8]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][8]['sold'], 0)
+        # October
+        self.assertEqual(data['insightAccountSubscriptions']['months'][9]['month'], 10)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][9]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][9]['sold'], 0)
+        # November
+        self.assertEqual(data['insightAccountSubscriptions']['months'][10]['month'], 11)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][10]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][10]['sold'], 0)
+        # December
+        self.assertEqual(data['insightAccountSubscriptions']['months'][11]['month'], 12)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][11]['active'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][11]['sold'], 0)
 
     def test_query_permission_denied(self):
         """ Query list of subscriptions - check permission denied """
-        query = self.query_subscriptions_sold
+        query = self.query_subscriptions
         subscription = f.AccountSubscriptionFactory.create()
 
         # Create regular user
@@ -147,8 +112,8 @@ class GQLInsightSubscriptions(TestCase):
 
     def test_query_permission_granted(self):
         """ Query list of subscriptions with view permission """
-        query = self.query_subscriptions_sold
-        subscription = f.AccountSubscriptionFactory.create()      
+        query = self.query_subscriptions
+        subscription = f.AccountSubscriptionFactory.create()
 
         # Create regular user
         user = subscription.account
@@ -159,14 +124,13 @@ class GQLInsightSubscriptions(TestCase):
         executed = execute_test_client_api_query(query, user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightAccountSubscriptionsSold']['year'], self.variables_query['year'])
+        self.assertEqual(data['insightAccountSubscriptions']['year'], self.variables_query['year'])
 
     def test_query_anon_user(self):
         """ Query list of subscriptions - anon user """
-        query = self.query_subscriptions_sold
-        subscription = f.AccountSubscriptionFactory.create()  
+        query = self.query_subscriptions
+        subscription = f.AccountSubscriptionFactory.create()
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
