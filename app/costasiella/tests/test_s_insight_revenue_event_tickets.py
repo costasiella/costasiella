@@ -49,11 +49,14 @@ class GQLInsightRevenueEventTickets(TestCase):
         self.query_revenue_total = '''
   query InsightRevenueEventTickets($year: Int!) {
     insightRevenueEventTickets(year: $year) {
-      description
       year
-      total
-      subtotal
-      tax
+      months {
+        month
+        total
+        totalDisplay
+        subtotal
+        tax
+      }
     }
   }
 '''
@@ -69,28 +72,28 @@ class GQLInsightRevenueEventTickets(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
-        self.assertEqual(data['insightRevenueEventTickets']['description'], 'revenue_event_tickets')
         self.assertEqual(data['insightRevenueEventTickets']['year'], self.variables_query['year'])
 
         # Total
-        self.assertEqual(data['insightRevenueEventTickets']['total'][0], format(self.finance_invoice.total, ".2f"))
+        self.assertEqual(data['insightRevenueEventTickets']['months'][0]['total'],
+                         format(self.finance_invoice.total, ".2f"))
         # Check data for other months
         for i in range(1, 12):
-            self.assertEqual(data['insightRevenueEventTickets']['total'][i], '0')
+            self.assertEqual(data['insightRevenueEventTickets']['months'][i]['total'], '0')
 
         # Subtotal
-        self.assertEqual(data['insightRevenueEventTickets']['subtotal'][0],
+        self.assertEqual(data['insightRevenueEventTickets']['months'][0]['subtotal'],
                          format(self.finance_invoice.subtotal, ".2f"))
         # Check data for other months
         for i in range(1, 12):
-            self.assertEqual(data['insightRevenueEventTickets']['subtotal'][i], '0')
+            self.assertEqual(data['insightRevenueEventTickets']['months'][i]['subtotal'], '0')
 
         # Total
-        self.assertEqual(data['insightRevenueEventTickets']['tax'][0],
+        self.assertEqual(data['insightRevenueEventTickets']['months'][0]['tax'],
                          format(self.finance_invoice.tax, ".2f"))
         # Check data for other months
         for i in range(1, 12):
-            self.assertEqual(data['insightRevenueEventTickets']['tax'][i], '0')
+            self.assertEqual(data['insightRevenueEventTickets']['months'][i]['tax'], '0')
 
     def test_query_total_permission_denied(self):
         """ Query total revenue for event_ticketsfor a year - check permission denied """
