@@ -1121,7 +1121,8 @@ class Command(BaseCommand):
                     key_number=record['keynr'] or "",
                     organization_discovery=self.school_discovery_map.get(record['school_discovery_id'], None),
                     organization_language=self.school_languages_map.get(record['school_languages_id'], None),
-                    mollie_customer_id=record['mollie_customer_id'] or ""
+                    mollie_customer_id=record['mollie_customer_id'] or "",
+                    created_at=record['created_on']
                 )
                 account.save()
 
