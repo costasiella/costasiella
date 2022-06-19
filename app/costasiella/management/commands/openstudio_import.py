@@ -2875,7 +2875,8 @@ LEFT JOIN invoices_customers_orders ico ON ico.customers_orders_id = co.id
                     message=record['customernote'] or '',
                     subtotal=record['totalprice'] or 0,
                     tax=record['vat'] or 0,
-                    total=record['totalpricevat'] or 0
+                    total=record['totalpricevat'] or 0,
+                    created_at=record['datecreated']
                 )
                 finance_order.save()
                 records_imported += 1
