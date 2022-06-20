@@ -18,7 +18,8 @@ class FinanceInvoice(models.Model):
         ('DRAFT', _("Draft")),
         ('SENT', _("Sent")),
         ('PAID', _("Paid")),
-        ('CANCELLED', _("Cancelled"))
+        ('CANCELLED', _("Cancelled")),
+        ('OVERDUE', _("Overdue"))
     )
 
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="invoices")
