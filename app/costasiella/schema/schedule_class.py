@@ -35,49 +35,6 @@ from .schedule_item import ScheduleItemNode
 m = Messages()
 
 
-def _get_resolve_classes_filter_query(self):
-    """
-        Returns the filter query for the schedule
-    """
-    where = ''
-
-    # if self.filter_id_instructor:
-    #     where += 'AND ((CASE WHEN cotc.auth_instructor_id IS NULL \
-    #                     THEN clt.auth_instructor_id  \
-    #                     ELSE cotc.auth_instructor_id END) = '
-    #     where += str(self.filter_id_instructor) + ' '
-    #     where += 'OR (CASE WHEN cotc.auth_instructor_id2 IS NULL \
-    #                     THEN clt.auth_instructor_id2  \
-    #                     ELSE cotc.auth_instructor_id2 END) = '
-    #     where += str(self.filter_id_instructor) + ') '
-    if self.filter_id_organization_classtype:
-        where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
-                        THEN csi.organization_classtype_id  \
-                        ELSE csiotc.organization_classtype_id END) = '
-        where += str(self.filter_id_organization_classtype) + ' '
-    if self.filter_id_organization_location_room:
-        where += 'AND (CASE WHEN csiotc.organization_location_room_id IS NULL \
-                        THEN csi.organization_location_room_id  \
-                        ELSE csiotc.organization_location_room_id END) = '
-        where += str(self.filter_id_organization_location_room) + ' '
-    if self.filter_id_organization_level:
-        where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
-                        THEN csi.organization_level_id  \
-                        ELSE csiotc.organization_level_id END) = '
-        where += str(self.filter_id_organization_level) + ' '
-    if self.public_only:
-        where += "AND csi.display_public = 1 "
-        # where += "AND sl.AllowAPI = 'T' "
-        # where += "AND sct.AllowAPI = 'T' "
-    # if self.filter_starttime_from:
-    #     where += 'AND ((CASE WHEN cotc.Starttime IS NULL \
-    #                     THEN cla.Starttime  \
-    #                     ELSE cotc.Starttime END) >= '
-    #     where += "'" + str(self.filter_starttime_from) + "') "
-
-    return where
-
-
 # ScheduleClassType
 class ScheduleClassType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
@@ -113,9 +70,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
     booking_open_on = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
-    filter_id_organization_classtype = graphene.String()
-    filter_id_organization_level = graphene.String()
-    filter_id_organization_location = graphene.String()
+    filter_id_account = graphene.ID()
+    filter_id_organization_classtype = graphene.ID()
+    filter_id_organization_level = graphene.ID()
+    filter_id_organization_location = graphene.ID()
     public_only = graphene.Boolean()
     classes = graphene.List(ScheduleClassType)
     attendance_count_type = graphene.String()
@@ -170,6 +128,11 @@ class ScheduleClassesDayType(graphene.ObjectType):
             #                     THEN clt.auth_instructor_id2  \
             #                     ELSE cotc.auth_instructor_id2 END) = '
             #     where += str(self.filter_id_instructor) + ') '
+            if self.filter_id_account:
+                where += 'AND (CASE WHEN csiotc.account_id IS NULL \
+                                THEN csia.account_id  \
+                                ELSE csiotc.account_id END) = '
+                where += '%(filter_id_account)s '
             if self.filter_id_organization_classtype:
                 where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
                                 THEN csi.organization_classtype_id  \
@@ -382,6 +345,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
         params = {
             "class_date": str(self.date),
             "iso_week_day": iso_week_day,
+            "filter_id_account": self.filter_id_account,
             "filter_id_organization_classtype": self.filter_id_organization_classtype,
             "filter_id_organization_location": self.filter_id_organization_location,
             "filter_id_organization_level": self.filter_id_organization_level,
@@ -616,7 +580,8 @@ def calculate_available_spaces_total(total_spaces, count_attendance):
 
 def validate_schedule_classes_query_date_input(date_from, 
                                                date_until, 
-                                               order_by, 
+                                               order_by,
+                                               instructor,
                                                organization_classtype,
                                                organization_level,
                                                organization_location,
@@ -642,6 +607,11 @@ def validate_schedule_classes_query_date_input(date_from,
         ]  
         if order_by not in sort_options:
             raise Exception(_("orderBy can only be 'location' or 'starttime'"))
+
+    if instructor:
+        rid = get_rid(instructor)
+        account_id = rid.id
+        result['account_id'] = account_id
 
     if organization_classtype:
         rid = get_rid(organization_classtype)
@@ -674,6 +644,7 @@ class ScheduleClassQuery(graphene.ObjectType):
         date_from=graphene.types.datetime.Date(), 
         date_until=graphene.types.datetime.Date(),
         order_by=graphene.String(),
+        instructor=graphene.ID(),
         organization_classtype=graphene.ID(),
         organization_level=graphene.ID(),
         organization_location=graphene.ID(),
@@ -737,6 +708,7 @@ class ScheduleClassQuery(graphene.ObjectType):
                                  date_from=graphene.types.datetime.Date(), 
                                  date_until=graphene.types.datetime.Date(),
                                  order_by=None,
+                                 instructor=None,
                                  organization_classtype=None,
                                  organization_level=None,
                                  organization_location=None,
@@ -753,6 +725,7 @@ class ScheduleClassQuery(graphene.ObjectType):
             date_from, 
             date_until, 
             order_by,
+            instructor,
             organization_classtype,
             organization_level,
             organization_location,
@@ -769,6 +742,10 @@ class ScheduleClassQuery(graphene.ObjectType):
 
             if order_by:
                 day.order_by = order_by
+
+            if 'account_id' in validation_result:
+                day.filter_id_account = \
+                    validation_result['account_id']
 
             if 'organization_classtype_id' in validation_result:
                 day.filter_id_organization_classtype = \
