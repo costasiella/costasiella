@@ -135,6 +135,7 @@ class GQLScheduleClass(TestCase):
       $dateFrom: Date!, 
       $dateUntil:Date!, 
       $orderBy: String, 
+      $instructor: ID,
       $organizationClasstype: ID,
       $organizationLevel: ID,
       $organizationLocation: ID,
@@ -144,6 +145,7 @@ class GQLScheduleClass(TestCase):
         dateFrom:$dateFrom, 
         dateUntil: $dateUntil, 
         orderBy: $orderBy, 
+        instructor: $instructor,
         organizationClasstype: $organizationClasstype,
         organizationLevel: $organizationLevel,
         organizationLocation: $organizationLocation,
@@ -159,6 +161,9 @@ class GQLScheduleClass(TestCase):
         description
         holiday
         holidayName
+        account {
+          id
+        }
         organizationLocationRoom {
           id
           name
@@ -555,6 +560,30 @@ class GQLScheduleClass(TestCase):
             data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
             to_global_id('ScheduleItemNode', schedule_class.id)
         )
+
+    def test_query_filter_instructor(self):
+        """ Test filtering query by instructor """
+        query = self.scheduleclasses_query
+
+        schedule_item_account = f.ScheduleItemAccountFactory(
+            account=f.InstructorFactory.create(),
+            account_2=None
+        )
+
+        # By switching this around, the second class shouldn't appear in the search results
+        schedule_item_account_2 = f.ScheduleItemAccountFactory(
+            account=f.Instructor2Factory.create(),
+            account_2=None
+        )
+
+        variables = self.variables_query_list
+        variables['instructor'] = to_global_id('AccountNode', schedule_item_account.account.id)
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        for day in data['scheduleClasses']:
+            for day_class in day['classes']:
+                self.assertEqual(day_class['account']['id'], variables['instructor'])
 
     def test_query_filter_organization_classtype(self):
         """ Test filtering query by classtype """
