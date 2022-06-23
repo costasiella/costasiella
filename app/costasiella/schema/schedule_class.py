@@ -218,9 +218,9 @@ class ScheduleClassesDayType(graphene.ObjectType):
                         THEN "CANCELLED"
                     WHEN csiotc.status = "OPEN" 
                         THEN csiotc.status
-                    WHEN csia.account_id IS NULL
+                    WHEN csia.account_id IS NULL AND csiotc.account_id IS NULL
                         THEN "OPEN" 
-                    WHEN csia.account_id = ""
+                    WHEN csia.account_id = "" AND csiotc.account_id = ""
                         THEN "OPEN"
                     WHEN csiotc.account_id IS NOT NULL AND csiotc.role = "SUB" 
                         THEN "SUB"
