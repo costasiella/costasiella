@@ -372,7 +372,7 @@ class AccountQuery(graphene.ObjectType):
 
         return user
 
-    def resolve_accounts(self, info, is_active=False, **kwargs):
+    def resolve_accounts(self, info, is_active=True, **kwargs):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
             'costasiella.view_account',

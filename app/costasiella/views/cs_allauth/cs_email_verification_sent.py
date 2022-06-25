@@ -4,7 +4,6 @@ from ...models import Organization
 
 
 class CSEmailVerificationSentView(EmailVerificationSentView):
-
     def get_context_data(self, **kwargs):
         organization = Organization.objects.all().first()
 
