@@ -283,7 +283,7 @@ class DuplicateScheduleEvent(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_scheduleevent')
+        require_login_and_permission(user, 'costasiella.add_scheduleevent')
 
         rid = get_rid(input['id'])
         schedule_event = ScheduleEvent.objects.filter(id=rid.id).first()
@@ -292,10 +292,10 @@ class DuplicateScheduleEvent(graphene.relay.ClientIDMutation):
 
         # Duplicate schedule event
         schedule_event_dude = ScheduleEventDude()
-        schedule_event_dude.duplicate(schedule_event)
+        new_schedule_event = schedule_event_dude.duplicate(schedule_event)
 
         # Return duplicated schedule event
-        return DuplicateScheduleEvent(schedule_event=schedule_event)
+        return DuplicateScheduleEvent(schedule_event=new_schedule_event)
 
 
 class ScheduleEventMutation(graphene.ObjectType):
