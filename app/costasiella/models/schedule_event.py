@@ -6,6 +6,8 @@ from .account import Account
 from .organization_location import OrganizationLocation
 from .organization_level import OrganizationLevel
 
+from .helpers import model_string
+
 
 class ScheduleEvent(models.Model):
     archived = models.BooleanField(default=False)
@@ -29,7 +31,7 @@ class ScheduleEvent(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name + ' [' + str(self.date_start) + ']'
+        return model_string(self)
 
     def update_dates_and_times(self):
         """
