@@ -23,7 +23,7 @@ class ScheduleEventDude:
             display_shop=False,
             auto_send_info_mail=schedule_event.auto_send_info_mail,
             organization_location=schedule_event.organization_location,
-            name=schedule_event.name,
+            name=schedule_event.name + " " + _("(Duplicated)"),
             tagline=schedule_event.tagline,
             preview=schedule_event.preview,
             description=schedule_event.description,
