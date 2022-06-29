@@ -1007,8 +1007,8 @@ class ScheduleEventEarlybirdFactory(factory.DjangoModelFactory):
         model = models.ScheduleEventEarlybird
 
     schedule_event = factory.SubFactory(ScheduleEventFactory)
-    date_start = "2020-01-01"
-    date_end = "2999-12-31"
+    date_start = datetime.date(2020, 1, 1)
+    date_end = datetime.date(2999, 12, 31)
     discount_percentage = 10
 
 

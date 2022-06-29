@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 # from graphql.error.located_error import GraphQLLocatedError
 import graphql
 import datetime
@@ -69,6 +70,10 @@ class GQLScheduleEvent(TestCase):
             "input": {
                 "archived": True
             }
+        }
+
+        self.variables_duplicate = {
+            "input": {}
         }
 
         self.events_query = '''
@@ -244,6 +249,17 @@ class GQLScheduleEvent(TestCase):
   }
 '''
 
+        self.event_duplicate_mutation = '''
+  mutation DuplicateScheduleEvent($input: DuplicateScheduleEventInput!) {
+    duplicateScheduleEvent(input: $input) {
+      scheduleEvent {
+        id
+        archived
+      }
+    }
+  }
+'''
+
     def tearDown(self):
         # This is run after every test
         pass
@@ -315,7 +331,6 @@ class GQLScheduleEvent(TestCase):
         schedule_event = f.ScheduleEventFactory.create()
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
-        print(executed)
         data = executed.get('data')
 
         # List all events
@@ -680,5 +695,166 @@ class GQLScheduleEvent(TestCase):
             variables=self.variables_archive
         )
         data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_duplicate_event(self):
+        """ Duplicate an event - are all fields duplicated? """
+        query = self.event_duplicate_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        schedule_event_earlybird = f.ScheduleEventEarlybirdFactory.create(schedule_event=schedule_event)
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create(schedule_event=schedule_event)
+        schedule_item = f.ScheduleItemEventActivityFactory.create(
+            schedule_event=schedule_event,
+            account=schedule_event.instructor,
+            account_2=schedule_event.instructor_2
+        )
+        schedule_event_media = f.ScheduleEventMediaFactory.create(schedule_event=schedule_event)
+        schedule_event.update_dates_and_times()
+
+        self.variables_duplicate['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_duplicate
+        )
+        data = executed.get('data')
+        # The id of the duplicated event should be returned instead of the given id
+        self.assertEqual(
+            data['duplicateScheduleEvent']['scheduleEvent']['id'] ==
+            to_global_id('ScheduleEventNode', schedule_event.id),
+            False
+        )
+        gql_id = data['duplicateScheduleEvent']['scheduleEvent']['id']
+        rid = get_rid(gql_id)
+
+        duplicated_schedule_event = models.ScheduleEvent.objects.get(pk=rid.id)
+
+        # Check schedule event data duplication
+        self.assertEqual(schedule_event.archived, duplicated_schedule_event.archived)
+        self.assertEqual(duplicated_schedule_event.display_public, False)
+        self.assertEqual(duplicated_schedule_event.display_shop, False)
+        self.assertEqual(schedule_event.auto_send_info_mail, duplicated_schedule_event.auto_send_info_mail)
+        self.assertEqual(schedule_event.name + " (" + _("Duplicated") + ")", duplicated_schedule_event.name)
+        self.assertEqual(schedule_event.tagline, duplicated_schedule_event.tagline)
+        self.assertEqual(schedule_event.preview, duplicated_schedule_event.preview)
+        self.assertEqual(schedule_event.description, duplicated_schedule_event.description)
+        self.assertEqual(schedule_event.organization_level, duplicated_schedule_event.organization_level)
+        self.assertEqual(schedule_event.instructor, duplicated_schedule_event.instructor)
+        self.assertEqual(schedule_event.instructor_2, duplicated_schedule_event.instructor_2)
+        self.assertEqual(schedule_event.date_start, duplicated_schedule_event.date_start)
+        self.assertEqual(schedule_event.date_end, duplicated_schedule_event.date_end)
+        self.assertEqual(schedule_event.time_start, duplicated_schedule_event.time_start)
+        self.assertEqual(schedule_event.time_end, duplicated_schedule_event.time_end)
+        self.assertEqual(schedule_event.info_mail_content, duplicated_schedule_event.info_mail_content)
+
+        # Check schedule_item duplication
+        new_schedule_item = models.ScheduleItem.objects.filter(
+            schedule_event=duplicated_schedule_event
+        ).first()
+
+        self.assertEqual(schedule_item.schedule_item_type, new_schedule_item.schedule_item_type)
+        self.assertEqual(schedule_item.frequency_type, new_schedule_item.frequency_type)
+        self.assertEqual(schedule_item.frequency_interval, new_schedule_item.frequency_interval)
+        self.assertEqual(schedule_item.organization_location_room, new_schedule_item.organization_location_room)
+        self.assertEqual(schedule_item.organization_classtype, new_schedule_item.organization_classtype)
+        self.assertEqual(schedule_item.organization_level, new_schedule_item.organization_level)
+        self.assertEqual(schedule_item.organization_shift, new_schedule_item.organization_shift)
+        self.assertEqual(schedule_item.name, new_schedule_item.name)
+        self.assertEqual(schedule_item.spaces, new_schedule_item.spaces)
+        self.assertEqual(schedule_item.walk_in_spaces, new_schedule_item.walk_in_spaces)
+        self.assertEqual(schedule_item.date_start, new_schedule_item.date_start)
+        self.assertEqual(schedule_item.date_end, new_schedule_item.date_end)
+        self.assertEqual(schedule_item.time_start, new_schedule_item.time_start)
+        self.assertEqual(schedule_item.time_end, new_schedule_item.time_end)
+        self.assertEqual(schedule_item.display_public, new_schedule_item.display_public)
+        self.assertEqual(schedule_item.info_mail_content, new_schedule_item.info_mail_content)
+        self.assertEqual(schedule_item.account, new_schedule_item.account)
+        self.assertEqual(schedule_item.account_2, new_schedule_item.account_2)
+
+        # Check ticket data duplication
+        new_ticket = models.ScheduleEventTicket.objects.filter(
+            schedule_event=duplicated_schedule_event
+        ).first()
+
+        self.assertEqual(schedule_event_ticket.full_event, new_ticket.full_event)
+        self.assertEqual(schedule_event_ticket.deletable, new_ticket.deletable)
+        self.assertEqual(schedule_event_ticket.display_public, new_ticket.display_public)
+        self.assertEqual(schedule_event_ticket.name, new_ticket.name)
+        self.assertEqual(schedule_event_ticket.description, new_ticket.description)
+        self.assertEqual(schedule_event_ticket.price, new_ticket.price)
+        self.assertEqual(schedule_event_ticket.finance_tax_rate, new_ticket.finance_tax_rate)
+        self.assertEqual(schedule_event_ticket.finance_glaccount, new_ticket.finance_glaccount)
+        self.assertEqual(schedule_event_ticket.finance_costcenter, new_ticket.finance_costcenter)
+
+        # Check media data duplication
+        new_media = models.ScheduleEventMedia.objects.filter(
+            schedule_event=duplicated_schedule_event
+        ).first()
+
+        self.assertEqual(schedule_event_media.sort_order, new_media.sort_order)
+        self.assertEqual(schedule_event_media.description, new_media.description)
+        self.assertEqual(schedule_event_media.image, new_media.image)
+
+        # Check earlybird data duplication
+        new_earlybird = models.ScheduleEventEarlybird.objects.filter(
+            schedule_event=duplicated_schedule_event
+        ).first()
+
+        self.assertEqual(schedule_event_earlybird.date_start, new_earlybird.date_start)
+        self.assertEqual(schedule_event_earlybird.date_end, new_earlybird.date_end)
+        self.assertEqual(schedule_event_earlybird.discount_percentage, new_earlybird.discount_percentage)
+
+    def test_duplicate_event_anon_user(self):
+        """ Duplicate event denied for anon user """
+        query = self.event_duplicate_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_duplicate['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_duplicate
+        )
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_duplicate_event_permission_granted(self):
+        """ Allow duplicating events for users with permissions """
+        query = self.event_duplicate_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_duplicate['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        # Give permissions
+        user = schedule_event.instructor
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_duplicate
+        )
+        data = executed.get('data')
+        # Check if a value returned can be read. If one can be read, all can be read
+        self.assertEqual(data['duplicateScheduleEvent']['scheduleEvent']['archived'],
+                         schedule_event.archived)
+
+    def test_duplicate_event_permission_denied(self):
+        """ Check duplicate event permission denied error message """
+        query = self.event_duplicate_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_duplicate['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_duplicate
+        )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
