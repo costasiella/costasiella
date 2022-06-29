@@ -22,6 +22,8 @@ from .permission_dude import PermissionDude
 
 from .sales_dude import SalesDude
 
+from .schedule_event_dude import ScheduleEventDude
+
 from .system_setting_dude import SystemSettingDude
 
 from .version_dude import VersionDude

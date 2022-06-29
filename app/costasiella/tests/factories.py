@@ -965,12 +965,7 @@ class ScheduleEventFullTicketFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleEventTicket
 
-    class Params:
-        initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
-
-    schedule_event = factory.LazyAttribute(
-        lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
-    )
+    schedule_event = factory.SubFactory(ScheduleEventFactory)
     full_event = True
     deletable = False
     display_public = True
@@ -997,12 +992,7 @@ class ScheduleEventMediaFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleEventMedia
 
-    class Params:
-        initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
-
-    schedule_event = factory.LazyAttribute(
-        lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
-    )
+    schedule_event = factory.SubFactory(ScheduleEventFactory)
     sort_order = 0
     description = "Test image"
     # https://factoryboy.readthedocs.io/en/latest/orms.html
@@ -1017,8 +1007,8 @@ class ScheduleEventEarlybirdFactory(factory.DjangoModelFactory):
         model = models.ScheduleEventEarlybird
 
     schedule_event = factory.SubFactory(ScheduleEventFactory)
-    date_start = "2020-01-01"
-    date_end = "2999-12-31"
+    date_start = datetime.date(2020, 1, 1)
+    date_end = datetime.date(2999, 12, 31)
     discount_percentage = 10
 
 
