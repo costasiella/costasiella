@@ -5,6 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
+from ..dudes import ScheduleEventDude
 from ..models import Account, OrganizationLevel, OrganizationLocation, ScheduleEvent, ScheduleEventTicket
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
@@ -212,8 +213,6 @@ class UpdateScheduleEvent(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_scheduleevent')
 
-        print(input)
-
         rid = get_rid(input['id'])
         schedule_event = ScheduleEvent.objects.filter(id=rid.id).first()
         if not schedule_event:
@@ -275,7 +274,32 @@ class ArchiveScheduleEvent(graphene.relay.ClientIDMutation):
         return ArchiveScheduleEvent(schedule_event=schedule_event)
 
 
+class DuplicateScheduleEvent(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+
+    schedule_event = graphene.Field(ScheduleEventNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_scheduleevent')
+
+        rid = get_rid(input['id'])
+        schedule_event = ScheduleEvent.objects.filter(id=rid.id).first()
+        if not schedule_event:
+            raise Exception('Invalid Schedule Event ID!')
+
+        # Duplicate schedule event
+        schedule_event_dude = ScheduleEventDude()
+        schedule_event_dude.duplicate(schedule_event)
+
+        # Return duplicated schedule event
+        return DuplicateScheduleEvent(schedule_event=schedule_event)
+
+
 class ScheduleEventMutation(graphene.ObjectType):
     archive_schedule_event = ArchiveScheduleEvent.Field()
     create_schedule_event = CreateScheduleEvent.Field()
     update_schedule_event = UpdateScheduleEvent.Field()
+    duplicate_schedule_event = DuplicateScheduleEvent.Field()
