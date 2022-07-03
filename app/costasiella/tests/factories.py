@@ -1152,7 +1152,7 @@ class InsightAccountInactiveFactory(factory.DjangoModelFactory):
 
 class InsightAccountInactiveAccountFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.InsightAccountInactive
+        model = models.InsightAccountInactiveAccount
 
     account = factory.SubFactory(RegularUserFactory)
     insight_account_inactive = factory.SubFactory(InsightAccountInactiveFactory)

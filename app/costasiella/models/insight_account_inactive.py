@@ -8,7 +8,7 @@ from .helpers import model_string
 
 class InsightAccountInactive(models.Model):
     no_activity_after_date = models.DateField()
-    count_inactive_accounts = models.IntegerField(null=True)
+    count_inactive_accounts = models.IntegerField(default=0)
     count_deleted_inactive_accounts = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
