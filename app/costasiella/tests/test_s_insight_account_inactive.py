@@ -137,6 +137,36 @@ class GQLInsightAccountInactive(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_permission_granted(self):
+        """ Query list of insight inactive accounts with view permission """
+        query = self.insight_accounts_inactives_query
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user)
+        data = executed.get('data')
+
+        # Check if data is returned
+        self.assertEqual(data['insightAccountInactives']['edges'][0]['node']['id'],
+                         to_global_id('InsightAccountInactiveNode', insight_accounts_inactive.id))
+
+    def test_query_permission_denied(self):
+        """ Query list of insight inactive accounts - check permission denied """
+        query = self.insight_accounts_inactives_query
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_query_one(self):
     #     """ Query one taxrate as admin """
@@ -153,48 +183,7 @@ class GQLInsightAccountInactive(TestCase):
     #     self.assertEqual(data['financeTaxRate']['percentage'], format(taxrate.percentage, ".2f"))
     #     self.assertEqual(data['financeTaxRate']['rateType'], taxrate.rate_type)
     #     self.assertEqual(data['financeTaxRate']['code'], taxrate.code)
-    #
-    # def test_query_permission_granted(self):
-    #     """ Query list of taxrates with view permission """
-    #     query = self.taxrates_query
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_financetaxrate')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     # List all taxrates
-    #     self.assertEqual(data['financeTaxRates']['edges'][0]['node']['name'], taxrate.name)
-    #     self.assertEqual(data['financeTaxRates']['edges'][0]['node']['archived'], taxrate.archived)
-    #     self.assertEqual(data['financeTaxRates']['edges'][0]['node']['percentage'],
-    #                      format(taxrate.percentage, ".2f"))
-    #     self.assertEqual(data['financeTaxRates']['edges'][0]['node']['rateType'], taxrate.rate_type)
-    #     self.assertEqual(data['financeTaxRates']['edges'][0]['node']['code'], taxrate.code)
-    #
-    #
-    # def test_query_permission_denied(self):
-    #     """ Query list of taxrates - check permission denied """
-    #     query = self.taxrates_query
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
     # def test_query_one_anon_user(self):
     #     """ Deny permission for anon users Query one glacount """
     #     taxrate = f.FinanceTaxRateFactory.create()
