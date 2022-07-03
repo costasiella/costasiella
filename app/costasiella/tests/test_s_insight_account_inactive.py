@@ -68,6 +68,7 @@ class GQLInsightAccountInactive(TestCase):
       id
       noActivityAfterDate
       countInactiveAccounts
+      countDeletedInactiveAccounts
       createdAt
       accounts {
         edges {
@@ -167,66 +168,67 @@ class GQLInsightAccountInactive(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_one(self):
-    #     """ Query one taxrate as admin """
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #
-    #     # First query taxrates to get node id easily
-    #     node_id = self.get_node_id_of_first_taxrate()
-    #
-    #     # Now query single taxrate and check
-    #     executed = execute_test_client_api_query(self.taxrate_query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['financeTaxRate']['name'], taxrate.name)
-    #     self.assertEqual(data['financeTaxRate']['archived'], taxrate.archived)
-    #     self.assertEqual(data['financeTaxRate']['percentage'], format(taxrate.percentage, ".2f"))
-    #     self.assertEqual(data['financeTaxRate']['rateType'], taxrate.rate_type)
-    #     self.assertEqual(data['financeTaxRate']['code'], taxrate.code)
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one glacount """
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #
-    #     # First query taxrates to get node id easily
-    #     node_id = self.get_node_id_of_first_taxrate()
-    #
-    #     # Now query single taxrate and check
-    #     executed = execute_test_client_api_query(self.taxrate_query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #
-    #     # First query taxrates to get node id easily
-    #     node_id = self.get_node_id_of_first_taxrate()
-    #
-    #     # Now query single taxrate and check
-    #     executed = execute_test_client_api_query(self.taxrate_query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_financetaxrate')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #
-    #     # First query taxrates to get node id easily
-    #     node_id = self.get_node_id_of_first_taxrate()
-    #
-    #     # Now query single location and check
-    #     executed = execute_test_client_api_query(self.taxrate_query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['financeTaxRate']['name'], taxrate.name)
-    #
+    def test_query_one(self):
+        """ Query one insight_accounts_inactive as admin """
+        query = self.insight_accounts_inactive_query
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+
+        node_id = to_global_id("InsightAccountInactiveNode", insight_accounts_inactive.id)
+
+        # Now query single list of inactive accounts and check
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['insightAccountInactive']['id'], node_id)
+        self.assertEqual(data['insightAccountInactive']['countInactiveAccounts'],
+                         insight_accounts_inactive.count_inactive_accounts)
+        self.assertEqual(data['insightAccountInactive']['countDeletedInactiveAccounts'],
+                         insight_accounts_inactive.count_deleted_inactive_accounts)
+        self.assertEqual(data['insightAccountInactive']['noActivityAfterDate'],
+                         str(insight_accounts_inactive.no_activity_after_date))
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one insight accounts inactive """
+        query = self.insight_accounts_inactive_query
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+
+        node_id = to_global_id("InsightAccountInactiveNode", insight_accounts_inactive.id)
+
+        # Now query single taxrate and check
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        query = self.insight_accounts_inactive_query
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+
+        node_id = to_global_id("InsightAccountInactiveNode", insight_accounts_inactive.id)
+        user = f.RegularUserFactory.create()
+
+        # Now query single taxrate and check
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        query = self.insight_accounts_inactive_query
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+
+        node_id = to_global_id("InsightAccountInactiveNode", insight_accounts_inactive.id)
+
+        # grant permissions to user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        # Now query single location and check
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['insightAccountInactive']['id'], node_id)
+
     #
     # def test_create_taxrate(self):
     #     """ Create a taxrate """
