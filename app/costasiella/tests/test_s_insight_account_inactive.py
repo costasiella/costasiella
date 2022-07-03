@@ -32,7 +32,7 @@ class GQLInsightAccountInactive(TestCase):
 
         self.variables_create = {
             "input": {
-                "no_activity_after_date": str(timezone.now().date())
+                "noActivityAfterDate": str(timezone.now().date())
             }
         }
 
@@ -90,6 +90,9 @@ class GQLInsightAccountInactive(TestCase):
     createInsightAccountInactive(input: $input) {
       insightAccountInactive {
         id
+        noActivityAfterDate
+        countInactiveAccounts
+        countDeletedInactiveAccounts
       }
     }
   }
@@ -229,23 +232,19 @@ class GQLInsightAccountInactive(TestCase):
         data = executed.get('data')
         self.assertEqual(data['insightAccountInactive']['id'], node_id)
 
-    #
-    # def test_create_taxrate(self):
-    #     """ Create a taxrate """
-    #     query = self.taxrate_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['archived'], False)
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['percentage'], variables['input']['percentage'])
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['rateType'], variables['input']['rateType'])
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['code'], variables['input']['code'])
+    def test_create_insight_accounts_inactive(self):
+        """ Create a insight accounts inactive list """
+        query = self.insight_accounts_inactive_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createInsightAccountInactive']['insightAccountInactive']['noActivityAfterDate'],
+                         variables['input']['noActivityAfterDate'])
     #
     #
     # def test_create_taxrate_anon_user(self):
