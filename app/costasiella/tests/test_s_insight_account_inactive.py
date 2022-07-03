@@ -245,63 +245,55 @@ class GQLInsightAccountInactive(TestCase):
         data = executed.get('data')
         self.assertEqual(data['createInsightAccountInactive']['insightAccountInactive']['noActivityAfterDate'],
                          variables['input']['noActivityAfterDate'])
-    #
-    #
-    # def test_create_taxrate_anon_user(self):
-    #     """ Don't allow creating taxrates for non-logged in users """
-    #     query = self.taxrate_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating taxrates for users with permissions """
-    #     query = self.taxrate_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['archived'], False)
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['percentage'], variables['input']['percentage'])
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['rateType'], variables['input']['rateType'])
-    #     self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['code'], variables['input']['code'])
-    #
-    #
-    # def test_create_taxrate_permission_denied(self):
-    #     """ Check create taxrate permission denied error message """
-    #     query = self.taxrate_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_create_insight_accounts_inactive_anon_user(self):
+        """ Don't allow creating list of inactive users for non-logged in users """
+        query = self.insight_accounts_inactive_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_insight_accounts_inactive_permission_granted(self):
+        """ Allow creating list of inactive accounts for users with permissions """
+        query = self.insight_accounts_inactive_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createInsightAccountInactive']['insightAccountInactive']['noActivityAfterDate'],
+                         variables['input']['noActivityAfterDate'])
+
+    def test_create_insight_accounts_inactive_permission_denied(self):
+        """ Check create taxrate permission denied error message """
+        query = self.insight_accounts_inactive_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     #
     # def test_update_taxrate(self):
