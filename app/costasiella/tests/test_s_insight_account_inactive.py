@@ -294,161 +294,72 @@ class GQLInsightAccountInactive(TestCase):
         )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_update_taxrate(self):
-    #     """ Update a taxrate """
-    #     query = self.taxrate_update_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['percentage'], variables['input']['percentage'])
-    #     self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['rateType'], variables['input']['rateType'])
-    #     self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['code'], variables['input']['code'])
-    #
-    #
-    # def test_update_taxrate_anon_user(self):
-    #     """ Don't allow updating taxrates for non-logged in users """
-    #     query = self.taxrate_update_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_update_taxrate_permission_granted(self):
-    #     """ Allow updating taxrates for users with permissions """
-    #     query = self.taxrate_update_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['percentage'], variables['input']['percentage'])
-    #     self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['rateType'], variables['input']['rateType'])
-    #     self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['code'], variables['input']['code'])
-    #
-    #
-    # def test_update_taxrate_permission_denied(self):
-    #     """ Check update taxrate permission denied error message """
-    #     query = self.taxrate_update_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_archive_taxrate(self):
-    #     """ Archive a taxrate """
-    #     query = self.taxrate_archive_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['archiveFinanceTaxRate']['financeTaxRate']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_taxrate_anon_user(self):
-    #     """ Archive taxrate denied for anon user """
-    #     query = self.taxrate_archive_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_archive_taxrate_permission_granted(self):
-    #     """ Allow archiving taxrates for users with permissions """
-    #     query = self.taxrate_archive_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveFinanceTaxRate']['financeTaxRate']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_taxrate_permission_denied(self):
-    #     """ Check archive taxrate permission denied error message """
-    #     query = self.taxrate_archive_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_delete_insight_accounts_inactive(self):
+        """ Delete list of inactive accounts (only list, not the accounts) """
+        query = self.insight_accounts_inactive_delete_mutation
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("InsightAccountsInactiveNode", insight_accounts_inactive.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteInsightAccountInactive']['ok'], True)
+
+    def test_delete_insight_accounts_inactive_anon_user(self):
+        """ Delete list of inactive accounts (only list, not accounts) - denied for anon user """
+        query = self.insight_accounts_inactive_delete_mutation
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("InsightAccountsInactiveNode", insight_accounts_inactive.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_insight_accounts_inactive_permission_granted(self):
+        """ Allow Delete list of inactive accounts (only list, not accounts) for users with permissions """
+        query = self.insight_accounts_inactive_delete_mutation
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("InsightAccountsInactiveNode", insight_accounts_inactive.id)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteInsightAccountInactive']['ok'], True)
+
+    def test_delete_insight_accounts_inactive_permission_denied(self):
+        """ Delete list of inactive accounts (only list, not accounts) - permission denied error message """
+        query = self.insight_accounts_inactive_delete_mutation
+        insight_accounts_inactive = f.InsightAccountInactiveFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("InsightAccountsInactiveNode", insight_accounts_inactive.id)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
