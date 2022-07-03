@@ -109,6 +109,7 @@ class DeleteInsightAccountInactive(graphene.relay.ClientIDMutation):
 
 class DeleteInsightAccountInactiveAccounts(graphene.relay.ClientIDMutation):
     class Input:
+        # InsightAccountInactive.id
         id = graphene.ID(required=True)
 
     ok = graphene.Boolean()

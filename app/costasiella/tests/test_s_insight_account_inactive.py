@@ -29,6 +29,7 @@ class GQLInsightAccountInactive(TestCase):
         self.permission_add = 'add_insightaccountinactive'
         self.permission_change = 'change_insightaccountinactive'
         self.permission_delete = 'delete_insightaccountinactive'
+        self.permission_delete_accounts = 'delete_insightaccountinactiveaccount'
 
         self.variables_create = {
             "input": {
@@ -355,6 +356,89 @@ class GQLInsightAccountInactive(TestCase):
 
         # Create regular user
         user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_insight_accounts_inactive_accounts(self):
+        """ Delete list of inactive accounts (not list, the accounts) """
+        query = self.insight_accounts_inactive_accounts_delete_mutation
+        insight_accounts_inactive_account = f.InsightAccountInactiveAccountFactory.create()
+        insight_accounts_inactive_account_2 = f.InsightAccountInactiveAccountFactory.create(
+            account=f.Instructor2Factory.create(),
+            insight_account_inactive=f.InsightAccountInactiveFactory()
+        )
+        insight_accounts_inactive = insight_accounts_inactive_account.insight_account_inactive
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("InsightAccountsInactiveNode", insight_accounts_inactive.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteInsightAccountInactiveAccounts']['ok'], True)
+
+        # Assert that the second account (instructor2) still exists and no
+        # accounts from other lists have been removed
+        account_2 = insight_accounts_inactive_account_2.account
+        qs = models.Account.objects.filter(id=account_2.id)
+        self.assertEqual(qs.exists(), True)
+
+    def test_delete_insight_accounts_inactive_accounts_anon_user(self):
+        """ Delete list of inactive accounts (not list, the accounts) - Not allowed for anon users """
+        query = self.insight_accounts_inactive_accounts_delete_mutation
+        insight_accounts_inactive_account = f.InsightAccountInactiveAccountFactory.create()
+        insight_accounts_inactive = insight_accounts_inactive_account.insight_account_inactive
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("InsightAccountsInactiveNode", insight_accounts_inactive.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_insight_accounts_inactive_accounts_permission_granted(self):
+        """ Delete list of inactive accounts (not list, the accounts) - Permission granted """
+        query = self.insight_accounts_inactive_accounts_delete_mutation
+        insight_accounts_inactive_account = f.InsightAccountInactiveAccountFactory.create()
+        insight_accounts_inactive = insight_accounts_inactive_account.insight_account_inactive
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("InsightAccountsInactiveNode", insight_accounts_inactive.id)
+
+        # Create regular user
+        user = insight_accounts_inactive_account.account
+        permission = Permission.objects.get(codename=self.permission_delete_accounts)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteInsightAccountInactiveAccounts']['ok'], True)
+
+    def test_delete_insight_accounts_inactive_accounts_permission_denied(self):
+        """ Delete list of inactive accounts (not list, the accounts) - Permission denied """
+        query = self.insight_accounts_inactive_accounts_delete_mutation
+        insight_accounts_inactive_account = f.InsightAccountInactiveAccountFactory.create()
+        insight_accounts_inactive = insight_accounts_inactive_account.insight_account_inactive
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("InsightAccountsInactiveNode", insight_accounts_inactive.id)
+
+        # Create regular user
+        user = insight_accounts_inactive_account.account
 
         executed = execute_test_client_api_query(
             query,
