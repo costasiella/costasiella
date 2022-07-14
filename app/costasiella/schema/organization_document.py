@@ -5,16 +5,13 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-import validators
-
 from ..models import Organization, OrganizationDocument
 from ..modules.gql_tools import require_login_and_permission, get_rid, get_content_file_from_base64_str
 from ..modules.messages import Messages
 from ..models.choices.organization_document_types import get_organization_document_types
 
-from sorl.thumbnail import get_thumbnail
-
 m = Messages()
+
 
 class OrganizationDocumentNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
@@ -53,11 +50,6 @@ class OrganizationDocumentQuery(graphene.ObjectType):
     organization_documents = DjangoFilterConnectionField(OrganizationDocumentNode)
     organization_document = graphene.relay.Node.Field(OrganizationDocumentNode)
 
-    # def resolve_organization_documents(self, info, **kwargs):
-    #     user = info.context.user
-
-    #     return OrganizationClasstype.objects.all.order_by('document_type', '-date_start')
-
 
 def validate_document_type(document_type):
     types = get_organization_document_types()
@@ -88,11 +80,11 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_organizationdocument')
 
         organization_document = OrganizationDocument(
-            organization = Organization.objects.get(id=100),
-            version = input['version'],
-            document_type = input['document_type'],
-            date_start = input['date_start'],
-            document = get_content_file_from_base64_str(data_str=input['document'], file_name=input['document_file_name'])
+            organization=Organization.objects.get(id=100),
+            version=input['version'],
+            document_type=input['document_type'],
+            date_start=input['date_start'],
+            document=get_content_file_from_base64_str(data_str=input['document'], file_name=input['document_file_name'])
         )
 
         if 'date_end' in input:
