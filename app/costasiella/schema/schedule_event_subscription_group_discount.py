@@ -76,13 +76,13 @@ def validate_create_update_input(input, update=False):
         if not schedule_event:
             raise Exception(_('Invalid Schedule Event ID!'))
 
-        # Fetch & check organization subscription group (insert only)
-        rid = get_rid(input['organization_subscription_group'])
-        organization_subscription_group = \
-            OrganizationSubscriptionGroup.objects.filter(id=rid.id).first()
-        result['organization_subscription_group'] = organization_subscription_group
-        if not organization_subscription_group:
-            raise Exception(_('Invalid Organization Subscription Group ID!'))
+    # Fetch & check organization subscription group
+    rid = get_rid(input['organization_subscription_group'])
+    organization_subscription_group = \
+        OrganizationSubscriptionGroup.objects.filter(id=rid.id).first()
+    result['organization_subscription_group'] = organization_subscription_group
+    if not organization_subscription_group:
+        raise Exception(_('Invalid Organization Subscription Group ID!'))
 
     return result
 
@@ -119,6 +119,7 @@ class CreateScheduleEventSubscriptionGroupDiscount(graphene.relay.ClientIDMutati
 class UpdateScheduleEventSubscriptionGroupDiscount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        organization_subscription_group = graphene.ID(required=True)
         discount_percentage = graphene.Decimal(required=True)
         
     schedule_event_subscription_group_discount = graphene.Field(ScheduleEventSubscriptionGroupDiscountNode)
@@ -135,7 +136,11 @@ class UpdateScheduleEventSubscriptionGroupDiscount(graphene.relay.ClientIDMutati
             raise Exception('Invalid Schedule Event Subscription Group Discount ID!')
 
         # Validate input
-        # result = validate_create_update_input(input, update=True)
+        result = validate_create_update_input(input, update=True)
+
+        if 'organization_subscription_group' in result:
+            schedule_event_subscription_group_discount.organization_subscription_group = \
+                result['organization_subscription_group']
 
         if 'discount_percentage' in input:
             schedule_event_subscription_group_discount.discount_percentage = input['discount_percentage']
