@@ -13,9 +13,9 @@ def terms_and_conditions(request):
     today = now.date()
 
     qs = OrganizationDocument.objects.filter(
-        Q(document_type = "TERMS_AND_CONDITIONS") &
-        Q(date_start__lte = today) &
-        (Q(date_end__gte = today) | Q(date_end__isnull = True))           
+        Q(document_type="TERMS_AND_CONDITIONS") &
+        Q(date_start__lte=today) &
+        (Q(date_end__gte=today) | Q(date_end__isnull=True))
     )
 
     if qs.exists():
@@ -30,9 +30,9 @@ def privacy_policy(request):
     today = now.date()
 
     qs = OrganizationDocument.objects.filter(
-        Q(document_type = "PRIVACY_POLICY") &
-        Q(date_start__lte = today) &
-        (Q(date_end__gte = today) | Q(date_end__isnull = True))           
+        Q(document_type="PRIVACY_POLICY") &
+        Q(date_start__lte=today) &
+        (Q(date_end__gte=today) | Q(date_end__isnull=True))
     )
 
     if qs.exists():
