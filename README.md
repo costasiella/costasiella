@@ -19,7 +19,7 @@ Online payments are provided through [Mollie](https://www.mollie.com/en). Please
 
 ## Support
 
-To request commercial support, please use the contact form om [costasiella.com](https://costasiella.com/contact)
+To request commercial support, please use the contact form at [costasiella.com](https://costasiella.com/contact)
 
 ## Setup
 
