@@ -2,10 +2,6 @@
 
 ![Build Status](https://github.com/costasiella/costasiella/actions/workflows/django_ci.yml/badge.svg)
 
-## Project status
-
-Costasiella is currently in Beta status and shouldn't be used in a production environment yet. Around Q4 2021 / Q1 2022 a first production release is scheduled to be available. After that release, professional services like hosting and support will also be available.
-
 ## About
 
 Costasiella is freely distributed open source web based software built for Yoga, Dance, Karate/Martial Arts, and Fitness Studios/Schools. Here just a sample of the types of organizations Costasiella serves:
@@ -20,6 +16,10 @@ Any organization dealing with subscriptions, classes and/or events could benefit
 Costasiella will help you manage customers, subscriptions, class passes, schedule classes and plan events.
 
 Online payments are provided through [Mollie](https://www.mollie.com/en). Please refer to their website & support for current rates and questions about availability in your region. The Costasiella Mollie integration handles single payments for classes, class passes and event tickets. Recurring payments are supported for subscriptions. 
+
+## Support
+
+To request commercial support, please use the contact form om [costasiella.com](https://costasiella.com/contact)
 
 ## Setup
 
