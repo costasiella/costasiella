@@ -14,6 +14,7 @@ from django.contrib.auth.hashers import check_password
 from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
+from django_filters import FilterSet, OrderingFilter
 
 from sorl.thumbnail import get_thumbnail
 
@@ -66,6 +67,25 @@ class UserType(DjangoObjectType):
             return ''
 
 
+class AccountFilter(FilterSet):
+    class Meta:
+        model = get_user_model()
+        fields = {
+            'full_name': ['icontains', 'exact'],
+            'is_active': ['exact'],
+            'customer': ['exact'],
+            'instructor': ['exact'],
+            'employee': ['exact'],
+        }
+
+    order_by = OrderingFilter(
+        fields=(
+            'created_at',
+            'full_name'
+        )
+    )
+
+
 class AccountNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     has_reached_trial_limit = graphene.Boolean()
@@ -78,6 +98,7 @@ class AccountNodeInterface(graphene.Interface):
 class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
+        filterset_class = AccountFilter
         # Fields to include
         fields = (
             'is_active',
@@ -107,13 +128,6 @@ class AccountNode(DjangoObjectType):
             'classpasses',
             'subscriptions'
         )
-        filter_fields = {
-            'full_name': ['icontains', 'exact'],
-            'is_active': ['exact'],
-            'customer': ['exact'],
-            'instructor': ['exact'],
-            'employee': ['exact'],
-        }
         interfaces = (graphene.relay.Node, AccountNodeInterface,)
 
     def resolve_has_reached_trial_limit(self, info):
