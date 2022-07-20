@@ -50,11 +50,11 @@ class ScheduleEventTicket(models.Model):
         price = float(self.price)
         if tax_rate:
             if tax_rate.rate_type == "IN":
-                # divide price by 1.tax_percentage and then multiply by quantity
+                # divide price by 1.tax_percentage
                 percentage = (float(tax_rate.percentage) / 100) + 1
                 price = price / percentage
 
-        return float(price) * float(self.quantity)
+        return float(price)
 
     def _calculate_tax(self):
         tax_rate = self.finance_tax_rate
