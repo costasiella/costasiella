@@ -68,25 +68,27 @@ class FinanceInvoiceItem(models.Model):
         super(FinanceInvoiceItem, self).save(*args, **kwargs)
     
     def _calculate_subtotal(self):
-        # If tax is included in price, first remove it.
-        tax_rate = self.finance_tax_rate
-        price = float(self.price)
-        if tax_rate:
-            if tax_rate.rate_type == "IN":
-                # divide price by 1.tax_percentage and then multiply by quantity
-                percentage = (float(tax_rate.percentage) / 100) + 1
-                price = price / percentage
-
-        return float(price) * float(self.quantity)
+        from ..dudes import FinanceDude
+        finance_dude = FinanceDude()
+        return finance_dude.calculate_subtotal(
+            price=self.price,
+            quantity=self.quantity,
+            finance_tax_rate=self.finance_tax_rate
+        )
 
     def _calculate_tax(self):
-        tax_rate = self.finance_tax_rate
-        if tax_rate:
-            percentage = (tax_rate.percentage / 100)
-
-            return float(self.subtotal) * float(percentage)
-        else:
-            return 0
+        from ..dudes import FinanceDude
+        finance_dude = FinanceDude()
+        return finance_dude.calculate_tax(
+            subtotal=self.subtotal,
+            finance_tax_rate=self.finance_tax_rate
+        )
 
     def _calculate_total(self):
-        return self.subtotal + self.tax
+        from ..dudes import FinanceDude
+        finance_dude = FinanceDude()
+        return finance_dude.calculate_total(
+            subtotal=self.subtotal,
+            tax=self.tax
+        )
+

@@ -45,28 +45,29 @@ class ScheduleEventTicket(models.Model):
         super(ScheduleEventTicket, self).save(*args, **kwargs)
 
     def _calculate_subtotal(self):
-        # If tax is included in price, first remove it.
-        tax_rate = self.finance_tax_rate
-        price = float(self.price)
-        if tax_rate:
-            if tax_rate.rate_type == "IN":
-                # divide price by 1.tax_percentage
-                percentage = (float(tax_rate.percentage) / 100) + 1
-                price = price / percentage
-
-        return float(price)
+        from ..dudes import FinanceDude
+        finance_dude = FinanceDude()
+        return finance_dude.calculate_subtotal(
+            price=self.price,
+            quantity=1,
+            finance_tax_rate=self.finance_tax_rate
+        )
 
     def _calculate_tax(self):
-        tax_rate = self.finance_tax_rate
-        if tax_rate:
-            percentage = (tax_rate.percentage / 100)
-
-            return float(self.subtotal) * float(percentage)
-        else:
-            return 0
+        from ..dudes import FinanceDude
+        finance_dude = FinanceDude()
+        return finance_dude.calculate_tax(
+            subtotal=self.subtotal,
+            finance_tax_rate=self.finance_tax_rate
+        )
 
     def _calculate_total(self):
-        return self.subtotal + self.tax
+        from ..dudes import FinanceDude
+        finance_dude = FinanceDude()
+        return finance_dude.calculate_total(
+            subtotal=self.subtotal,
+            tax=self.tax
+        )
 
     def is_sold_out(self):
         """
@@ -127,21 +128,20 @@ class ScheduleEventTicket(models.Model):
             earlybird = earlybirds.first()
 
             discount_percentage = earlybird.discount_percentage
-            discount = Decimal(self.price * Decimal(discount_percentage / 100))
+            discount = Decimal(Decimal(self.total) * Decimal(discount_percentage / 100))
 
         return {
             "discount": Decimal(discount.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)),
             "earlybird": earlybird
         }
 
-    def get_highest_subscription_group_discount_on_date_for_account(self, finance_order_item, date):
+    def get_highest_subscription_group_discount_on_date_for_account(self, account, date):
         from decimal import Decimal, ROUND_HALF_UP
         import time
         from .account_subscription import AccountSubscription
         from .schedule_event_subscription_group_discount import ScheduleEventSubscriptionGroupDiscount
 
         print("Hello world")
-        account = finance_order_item.finance_order.account
 
         discount = Decimal(0)
         organization_subscription_group = None
@@ -185,7 +185,7 @@ class ScheduleEventTicket(models.Model):
 
         if highest_subscription_group_discount:
             discount_percentage = highest_subscription_group_discount.discount_percentage
-            discount = Decimal(Decimal(finance_order_item.total) * Decimal(discount_percentage / 100))
+            discount = Decimal(Decimal(self.total) * Decimal(discount_percentage / 100))
 
         return {
             "discount": Decimal(discount.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)),
