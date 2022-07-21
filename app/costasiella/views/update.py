@@ -1,7 +1,9 @@
 from django.http import Http404, HttpResponse
 from django.utils.translation import gettext as _
 
-from ..models import SystemMailTemplate
+from ..models import \
+    ScheduleEventTicket, \
+    SystemMailTemplate
 from ..dudes import PermissionDude, SystemSettingDude, VersionDude
 
 
@@ -22,6 +24,9 @@ def update(request):
 
     if current_version < 2021.03:
         _update_to_2021_03()
+
+    if current_version < 2022.03:
+        _update_to_2022_03()
 
     # Set latest version
     new_version = version_dude.update_version()
@@ -62,3 +67,14 @@ def _update_to_2021_03():
         comments=""
     )
     system_mail_template.save()
+
+
+def _update_to_2022_03():
+    """
+    Update db values ot 2022.03
+    :return: None
+    """
+    # Save tickets to populate subtotal, tax and total fields
+    schedule_event_tickets = ScheduleEventTicket.objects.all()
+    for ticket in schedule_event_tickets:
+        ticket.save()
