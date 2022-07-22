@@ -23,6 +23,9 @@ class ScheduleEventTicketNodeInterface(graphene.Interface):
     is_earlybird_price = graphene.Boolean()
     earlybird_discount = graphene.types.Decimal()
     earlybird_discount_display = graphene.String()
+    is_subscription_discount_price = graphene.Boolean()
+    subscription_discount = graphene.types.Decimal()
+    subscription_discount_display = graphene.String()
     total_price = graphene.types.Decimal()
     total_price_display = graphene.String()
 
@@ -66,6 +69,11 @@ class ScheduleEventTicketNode(DjangoObjectType):
     def resolve_is_sold_out(self, info):
         return self.is_sold_out()
 
+    def resolve_is_earlybird_price(self, info):
+        now = timezone.now()
+        date = now.date()
+        return self.is_earlybird_price_on_date(date)
+
     def resolve_earlybird_discount(self, info):
         now = timezone.now()
         date = now.date()
@@ -79,6 +87,46 @@ class ScheduleEventTicketNode(DjangoObjectType):
         result = self.get_earlybird_discount_on_date(date)
         return display_float_as_amount(result.get('discount', 0))
 
+    def resolve_is_subscription_discount_price(self, info):
+        user = info.context.user
+        now = timezone.now()
+        date = now.date()
+        is_subscription_discount_price = False
+        if user.is_authenticated:
+            subscription_discount_check_result = self.get_highest_subscription_group_discount_on_date_for_account(
+                user, date
+            )
+            if subscription_discount_check_result['discount']:
+                is_subscription_discount_price = True
+
+        return is_subscription_discount_price
+
+    def resolve_subscription_discount(self, info):
+        user = info.context.user
+        now = timezone.now()
+        date = now.date()
+
+        discount = 0
+        if user.is_authenticated:
+            result = self.get_highest_subscription_group_discount_on_date_for_account(user, date)
+            discount = result.get('discount', 0)
+
+        return discount
+
+    def resolve_earlybird_discount_display(self, info):
+        from ..modules.finance_tools import display_float_as_amount
+
+        user = info.context.user
+        now = timezone.now()
+        date = now.date()
+
+        discount = 0
+        if user.is_authenticated:
+            result = self.get_highest_subscription_group_discount_on_date_for_account(user, date)
+            discount = result.get('discount', 0)
+
+        return display_float_as_amount(discount)
+
     def resolve_total_price(self, info):
         now = timezone.now()
         date = now.date()
@@ -89,11 +137,6 @@ class ScheduleEventTicketNode(DjangoObjectType):
         now = timezone.now()
         date = now.date()
         return display_float_as_amount(self.total_price_on_date(date))
-
-    def resolve_is_earlybird_price(self, info):
-        now = timezone.now()
-        date = now.date()
-        return self.is_earlybird_price_on_date(date)
 
 
 class ScheduleEventTicketQuery(graphene.ObjectType):
