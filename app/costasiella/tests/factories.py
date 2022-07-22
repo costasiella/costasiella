@@ -1012,6 +1012,14 @@ class ScheduleEventEarlybirdFactory(factory.DjangoModelFactory):
     discount_percentage = 10
 
 
+class ScheduleEventSubscriptionGroupDiscountFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEventSubscriptionGroupDiscount
+
+    schedule_event = factory.SubFactory(ScheduleEventFactory)
+    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionFactory)
+    discount_percentage = 10
+
 class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItem
