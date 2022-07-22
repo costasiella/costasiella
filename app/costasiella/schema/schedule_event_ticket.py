@@ -130,13 +130,25 @@ class ScheduleEventTicketNode(DjangoObjectType):
     def resolve_total_price(self, info):
         now = timezone.now()
         date = now.date()
-        return self.total_price_on_date(date)
+
+        user = info.context.user
+        account = None
+        if user.is_authenticated:
+            account = user
+
+        return self.total_price_on_date(date, account=account)
 
     def resolve_total_price_display(self, info):
         from ..modules.finance_tools import display_float_as_amount
+
+        user = info.context.user
+        account = None
+        if user.is_authenticated:
+            account = user
+
         now = timezone.now()
         date = now.date()
-        return display_float_as_amount(self.total_price_on_date(date))
+        return display_float_as_amount(self.total_price_on_date(date, account=account))
 
 
 class ScheduleEventTicketQuery(graphene.ObjectType):
