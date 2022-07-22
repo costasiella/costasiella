@@ -141,8 +141,6 @@ class ScheduleEventTicket(models.Model):
         from .schedule_event_subscription_group_discount import ScheduleEventSubscriptionGroupDiscount
 
         discount = Decimal(0)
-        organization_subscription_group = None
-        organization_subscription_groups = self._get_earlybird_qs(date)
 
         # Get subscriptions for account that are active on given date
         account_subscriptions = AccountSubscription.objects.filter(
@@ -179,10 +177,16 @@ class ScheduleEventTicket(models.Model):
             "subscription_group_discount": highest_subscription_group_discount
         }
 
-    def total_price_on_date(self, date):
+    def total_price_on_date(self, date, account=None):
         # Process earlybird discount
         earlybird_result = self.get_earlybird_discount_on_date(date)
-
         price = self.price - earlybird_result.get('discount', 0)
+
+        # Process subscription group discount
+        if account:
+            subscription_group_discount_result = self.get_highest_subscription_group_discount_on_date_for_account(
+                account=account, date=date
+            )
+            price = price - subscription_group_discount_result.get('discount', 0)
 
         return price
