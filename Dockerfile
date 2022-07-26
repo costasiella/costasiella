@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM python:3.8
+FROM python:3.10
 
-LABEL version="0.01"
+LABEL version="0.02"
 
 # Get the latest & greatest
 RUN apt-get update && \
@@ -10,6 +10,7 @@ RUN apt-get update && \
 RUN apt-get install -y libffi-dev libmariadb-dev
 
 # Copy app into container
+COPY ./app /opt/app
 COPY ./docker-backend-entrypoint.sh /opt/
 COPY ./docker-celery-entrypoint.sh /opt/
 COPY ./docker-celery-beat-entrypoint.sh /opt/
