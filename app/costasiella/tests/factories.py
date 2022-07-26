@@ -1017,7 +1017,7 @@ class ScheduleEventSubscriptionGroupDiscountFactory(factory.DjangoModelFactory):
         model = models.ScheduleEventSubscriptionGroupDiscount
 
     schedule_event = factory.SubFactory(ScheduleEventFactory)
-    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionFactory)
+    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
     discount_percentage = 10
 
 class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
