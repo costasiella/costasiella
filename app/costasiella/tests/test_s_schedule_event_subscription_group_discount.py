@@ -172,33 +172,33 @@ class GQLScheduleEventSubscriptionGroupDiscount(TestCase):
                          self.schedule_event_subscription_group_discount.organization_subscription_group.id)
         )
 
-    # def test_query_anon_user_can_query_public_discounts(self):
-    #     """ Query list of earlybird discounts as anon user """
-    #     query = self.schedule_event_earlybirds_query
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
-    #     errors = executed.get('errors')
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #         data['scheduleEventEarlybirds']['edges'][0]['node']['id'],
-    #         to_global_id('ScheduleEventEarlybirdNode', self.schedule_event_earlybird.id)
-    #     )
-    #
-    # def test_query_non_public_not_displayed(self):
-    #     """ Query list of earlybird discounts - check non public """
-    #     query = self.schedule_event_earlybirds_query
-    #     schedule_event = self.schedule_event_earlybird.schedule_event
-    #     schedule_event.display_public = False
-    #     schedule_event.display_shop = False
-    #     schedule_event.save()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(len(data['scheduleEventEarlybirds']['edges']), 0)
+    def test_query_anon_user_can_query_public_discounts(self):
+        """ Query list of schedule event subscription group discounts as anon user """
+        query = self.schedule_event_subscription_group_discounts_query
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['scheduleEventSubscriptionGroupDiscounts']['edges'][0]['node']['id'],
+            to_global_id('ScheduleEventSubscriptionGroupDiscountNode',
+                         self.schedule_event_subscription_group_discount.id)
+        )
+
+    def test_query_non_public_not_displayed(self):
+        """ Query list of schedule event subscription group discounts - check non public """
+        query = self.schedule_event_subscription_group_discounts_query
+        schedule_event = self.schedule_event_subscription_group_discount.schedule_event
+        schedule_event.display_public = False
+        schedule_event.display_shop = False
+        schedule_event.save()
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
+        data = executed.get('data')
+
+        self.assertEqual(len(data['scheduleEventSubscriptionGroupDiscounts']['edges']), 0)
     #
     # def test_query_one(self):
     #     """ Query one schedule event earlybird """

@@ -55,7 +55,7 @@ class ScheduleEventSubscriptionGroupDiscountQuery(graphene.ObjectType):
         rid = get_rid(schedule_event)
         qs = ScheduleEventSubscriptionGroupDiscount.objects.filter(Q(schedule_event=rid.id))
 
-        # Earlybird discounts public status is linked to schedule event public status
+        # Subscription group discounts public status is linked to schedule event public status
         if not user.has_perm(permission):
             qs = qs.filter((Q(schedule_event__display_public=True) or Q(schedule_event__display_shop=True)))
 
