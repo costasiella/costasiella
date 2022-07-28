@@ -418,66 +418,66 @@ class GQLScheduleEventSubscriptionGroupDiscount(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    # def test_delete_schedule_event_earlybird(self):
-    #     """ Delete a schedule event earlybird """
-    #     query = self.schedule_event_earlybird_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['deleteScheduleEventEarlybird']['ok'], True)
-    #
-    # def test_delete_schedule_event_earlybird_anon_user(self):
-    #     """ Delete a schedule event earlybird """
-    #     query = self.schedule_event_earlybird_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_schedule_event_earlybird_permission_granted(self):
-    #     """ Allow deleting schedule event earlybirds for users with permissions """
-    #     query = self.schedule_event_earlybird_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleEventEarlybird']['ok'], True)
-    #
-    # def test_delete_schedule_event_earlybird_permission_denied(self):
-    #     """ Check delete schedule event earlybird permission denied error message """
-    #     query = self.schedule_event_earlybird_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    def test_delete_schedule_event_subscription_group_discount(self):
+        """ Delete a schedule event subscription group discount """
+        query = self.schedule_event_subscription_group_discount_delete_mutation
+        variables = self.variables_delete
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['deleteScheduleEventSubscriptionGroupDiscount']['ok'], True)
+
+    def test_delete_schedule_event_subscription_group_discount_anon_user(self):
+        """ Delete a schedule event subscription group discount """
+        query = self.schedule_event_subscription_group_discount_delete_mutation
+        variables = self.variables_delete
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_schedule_event_subscription_group_discount_permission_granted(self):
+        """ Allow deleting schedule event subscription group discount for users with permissions """
+        query = self.schedule_event_subscription_group_discount_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['deleteScheduleEventSubscriptionGroupDiscount']['ok'], True)
+
+    def test_delete_schedule_event_subscription_group_discount_permission_denied(self):
+        """ Check delete schedule event subscription group discount permission denied error message """
+        query = self.schedule_event_subscription_group_discount_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
