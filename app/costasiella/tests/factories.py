@@ -778,12 +778,7 @@ class FinanceOrderFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceOrder
 
-    class Params:
-        initial_account = factory.SubFactory(RegularUserFactory)
-
-    account = factory.LazyAttribute(
-        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
-    )
+    account = factory.SubFactory(RegularUserFactory)
     status = "RECEIVED"
     message = "Customer's note here..."
 
