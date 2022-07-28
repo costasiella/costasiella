@@ -98,60 +98,68 @@ class TestModelFinanceOrder(TestCase):
         self.assertEqual(second_item.finance_tax_rate, schedule_event_ticket.finance_tax_rate)
         self.assertEqual(second_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
         self.assertEqual(second_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
-    #
-    # def test_item_add_schedule_event_ticket_with_subscription_group_discount(self):
-    #     """ Test adding schedule event ticket item with a subscription group discount"""
-    #     today = timezone.now().date()
-    #
-    #     account_schedule_event_ticket = f.AccountScheduleEventTicketFactory.create()
-    #     schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
-    #     schedule_event = schedule_event_ticket.schedule_event
-    #
-    #     subscription_group_discount = f.ScheduleEventSubscriptionGroupDiscountFactory.create(
-    #         schedule_event=schedule_event
-    #     )
-    #
-    #     finance_invoice = f.FinanceInvoiceFactory.create(
-    #         account=account_schedule_event_ticket.account
-    #     )
-    #     finance_invoice.item_add_schedule_event_ticket(account_schedule_event_ticket)
-    #
-    #     # Now test;
-    #     # Check if invoice was created
-    #     invoice = models.FinanceInvoice.objects.all().first()
-    #     sums = models.FinanceInvoiceItem.objects.filter(finance_invoice=invoice).aggregate(
-    #         Sum('subtotal'), Sum('tax'), Sum('total')
-    #     )
-    #
-    #     subtotal = sums['subtotal__sum'] or 0
-    #     tax = sums['tax__sum'] or 0
-    #     total = sums['total__sum'] or 0
-    #
-    #     # Check invoice item fields
-    #     items = invoice.items.all()
-    #     first_item = items[0]
-    #     second_item = items[1]
-    #
-    #     # Verify that event ticket item was added to the order
-    #     self.assertEqual(first_item.product_name, "Event ticket")
-    #     self.assertEqual(first_item.price, schedule_event_ticket.price)
-    #     self.assertEqual(first_item.total, schedule_event_ticket.price)
-    #     self.assertEqual(first_item.description,
-    #                      '%s\n[%s]' % (schedule_event_ticket.schedule_event.name, schedule_event_ticket.name))
-    #     self.assertEqual(first_item.quantity, 1)
-    #     self.assertEqual(first_item.finance_tax_rate, schedule_event_ticket.finance_tax_rate)
-    #     self.assertEqual(first_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
-    #     self.assertEqual(first_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
-    #
-    #     # Verify that the earlybird discount was added
-    #     earlybird_result = schedule_event_ticket.get_earlybird_discount_on_date(today)
-    #     discount_price = format(earlybird_result['discount'] * -1, ".2f")
-    #     self.assertEqual(second_item.product_name, "Event ticket earlybird discount")
-    #     self.assertEqual(format(second_item.price, ".2f"), discount_price)
-    #     self.assertEqual(format(second_item.total, ".2f"), discount_price)
-    #     self.assertEqual(second_item.description,
-    #                      format(schedule_event_earlybird.discount_percentage, ".2f") + _('% discount'))
-    #     self.assertEqual(second_item.quantity, 1)
-    #     self.assertEqual(second_item.finance_tax_rate, schedule_event_ticket.finance_tax_rate)
-    #     self.assertEqual(second_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
-    #     self.assertEqual(second_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
+
+    def test_item_add_schedule_event_ticket_with_subscription_group_discount(self):
+        """ Test adding schedule event ticket item with a subscription group discount"""
+        today = timezone.now().date()
+
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event = schedule_event_ticket.schedule_event
+        subscription_group_discount = f.ScheduleEventSubscriptionGroupDiscountFactory.create(
+            schedule_event=schedule_event
+        )
+
+        # Add a subscription and ensure it's added to the subscription group getting the discount
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
+        organization_subscription_group = subscription_group_discount.organization_subscription_group
+        organization_subscription_group.organization_subscriptions.add(account_subscription.organization_subscription)
+        organization_subscription_group.save()
+
+        finance_order = f.FinanceOrderFactory.create(account=account)
+        finance_order.item_add_schedule_event_ticket(schedule_event_ticket=schedule_event_ticket)
+
+        # Now test;
+        # Check if invoice was created
+        order = models.FinanceOrder.objects.all().first()
+        sums = models.FinanceOrderItem.objects.filter(finance_order=order).aggregate(
+            Sum('subtotal'), Sum('tax'), Sum('total')
+        )
+
+        subtotal = sums['subtotal__sum'] or 0
+        tax = sums['tax__sum'] or 0
+        total = sums['total__sum'] or 0
+
+        # Check invoice item fields
+        items = order.items.all()
+        first_item = items[0]
+        second_item = items[1]
+
+        # Verify that event ticket item was added to the order
+        self.assertEqual(first_item.product_name, "Event ticket")
+        self.assertEqual(first_item.price, schedule_event_ticket.price)
+        self.assertEqual(first_item.total, schedule_event_ticket.price)
+        self.assertEqual(first_item.description,
+                         '%s\n[%s]' % (schedule_event_ticket.schedule_event.name, schedule_event_ticket.name))
+        self.assertEqual(first_item.quantity, 1)
+        self.assertEqual(first_item.finance_tax_rate, schedule_event_ticket.finance_tax_rate)
+        self.assertEqual(first_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
+        self.assertEqual(first_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
+
+        # Verify that the subscription group discount was added
+        # Get the highest subscription group discount (if any)
+        subscription_group_discount_result = \
+            schedule_event_ticket.get_highest_subscription_group_discount_on_date_for_account(
+                account, account_subscription.date_start
+            )
+        discount_price = format(subscription_group_discount_result['discount'] * -1, ".2f")
+        discount_percentage = subscription_group_discount_result['subscription_group_discount'].discount_percentage
+        self.assertEqual(second_item.product_name, "Event ticket subscription discount")
+        self.assertEqual(format(second_item.price, ".2f"), discount_price)
+        self.assertEqual(format(second_item.total, ".2f"), discount_price)
+        self.assertEqual(second_item.description,
+                         format(discount_percentage, ".2f") + _('% discount'))
+        self.assertEqual(second_item.quantity, 1)
+        self.assertEqual(second_item.finance_tax_rate, schedule_event_ticket.finance_tax_rate)
+        self.assertEqual(second_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
+        self.assertEqual(second_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
