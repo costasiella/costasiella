@@ -119,8 +119,8 @@ class CreateScheduleEventSubscriptionGroupDiscount(graphene.relay.ClientIDMutati
 class UpdateScheduleEventSubscriptionGroupDiscount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        organization_subscription_group = graphene.ID(required=True)
-        discount_percentage = graphene.Decimal(required=True)
+        organization_subscription_group = graphene.ID(required=False)
+        discount_percentage = graphene.Decimal(required=False)
         
     schedule_event_subscription_group_discount = graphene.Field(ScheduleEventSubscriptionGroupDiscountNode)
 
