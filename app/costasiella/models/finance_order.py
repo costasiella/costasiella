@@ -196,9 +196,6 @@ class FinanceOrder(models.Model):
         from .finance_order_item import FinanceOrderItem
         # Don't deliver cancelled orders or orders that have already been delivered
         if self.status == "DELIVERED" or self.status == "CANCELLED":
-            print(self)
-            print(self.status)
-            print("Returning...")
             return
 
         # Don't create an invoice when there's nothing that needs to be paid
