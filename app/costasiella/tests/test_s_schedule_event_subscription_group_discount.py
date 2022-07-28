@@ -61,6 +61,9 @@ class GQLScheduleEventSubscriptionGroupDiscount(TestCase):
             "input": {
                 "id": to_global_id("ScheduleEventSubscriptionGroupDiscountNode",
                                    self.schedule_event_subscription_group_discount.id),
+                "organizationSubscriptionGroup":
+                    to_global_id("OrganizationSubscriptionGroupNode",
+                                 self.schedule_event_subscription_group_discount.organization_subscription_group.id),
                 "discountPercentage": "50",
             }
         }
@@ -138,6 +141,9 @@ class GQLScheduleEventSubscriptionGroupDiscount(TestCase):
       scheduleEventSubscriptionGroupDiscount {
         id
         discountPercentage
+        scheduleEvent {
+          id
+        }
         organizationSubscriptionGroup {
           id
           name
@@ -334,77 +340,84 @@ class GQLScheduleEventSubscriptionGroupDiscount(TestCase):
         )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_schedule_event_earlybird(self):
-    #     """ Update schedule event earlybird """
-    #     query = self.schedule_event_earlybird_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventEarlybird']['scheduleEventEarlybird']['dateStart'],
-    #                      variables['input']['dateStart'])
-    #     self.assertEqual(data['updateScheduleEventEarlybird']['scheduleEventEarlybird']['dateEnd'],
-    #                      variables['input']['dateEnd'])
-    #     self.assertEqual(data['updateScheduleEventEarlybird']['scheduleEventEarlybird']['discountPercentage'],
-    #                      variables['input']['discountPercentage'])
-    #
-    # def test_update_schedule_event_earlybird_anon_user(self):
-    #     """ Don't allow updating schedule event earlybird for non-logged in users """
-    #     query = self.schedule_event_earlybird_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_schedule_event_earlybird_permission_granted(self):
-    #     """ Allow updating schedule event earlybird for users with permissions """
-    #     query = self.schedule_event_earlybird_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventEarlybird']['scheduleEventEarlybird']['discountPercentage'],
-    #                      variables['input']['discountPercentage'])
-    #
-    # def test_update_schedule_event_earlybird_permission_denied(self):
-    #     """ Check update schedule event earlybird permission denied error message """
-    #     query = self.schedule_event_earlybird_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_update_schedule_event_subscription_group_discount(self):
+        """ Update schedule event subscription group discount """
+        query = self.schedule_event_subscription_group_discount_update_mutation
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(
+            data['updateScheduleEventSubscriptionGroupDiscount']['scheduleEventSubscriptionGroupDiscount']['id'],
+            variables['input']['id']
+        )
+        self.assertEqual(
+            data['updateScheduleEventSubscriptionGroupDiscount']['scheduleEventSubscriptionGroupDiscount']['organizationSubscriptionGroup']['id'],
+            variables['input']['organizationSubscriptionGroup']
+        )
+        self.assertEqual(
+            data['updateScheduleEventSubscriptionGroupDiscount']['scheduleEventSubscriptionGroupDiscount']['discountPercentage'],
+            variables['input']['discountPercentage']
+        )
+
+    def test_update_schedule_event_subscription_group_discount_anon_user(self):
+        """ Don't allow updating schedule event subscription group discount for non-logged in users """
+        query = self.schedule_event_subscription_group_discount_update_mutation
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_schedule_event_subscription_group_discount_permission_granted(self):
+        """ Allow updating schedule event subscription group discount for users with permissions """
+        query = self.schedule_event_subscription_group_discount_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+            data['updateScheduleEventSubscriptionGroupDiscount']['scheduleEventSubscriptionGroupDiscount']['id'],
+            variables['input']['id']
+        )
+
+    def test_update_schedule_event_subscription_group_discount_permission_denied(self):
+        """ Check update schedule event subscription group discount permission denied error message """
+        query = self.schedule_event_subscription_group_discount_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
     # def test_delete_schedule_event_earlybird(self):
     #     """ Delete a schedule event earlybird """
     #     query = self.schedule_event_earlybird_delete_mutation
