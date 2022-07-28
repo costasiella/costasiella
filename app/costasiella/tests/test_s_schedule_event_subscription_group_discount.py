@@ -216,49 +216,40 @@ class GQLScheduleEventSubscriptionGroupDiscount(TestCase):
                          self.schedule_event_subscription_group_discount.organization_subscription_group.id)
         )
 
-        # self.assertEqual(
-        #     data['scheduleEventEarlybird']['scheduleEvent']['id'],
-        #     to_global_id('ScheduleEventNode', self.schedule_event_earlybird.schedule_event.id)
-        # )
-        # self.assertEqual(data['scheduleEventEarlybird']['dateStart'],
-        #                  str(self.schedule_event_earlybird.date_start))
-        # self.assertEqual(data['scheduleEventEarlybird']['dateEnd'],
-        #                  str(self.schedule_event_earlybird.date_end))
-    #
-    # def test_query_one_dont_display_non_public(self):
-    #     """ Query one schedule event earlybird """
-    #     query = self.schedule_event_earlybird_query
-    #     schedule_event = self.schedule_event_earlybird.schedule_event
-    #     schedule_event.display_public = False
-    #     schedule_event.display_shop = False
-    #     schedule_event.save()
-    #
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleEventEarlybird']['id'], self.variables_query_one['id'])
-    #
-    # def test_query_one_dont_display_non_public_anon(self):
-    #     """ Query one schedule event earlybird """
-    #     query = self.schedule_event_earlybird_query
-    #     schedule_event = self.schedule_event_earlybird.schedule_event
-    #     schedule_event.display_public = False
-    #     schedule_event.display_shop = False
-    #     schedule_event.save()
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_one)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleEventEarlybird'], None)
-    #
-    # def test_query_one_display_public_anon(self):
-    #     """ Query one schedule event earlybird """
-    #     query = self.schedule_event_earlybird_query
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_one)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleEventEarlybird']['id'], self.variables_query_one['id'])
+    def test_query_one_dont_display_non_public(self):
+        """ Query one schedule event subscription group discount """
+        query = self.schedule_event_subscription_group_discount_query
+        schedule_event = self.schedule_event_subscription_group_discount.schedule_event
+        schedule_event.display_public = False
+        schedule_event.display_shop = False
+        schedule_event.save()
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleEventSubscriptionGroupDiscount']['id'], self.variables_query_one['id'])
+
+    def test_query_one_dont_display_non_public_anon(self):
+        """ Query one schedule event subscription group discount """
+        query = self.schedule_event_subscription_group_discount_query
+        schedule_event = self.schedule_event_subscription_group_discount.schedule_event
+        schedule_event.display_public = False
+        schedule_event.display_shop = False
+        schedule_event.save()
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_one)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleEventSubscriptionGroupDiscount'], None)
+
+    def test_query_one_display_public_anon(self):
+        """ Query one schedule event subscription group discount """
+        query = self.schedule_event_subscription_group_discount_query
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_one)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleEventSubscriptionGroupDiscount']['id'], self.variables_query_one['id'])
     #
     # def test_create_schedule_event_earlybird(self):
     #     """ Create schedule event earlybird """
