@@ -28,7 +28,7 @@ from .. import schema
 from ..tasks.account.subscription.invoices.tasks import account_subscription_invoices_add_for_month
 
 
-class TestModelFinanceInvoice(TestCase):
+class TestModelFinanceOrder(TestCase):
     fixtures = [
         'app_settings.json',
         'finance_invoice_group.json',
@@ -50,21 +50,19 @@ class TestModelFinanceInvoice(TestCase):
         """ Test adding schedule event ticket item with an earlybird discount"""
         today = timezone.now().date()
 
-        account_schedule_event_ticket = f.AccountScheduleEventTicketFactory.create()
-        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
         schedule_event_earlybird = f.ScheduleEventEarlybirdFactory.create(
             schedule_event=schedule_event_ticket.schedule_event
         )
+        account = f.RegularUserFactory.create()
 
-        finance_invoice = f.FinanceInvoiceFactory.create(
-            account=account_schedule_event_ticket.account
-        )
-        finance_invoice.item_add_schedule_event_ticket(account_schedule_event_ticket)
+        finance_order = f.FinanceOrderFactory.create(account=account)
+        finance_order.item_add_schedule_event_ticket(schedule_event_ticket=schedule_event_ticket)
 
         # Now test;
-        # Check if invoice was created
-        invoice = models.FinanceInvoice.objects.all().first()
-        sums = models.FinanceInvoiceItem.objects.filter(finance_invoice=invoice).aggregate(
+        # Check if the order was created
+        order = models.FinanceOrder.objects.all().first()
+        sums = models.FinanceOrderItem.objects.filter(finance_order=order).aggregate(
             Sum('subtotal'), Sum('tax'), Sum('total')
         )
 
@@ -73,7 +71,7 @@ class TestModelFinanceInvoice(TestCase):
         total = sums['total__sum'] or 0
 
         # Check invoice item fields
-        items = invoice.items.all()
+        items = order.items.all()
         first_item = items[0]
         second_item = items[1]
 
@@ -105,32 +103,26 @@ class TestModelFinanceInvoice(TestCase):
         """ Test adding schedule event ticket item with a subscription group discount"""
         today = timezone.now().date()
 
-        account_schedule_event_ticket = f.AccountScheduleEventTicketFactory.create()
-        account = account_schedule_event_ticket.account
-        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
         schedule_event = schedule_event_ticket.schedule_event
-
         subscription_group_discount = f.ScheduleEventSubscriptionGroupDiscountFactory.create(
             schedule_event=schedule_event
         )
 
         # Add a subscription and ensure it's added to the subscription group getting the discount
-        account_subscription = f.AccountSubscriptionFactory.create(
-            account=account
-        )
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
         organization_subscription_group = subscription_group_discount.organization_subscription_group
         organization_subscription_group.organization_subscriptions.add(account_subscription.organization_subscription)
         organization_subscription_group.save()
 
-        finance_invoice = f.FinanceInvoiceFactory.create(
-            account=account
-        )
-        finance_invoice.item_add_schedule_event_ticket(account_schedule_event_ticket)
+        finance_order = f.FinanceOrderFactory.create(account=account)
+        finance_order.item_add_schedule_event_ticket(schedule_event_ticket=schedule_event_ticket)
 
         # Now test;
         # Check if invoice was created
-        invoice = models.FinanceInvoice.objects.all().first()
-        sums = models.FinanceInvoiceItem.objects.filter(finance_invoice=invoice).aggregate(
+        order = models.FinanceOrder.objects.all().first()
+        sums = models.FinanceOrderItem.objects.filter(finance_order=order).aggregate(
             Sum('subtotal'), Sum('tax'), Sum('total')
         )
 
@@ -139,7 +131,7 @@ class TestModelFinanceInvoice(TestCase):
         total = sums['total__sum'] or 0
 
         # Check invoice item fields
-        items = invoice.items.all()
+        items = order.items.all()
         first_item = items[0]
         second_item = items[1]
 
@@ -154,10 +146,11 @@ class TestModelFinanceInvoice(TestCase):
         self.assertEqual(first_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
         self.assertEqual(first_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
 
-        # Verify that the earlybird discount was added
+        # Verify that the subscription group discount was added
+        # Get the highest subscription group discount (if any)
         subscription_group_discount_result = \
             schedule_event_ticket.get_highest_subscription_group_discount_on_date_for_account(
-                finance_invoice.account, finance_invoice.date_sent
+                account, account_subscription.date_start
             )
         discount_price = format(subscription_group_discount_result['discount'] * -1, ".2f")
         discount_percentage = subscription_group_discount_result['subscription_group_discount'].discount_percentage

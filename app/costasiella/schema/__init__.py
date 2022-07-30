@@ -89,16 +89,22 @@ from .schedule_item_weekly_otc import ScheduleItemWeeklyOTCQuery, ScheduleItemWe
 from .schedule_event import ScheduleEventQuery, ScheduleEventMutation
 from .schedule_event_earlybird import ScheduleEventEarlybirdQuery, ScheduleEventEarlybirdMutation
 from .schedule_event_media import ScheduleEventMediaQuery, ScheduleEventMediaMutation
+from .schedule_event_subscription_group_discount import \
+    ScheduleEventSubscriptionGroupDiscountQuery, ScheduleEventSubscriptionGroupDiscountMutation
 from .schedule_event_ticket import ScheduleEventTicketQuery, ScheduleEventTicketMutation
-from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItemQuery, ScheduleEventTicketScheduleItemMutation
+from .schedule_event_ticket_schedule_item import \
+    ScheduleEventTicketScheduleItemQuery, ScheduleEventTicketScheduleItemMutation
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 from .schedule_item_account import ScheduleItemAccountQuery, ScheduleItemAccountMutation
 from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemAttendanceMutation
 from .schedule_item_enrollment import ScheduleItemEnrollmentQuery, ScheduleItemEnrollmentMutation
-from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
-from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
+from .schedule_item_organization_classpass_group import \
+    ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
+from .schedule_item_organization_subscription_group import \
+    ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutation
-from .schedule_item_instructor_available import ScheduleItemInstructorAvailableQuery, ScheduleItemInstructorAvailableMutation
+from .schedule_item_instructor_available import \
+    ScheduleItemInstructorAvailableQuery, ScheduleItemInstructorAvailableMutation
 from .schedule_shift import ScheduleShiftQuery, ScheduleShiftMutation
 
 from .system_feature_shop import SystemFeatureShopQuery, SystemFeatureShopMutation
@@ -177,6 +183,7 @@ class Query(AccountQuery,
             ScheduleEventQuery,
             ScheduleEventEarlybirdQuery,
             ScheduleEventMediaQuery,
+            ScheduleEventSubscriptionGroupDiscountQuery,
             ScheduleEventTicketQuery,
             ScheduleEventTicketScheduleItemQuery,
             ScheduleItemQuery,
@@ -255,6 +262,7 @@ class Mutation(AccountMutation,
                ScheduleEventMutation,
                ScheduleEventEarlybirdMutation,
                ScheduleEventMediaMutation,
+               ScheduleEventSubscriptionGroupDiscountMutation,
                ScheduleEventTicketMutation,
                ScheduleEventTicketScheduleItemMutation,
                ScheduleItemMutation,

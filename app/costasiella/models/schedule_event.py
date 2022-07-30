@@ -5,6 +5,7 @@ from django.db import models
 from .account import Account
 from .organization_location import OrganizationLocation
 from .organization_level import OrganizationLevel
+from .organization_subscription_group import OrganizationSubscriptionGroup
 
 from .helpers import model_string
 
@@ -27,6 +28,11 @@ class ScheduleEvent(models.Model):
     time_start = models.TimeField(null=True)
     time_end = models.TimeField(null=True)
     info_mail_content = models.TextField(default="")
+    organization_subscription_groups = models.ManyToManyField(
+        OrganizationSubscriptionGroup,
+        through='ScheduleEventSubscriptionGroupDiscount',
+        related_name='schedule_event_discounts'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

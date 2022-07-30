@@ -170,7 +170,6 @@ class FinanceInvoice(models.Model):
         from .finance_invoice_item import FinanceInvoiceItem
         # add item to invoice
         schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
-        # finance_invoice = FinanceInvoice.objects.get(pk=self.id)
 
         finance_invoice_item = FinanceInvoiceItem(
             finance_invoice=self,
@@ -206,6 +205,26 @@ class FinanceInvoice(models.Model):
                 finance_costcenter=schedule_event_ticket.finance_costcenter,
             )
             earlybird_finance_invoice_item.save()
+
+        # Check if a subscription group discount should be added
+        subscription_group_discount_result = \
+            schedule_event_ticket.get_highest_subscription_group_discount_on_date_for_account(
+                self.account, date
+            )
+        if subscription_group_discount_result.get('discount', 0):
+            discount_percentage = subscription_group_discount_result['subscription_group_discount'].discount_percentage
+            subscription_group_discount_finance_invoice_item = FinanceInvoiceItem(
+                finance_invoice=self,
+                line_number=self._get_item_next_line_nr(),
+                product_name=_('Event ticket subscription discount'),
+                description=str(discount_percentage) + _('% discount'),
+                quantity=1,
+                price=subscription_group_discount_result['discount'] * -1,
+                finance_tax_rate=schedule_event_ticket.finance_tax_rate,
+                finance_glaccount=schedule_event_ticket.finance_glaccount,
+                finance_costcenter=schedule_event_ticket.finance_costcenter,
+            )
+            subscription_group_discount_finance_invoice_item.save()
 
         self.update_amounts()
 

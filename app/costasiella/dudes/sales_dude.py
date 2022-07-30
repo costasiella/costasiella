@@ -26,8 +26,6 @@ class SalesDude:
         account_membership.set_date_end()
         account_membership.save()
 
-        print('creating invoice...')
-
         finance_invoice_item = None
         if create_invoice:
             print('still alive')
@@ -48,9 +46,6 @@ class SalesDude:
 
         finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="MEMBERSHIPS").first()
         finance_invoice_group = finance_invoice_group_default.finance_invoice_group
-        print("invoice group")
-        print(finance_invoice_group)
-
         finance_invoice = FinanceInvoice(
             account=account_membership.account,
             finance_invoice_group=finance_invoice_group,

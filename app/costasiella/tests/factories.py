@@ -778,12 +778,7 @@ class FinanceOrderFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceOrder
 
-    class Params:
-        initial_account = factory.SubFactory(RegularUserFactory)
-
-    account = factory.LazyAttribute(
-        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
-    )
+    account = factory.SubFactory(RegularUserFactory)
     status = "RECEIVED"
     message = "Customer's note here..."
 
@@ -1009,6 +1004,15 @@ class ScheduleEventEarlybirdFactory(factory.DjangoModelFactory):
     schedule_event = factory.SubFactory(ScheduleEventFactory)
     date_start = datetime.date(2020, 1, 1)
     date_end = datetime.date(2999, 12, 31)
+    discount_percentage = 10
+
+
+class ScheduleEventSubscriptionGroupDiscountFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEventSubscriptionGroupDiscount
+
+    schedule_event = factory.SubFactory(ScheduleEventFactory)
+    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
     discount_percentage = 10
 
 

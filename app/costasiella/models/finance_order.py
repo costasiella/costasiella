@@ -79,9 +79,11 @@ class FinanceOrder(models.Model):
 
         finance_order_item.save()
 
-        # Check if an earlybird discount should be added
+        # Discount processing
         now = timezone.now()
         date = now.date()
+
+        # Check if an earlybird discount should be added
         earlybird_result = schedule_event_ticket.get_earlybird_discount_on_date(date)
         if earlybird_result.get('discount', 0):
             discount_percentage = earlybird_result['earlybird'].discount_percentage
@@ -96,6 +98,25 @@ class FinanceOrder(models.Model):
                 finance_costcenter=schedule_event_ticket.finance_costcenter,
             )
             earlybird_finance_order_item.save()
+
+        # Get the highest subscription group discount (if any)
+        subscription_group_discount_result = \
+            schedule_event_ticket.get_highest_subscription_group_discount_on_date_for_account(
+                self.account, date
+            )
+        if subscription_group_discount_result.get('discount', 0):
+            discount_percentage = subscription_group_discount_result['subscription_group_discount'].discount_percentage
+            subscription_group_discount_finance_order_item = FinanceOrderItem(
+                finance_order=self,
+                product_name=_('Event ticket subscription discount'),
+                description=str(discount_percentage) + _('% discount'),
+                quantity=1,
+                price=subscription_group_discount_result['discount'] * -1,
+                finance_tax_rate=schedule_event_ticket.finance_tax_rate,
+                finance_glaccount=schedule_event_ticket.finance_glaccount,
+                finance_costcenter=schedule_event_ticket.finance_costcenter,
+            )
+            subscription_group_discount_finance_order_item.save()
 
         self.update_amounts()
 
@@ -175,9 +196,6 @@ class FinanceOrder(models.Model):
         from .finance_order_item import FinanceOrderItem
         # Don't deliver cancelled orders or orders that have already been delivered
         if self.status == "DELIVERED" or self.status == "CANCELLED":
-            print(self)
-            print(self.status)
-            print("Returning...")
             return
 
         # Don't create an invoice when there's nothing that needs to be paid
