@@ -58,11 +58,26 @@ class FinanceInvoice(models.Model):
     def _set_relation_info(self):
         """ Set relation info from linked account """
         if self.account:
+            # Set account info by default
             self.relation_contact_name = self.account.full_name
             self.relation_address = self.account.address
             self.relation_postcode = self.account.postcode
             self.relation_city = self.account.city
             self.relation_country = self.account.country
+
+            if self.account.invoice_to_business:
+                # Set optional business fields
+                business = self.account.invoice_to_business
+
+                self.relation_company = business.name
+                self.relation_company_registration = business.registration
+                self.relation_company_tax_registration = business.tax_registration
+                # Use business address fields
+                self.relation_contact_name = ""
+                self.relation_address = business.address
+                self.relation_postcode = business.postcode
+                self.relation_city = business.city
+                self.relation_country = business.country
 
     def update_amounts(self):
         """ Update total amounts fields (subtotal, tax, total, paid, balance) """
