@@ -123,6 +123,7 @@ class AccountNode(DjangoObjectType):
             'image',
             'organization_discovery',
             'organization_language',
+            'invoice_to_business',
             'created_at',
             # Reverse relations
             'classpasses',
