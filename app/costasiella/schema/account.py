@@ -19,7 +19,7 @@ from django_filters import FilterSet, OrderingFilter
 from sorl.thumbnail import get_thumbnail
 
 from allauth.account.models import EmailAddress
-from ..models import AccountClasspass, AccountSubscription, OrganizationDiscovery, OrganizationLanguage
+from ..models import AccountClasspass, AccountSubscription, Business, OrganizationDiscovery, OrganizationLanguage
 
 from ..modules.gql_tools import \
     check_node_item_resolve_permission, \
@@ -509,6 +509,14 @@ def validate_create_update_input(account, input, update=False):
         result['organization_language'] = organization_language
         if not organization_language:
             raise Exception(_('Invalid Organization Language ID!'))
+
+    # Fetch & check business
+    if 'invoice_to_business' in input:
+        rid = get_rid(input['invoice_to_business'])
+        business = Business.objects.get(pk=rid.id)
+        result['invoice_to_business'] = business
+        if not business:
+            raise Exception(_('Invalid Business ID!'))
 
     return result
 
