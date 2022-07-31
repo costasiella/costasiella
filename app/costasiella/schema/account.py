@@ -645,9 +645,6 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
 
-        print(user)
-        print(input)
-
         ok = False
         if input.get('id', False):
             # Change password for another use
