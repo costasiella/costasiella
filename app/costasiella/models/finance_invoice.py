@@ -5,6 +5,7 @@ import datetime
 from django.db import models
 
 from .account import Account
+from .business import Business
 from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_payment_method import FinancePaymentMethod
 
@@ -23,6 +24,7 @@ class FinanceInvoice(models.Model):
     )
 
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="invoices")
+    business = models.ForeignKey(Business, on_delete=models.SET_NULL, null=True, related_name="invoices")
     finance_invoice_group = models.ForeignKey(FinanceInvoiceGroup, on_delete=models.CASCADE)
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
     instructor_payment = models.BooleanField(default=False)
@@ -67,17 +69,17 @@ class FinanceInvoice(models.Model):
 
             if self.account.invoice_to_business:
                 # Set optional business fields
-                business = self.account.invoice_to_business
+                self.business = self.account.invoice_to_business
 
-                self.relation_company = business.name
-                self.relation_company_registration = business.registration
-                self.relation_company_tax_registration = business.tax_registration
+                self.relation_company = self.business.name
+                self.relation_company_registration = self.business.registration
+                self.relation_company_tax_registration = self.business.tax_registration
                 # Use business address fields
                 self.relation_contact_name = ""
-                self.relation_address = business.address
-                self.relation_postcode = business.postcode
-                self.relation_city = business.city
-                self.relation_country = business.country
+                self.relation_address = self.business.address
+                self.relation_postcode = self.business.postcode
+                self.relation_city = self.business.city
+                self.relation_country = self.business.country
 
     def update_amounts(self):
         """ Update total amounts fields (subtotal, tax, total, paid, balance) """
