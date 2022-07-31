@@ -5,6 +5,7 @@ from django.db import models
 from sorl.thumbnail import ImageField
 
 from allauth.account.models import EmailAddress
+from .business import Business
 from .organization_discovery import OrganizationDiscovery
 from .organization_language import OrganizationLanguage
 
@@ -58,6 +59,9 @@ class Account(AbstractUser):
         OrganizationLanguage, null=True, on_delete=models.SET_NULL, related_name="accounts"
     )
     image = ImageField(upload_to='account', default=None)
+    invoice_to_business = models.ForeignKey(
+        Business, null=True, on_delete=models.SET_NULL, related_name="accounts"
+    )
     mollie_customer_id = models.CharField(max_length=255, default="", editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
