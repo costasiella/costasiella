@@ -543,6 +543,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         key_number = graphene.String(required=False)
         organization_discovery = graphene.ID(required=False)
         organization_language = graphene.ID(required=False)
+        invoice_to_business = graphene.ID(required=False)
         image = graphene.String(required=False)
         image_file_name = graphene.String(required=False)
 
@@ -615,6 +616,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             account.organization_discovery = result['organization_discovery']
         if 'organization_language' in result:
             account.organization_language = result['organization_language']
+        if 'invoice_to_business' in result:
+            account.invoice_to_business = result['invoice_to_business']
 
         if 'image' in input:
             account.image = get_content_file_from_base64_str(data_str=input['image'],
