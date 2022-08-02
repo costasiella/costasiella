@@ -32,6 +32,7 @@ class FinanceInvoiceNode(DjangoObjectType):
         model = FinanceInvoice
         fields = (
             'account',
+            'business',
             'finance_invoice_group',
             'finance_payment_method',
             'instructor_payment',
@@ -66,6 +67,7 @@ class FinanceInvoiceNode(DjangoObjectType):
         )
         filter_fields = {
             'account': ['exact'],
+            'business': ['exact'],
             'invoice_number': ['icontains', 'exact'],
             'status': ['exact'],
             'date_sent': ['lte', 'gte'],
