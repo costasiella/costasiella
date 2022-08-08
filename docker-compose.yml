@@ -2,9 +2,11 @@ version: '3'
 
 services:
   backend:
+    image: simplycode/costasiella:backend
     restart: always
-    build: .
-    command: /opt/docker-backend-entrypoint.sh
+    build: 
+      context: . 
+      dockerfile: ./docker/backend/Dockerfile
     volumes:
       - /opt/docker/mounts/costasiella/sockets:/opt/sockets
       - /opt/docker/mounts/costasiella/media:/opt/media
@@ -16,20 +18,24 @@ services:
   redis:
     restart: always
     image: redis:alpine
-  celery:
+  celery_worker:
+    image: simplycode/costasiella:celery_worker
     restart: always
-    build: .
-    command: /opt/docker-celery-entrypoint.sh
+    build: 
+      context: . 
+      dockerfile: ./docker/celery_worker/Dockerfile
     volumes:
       - /opt/docker/mounts/costasiella/logs:/opt/app/app/logs
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
       - backend
-  celery-beat:
+  celery_beat:
+    image: simplycode/costasiella:celery_beat
     restart: always
-    build: .
-    command: /opt/docker-celery-beat-entrypoint.sh
+    build: 
+      context: . 
+      dockerfile: ./docker/celery_beat/Dockerfile
     volumes:
       - /opt/docker/mounts/costasiella/logs:/opt/app/app/logs
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
@@ -37,4 +43,3 @@ services:
       - redis
       - celery
       - backend
-

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM python:3.10
 
-LABEL version="0.02"
+LABEL version="0.03"
 
 # Get the latest & greatest
 RUN apt-get update && \
@@ -11,9 +11,7 @@ RUN apt-get install -y libffi-dev libmariadb-dev
 
 # Copy app into container
 COPY ./app /opt/app
-COPY ./docker-backend-entrypoint.sh /opt/
-COPY ./docker-celery-entrypoint.sh /opt/
-COPY ./docker-celery-beat-entrypoint.sh /opt/
+COPY ./docker/backend/docker-backend-entrypoint.sh /opt/
 COPY ./requirements.txt /opt/
 
 # Install required packages
@@ -33,5 +31,5 @@ ENV DJANO_LOG_LEVEL=WARNING
 RUN pip install uwsgi
 
 RUN chmod a+x /opt/docker-backend-entrypoint.sh
-RUN chmod a+x /opt/docker-celery-entrypoint.sh
-RUN chmod a+x /opt/docker-celery-beat-entrypoint.sh
+
+CMD /opt/docker-backend-entrypoint.sh
