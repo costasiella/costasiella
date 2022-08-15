@@ -6,7 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import Account, AccountSubscription, FinanceInvoice, FinanceInvoiceGroup, FinancePaymentMethod
+from ..models import Account, AccountSubscription, Business, FinanceInvoice, FinanceInvoiceGroup, FinancePaymentMethod
 from ..modules.gql_tools import require_login, require_login_and_permission, require_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
@@ -37,6 +37,7 @@ class FinanceInvoiceNode(DjangoObjectType):
             'finance_payment_method',
             'instructor_payment',
             'employee_claim',
+            'custom_to',
             'relation_company',
             'relation_company_registration',
             'relation_company_tax_registration',
@@ -189,6 +190,17 @@ def validate_create_update_input(input, update=False):
             is_month(input['subscription_month'])
             result['subscription_month'] = input['subscription_month']
 
+    # Check business
+    if 'business' in input:
+        if input['business']:
+            rid = get_rid(input['business'])
+            business = Business.objects.get(id=rid.id)
+            result['business'] = business
+            if not business:
+                raise Exception(_('Invalid Business ID!'))
+        else:
+            result['business'] = None
+
     # Check finance payment method
     if 'finance_payment_method' in input:
         if input['finance_payment_method']:
@@ -205,6 +217,7 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
         finance_invoice_group = graphene.ID(required=True)
+        business = graphene.ID(required=False)
         summary = graphene.String(required=False, default_value="")
         account_subscription = graphene.ID(required=False)
         subscription_year = graphene.Int(required=False)
@@ -231,6 +244,9 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         if 'summary' in input:
             finance_invoice.summary = input['summary']
 
+        if 'business' in validation_result:
+            finance_invoice.business = validation_result['business']
+
         # Save invoice
         finance_invoice.save()
 
@@ -249,8 +265,10 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
 class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        business = graphene.ID(required=False)
         finance_payment_method = graphene.ID(required=False)
         summary = graphene.String(required=False)
+        custom_to = graphene.Boolean(required=False)
         relation_company = graphene.String(required=False)
         relation_company_registration = graphene.String(required=False)
         relation_company_tax_registration = graphene.String(required=False)
@@ -283,9 +301,16 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Invoice  ID!')
 
         validation_result = validate_create_update_input(input, update=True)
+        # print(validation_result)
+
+        if 'business' in validation_result:
+            finance_invoice.business = validation_result['business']
 
         if 'summary' in input:
             finance_invoice.summary = input['summary']
+
+        if 'custom_to' in input:
+            finance_invoice.custom_to = input['custom_to']
 
         if 'relation_company' in input:
             finance_invoice.relation_company = input['relation_company']
@@ -335,6 +360,8 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         if 'finance_payment_method' in validation_result:
             finance_invoice.finance_payment_method = validation_result['finance_payment_method']
 
+        # Applies custom relation address info only when customTo is set
+        finance_invoice.set_relation_info()
         finance_invoice.save()
 
         return UpdateFinanceInvoice(finance_invoice=finance_invoice)

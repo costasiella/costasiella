@@ -60,7 +60,7 @@ class FinanceInvoice(models.Model):
         return model_string(self)
 
     def set_relation_info(self):
-        """ Set relation info from linked account """
+        """ Set relation info from linked account or business, when not custom_to """
         if not self.custom_to:
             self.relation_company = ""
             self.relation_company_registration = ""
