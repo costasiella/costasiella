@@ -29,6 +29,8 @@ class FinanceInvoice(models.Model):
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
     instructor_payment = models.BooleanField(default=False)
     employee_claim = models.BooleanField(default=False)
+    # custom_to is used to control whether to copy relation info from an account or business, or not.
+    custom_to = models.BooleanField(default=False)
     relation_company = models.CharField(max_length=255, default="")
     relation_company_registration = models.CharField(max_length=255, default="")
     relation_company_tax_registration = models.CharField(max_length=255, default="")
@@ -57,20 +59,27 @@ class FinanceInvoice(models.Model):
     def __str__(self):
         return model_string(self)
 
-    def _set_relation_info(self):
+    def set_relation_info(self):
         """ Set relation info from linked account """
-        if self.account:
-            # Set account info by default
-            self.relation_contact_name = self.account.full_name
-            self.relation_address = self.account.address
-            self.relation_postcode = self.account.postcode
-            self.relation_city = self.account.city
-            self.relation_country = self.account.country
+        if not self.custom_to:
+            self.relation_company = ""
+            self.relation_company_registration = ""
+            self.relation_company_tax_registration = ""
 
-            if self.account.invoice_to_business:
-                # Set optional business fields
+            if self.account:
+                # Set account info by default
+                self.relation_contact_name = self.account.full_name
+                self.relation_address = self.account.address
+                self.relation_postcode = self.account.postcode
+                self.relation_city = self.account.city
+                self.relation_country = self.account.country
+
+            # Set default business from account on creation only, if no other business has been set
+            if self.account.invoice_to_business and not self.id and not self.business:
+                # Set default business for account
                 self.business = self.account.invoice_to_business
 
+            if self.business:
                 self.relation_company = self.business.name
                 self.relation_company_registration = self.business.registration
                 self.relation_company_tax_registration = self.business.tax_registration
@@ -131,9 +140,9 @@ class FinanceInvoice(models.Model):
         self.finance_invoice_group.save()
 
     def save(self, *args, **kwargs):
-        if self.pk is None: # We know this is object creation when there is no pk / id yet.
+        if self.pk is None:  # We know this is object creation when there is no pk / id yet.
             # Get relation info
-            self._set_relation_info()
+            self.set_relation_info()
 
             # set dates
             if not self.date_sent:
