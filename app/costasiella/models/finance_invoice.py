@@ -74,7 +74,7 @@ class FinanceInvoice(models.Model):
                 self.relation_city = self.account.city
                 self.relation_country = self.account.country
 
-            # Set default business from account on creation only, if no other business has been set
+            # Set default business from account on creation only (not self.id), if no other business has been set
             if self.account.invoice_to_business and not self.id and not self.business:
                 # Set default business for account
                 self.business = self.account.invoice_to_business
