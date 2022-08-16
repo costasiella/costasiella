@@ -244,11 +244,14 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         if 'summary' in input:
             finance_invoice.summary = input['summary']
 
-        if 'business' in validation_result:
-            finance_invoice.business = validation_result['business']
-
         # Save invoice
         finance_invoice.save()
+
+        # Do this after an initial save to override the "invoice_to_business" field on an account, if set.
+        if 'business' in validation_result:
+            finance_invoice.business = validation_result['business']
+            finance_invoice.set_relation_info()
+            finance_invoice.save()
 
         if ('account_subscription' in validation_result
                 and 'subscription_year' in validation_result
