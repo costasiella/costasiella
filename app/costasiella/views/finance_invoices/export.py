@@ -15,9 +15,9 @@ def export_excel_finance_invoices(request, date_from, date_until, status, **kwar
     """
     Export invoices as Excel
     """
-    print(date_from)
-    print(date_until)
-    print(status)
+    # print(date_from)
+    # print(date_until)
+    # print(status)
 
     user = get_user_from_cookie(request)
     if not user.has_perm('costasiella.view_financeinvoice'):
