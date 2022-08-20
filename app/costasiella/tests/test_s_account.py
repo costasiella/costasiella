@@ -33,6 +33,8 @@ class GQLAccount(TransactionTestCase):
         self.permission_change = 'change_account'
         self.permission_delete = 'delete_account'
 
+        self.business = f.BusinessB2BFactory.create()
+
         self.variables_query_list = {
             "isActive": True
         }
@@ -41,7 +43,7 @@ class GQLAccount(TransactionTestCase):
             "input": {
                 "firstName": "New",
                 "lastName": "User",
-                "email" : "new72609QXF@user.nl"
+                "email": "new72609QXF@user.nl",
             }
         }
 
@@ -49,7 +51,8 @@ class GQLAccount(TransactionTestCase):
             "input": {
                 "firstName": "Updated",
                 "lastName": "User",
-                "email" : "updated72609QXF@user.nl"
+                "email": "updated72609QXF@user.nl",
+                "invoiceToBusiness": to_global_id("BusinessNode", self.business.id)
             }
         }
 
@@ -95,6 +98,9 @@ class GQLAccount(TransactionTestCase):
           organizationLanguage {
             id
           }
+          invoiceToBusiness {
+            id
+          }
           hasReachedTrialLimit
         }
       }
@@ -122,6 +128,9 @@ class GQLAccount(TransactionTestCase):
         firstName
         lastName
         email
+        invoiceToBusiness {
+          id
+        }
       }
     }
   }
@@ -136,6 +145,9 @@ class GQLAccount(TransactionTestCase):
         lastName
         email
         urlImageThumbnailSmall
+        invoiceToBusiness {
+          id
+        }
       }
     }
   }
@@ -183,6 +195,24 @@ class GQLAccount(TransactionTestCase):
                          to_global_id('OrganizationDiscoveryNode', account.organization_discovery.id))
         self.assertEqual(data['accounts']['edges'][0]['node']['organizationLanguage']['id'],
                          to_global_id('OrganizationLanguageNode', account.organization_language.id))
+
+    def test_query_invoice_to_business(self):
+        """ Query list of accounts - with invoice to business set
+        - A separate test to the RegularUserFactory class isn't impacted
+        """
+
+        query = self.accounts_query
+        account = f.RegularUserFactory()
+        account.invoice_to_business = self.business
+        account.save()
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_list)
+        data = executed.get('data')
+
+        self.assertEqual(len(data['accounts']['edges']), 1)  # Ensure the Admin super use isn't listed
+        self.assertEqual(data['accounts']['edges'][0]['node']['firstName'], account.first_name)
+        self.assertEqual(data['accounts']['edges'][0]['node']['invoiceToBusiness']['id'],
+                         to_global_id('BusinessNode', account.invoice_to_business.id))
 
     def test_query_has_reached_trial_limit(self):
         """ Query list of accounts and check if trial limit field works """
@@ -378,7 +408,6 @@ class GQLAccount(TransactionTestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_update_account(self):
         """ Update a account """
         query = self.account_update_mutation
@@ -398,6 +427,8 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['updateAccount']['account']['firstName'], variables['input']['firstName'])
         self.assertEqual(data['updateAccount']['account']['lastName'], variables['input']['lastName'])
         self.assertEqual(data['updateAccount']['account']['email'], variables['input']['email'])
+        self.assertEqual(data['updateAccount']['account']['invoiceToBusiness']['id'],
+                         variables['input']['invoiceToBusiness'])
 
     def test_update_account_permission_own(self):
         """ A user can update their own account """
@@ -441,7 +472,6 @@ class GQLAccount(TransactionTestCase):
         # Check that the image field was set in the model
         account = models.Account.objects.last()
         self.assertNotEqual(account.image, None)
-
 
     def test_update_account_anon_user(self):
         """ Don't allow updating accounts for non-logged in users """
