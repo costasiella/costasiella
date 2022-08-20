@@ -537,8 +537,6 @@ class GQLScheduleShift(TestCase):
             self.admin_user,
             variables=variables
         )
-        print("@@@@@@@@@@@@@")
-        print(executed)
 
         data = executed.get('data')
         self.assertEqual(data['createScheduleShift']['scheduleItem']['frequencyType'],

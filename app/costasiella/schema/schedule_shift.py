@@ -484,9 +484,6 @@ def validate_schedule_shift_create_update_input(input, update=False):
             if not organization_shift:
                 raise Exception(_('Invalid Organization Shift ID!'))
 
-    print("**************")
-    print(result)
-
     return result
 
 
@@ -508,7 +505,6 @@ class CreateScheduleShift(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleshift')
 
-        print(input)
         result = validate_schedule_shift_create_update_input(input)
 
         schedule_item = ScheduleItem(

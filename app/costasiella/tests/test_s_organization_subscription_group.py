@@ -449,8 +449,7 @@ mutation DeleteOrganizationSubscriptionGroup($input: DeleteOrganizationSubscript
             user,
             variables=variables
         )
-        print("************")
-        print(executed)
+
         data = executed.get('data')
         self.assertEqual(data['deleteOrganizationSubscriptionGroup']['ok'], True)
 
