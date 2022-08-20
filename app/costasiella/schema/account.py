@@ -76,6 +76,7 @@ class AccountFilter(FilterSet):
             'customer': ['exact'],
             'instructor': ['exact'],
             'employee': ['exact'],
+            'invoice_to_business': ['exact'],
         }
 
     order_by = OrderingFilter(
@@ -553,7 +554,6 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login(user)
-        print(input)
 
         rid = get_rid(input['id'])
         account = get_user_model().objects.filter(id=rid.id).first()
@@ -567,7 +567,6 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             require_permission(user, change_permission)
 
         result = validate_create_update_input(account, input, update=True)
-        print(result)
 
         # Only process these fields when a user has the "change_account" permission. Users shouldn't be able to
         # change this for their own account
