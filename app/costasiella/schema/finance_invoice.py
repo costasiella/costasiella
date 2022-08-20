@@ -295,16 +295,12 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_financeinvoice')
 
-        print(input)
-
         rid = get_rid(input['id'])
-
         finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
         if not finance_invoice:
             raise Exception('Invalid Finance Invoice  ID!')
 
         validation_result = validate_create_update_input(input, update=True)
-        # print(validation_result)
 
         if 'business' in validation_result:
             finance_invoice.business = validation_result['business']
