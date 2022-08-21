@@ -15,9 +15,9 @@ def export_excel_finance_invoices(request, date_from, date_until, status, **kwar
     """
     Export invoices as Excel
     """
-    print(date_from)
-    print(date_until)
-    print(status)
+    # print(date_from)
+    # print(date_until)
+    # print(status)
 
     user = get_user_from_cookie(request)
     if not user.has_perm('costasiella.view_financeinvoice'):
@@ -27,6 +27,8 @@ def export_excel_finance_invoices(request, date_from, date_until, status, **kwar
     ws_header = [
         _('InvoiceID'),
         _('Invoice group'),
+        _('B2B relation ID'),
+        _('B2B relation Name'),
         _('Account ID'),
         _('Account Name'),
         _('Date Created'),
@@ -82,6 +84,8 @@ def export_excel_finance_invoices(request, date_from, date_until, status, **kwar
         ws.append([
             finance_invoice.invoice_number,
             finance_invoice_group.name,
+            finance_invoice.business.id if finance_invoice.business else "",
+            finance_invoice.business.name if finance_invoice.business else "",
             finance_invoice.account.id,
             finance_invoice.account.full_name,
             finance_invoice.date_sent,

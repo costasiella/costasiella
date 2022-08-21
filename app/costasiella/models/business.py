@@ -1,6 +1,6 @@
 from django.db import models
 
-from ..modules.encrypted_fields import EncryptedTextField
+from .helpers import model_string
 
 
 class Business(models.Model):
@@ -24,4 +24,4 @@ class Business(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return model_string(self)

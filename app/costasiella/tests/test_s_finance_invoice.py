@@ -157,6 +157,9 @@ class GQLFinanceInvoice(TestCase):
           id
           fullName
         }
+        business {
+          id
+        }
         financeInvoiceGroup {
           id 
           name
@@ -200,6 +203,9 @@ class GQLFinanceInvoice(TestCase):
         account {
           id
           fullName
+        }
+        business {
+          id
         }
         financeInvoiceGroup {
           id 
@@ -504,7 +510,7 @@ class GQLFinanceInvoice(TestCase):
             to_global_id('AccountNode', invoice.account.id)
         )
 
-    def test_create_invoice(self):
+    def test_create_invoice_for_account(self):
         """ Create an account invoice """
         query = self.invoice_create_mutation
 
@@ -536,6 +542,75 @@ class GQLFinanceInvoice(TestCase):
             str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
         )
         self.assertEqual(data['createFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCompany'], "")
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCompanyRegistration'], "")
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCompanyTaxRegistration'], "")
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationContactName'], account.full_name)
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationAddress'],
+                         account.address)
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationPostcode'],
+                         account.postcode)
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCity'],
+                         account.city)
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCountry'],
+                         account.country)
+
+    def test_create_invoice_for_business(self):
+        """ Create an invoice for a b2b relation"""
+        query = self.invoice_create_mutation
+
+        account = f.RegularUserFactory.create()
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['business'] = to_global_id('BusinessNode', business.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Get invoice
+        rid = get_rid(data['createFinanceInvoice']['financeInvoice']['id'])
+        invoice = models.FinanceInvoice.objects.get(pk=rid.id)
+
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['account']['id'],
+            variables['input']['account']
+        )
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['business']['id'],
+            variables['input']['business']
+        )
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['financeInvoiceGroup']['id'],
+            variables['input']['financeInvoiceGroup']
+        )
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['relationCompany'],
+            business.name
+        )
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['relationCompanyRegistration'],
+            business.registration
+        )
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['relationCompanyTaxRegistration'],
+            business.tax_registration
+        )
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationContactName'],
+                         "")
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationAddress'],
+                         business.address)
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationPostcode'],
+                         business.postcode)
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCity'],
+                         business.city)
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCountry'],
+                         business.country)
+
 
     def test_create_invoice_group_id_plus_one(self):
         """ Create an account invoice and check whether the FinanceInoiceGroup next id field increated by 1 """
@@ -678,17 +753,103 @@ class GQLFinanceInvoice(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    def test_update_invoice(self):
+    def test_update_invoice_address_from_account(self):
+        """ Update a invoice """
+        query = self.invoice_update_mutation
+
+        invoice = f.FinanceInvoiceFactory.create()
+        account = invoice.account
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+        variables['input']['business'] = None  # Set business to None to have the address set to relation fields
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+
+        data = executed.get('data')
+
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompany'], "")
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompanyRegistration'], "")
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompanyTaxRegistration'], "")
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationContactName'], account.full_name)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationAddress'],
+                         account.address)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationPostcode'],
+                         account.postcode)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCity'],
+                         account.city)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCountry'],
+                         account.country)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['invoiceNumber'],
+                         variables['input']['invoiceNumber'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateDue'], variables['input']['dateDue'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['status'], variables['input']['status'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['terms'], variables['input']['terms'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['footer'], variables['input']['footer'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['note'], variables['input']['note'])
+
+    def test_update_invoice_address_from_business(self):
+        """ Update a invoice """
+        query = self.invoice_update_mutation
+
+        invoice = f.FinanceInvoiceFactory.create()
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+        variables['input']['business'] = to_global_id("BusinessNode", business.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompany'],
+                         business.name)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompanyRegistration'],
+                         business.registration)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompanyTaxRegistration'],
+                         business.tax_registration)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationContactName'],
+                         "")
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationAddress'],
+                         business.address)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationPostcode'],
+                         business.postcode)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCity'],
+                         business.city)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCountry'],
+                         business.country)
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['invoiceNumber'],
+                         variables['input']['invoiceNumber'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateDue'], variables['input']['dateDue'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['status'], variables['input']['status'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['terms'], variables['input']['terms'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['footer'], variables['input']['footer'])
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['note'], variables['input']['note'])
+
+    def test_update_invoice_custom_to(self):
         """ Update a invoice """
         query = self.invoice_update_mutation
 
         invoice = f.FinanceInvoiceFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+        variables['input']['customTo'] = True
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
 

@@ -19,7 +19,7 @@ from django_filters import FilterSet, OrderingFilter
 from sorl.thumbnail import get_thumbnail
 
 from allauth.account.models import EmailAddress
-from ..models import AccountClasspass, AccountSubscription, OrganizationDiscovery, OrganizationLanguage
+from ..models import AccountClasspass, AccountSubscription, Business, OrganizationDiscovery, OrganizationLanguage
 
 from ..modules.gql_tools import \
     check_node_item_resolve_permission, \
@@ -76,6 +76,7 @@ class AccountFilter(FilterSet):
             'customer': ['exact'],
             'instructor': ['exact'],
             'employee': ['exact'],
+            'invoice_to_business': ['exact'],
         }
 
     order_by = OrderingFilter(
@@ -123,6 +124,7 @@ class AccountNode(DjangoObjectType):
             'image',
             'organization_discovery',
             'organization_language',
+            'invoice_to_business',
             'created_at',
             # Reverse relations
             'classpasses',
@@ -509,6 +511,14 @@ def validate_create_update_input(account, input, update=False):
         if not organization_language:
             raise Exception(_('Invalid Organization Language ID!'))
 
+    # Fetch & check business
+    if 'invoice_to_business' in input:
+        rid = get_rid(input['invoice_to_business'])
+        business = Business.objects.get(pk=rid.id)
+        result['invoice_to_business'] = business
+        if not business:
+            raise Exception(_('Invalid Business ID!'))
+
     return result
 
 
@@ -534,6 +544,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         key_number = graphene.String(required=False)
         organization_discovery = graphene.ID(required=False)
         organization_language = graphene.ID(required=False)
+        invoice_to_business = graphene.ID(required=False)
         image = graphene.String(required=False)
         image_file_name = graphene.String(required=False)
 
@@ -543,7 +554,6 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login(user)
-        print(input)
 
         rid = get_rid(input['id'])
         account = get_user_model().objects.filter(id=rid.id).first()
@@ -557,7 +567,6 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             require_permission(user, change_permission)
 
         result = validate_create_update_input(account, input, update=True)
-        print(result)
 
         # Only process these fields when a user has the "change_account" permission. Users shouldn't be able to
         # change this for their own account
@@ -606,6 +615,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             account.organization_discovery = result['organization_discovery']
         if 'organization_language' in result:
             account.organization_language = result['organization_language']
+        if 'invoice_to_business' in result:
+            account.invoice_to_business = result['invoice_to_business']
 
         if 'image' in input:
             account.image = get_content_file_from_base64_str(data_str=input['image'],
@@ -632,9 +643,6 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-
-        print(user)
-        print(input)
 
         ok = False
         if input.get('id', False):
