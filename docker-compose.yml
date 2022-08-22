@@ -41,5 +41,5 @@ services:
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
-      - celery
+      - celery_worker
       - backend
