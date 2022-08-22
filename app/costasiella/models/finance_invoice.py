@@ -355,7 +355,6 @@ class FinanceInvoice(models.Model):
             # No alt. price: Calculate amount to be billed for this month
             month_days = (last_day_month - first_day_month).days + 1
             price = organization_subscription.get_price_on_date(first_day_month, raw_price=True)
-
             price = round(((float(billable_days) / float(month_days)) * float(price)), 2)
 
         finance_tax_rate = organization_subscription.get_finance_tax_rate_on_date(first_day_month)

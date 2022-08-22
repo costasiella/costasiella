@@ -76,7 +76,7 @@ class OrganizationSubscription(models.Model):
     def get_price_first_month(self, date, display=False):
         """
         Return the price for the first month, looking from date.
-        :param date: Datetime.date
+        :param date: datetime.date
         :param display: Format returned value as string with currency symbol
         :return: Price (str or int)
         """
@@ -84,13 +84,13 @@ class OrganizationSubscription(models.Model):
 
         date_tools_dude = DateToolsDude()
 
-        today = timezone.now().date()
-        first_day_month = datetime.date(today.year, today.month, 1)
+        # today = timezone.now().date()
+        first_day_month = datetime.date(date.year, date.month, 1)
         last_day_month = date_tools_dude.get_last_day_month(first_day_month)
         month_days = (last_day_month - first_day_month).days + 1
-        billable_days = month_days - today.day
+        billable_days = month_days - date.day + 1
 
-        subscription_price = self.get_price_on_date(today)
+        subscription_price = self.get_price_on_date(date)
         if subscription_price:
             price_first_month = round(((float(billable_days) / float(month_days)) * float(subscription_price)), 2)
 
@@ -100,7 +100,6 @@ class OrganizationSubscription(models.Model):
                 return price_first_month
         else:
             return None
-
 
     def get_finance_tax_rate_on_date(self, date, display=False):
         query_set = self.organizationsubscriptionprice_set.filter(
