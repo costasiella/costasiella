@@ -404,7 +404,7 @@ class AccountQuery(graphene.ObjectType):
         return query_set.order_by('first_name')
 
     def resolve_instructors(self, info, **kwargs):
-        # This endpoint allows instructors' names to be puclic, so they can be queried for the shop
+        # This endpoint allows instructors' names to be public, so they can be queried for the shop
         query_set = get_user_model().objects.filter(
             is_active=True,
             is_superuser=False,

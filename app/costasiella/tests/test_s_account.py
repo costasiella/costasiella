@@ -108,6 +108,34 @@ class GQLAccount(TransactionTestCase):
   }
 '''
 
+        self.instructors_query = '''
+    query Instructors {
+      instructors{
+        edges {
+          node {
+            id
+            fullName
+          }
+        }
+      }
+    }        
+'''
+        self.instructors_contact_fields_query = '''
+    query Instructors {
+      instructors{
+        edges {
+          node {
+            id
+            fullName
+            email
+            phone
+            mobile
+          }
+        }
+      }
+    }        
+'''
+
         self.account_query = '''
   query Account($id: ID!) {
     account(id:$id) {
@@ -195,6 +223,37 @@ class GQLAccount(TransactionTestCase):
                          to_global_id('OrganizationDiscoveryNode', account.organization_discovery.id))
         self.assertEqual(data['accounts']['edges'][0]['node']['organizationLanguage']['id'],
                          to_global_id('OrganizationLanguageNode', account.organization_language.id))
+
+    def test_query_instructors_anon(self):
+        """ Query list of instructors as anon user """
+        query = self.instructors_query
+        instructor = f.InstructorFactory.create()
+
+        executed = execute_test_client_api_query(query, self.anon_user)
+        data = executed.get('data')
+
+        self.assertEqual(data['instructors']['edges'][0]['node']['fullName'], instructor.full_name)
+
+    def test_query_instructors_anon_no_contact_fields(self):
+        """ Permission denied when querying contact fields as anon user """
+        query = self.instructors_contact_fields_query
+        instructor = f.InstructorFactory.create()
+
+        executed = execute_test_client_api_query(query, self.anon_user)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_instructors_user_no_contact_fields(self):
+        """ Permission denied when querying contact fields as anon user """
+        query = self.instructors_contact_fields_query
+        account = f.RegularUserFactory.create()
+        instructor = f.InstructorFactory.create()
+
+        executed = execute_test_client_api_query(query, account)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
     def test_query_invoice_to_business(self):
         """ Query list of accounts - with invoice to business set
