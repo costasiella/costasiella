@@ -11,7 +11,7 @@ from .helpers import model_string
 class OrganizationProduct(models.Model):
     archived = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(default="")
     image = ImageField(upload_to='organization_product', default=None)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.SET_NULL, null=True)
