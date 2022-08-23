@@ -11,6 +11,8 @@ from ..models import OrganizationProduct, FinanceCostCenter, FinanceGLAccount, F
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid, get_content_file_from_base64_str
 from ..modules.messages import Messages
 
+from sorl.thumbnail import get_thumbnail
+
 
 m = Messages()
 
@@ -56,6 +58,9 @@ def validate_create_update_input(input, update=False):
 class OrganizationProductNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()
+    url_image = graphene.String()
+    url_image_thumbnail_small = graphene.String()
+    url_image_thumbnail_large = graphene.String()
 
 
 class OrganizationProductNode(DjangoObjectType):
@@ -77,6 +82,24 @@ class OrganizationProductNode(DjangoObjectType):
     def resolve_price_display(self, info):
         from ..modules.finance_tools import display_float_as_amount
         return display_float_as_amount(self.price)
+
+    def resolve_url_image(self, info):
+        if self.image:
+            return self.image.url
+        else:
+            return ''
+
+    def resolve_url_image_thumbnail_small(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
+        else:
+            return ''
+
+    def resolve_url_image_thumbnail_large(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '400x400', crop='center', quality=99).url
+        else:
+            return ''
 
     @classmethod
     def get_node(self, info, id):
