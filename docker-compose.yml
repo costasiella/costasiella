@@ -2,7 +2,7 @@ version: '3'
 
 services:
   backend:
-    image: simplycode/costasiella:backend
+    image: simplycode/costasiella_backend
     restart: always
     build: 
       context: . 
@@ -19,7 +19,7 @@ services:
     restart: always
     image: redis:alpine
   celery_worker:
-    image: simplycode/costasiella:celery_worker
+    image: simplycode/costasiella_celery_worker
     restart: always
     build: 
       context: . 
@@ -31,7 +31,7 @@ services:
       - redis
       - backend
   celery_beat:
-    image: simplycode/costasiella:celery_beat
+    image: simplycode/costasiella_celery_beat
     restart: always
     build: 
       context: . 
