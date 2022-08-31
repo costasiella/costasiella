@@ -157,7 +157,7 @@ class CreateOrganizationProduct(graphene.relay.ClientIDMutation):
         )
 
         # This check works, because it'll throw an exception if either image or iamge_file_name is not set
-        if 'image' in result:
+        if 'image' in input:
             organization_product.image = get_content_file_from_base64_str(
                 data_str=input['image'],
                 file_name=input['image_file_name']
@@ -213,7 +213,7 @@ class UpdateOrganizationProduct(graphene.relay.ClientIDMutation):
             organization_product.price = input['price']
 
         # This check works, because it'll throw an exception if either image or image_file_name is not set
-        if 'image' in result:
+        if 'image' in input:
             organization_product.image = get_content_file_from_base64_str(
                 data_str=input['image'],
                 file_name=input['image_file_name']
