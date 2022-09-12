@@ -285,10 +285,44 @@ class GQLOrganizationProduct(TestCase):
         self.assertNotEqual(data['organizationProducts']['edges'][0]['node']['urlImage'], False)
         self.assertNotEqual(data['organizationProducts']['edges'][0]['node']['urlImageThumbnailSmall'], False)
 
-    ##
-    # No permission tests are required in this test, as there are no permission checks in the schema.
-    # The listing of these documents is public, so users also don't need to be logged in.
-    ##
+    def test_query_permission_denied(self):
+        """ Query list of products as user without permissions """
+        query = self.organization_products_query
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_permission_granted(self):
+        """ Query list of products with view permission """
+        query = self.organization_products_query
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['organizationProducts']['edges'][0]['node']['id'],
+            to_global_id('OrganizationProductNode', self.organization_product.id)
+        )
+
+    def test_query_anon_user(self):
+        """ Query list of products as anon user """
+        query = self.organization_products_query
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
     # def test_query_one(self):
     #     """ Query one schedule event media """
     #     query = self.organization_product_query
