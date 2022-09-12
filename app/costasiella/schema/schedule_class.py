@@ -841,6 +841,7 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         display_public = graphene.Boolean(required=True, default_value=False)
         info_mail_content = graphene.String()
 
+
     schedule_item = graphene.Field(ScheduleItemNode)
 
     @classmethod
