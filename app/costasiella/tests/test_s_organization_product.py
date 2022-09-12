@@ -51,11 +51,11 @@ class GQLOrganizationProduct(TestCase):
                 "input": {
                   "name": "a new product",
                   "description": "Product description",
-                  "price": 12,
+                  "price": "12",
                   "financeTaxRate": to_global_id("FinanceTaxRateNode", self.organization_product.finance_tax_rate.id),
                   "financeGlaccount": to_global_id("FinanceGLAccountNode",
                                                    self.organization_product.finance_glaccount.id),
-                  "financeCostcenter": to_global_id("FinanceCostcenterNode",
+                  "financeCostcenter": to_global_id("FinanceCostCenterNode",
                                                    self.organization_product.finance_costcenter.id),
                   "imageFileName": "test_image.jpg",
                   "image": input_image
@@ -67,11 +67,11 @@ class GQLOrganizationProduct(TestCase):
                     "id": to_global_id("OrganizationProductNode", self.organization_product.id),
                     "name": "an updated product",
                     "description": "Update description",
-                    "price": 12,
+                    "price": "12",
                     "financeTaxRate": to_global_id("FinanceTaxRateNode", self.organization_product.finance_tax_rate.id),
                     "financeGlaccount": to_global_id("FinanceGLAccountNode",
                                                      self.organization_product.finance_glaccount.id),
-                    "financeCostcenter": to_global_id("FinanceCostcenterNode",
+                    "financeCostcenter": to_global_id("FinanceCostCenterNode",
                                                       self.organization_product.finance_costcenter.id),
                     "imageFileName": "test_image.jpg",
                     "image": input_image
@@ -199,6 +199,7 @@ class GQLOrganizationProduct(TestCase):
     createOrganizationProduct(input: $input) {
       organizationProduct {
         id
+        name
         description
         price
         urlImage
@@ -222,6 +223,7 @@ class GQLOrganizationProduct(TestCase):
     updateOrganizationProduct(input: $input) {
       organizationProduct {
         id
+        name
         description
         price
         urlImage
@@ -368,79 +370,85 @@ class GQLOrganizationProduct(TestCase):
         executed = execute_test_client_api_query(query, user, variables=self.variables_query_one)
         data = executed.get('data')
         self.assertEqual(data['organizationProduct']['id'], self.variables_query_one['id'])
-    #
-    # def test_create_organization_product(self):
-    #     """ Create schedule event media """
-    #     query = self.organization_product_create_mutation
-    #     variables = self.variables_create
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(data['createScheduleEventMedia']['organizationProduct']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #     self.assertEqual(data['createScheduleEventMedia']['organizationProduct']['description'],
-    #                      variables['input']['description'])
-    #     self.assertNotEqual(data['createScheduleEventMedia']['organizationProduct']['urlImage'], "")
-    # 
-    #     organization_product = models.ScheduleEventMedia.objects.last()
-    #     self.assertNotEqual(organization_product.image, None)
-    # 
-    # def test_create_organization_product_anon_user(self):
-    #     """ Don't allow creating schedule event media for non-logged in users """
-    #     query = self.organization_product_create_mutation
-    #     variables = self.variables_create
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_create_organization_product_permission_granted(self):
-    #     """ Allow creating schedule event media for users with permissions """
-    #     query = self.organization_product_create_mutation
-    # 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     variables = self.variables_create
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleEventMedia']['organizationProduct']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    # 
-    # def test_create_organization_product_permission_denied(self):
-    #     """ Check create schedule event media permission denied error message """
-    #     query = self.organization_product_create_mutation
-    #     variables = self.variables_create
-    # 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_create_organization_product(self):
+        """ Create organization product """
+        query = self.organization_product_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['createOrganizationProduct']['organizationProduct']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createOrganizationProduct']['organizationProduct']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['createOrganizationProduct']['organizationProduct']['price'],
+                         variables['input']['price'])
+        self.assertEqual(data['createOrganizationProduct']['organizationProduct']['financeTaxRate']['id'],
+                         variables['input']['financeTaxRate'])
+        self.assertEqual(data['createOrganizationProduct']['organizationProduct']['financeGlaccount']['id'],
+                         variables['input']['financeGlaccount'])
+        self.assertEqual(data['createOrganizationProduct']['organizationProduct']['financeCostcenter']['id'],
+                         variables['input']['financeCostcenter'])
+        self.assertNotEqual(data['createOrganizationProduct']['organizationProduct']['urlImage'], "")
+
+        organization_product = models.OrganizationProduct.objects.last()
+        self.assertNotEqual(organization_product.image, None)
+
+    def test_create_organization_product_anon_user(self):
+        """ Don't allow creating organization product for non-logged in users """
+        query = self.organization_product_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_organization_product_permission_granted(self):
+        """ Allow creating organization product for users with permissions """
+        query = self.organization_product_create_mutation
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createOrganizationProduct']['organizationProduct']['name'],
+                         variables['input']['name'])
+
+    def test_create_organization_product_permission_denied(self):
+        """ Check create organization product permission denied error message """
+        query = self.organization_product_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     # 
     # def test_update_organization_product(self):
     #     """ Update schedule event media """
