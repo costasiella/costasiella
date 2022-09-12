@@ -322,16 +322,24 @@ class GQLOrganizationProduct(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
+    def test_query_one(self):
+        """ Query one organization prodict """
+        query = self.organization_product_query
 
-    # def test_query_one(self):
-    #     """ Query one schedule event media """
-    #     query = self.organization_product_query
-    # 
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(data['scheduleEventMedia']['id'], self.variables_query_one['id'])
-    # 
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
+        data = executed.get('data')
+
+        self.assertEqual(data['organizationProduct']['id'], self.variables_query_one['id'])
+        self.assertEqual(data['organizationProduct']['name'], self.organization_product.name)
+        self.assertEqual(data['organizationProduct']['description'], self.organization_product.description)
+        self.assertEqual(data['organizationProduct']['price'], format(self.organization_product.price, ".2f"))
+        self.assertEqual(data['organizationProduct']['financeTaxRate']['id'],
+                         to_global_id("FinanceTaxRateNode", self.organization_product.finance_tax_rate.id))
+        self.assertEqual(data['organizationProduct']['financeGlaccount']['id'],
+                         to_global_id("FinanceGLAccountNode", self.organization_product.finance_glaccount.id))
+        self.assertEqual(data['organizationProduct']['financeCostcenter']['id'],
+                         to_global_id("FinanceCostCenterNode", self.organization_product.finance_costcenter.id))
+    #
     # def test_create_organization_product(self):
     #     """ Create schedule event media """
     #     query = self.organization_product_create_mutation
@@ -344,11 +352,11 @@ class GQLOrganizationProduct(TestCase):
     #     )
     #     data = executed.get('data')
     # 
-    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
+    #     self.assertEqual(data['createScheduleEventMedia']['organizationProduct']['sortOrder'],
     #                      variables['input']['sortOrder'])
-    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['description'],
+    #     self.assertEqual(data['createScheduleEventMedia']['organizationProduct']['description'],
     #                      variables['input']['description'])
-    #     self.assertNotEqual(data['createScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
+    #     self.assertNotEqual(data['createScheduleEventMedia']['organizationProduct']['urlImage'], "")
     # 
     #     organization_product = models.ScheduleEventMedia.objects.last()
     #     self.assertNotEqual(organization_product.image, None)
@@ -385,7 +393,7 @@ class GQLOrganizationProduct(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
+    #     self.assertEqual(data['createScheduleEventMedia']['organizationProduct']['sortOrder'],
     #                      variables['input']['sortOrder'])
     # 
     # def test_create_organization_product_permission_denied(self):
@@ -417,11 +425,11 @@ class GQLOrganizationProduct(TestCase):
     #     )
     # 
     #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
+    #     self.assertEqual(data['updateScheduleEventMedia']['organizationProduct']['sortOrder'],
     #                      variables['input']['sortOrder'])
-    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['description'],
+    #     self.assertEqual(data['updateScheduleEventMedia']['organizationProduct']['description'],
     #                      variables['input']['description'])
-    #     self.assertNotEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
+    #     self.assertNotEqual(data['updateScheduleEventMedia']['organizationProduct']['urlImage'], "")
     # 
     #     organization_product = models.ScheduleEventMedia.objects.last()
     #     self.assertNotEqual(organization_product.image, None)
@@ -457,7 +465,7 @@ class GQLOrganizationProduct(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
+    #     self.assertEqual(data['updateScheduleEventMedia']['organizationProduct']['sortOrder'],
     #                      variables['input']['sortOrder'])
     # 
     # def test_update_organization_product_permission_denied(self):
