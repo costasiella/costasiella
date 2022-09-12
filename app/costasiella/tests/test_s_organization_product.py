@@ -339,6 +339,35 @@ class GQLOrganizationProduct(TestCase):
                          to_global_id("FinanceGLAccountNode", self.organization_product.finance_glaccount.id))
         self.assertEqual(data['organizationProduct']['financeCostcenter']['id'],
                          to_global_id("FinanceCostCenterNode", self.organization_product.finance_costcenter.id))
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one organization product """
+        query = self.organization_product_query
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_one)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        query = self.organization_product_query
+
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_one)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        query = self.organization_product_query
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_one)
+        data = executed.get('data')
+        self.assertEqual(data['organizationProduct']['id'], self.variables_query_one['id'])
     #
     # def test_create_organization_product(self):
     #     """ Create schedule event media """
