@@ -449,81 +449,84 @@ class GQLOrganizationProduct(TestCase):
         )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # def test_update_organization_product(self):
-    #     """ Update schedule event media """
-    #     query = self.organization_product_update_mutation
-    #     variables = self.variables_update
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    # 
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventMedia']['organizationProduct']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #     self.assertEqual(data['updateScheduleEventMedia']['organizationProduct']['description'],
-    #                      variables['input']['description'])
-    #     self.assertNotEqual(data['updateScheduleEventMedia']['organizationProduct']['urlImage'], "")
-    # 
-    #     organization_product = models.ScheduleEventMedia.objects.last()
-    #     self.assertNotEqual(organization_product.image, None)
-    # 
-    # def test_update_organization_product_anon_user(self):
-    #     """ Don't allow updating schedule event media for non-logged in users """
-    #     query = self.organization_product_update_mutation
-    #     variables = self.variables_update
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_update_organization_product_permission_granted(self):
-    #     """ Allow updating schedule event media for users with permissions """
-    #     query = self.organization_product_update_mutation
-    #     variables = self.variables_update
-    # 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventMedia']['organizationProduct']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    # 
-    # def test_update_organization_product_permission_denied(self):
-    #     """ Check update schedule event media permission denied error message """
-    #     query = self.organization_product_update_mutation
-    #     variables = self.variables_update
-    # 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_organization_product(self):
+        """ Update organization product """
+        query = self.organization_product_update_mutation
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationProduct']['organizationProduct']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['updateOrganizationProduct']['organizationProduct']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['updateOrganizationProduct']['organizationProduct']['price'],
+                         variables['input']['price'])
+        self.assertEqual(data['updateOrganizationProduct']['organizationProduct']['financeTaxRate']['id'],
+                         variables['input']['financeTaxRate'])
+        self.assertEqual(data['updateOrganizationProduct']['organizationProduct']['financeGlaccount']['id'],
+                         variables['input']['financeGlaccount'])
+        self.assertEqual(data['updateOrganizationProduct']['organizationProduct']['financeCostcenter']['id'],
+                         variables['input']['financeCostcenter'])
+        self.assertNotEqual(data['updateOrganizationProduct']['organizationProduct']['urlImage'], "")
+
+    def test_update_organization_product_anon_user(self):
+        """ Don't allow updating organization product for non-logged in users """
+        query = self.organization_product_update_mutation
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_organization_product_permission_granted(self):
+        """ Allow updating organization product for users with permissions """
+        query = self.organization_product_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationProduct']['organizationProduct']['name'],
+                         variables['input']['name'])
+
+    def test_update_organization_product_permission_denied(self):
+        """ Check update organization product permission denied error message """
+        query = self.organization_product_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     # 
     # def test_delete_organization_product(self):
-    #     """ Delete a schedule event media """
+    #     """ Delete a organization product """
     #     query = self.organization_product_delete_mutation
     #     variables = self.variables_delete
     # 
@@ -540,7 +543,7 @@ class GQLOrganizationProduct(TestCase):
     #     self.assertEqual(exists, False)
     # 
     # def test_delete_organization_product_anon_user(self):
-    #     """ Delete a schedule event media """
+    #     """ Delete a organization product """
     #     query = self.organization_product_delete_mutation
     #     variables = self.variables_delete
     # 
@@ -554,7 +557,7 @@ class GQLOrganizationProduct(TestCase):
     #     self.assertEqual(errors[0]['message'], 'Not logged in!')
     # 
     # def test_delete_organization_product_permission_granted(self):
-    #     """ Allow deleting schedule event medias for users with permissions """
+    #     """ Allow deleting organization products for users with permissions """
     #     query = self.organization_product_delete_mutation
     #     variables = self.variables_delete
     # 
@@ -573,7 +576,7 @@ class GQLOrganizationProduct(TestCase):
     #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
     # 
     # def test_delete_organization_product_permission_denied(self):
-    #     """ Check delete schedule event media permission denied error message """
+    #     """ Check delete organization product permission denied error message """
     #     query = self.organization_product_delete_mutation
     #     variables = self.variables_delete
     # 
