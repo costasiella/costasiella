@@ -114,7 +114,6 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         # This is run after every test
         pass
 
-
     def get_node_id_of_first_discovery(self):
         # query discoveries to get node id easily
         variables = {
@@ -138,8 +137,6 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         item = data['organizationDiscoveries']['edges'][0]['node']
         self.assertEqual(item['name'], discovery.name)
 
-
-
     def test_query_permission_denied(self):
         """ Query list of discoveries as user without permissions """
         query = self.discoveries_query
@@ -158,7 +155,6 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_permission_granted(self):
         """ Query list of discoveries with view permission """
@@ -183,7 +179,6 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         item = data['organizationDiscoveries']['edges'][0]['node']
         self.assertEqual(item['name'], discovery.name)
 
-
     def test_query_anon_user(self):
         """ Query list of discoveries as anon user """
         query = self.discoveries_query
@@ -195,7 +190,6 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one(self):
         """ Query one discovery """   
@@ -212,7 +206,6 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         self.assertEqual(data['organizationDiscovery']['name'], discovery.name)
         self.assertEqual(data['organizationDiscovery']['archived'], discovery.archived)
 
-
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one discovery """   
         query = self.discovery_query
@@ -221,7 +214,6 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
@@ -234,7 +226,6 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -251,7 +242,6 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         data = executed.get('data')
         self.assertEqual(data['organizationDiscovery']['name'], discovery.name)
-
 
     def test_create_discovery(self):
         """ Create a discovery """
