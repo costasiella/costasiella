@@ -81,6 +81,7 @@ class GQLOrganizationProduct(TestCase):
         self.variables_archive = {
             "input": {
                 "id": to_global_id('OrganizationProductNode', self.organization_product.id),
+                "archived": False
             }
         }
 
@@ -242,7 +243,7 @@ class GQLOrganizationProduct(TestCase):
   }
 '''
 
-        self.organization_product_delete_mutation = '''
+        self.organization_product_archive_mutation = '''
   mutation ArchiveOrganizationProduct($input: ArchiveOrganizationProductInput!) {
     archiveOrganizationProduct(input: $input) {
       organizationProduct {
@@ -524,70 +525,66 @@ class GQLOrganizationProduct(TestCase):
         )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # def test_delete_organization_product(self):
-    #     """ Delete a organization product """
-    #     query = self.organization_product_delete_mutation
-    #     variables = self.variables_delete
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-    # 
-    #     exists = models.OrganizationDocument.objects.exists()
-    #     self.assertEqual(exists, False)
-    # 
-    # def test_delete_organization_product_anon_user(self):
-    #     """ Delete a organization product """
-    #     query = self.organization_product_delete_mutation
-    #     variables = self.variables_delete
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_delete_organization_product_permission_granted(self):
-    #     """ Allow deleting organization products for users with permissions """
-    #     query = self.organization_product_delete_mutation
-    #     variables = self.variables_delete
-    # 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-    # 
-    # def test_delete_organization_product_permission_denied(self):
-    #     """ Check delete organization product permission denied error message """
-    #     query = self.organization_product_delete_mutation
-    #     variables = self.variables_delete
-    # 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_archive_organization_product(self):
+        """ Archive an organization product """
+        query = self.organization_product_archive_mutation
+        variables = self.variables_archive
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['archiveOrganizationProduct']['organizationProduct']['archived'],
+                         self.variables_archive['input']['archived'])
+
+    def test_archive_organization_product_anon_user(self):
+        """ Archive an organization product """
+        query = self.organization_product_archive_mutation
+        variables = self.variables_archive
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_organization_product_permission_granted(self):
+        """ Allow deleting organization products for users with permissions """
+        query = self.organization_product_archive_mutation
+        variables = self.variables_archive
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveOrganizationProduct']['organizationProduct']['archived'],
+                         self.variables_archive['input']['archived'])
+
+    def test_delete_organization_product_permission_denied(self):
+        """ Check delete organization product permission denied error message """
+        query = self.organization_product_archive_mutation
+        variables = self.variables_archive
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
