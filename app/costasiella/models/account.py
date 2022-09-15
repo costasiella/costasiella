@@ -154,7 +154,33 @@ class Account(AbstractUser):
         if qs.exists():
             has_paid_registration_fee = True
 
-        return  has_paid_registration_fee
+        return has_paid_registration_fee
+
+    def has_complete_enough_profile(self):
+        """
+        Check whether the minimum required fields by the profile setting are filled
+        """
+        from ..dudes import SystemSettingDude
+
+        system_setting_dude = SystemSettingDude()
+        policy = system_setting_dude.get("shop_account_profile_required_fields") or "MINIMUM"
+
+        profile_is_complete_enough = True
+        # These checks are required for all policies
+        if not self.first_name or not self.last_name or not self.email:
+            profile_is_complete_enough = False
+
+        # Only do these checks when the policy is set to CONTACT
+        if policy == "CONTACT":
+            if (not self.address or
+                not self.postcode or
+                not self.city or
+                not self.country or
+                not (self.phone or self.mobile)
+                ):
+                profile_is_complete_enough = False
+
+        return profile_is_complete_enough
 
     def get_mailchimp_email_hash(self):
         """
