@@ -156,6 +156,14 @@ class Account(AbstractUser):
 
         return has_paid_registration_fee
 
+    def get_profile_policy(self):
+        from ..dudes import SystemSettingDude
+
+        system_setting_dude = SystemSettingDude()
+        policy = system_setting_dude.get("shop_account_profile_required_fields") or "MINIMUM"
+
+        return policy
+
     def has_complete_enough_profile(self):
         """
         Check whether the minimum required fields by the profile setting are filled

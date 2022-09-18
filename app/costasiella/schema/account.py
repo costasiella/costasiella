@@ -44,6 +44,7 @@ def convert_json_field_to_string(field, registry=None):
 
 class UserType(DjangoObjectType):
     account_id = graphene.ID()
+    profile_policy = graphene.String()
     has_complete_enough_profile = graphene.Boolean()
     has_bank_account_info = graphene.Boolean()
     has_reached_trial_limit = graphene.Boolean()
@@ -54,6 +55,9 @@ class UserType(DjangoObjectType):
 
     def resolve_has_bank_account_info(self, info):
         return self.has_bank_account_info()
+
+    def resolve_profile_policy(self, info):
+        return self.get_profile_policy()
 
     def resolve_has_complete_enough_profile(self, info):
         return self.has_complete_enough_profile()
@@ -93,6 +97,7 @@ class AccountFilter(FilterSet):
 
 class AccountNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
+    profile_policy = graphene.String()
     has_complete_enough_profile = graphene.Boolean()
     has_reached_trial_limit = graphene.Boolean()
     # url_image = graphene.String()
@@ -147,6 +152,17 @@ class AccountNode(DjangoObjectType):
             ])
 
         return self.has_reached_trial_limit()
+
+    def resolve_profile_policy(self, info):
+        user = info.context.user
+
+        # Accounts can view their own status
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
+        
+        return self.get_profile_policy()
 
     def resolve_has_complete_enough_profile(self, info):
         user = info.context.user
