@@ -253,7 +253,7 @@ try:
     VAULT_TOKEN = os.environ['VAULT_TOKEN']
     VAULT_TRANSIT_KEY = os.environ['VAULT_TRANSIT_KEY']
 except KeyError:
-    VAULT_URL = ""
+    VAULT_URL = "http://localhost:8200"
     VAULT_TOKEN = ""
     VAULT_TRANSIT_KEY = ""
 
