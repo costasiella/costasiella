@@ -44,6 +44,92 @@ class TestModelAccount(TestCase):
         # This is run after every test
         pass
 
+    def test_get_profile_policy(self):
+        """
+        Test if the profile policy is returned correctly (check default value)
+        :return:
+        """
+        account = f.RegularUserFactory.create()
+        profile_policy = account.get_profile_policy()
+
+        self.assertEqual(profile_policy, "MINIMUM")
+
+    def test_get_profile_policy_contact(self):
+        """
+        Test if the profile policy is returned correctly (check default value)
+        :return:
+        """
+        setting = models.SystemSetting(
+            setting="shop_account_profile_required_fields",
+            value="CONTACT"
+        )
+        setting.save()
+
+        account = f.RegularUserFactory.create()
+        profile_policy = account.get_profile_policy()
+
+        self.assertEqual(profile_policy, "CONTACT")
+
+    def test_has_complete_enough_profile_minimum(self):
+        """
+        Test whether a profile is complete enough
+        :return:
+        """
+        has_complete_enough_profile = self.admin_user.has_complete_enough_profile()
+
+        self.assertEqual(has_complete_enough_profile, True)
+
+    def test_has_complete_enough_profile_minimum_fail(self):
+        """
+        Test whether a profile is complete enough
+        :return:
+        """
+        self.admin_user.email = ""
+        self.admin_user.save()
+
+        has_complete_enough_profile = self.admin_user.has_complete_enough_profile()
+
+        self.assertEqual(has_complete_enough_profile, False)
+
+    def test_has_complete_enough_profile_contact(self):
+        """
+        Test whether a profile is complete enough
+        :return:
+        """
+        setting = models.SystemSetting(
+            setting="shop_account_profile_required_fields",
+            value="CONTACT"
+        )
+        setting.save()
+
+        user = f.RegularUserFactory.create()
+        user.address = "test"
+        user.postcode = "1234AB"
+        user.city = "City"
+        user.country = "NL"
+        user.phone = "1234567890"
+        user.save()
+
+        has_complete_enough_profile = user.has_complete_enough_profile()
+
+        self.assertEqual(has_complete_enough_profile, True)
+
+    def test_has_complete_enough_profile_contact_fail(self):
+        """
+        Test whether a profile is complete enough
+        :return:
+        """
+        setting = models.SystemSetting(
+            setting="shop_account_profile_required_fields",
+            value="CONTACT"
+        )
+        setting.save()
+
+        user = f.RegularUserFactory.create()
+        has_complete_enough_profile = user.has_complete_enough_profile()
+
+        self.assertEqual(has_complete_enough_profile, False)
+
     def test_has_reached_trial_limit(self):
         """
         Test if the trial limit reached method functions correctly
@@ -62,7 +148,6 @@ class TestModelAccount(TestCase):
 
         limit_reached = account.has_reached_trial_limit()
         self.assertEqual(limit_reached, True)
-
 
     def test_has_not_reached_trial_limit(self):
         """

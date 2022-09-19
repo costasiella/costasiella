@@ -2,8 +2,14 @@ version: '3'
 
 services:
   backend:
-    image: simplycode/costasiella:backend
+    image: simplycode/costasiella_backend
     restart: always
+    environment:
+      - DJANGO_SETTINGS_MODULE=app.settings.production
+      - DJANO_LOG_LEVEL=WARNING
+      - VAULT_URL=http://172.17.0.1:8200
+      - VAULT_TOKEN=<your token here>
+      - VAULT_TRANSIT_KEY=costasiella
     build: 
       context: . 
       dockerfile: ./docker/backend/Dockerfile
@@ -19,7 +25,7 @@ services:
     restart: always
     image: redis:alpine
   celery_worker:
-    image: simplycode/costasiella:celery_worker
+    image: simplycode/costasiella_celery_worker
     restart: always
     build: 
       context: . 
@@ -31,7 +37,7 @@ services:
       - redis
       - backend
   celery_beat:
-    image: simplycode/costasiella:celery_beat
+    image: simplycode/costasiella_celery_beat
     restart: always
     build: 
       context: . 

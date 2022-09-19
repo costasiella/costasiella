@@ -156,6 +156,7 @@ def validate_update_image_input(input):
 
     return result
 
+
 class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
@@ -175,7 +176,10 @@ class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
         if not classtype:
             raise Exception('Invalid Organization Classtype ID!')
 
-        classtype.image=get_content_file_from_base64_str(data_str=input['image'], file_name=input['image_file_name'])
+        classtype.image = get_content_file_from_base64_str(
+            data_str=input['image'],
+            file_name=input['image_file_name']
+        )
         classtype.save()
         
         return UpdateOrganizationClasstype(organization_classtype=classtype)

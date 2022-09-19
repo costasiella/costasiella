@@ -410,6 +410,24 @@ class OrganizationSubscriptionGroupSubscriptionFactory(factory.DjangoModelFactor
     organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
 
 
+class OrganizationProduct(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationProduct
+
+    archived = False
+    name = "First product"
+    description = "Test image"
+    price = 10
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+    # https://factoryboy.readthedocs.io/en/latest/orms.html
+    # Refer to the part "Extra Fields (class dactory.django.FileField)"
+    image = factory.django.FileField(
+        from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_image.jpg"),
+    )
+
+
 class AdminUserFactory(factory.DjangoModelFactory):
     class Meta:
         model = get_user_model()
