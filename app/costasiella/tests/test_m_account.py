@@ -44,6 +44,32 @@ class TestModelAccount(TestCase):
         # This is run after every test
         pass
 
+    def test_get_profile_policy(self):
+        """
+        Test if the profile policy is returned correctly (check default value)
+        :return:
+        """
+        account = f.RegularUserFactory.create()
+        profile_policy = account.get_profile_policy()
+
+        self.assertEqual(profile_policy, "MINIMUM")
+
+    def test_get_profile_policy_contact(self):
+        """
+        Test if the profile policy is returned correctly (check default value)
+        :return:
+        """
+        setting = models.SystemSetting(
+            setting="shop_account_profile_required_fields",
+            value="CONTACT"
+        )
+        setting.save()
+
+        account = f.RegularUserFactory.create()
+        profile_policy = account.get_profile_policy()
+
+        self.assertEqual(profile_policy, "CONTACT")
+
     def test_has_reached_trial_limit(self):
         """
         Test if the trial limit reached method functions correctly
@@ -62,7 +88,6 @@ class TestModelAccount(TestCase):
 
         limit_reached = account.has_reached_trial_limit()
         self.assertEqual(limit_reached, True)
-
 
     def test_has_not_reached_trial_limit(self):
         """

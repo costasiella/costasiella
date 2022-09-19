@@ -161,7 +161,7 @@ class AccountNode(DjangoObjectType):
             require_login_and_one_of_permissions(user, [
                 'costasiella.view_account',
             ])
-        
+
         return self.get_profile_policy()
 
     def resolve_has_complete_enough_profile(self, info):
