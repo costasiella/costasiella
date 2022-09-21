@@ -12,7 +12,7 @@ class AccountProduct(models.Model):
     # add additional fields in here
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="products")
     organization_product = models.ForeignKey(OrganizationProduct, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=20, decimal_places=2)
+    quantity = models.DecimalField(max_digits=20, decimal_places=2, default=1)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
