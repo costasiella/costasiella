@@ -307,3 +307,26 @@ class SalesDude:
         finance_invoice_item = finance_invoice.item_add_schedule_event_ticket(account_schedule_event_ticket)
 
         return finance_invoice_item
+
+    def sell_product(self, account, organization_product, quantity, create_invoice=True):
+        """
+        Sell product to account
+        """
+        from ..models.account_product import AccountProduct
+
+        account_product = AccountProduct(
+            account=account,
+            organization_product=organization_product,
+            quantity=quantity,
+        )
+
+        account_product.save()
+
+        finance_invoice_item = None
+        if create_invoice:
+            finance_invoice_item = self._sell_classpass_create_invoice(account_product)
+
+        return {
+            "account_product": account_product,
+            "finance_invoice_item": finance_invoice_item
+        }
