@@ -23,6 +23,13 @@
   {
     "model": "costasiella.FinanceInvoiceGroupDefault",
     "fields": {
+      "item_type": "PRODUCTS",
+      "finance_invoice_group": 100
+    }
+  },
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
       "item_type": "DROPINCLASSES",
       "finance_invoice_group": 100
     }

@@ -330,3 +330,30 @@ class SalesDude:
             "account_product": account_product,
             "finance_invoice_item": finance_invoice_item
         }
+
+    @staticmethod
+    def _sell_product_create_invoice(account_product):
+        """
+        Create an invoice for sold product
+        """
+        from ..models.finance_invoice_group_default import FinanceInvoiceGroupDefault
+        from ..models.finance_invoice import FinanceInvoice
+
+        finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="PRODUCTS").first()
+        finance_invoice_group = finance_invoice_group_default.finance_invoice_group
+        finance_invoice = FinanceInvoice(
+            account=account_product.account,
+            finance_invoice_group=finance_invoice_group,
+            summary=account_product.organization_product.name,
+            status="SENT",
+            terms=finance_invoice_group.terms,
+            footer=finance_invoice_group.footer
+        )
+
+        # Save invoice
+        finance_invoice.save()
+
+        # Add invoice item
+        finance_invoice_item = finance_invoice.item_add_product(account_product)
+
+        return finance_invoice_item

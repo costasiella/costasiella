@@ -284,6 +284,33 @@ class FinanceInvoice(models.Model):
 
         return finance_invoice_item
 
+    def item_add_product(self, account_product):
+        """
+        Add account product invoice item
+        """
+        from .finance_invoice_item import FinanceInvoiceItem
+        # add item to invoice
+        organization_product = account_product.organization_product
+
+        finance_invoice_item = FinanceInvoiceItem(
+            finance_invoice=self,
+            account_product=account_product,
+            line_number=self._get_item_next_line_nr(),
+            product_name=organization_product.name,
+            description=organization_product.description,
+            quantity=account_product.quantity,
+            price=organization_product.price,
+            finance_tax_rate=organization_product.finance_tax_rate,
+            finance_glaccount=organization_product.finance_glaccount,
+            finance_costcenter=organization_product.finance_costcenter,
+        )
+
+        finance_invoice_item.save()
+
+        self.update_amounts()
+
+        return finance_invoice_item
+
     def item_add_membership(self, account_membership):
         """
         Add account membership invoice item
