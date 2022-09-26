@@ -12,6 +12,7 @@ from .account_finance_payment_batch_category_item import \
     AccountFinancePaymentBatchCategoryItemMutation
 # from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_note import AccountNoteQuery, AccountNoteMutation
+from .account_product import AccountProductQuery, AccountProductMutation
 from .account_schedule_event_ticket import AccountScheduleEventTicketQuery, AccountScheduleEventTicketMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 from .account_subscription_alt_price import AccountSubscriptionAltPriceQuery, AccountSubscriptionAltPriceMutation
@@ -122,6 +123,7 @@ class Query(AccountQuery,
             AccountDocumentQuery,
             AccountFinancePaymentBatchCategoryItemQuery,
             AccountNoteQuery,
+            AccountProductQuery,
             AccountScheduleEventTicketQuery,
             AccountSubscriptionQuery,
             AccountSubscriptionAltPriceQuery,
@@ -213,6 +215,7 @@ class Mutation(AccountMutation,
                AccountDocumentMutation,
                AccountFinancePaymentBatchCategoryItemMutation,
                AccountNoteMutation,
+               AccountProductMutation,
                AccountSubscriptionMutation,
                AccountScheduleEventTicketMutation,
                AccountSubscriptionAltPriceMutation,
