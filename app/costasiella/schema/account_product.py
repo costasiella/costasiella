@@ -50,6 +50,8 @@ class AccountProductNode(DjangoObjectType):
             'quantity',
             'created_at',
             'updated_at',
+            # Reverse relations
+            'invoice_items'
         )
         filter_fields = {
             'account': ['exact'],
