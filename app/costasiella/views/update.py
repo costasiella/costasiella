@@ -30,6 +30,9 @@ def update(request):
     if current_version < 2022.03:
         _update_to_2022_03()
 
+    if current_version < 2022.05:
+        _update_to_2022_05()
+
     # Set latest version
     new_version = version_dude.update_version()
     # Ensure default permissions are in place
