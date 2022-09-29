@@ -324,7 +324,7 @@ class SalesDude:
 
         finance_invoice_item = None
         if create_invoice:
-            finance_invoice_item = self._sell_classpass_create_invoice(account_product)
+            finance_invoice_item = self._sell_product_create_invoice(account_product)
 
         return {
             "account_product": account_product,
