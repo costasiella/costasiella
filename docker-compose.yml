@@ -27,6 +27,9 @@ services:
   celery_worker:
     image: simplycode/costasiella_celery_worker
     restart: always
+    environment:
+      - DJANGO_SETTINGS_MODULE=app.settings.production
+      - DJANO_LOG_LEVEL=WARNING
     build: 
       context: . 
       dockerfile: ./docker/celery_worker/Dockerfile
@@ -39,6 +42,9 @@ services:
   celery_beat:
     image: simplycode/costasiella_celery_beat
     restart: always
+    environment:
+      - DJANGO_SETTINGS_MODULE=app.settings.production
+      - DJANO_LOG_LEVEL=WARNING
     build: 
       context: . 
       dockerfile: ./docker/celery_beat/Dockerfile
