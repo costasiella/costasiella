@@ -34,7 +34,7 @@ class GQLOrganizationProduct(TestCase):
         self.permission_change = 'change_organizationproduct'
         self.permission_delete = 'delete_organizationproduct'
 
-        self.organization_product = f.OrganizationProduct.create()
+        self.organization_product = f.OrganizationProductFactory.create()
 
         self.variables_query_list = {
             "archived": False
