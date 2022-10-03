@@ -410,7 +410,7 @@ class OrganizationSubscriptionGroupSubscriptionFactory(factory.DjangoModelFactor
     organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
 
 
-class OrganizationProduct(factory.DjangoModelFactory):
+class OrganizationProductFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationProduct
 
@@ -999,6 +999,15 @@ class AccountScheduleEventTicketFactory(factory.DjangoModelFactory):
     cancelled = False
     payment_confirmation = False
     info_mail_sent = False
+
+
+class AccountProduct(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountProduct
+
+    account = factory.SubFactory(RegularUserFactory)
+    organization_product = factory.SubFactory(OrganizationProductFactory)
+    quantity = 1
 
 
 class ScheduleEventMediaFactory(factory.DjangoModelFactory):
