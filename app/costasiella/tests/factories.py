@@ -1001,7 +1001,7 @@ class AccountScheduleEventTicketFactory(factory.DjangoModelFactory):
     info_mail_sent = False
 
 
-class AccountProduct(factory.DjangoModelFactory):
+class AccountProductFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountProduct
 
