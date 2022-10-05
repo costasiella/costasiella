@@ -58,8 +58,8 @@ class GQLAccountProduct(TestCase):
         }
 
         self.account_products_query = '''
-  query AccountProducts($after: String, $before: String, $accountId: ID!) {
-    accountProducts(first: 15, before: $before, after: $after, account: $accountId) {
+  query AccountProducts($after: String, $before: String, $account: ID!) {
+    accountProducts(first: 15, before: $before, after: $after, account: $account) {
       pageInfo {
         startCursor
         endCursor
@@ -69,6 +69,9 @@ class GQLAccountProduct(TestCase):
       edges {
         node {
           id
+          account {
+            id
+          }
           organizationProduct {
             id
             name
@@ -120,47 +123,39 @@ class GQLAccountProduct(TestCase):
         pass
 
     def test_query(self):
-        """ Query list of account account_schedule_events """
-        query = self.account_schedule_events_query
+        """ Query list of account account_products """
+        query = self.account_products_query
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
         self.assertEqual(
-            data['accountScheduleEventTickets']['edges'][0]['node']['account']['id'],
+            data['accountProducts']['edges'][0]['node']['account']['id'],
             to_global_id("AccountNode", self.account_product.account.id)
         )
         self.assertEqual(
-            data['accountScheduleEventTickets']['edges'][0]['node']['scheduleEventTicket']['id'],
-            to_global_id("ScheduleEventTicketNode", self.account_product.product.id)
+            data['accountProducts']['edges'][0]['node']['organizationProduct']['id'],
+            to_global_id("OrganizationProductNode", self.account_product.organization_product.id)
         )
         self.assertEqual(
-            data['accountScheduleEventTickets']['edges'][0]['node']['cancelled'],
-            self.account_product.cancelled
-        )
-        self.assertEqual(
-            data['accountScheduleEventTickets']['edges'][0]['node']['paymentConfirmation'],
-            self.account_product.payment_confirmation
-        )
-        self.assertEqual(
-            data['accountScheduleEventTickets']['edges'][0]['node']['infoMailSent'],
-            self.account_product.info_mail_sent
+            data['accountProducts']['edges'][0]['node']['quantity'],
+            format(1, ".2f")
         )
 
     def test_query_not_listed_for_other_account_without_permission(self):
-        """ Query list of account account_schedule_events - check permission denied """
-        query = self.account_schedule_events_query
-        other_user = self.account_product.product.schedule_event.instructor
+        """ Query list of account account_products - check permission denied """
+        query = self.account_products_query
+        other_user = f.Instructor2Factory.create()
 
         # Create regular user
         # user = get_user_model().objects.get(pk=self.account_product.account.id)
         executed = execute_test_client_api_query(query, other_user, variables=self.variables_query)
         data = executed.get('data')
-        self.assertEqual(len(data['accountScheduleEventTickets']['edges']), 0)
+        self.assertEqual(len(data['accountProducts']['edges']), 0)
 
-    def test_query_not_listed_for_other_account_with_permission(self):
-        """ Query list of account account_schedule_events - check permission denied """
-        query = self.account_schedule_events_query
-        other_user = self.account_product.product.schedule_event.instructor
+    def test_query_listed_for_other_account_with_permission(self):
+        """ Query list of account account_products - check permission granted """
+        query = self.account_products_query
+        other_user = f.Instructor2Factory.create()
 
         # Create regular user
         permission = Permission.objects.get(codename=self.permission_view)
@@ -168,453 +163,456 @@ class GQLAccountProduct(TestCase):
         other_user.save()
         executed = execute_test_client_api_query(query, other_user, variables=self.variables_query)
         data = executed.get('data')
-        self.assertEqual(len(data['accountScheduleEventTickets']['edges']), 0)
+        self.assertEqual(
+            data['accountProducts']['edges'][0]['node']['account']['id'],
+            to_global_id("AccountNode", self.account_product.account.id)
+        )
 
     def test_query_list_for_own_account(self):
-        """ Query list of account account_schedule_events - allow listing of event tickets for own account """
-        query = self.account_schedule_events_query
+        """ Query list of account account_products - allow listing of products for own account """
+        query = self.account_products_query
         user = self.account_product.account
 
         executed = execute_test_client_api_query(query, user, variables=self.variables_query)
         data = executed.get('data')
         self.assertEqual(
-            data['accountScheduleEventTickets']['edges'][0]['node']['account']['id'],
+            data['accountProducts']['edges'][0]['node']['account']['id'],
             to_global_id("AccountNode", self.account_product.account.id)
         )
 
     def test_query_anon_user(self):
-        """ Query list of account account_schedule_events - anon user """
-        query = self.account_schedule_events_query
+        """ Query list of account account_products - anon user """
+        query = self.account_products_query
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    # Query one is currently not implemented.
-
     #
-    # def test_query_one(self):
-    #     """ Query one account account_schedule_event as admin """
-    #     account_schedule_event = f.AccountSubscriptionFactory.create()
+    # # Query one is currently not implemented.
     #
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", account_schedule_event.id),
-    #         "accountId": to_global_id("AccountNode", account_schedule_event.account.id),
-    #         "archived": False,
-    #     }
+    # #
+    # # def test_query_one(self):
+    # #     """ Query one account account_schedule_event as admin """
+    # #     account_schedule_event = f.AccountSubscriptionFactory.create()
+    # #
+    # #     variables = {
+    # #         "id": to_global_id("AccountSubscriptionNode", account_schedule_event.id),
+    # #         "accountId": to_global_id("AccountNode", account_schedule_event.account.id),
+    # #         "archived": False,
+    # #     }
+    # #
+    # #     # Now query single account_schedule_event and check
+    # #     executed = execute_test_client_api_query(self.account_schedule_event_query, self.admin_user, variables=variables)
+    # #     data = executed.get('data')
+    # #     self.assertEqual(
+    # #         data['accountSubscription']['account']['id'],
+    # #         to_global_id('AccountNode', account_schedule_event.account.id)
+    # #     )
+    # #     self.assertEqual(
+    # #         data['accountSubscription']['organizationSubscription']['id'],
+    # #         to_global_id('OrganizationSubscriptionNode', account_schedule_event.organization_account_schedule_event.id)
+    # #     )
+    # #     self.assertEqual(
+    # #         data['accountSubscription']['financePaymentMethod']['id'],
+    # #         to_global_id('FinancePaymentMethodNode', account_schedule_event.finance_payment_method.id)
+    # #     )
+    # #     self.assertEqual(data['accountSubscription']['dateStart'], str(account_schedule_event.date_start))
+    # #     self.assertEqual(data['accountSubscription']['dateEnd'], account_schedule_event.date_end)
+    # #     self.assertEqual(data['accountSubscription']['note'], account_schedule_event.note)
+    # #     self.assertEqual(data['accountSubscription']['registrationFeePaid'], account_schedule_event.registration_fee_paid)
+    # #
+    # # def test_query_one_anon_user(self):
+    # #     """ Deny permission for anon users Query one account account_schedule_event """
+    # #     account_schedule_event = f.AccountSubscriptionFactory.create()
+    # #
+    # #     variables = {
+    # #         "id": to_global_id("AccountSubscriptionNode", account_schedule_event.id),
+    # #         "accountId": to_global_id("AccountNode", account_schedule_event.account.id),
+    # #         "archived": False,
+    # #     }
+    # #
+    # #     # Now query single account_schedule_event and check
+    # #     executed = execute_test_client_api_query(self.account_schedule_event_query, self.anon_user, variables=variables)
+    # #     errors = executed.get('errors')
+    # #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    # #
+    # # def test_query_one_permission_denied(self):
+    # #     """ Permission denied message when user lacks authorization """
+    # #     # Create regular user
+    # #     account_schedule_event = f.AccountSubscriptionFactory.create()
+    # #     user = account_schedule_event.account
+    # #
+    # #     variables = {
+    # #         "id": to_global_id("AccountSubscriptionNode", account_schedule_event.id),
+    # #         "accountId": to_global_id("AccountNode", account_schedule_event.account.id),
+    # #         "archived": False,
+    # #     }
+    # #
+    # #     # Now query single account_schedule_event and check
+    # #     executed = execute_test_client_api_query(self.account_schedule_event_query, user, variables=variables)
+    # #     errors = executed.get('errors')
+    # #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    # #
+    # # def test_query_one_permission_granted(self):
+    # #     """ Respond with data when user has permission """
+    # #     account_schedule_event = f.AccountSubscriptionFactory.create()
+    # #     user = account_schedule_event.account
+    # #     permission = Permission.objects.get(codename='view_accounteventticket')
+    # #     user.user_permissions.add(permission)
+    # #     user.save()
+    # #
+    # #
+    # #     variables = {
+    # #         "id": to_global_id("AccountSubscriptionNode", account_schedule_event.id),
+    # #         "accountId": to_global_id("AccountNode", account_schedule_event.account.id),
+    # #         "archived": False,
+    # #     }
+    # #
+    # #     # Now query single account_schedule_event and check
+    # #     executed = execute_test_client_api_query(self.account_schedule_event_query, user, variables=variables)
+    # #     data = executed.get('data')
+    # #     self.assertEqual(
+    # #         data['accountSubscription']['organizationSubscription']['id'],
+    # #         to_global_id('OrganizationSubscriptionNode', account_schedule_event.organization_account_schedule_event.id)
+    # #     )
+    # #
+    # def test_create_account_schedule_event(self):
+    #     """ Create an account account_schedule_event """
+    #     query = self.account_schedule_event_create_mutation
     #
-    #     # Now query single account_schedule_event and check
-    #     executed = execute_test_client_api_query(self.account_schedule_event_query, self.admin_user, variables=variables)
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=self.variables_create
+    #     )
     #     data = executed.get('data')
+    #
+    #
     #     self.assertEqual(
-    #         data['accountSubscription']['account']['id'],
-    #         to_global_id('AccountNode', account_schedule_event.account.id)
+    #         data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['account']['id'],
+    #         self.variables_create['input']['account']
     #     )
     #     self.assertEqual(
-    #         data['accountSubscription']['organizationSubscription']['id'],
-    #         to_global_id('OrganizationSubscriptionNode', account_schedule_event.organization_account_schedule_event.id)
+    #         data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['scheduleEventTicket']['id'],
+    #         self.variables_create['input']['scheduleEventTicket']
     #     )
-    #     self.assertEqual(
-    #         data['accountSubscription']['financePaymentMethod']['id'],
-    #         to_global_id('FinancePaymentMethodNode', account_schedule_event.finance_payment_method.id)
+    #
+    # def test_create_account_schedule_event_anon_user(self):
+    #     """ Don't allow creating account account_schedule_events for non-logged in users """
+    #     query = self.account_schedule_event_create_mutation
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.anon_user,
+    #         variables=self.variables_create
     #     )
-    #     self.assertEqual(data['accountSubscription']['dateStart'], str(account_schedule_event.date_start))
-    #     self.assertEqual(data['accountSubscription']['dateEnd'], account_schedule_event.date_end)
-    #     self.assertEqual(data['accountSubscription']['note'], account_schedule_event.note)
-    #     self.assertEqual(data['accountSubscription']['registrationFeePaid'], account_schedule_event.registration_fee_paid)
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one account account_schedule_event """
-    #     account_schedule_event = f.AccountSubscriptionFactory.create()
-    #
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", account_schedule_event.id),
-    #         "accountId": to_global_id("AccountNode", account_schedule_event.account.id),
-    #         "archived": False,
-    #     }
-    #
-    #     # Now query single account_schedule_event and check
-    #     executed = execute_test_client_api_query(self.account_schedule_event_query, self.anon_user, variables=variables)
+    #     data = executed.get('data')
     #     errors = executed.get('errors')
     #     self.assertEqual(errors[0]['message'], 'Not logged in!')
     #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
+    # def test_create_account_schedule_event_permission_granted(self):
+    #     """ Allow creating account_schedule_events for users with permissions """
+    #     query = self.account_schedule_event_create_mutation
+    #
     #     # Create regular user
-    #     account_schedule_event = f.AccountSubscriptionFactory.create()
-    #     user = account_schedule_event.account
-    #
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", account_schedule_event.id),
-    #         "accountId": to_global_id("AccountNode", account_schedule_event.account.id),
-    #         "archived": False,
-    #     }
-    #
-    #     # Now query single account_schedule_event and check
-    #     executed = execute_test_client_api_query(self.account_schedule_event_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     account_schedule_event = f.AccountSubscriptionFactory.create()
-    #     user = account_schedule_event.account
-    #     permission = Permission.objects.get(codename='view_accounteventticket')
+    #     user = self.account_product.account
+    #     permission = Permission.objects.get(codename=self.permission_add)
     #     user.user_permissions.add(permission)
     #     user.save()
     #
-    #
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", account_schedule_event.id),
-    #         "accountId": to_global_id("AccountNode", account_schedule_event.account.id),
-    #         "archived": False,
-    #     }
-    #
-    #     # Now query single account_schedule_event and check
-    #     executed = execute_test_client_api_query(self.account_schedule_event_query, user, variables=variables)
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=self.variables_create
+    #     )
     #     data = executed.get('data')
     #     self.assertEqual(
-    #         data['accountSubscription']['organizationSubscription']['id'],
-    #         to_global_id('OrganizationSubscriptionNode', account_schedule_event.organization_account_schedule_event.id)
+    #         data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['account']['id'],
+    #         self.variables_create['input']['account']
     #     )
     #
-    def test_create_account_schedule_event(self):
-        """ Create an account account_schedule_event """
-        query = self.account_schedule_event_create_mutation
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=self.variables_create
-        )
-        data = executed.get('data')
-
-
-        self.assertEqual(
-            data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['account']['id'],
-            self.variables_create['input']['account']
-        )
-        self.assertEqual(
-            data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['scheduleEventTicket']['id'],
-            self.variables_create['input']['scheduleEventTicket']
-        )
-
-    def test_create_account_schedule_event_anon_user(self):
-        """ Don't allow creating account account_schedule_events for non-logged in users """
-        query = self.account_schedule_event_create_mutation
-
-        executed = execute_test_client_api_query(
-            query,
-            self.anon_user,
-            variables=self.variables_create
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_create_account_schedule_event_permission_granted(self):
-        """ Allow creating account_schedule_events for users with permissions """
-        query = self.account_schedule_event_create_mutation
-
-        # Create regular user
-        user = self.account_product.account
-        permission = Permission.objects.get(codename=self.permission_add)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=self.variables_create
-        )
-        data = executed.get('data')
-        self.assertEqual(
-            data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['account']['id'],
-            self.variables_create['input']['account']
-        )
-
-    def test_create_account_schedule_event_permission_denied(self):
-        """ Check create account_schedule_event permission denied error message """
-        query = self.account_schedule_event_create_mutation
-
-        # Create regular user
-        user = self.account_product.account
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=self.variables_create
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_update_account_schedule_event(self):
-        """ Update a account_schedule_event """
-        query = self.account_schedule_event_update_mutation
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=self.variables_update
-        )
-        data = executed.get('data')
-
-        self.assertEqual(
-            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
-            self.variables_update['input']['id']
-        )
-
-        self.assertEqual(
-            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['cancelled'],
-            self.variables_update['input']['cancelled']
-        )
-
-        self.assertEqual(
-            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['paymentConfirmation'],
-            self.variables_update['input']['paymentConfirmation']
-        )
-
-        self.assertEqual(
-            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['infoMailSent'],
-            self.variables_update['input']['infoMailSent']
-        )
-
-    def test_update_account_schedule_event_cancel_should_cancel_related_invoice(self):
-        """ Update a account_schedule_event """
-        query = self.account_schedule_event_update_mutation
-        finance_invoice = f.FinanceInvoiceFactory.create(
-            account=self.account_product.account
-        )
-        finance_invoice_item = f.FinanceInvoiceItemFactory.create(
-            account_product=self.account_product,
-            finance_invoice=finance_invoice
-        )
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=self.variables_update
-        )
-        data = executed.get('data')
-
-        self.assertEqual(
-            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
-            self.variables_update['input']['id']
-        )
-
-        # Check invoice was cancelled
-        finance_invoice = models.FinanceInvoice.objects.get(id=finance_invoice.id)
-        self.assertEqual(finance_invoice.status, 'CANCELLED')
-
-    def test_update_account_schedule_event_cancel_attendances_related_to_ticket(self):
-        """ Update a account_schedule_event - cancel attendanced related to ticket """
-        query = self.account_schedule_event_update_mutation
-
-        product = self.account_product.product
-        product.full_event = False
-        product.save()
-
-        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
-            schedule_event=product.schedule_event
-        )
-
-        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
-            account_product=self.account_product,
-            schedule_item=schedule_event_activity,
-            booking_status="BOOKED"
-        )
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=self.variables_update
-        )
-        data = executed.get('data')
-
-        self.assertEqual(
-            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
-            self.variables_update['input']['id']
-        )
-
-        # Refresh attendance object
-        schedule_item_attendance = models.ScheduleItemAttendance.objects.get(id=schedule_item_attendance.id)
-        self.assertEqual(schedule_item_attendance.booking_status, "CANCELLED")
-
-    def test_update_account_schedule_event_uncancel_attendances_related_to_ticket(self):
-        """ Update a account_schedule_event - uncancel attendances related to ticket """
-        query = self.account_schedule_event_update_mutation
-
-        product = self.account_product.product
-        product.full_event = False
-        product.save()
-
-        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
-            schedule_event=product.schedule_event
-        )
-
-        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
-            account_product=self.account_product,
-            schedule_item=schedule_event_activity,
-            booking_status="CANCELLED"
-        )
-
-        self.variables_update['input']['cancelled'] = False
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=self.variables_update
-        )
-        data = executed.get('data')
-
-        self.assertEqual(
-            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
-            self.variables_update['input']['id']
-        )
-        self.assertEqual(
-            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['cancelled'],
-            self.variables_update['input']['cancelled']
-        )
-
-        # Refresh attendance object
-        schedule_item_attendance = models.ScheduleItemAttendance.objects.get(id=schedule_item_attendance.id)
-        self.assertEqual(schedule_item_attendance.booking_status, "BOOKED")
-
-    def test_update_account_schedule_event_uncancel_attendances_related_to_ticket_error_sold_out(self):
-        """ Update a account_schedule_event - uncancel attendances related to ticket - error when sold out"""
-        query = self.account_schedule_event_update_mutation
-
-        product = self.account_product.product
-        product.full_event = False
-        product.save()
-
-        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
-            schedule_event=product.schedule_event,
-            spaces=0
-        )
-
-        product_schedule_item = f.ScheduleEventTicketScheduleItemIncludedFactory.create(
-            schedule_item=schedule_event_activity,
-            product=product
-        )
-
-        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
-            account_product=self.account_product,
-            schedule_item=schedule_event_activity,
-            booking_status="CANCELLED"
-        )
-
-        self.variables_update['input']['cancelled'] = False
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=self.variables_update
-        )
-        errors = executed.get('errors')
-
-        self.assertEqual(errors[0]['message'], 'This ticket is sold out')
-
-    def test_update_account_schedule_event_anon_user(self):
-        """ Don't allow updating account_schedule_events for non-logged in users """
-        query = self.account_schedule_event_update_mutation
-
-        executed = execute_test_client_api_query(
-            query,
-            self.anon_user,
-            variables=self.variables_update
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_update_account_schedule_event_permission_granted(self):
-        """ Allow updating account_schedule_events for users with permissions """
-        query = self.account_schedule_event_update_mutation
-
-        # Create regular user
-        user = self.account_product.account
-        permission = Permission.objects.get(codename=self.permission_change)
-        user.user_permissions.add(permission)
-        user.save()
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=self.variables_update
-        )
-        data = executed.get('data')
-        self.assertEqual(
-            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
-            self.variables_update['input']['id']
-        )
-
-    def test_update_account_schedule_event_permission_denied(self):
-        """ Check update account_schedule_event permission denied error message """
-        query = self.account_schedule_event_update_mutation
-
-        # Create regular user
-        user = self.account_product.account
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=self.variables_update
-        )
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_delete_account_schedule_event(self):
-        """ Delete an account account_schedule_event """
-        query = self.account_schedule_event_delete_mutation
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=self.variables_delete
-        )
-        data = executed.get('data')
-        self.assertEqual(data['deleteAccountScheduleEventTicket']['ok'], True)
-
-    def test_delete_account_schedule_event_anon_user(self):
-        """ Delete account_schedule_event denied for anon user """
-        query = self.account_schedule_event_delete_mutation
-
-        executed = execute_test_client_api_query(
-            query,
-            self.anon_user,
-            variables=self.variables_delete
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_delete_account_schedule_event_permission_granted(self):
-        """ Allow deleting account_schedule_events for users with permissions """
-        query = self.account_schedule_event_delete_mutation
-
-        # Give permissions
-        user = self.account_product.account
-        permission = Permission.objects.get(codename=self.permission_delete)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=self.variables_delete
-        )
-        data = executed.get('data')
-        self.assertEqual(data['deleteAccountScheduleEventTicket']['ok'], True)
-
-    def test_delete_account_schedule_event_permission_denied(self):
-        """ Check delete account_schedule_event permission denied error message """
-        query = self.account_schedule_event_delete_mutation
-        user = self.account_product.account
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=self.variables_delete
-        )
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    # def test_create_account_schedule_event_permission_denied(self):
+    #     """ Check create account_schedule_event permission denied error message """
+    #     query = self.account_schedule_event_create_mutation
+    #
+    #     # Create regular user
+    #     user = self.account_product.account
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=self.variables_create
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #
+    # def test_update_account_schedule_event(self):
+    #     """ Update a account_schedule_event """
+    #     query = self.account_schedule_event_update_mutation
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=self.variables_update
+    #     )
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
+    #         self.variables_update['input']['id']
+    #     )
+    #
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['cancelled'],
+    #         self.variables_update['input']['cancelled']
+    #     )
+    #
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['paymentConfirmation'],
+    #         self.variables_update['input']['paymentConfirmation']
+    #     )
+    #
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['infoMailSent'],
+    #         self.variables_update['input']['infoMailSent']
+    #     )
+    #
+    # def test_update_account_schedule_event_cancel_should_cancel_related_invoice(self):
+    #     """ Update a account_schedule_event """
+    #     query = self.account_schedule_event_update_mutation
+    #     finance_invoice = f.FinanceInvoiceFactory.create(
+    #         account=self.account_product.account
+    #     )
+    #     finance_invoice_item = f.FinanceInvoiceItemFactory.create(
+    #         account_product=self.account_product,
+    #         finance_invoice=finance_invoice
+    #     )
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=self.variables_update
+    #     )
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
+    #         self.variables_update['input']['id']
+    #     )
+    #
+    #     # Check invoice was cancelled
+    #     finance_invoice = models.FinanceInvoice.objects.get(id=finance_invoice.id)
+    #     self.assertEqual(finance_invoice.status, 'CANCELLED')
+    #
+    # def test_update_account_schedule_event_cancel_attendances_related_to_ticket(self):
+    #     """ Update a account_schedule_event - cancel attendanced related to ticket """
+    #     query = self.account_schedule_event_update_mutation
+    #
+    #     product = self.account_product.product
+    #     product.full_event = False
+    #     product.save()
+    #
+    #     schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+    #         schedule_event=product.schedule_event
+    #     )
+    #
+    #     schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+    #         account_product=self.account_product,
+    #         schedule_item=schedule_event_activity,
+    #         booking_status="BOOKED"
+    #     )
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=self.variables_update
+    #     )
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
+    #         self.variables_update['input']['id']
+    #     )
+    #
+    #     # Refresh attendance object
+    #     schedule_item_attendance = models.ScheduleItemAttendance.objects.get(id=schedule_item_attendance.id)
+    #     self.assertEqual(schedule_item_attendance.booking_status, "CANCELLED")
+    #
+    # def test_update_account_schedule_event_uncancel_attendances_related_to_ticket(self):
+    #     """ Update a account_schedule_event - uncancel attendances related to ticket """
+    #     query = self.account_schedule_event_update_mutation
+    #
+    #     product = self.account_product.product
+    #     product.full_event = False
+    #     product.save()
+    #
+    #     schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+    #         schedule_event=product.schedule_event
+    #     )
+    #
+    #     schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+    #         account_product=self.account_product,
+    #         schedule_item=schedule_event_activity,
+    #         booking_status="CANCELLED"
+    #     )
+    #
+    #     self.variables_update['input']['cancelled'] = False
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=self.variables_update
+    #     )
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
+    #         self.variables_update['input']['id']
+    #     )
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['cancelled'],
+    #         self.variables_update['input']['cancelled']
+    #     )
+    #
+    #     # Refresh attendance object
+    #     schedule_item_attendance = models.ScheduleItemAttendance.objects.get(id=schedule_item_attendance.id)
+    #     self.assertEqual(schedule_item_attendance.booking_status, "BOOKED")
+    #
+    # def test_update_account_schedule_event_uncancel_attendances_related_to_ticket_error_sold_out(self):
+    #     """ Update a account_schedule_event - uncancel attendances related to ticket - error when sold out"""
+    #     query = self.account_schedule_event_update_mutation
+    #
+    #     product = self.account_product.product
+    #     product.full_event = False
+    #     product.save()
+    #
+    #     schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+    #         schedule_event=product.schedule_event,
+    #         spaces=0
+    #     )
+    #
+    #     product_schedule_item = f.ScheduleEventTicketScheduleItemIncludedFactory.create(
+    #         schedule_item=schedule_event_activity,
+    #         product=product
+    #     )
+    #
+    #     schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+    #         account_product=self.account_product,
+    #         schedule_item=schedule_event_activity,
+    #         booking_status="CANCELLED"
+    #     )
+    #
+    #     self.variables_update['input']['cancelled'] = False
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=self.variables_update
+    #     )
+    #     errors = executed.get('errors')
+    #
+    #     self.assertEqual(errors[0]['message'], 'This ticket is sold out')
+    #
+    # def test_update_account_schedule_event_anon_user(self):
+    #     """ Don't allow updating account_schedule_events for non-logged in users """
+    #     query = self.account_schedule_event_update_mutation
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.anon_user,
+    #         variables=self.variables_update
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #
+    # def test_update_account_schedule_event_permission_granted(self):
+    #     """ Allow updating account_schedule_events for users with permissions """
+    #     query = self.account_schedule_event_update_mutation
+    #
+    #     # Create regular user
+    #     user = self.account_product.account
+    #     permission = Permission.objects.get(codename=self.permission_change)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=self.variables_update
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
+    #         self.variables_update['input']['id']
+    #     )
+    #
+    # def test_update_account_schedule_event_permission_denied(self):
+    #     """ Check update account_schedule_event permission denied error message """
+    #     query = self.account_schedule_event_update_mutation
+    #
+    #     # Create regular user
+    #     user = self.account_product.account
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=self.variables_update
+    #     )
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #
+    # def test_delete_account_schedule_event(self):
+    #     """ Delete an account account_schedule_event """
+    #     query = self.account_schedule_event_delete_mutation
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=self.variables_delete
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['deleteAccountScheduleEventTicket']['ok'], True)
+    #
+    # def test_delete_account_schedule_event_anon_user(self):
+    #     """ Delete account_schedule_event denied for anon user """
+    #     query = self.account_schedule_event_delete_mutation
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.anon_user,
+    #         variables=self.variables_delete
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #
+    # def test_delete_account_schedule_event_permission_granted(self):
+    #     """ Allow deleting account_schedule_events for users with permissions """
+    #     query = self.account_schedule_event_delete_mutation
+    #
+    #     # Give permissions
+    #     user = self.account_product.account
+    #     permission = Permission.objects.get(codename=self.permission_delete)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=self.variables_delete
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['deleteAccountScheduleEventTicket']['ok'], True)
+    #
+    # def test_delete_account_schedule_event_permission_denied(self):
+    #     """ Check delete account_schedule_event permission denied error message """
+    #     query = self.account_schedule_event_delete_mutation
+    #     user = self.account_product.account
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=self.variables_delete
+    #     )
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
