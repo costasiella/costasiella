@@ -9,7 +9,7 @@ class FinanceQuoteGroup(models.Model):
     display_public = models.BooleanField(default=True)
     name = models.CharField(max_length=255, unique=True)
     next_id = models.PositiveIntegerField(default=1)
-    due_after_days = models.PositiveSmallIntegerField(default=30)
+    expires_after_days = models.PositiveSmallIntegerField(default=30)
     prefix = models.CharField(max_length=255, default="QUO")
     prefix_year = models.BooleanField(default=True)
     auto_reset_prefix_year = models.BooleanField(default=True)
