@@ -261,58 +261,57 @@ class GQLAccountProduct(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    # def test_delete_account_schedule_event(self):
-    #     """ Delete an account account_schedule_event """
-    #     query = self.account_schedule_event_delete_mutation
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=self.variables_delete
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountScheduleEventTicket']['ok'], True)
-    #
-    # def test_delete_account_schedule_event_anon_user(self):
-    #     """ Delete account_schedule_event denied for anon user """
-    #     query = self.account_schedule_event_delete_mutation
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=self.variables_delete
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_account_schedule_event_permission_granted(self):
-    #     """ Allow deleting account_schedule_events for users with permissions """
-    #     query = self.account_schedule_event_delete_mutation
-    #
-    #     # Give permissions
-    #     user = self.account_product.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_delete
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountScheduleEventTicket']['ok'], True)
-    #
-    # def test_delete_account_schedule_event_permission_denied(self):
-    #     """ Check delete account_schedule_event permission denied error message """
-    #     query = self.account_schedule_event_delete_mutation
-    #     user = self.account_product.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_delete
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    def test_delete_account_product(self):
+        """ Delete an account account_product """
+        query = self.account_product_delete_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_delete
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountProduct']['ok'], True)
+
+    def test_delete_account_product_anon_user(self):
+        """ Delete account_product denied for anon user """
+        query = self.account_product_delete_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_delete
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_account_product_permission_granted(self):
+        """ Allow deleting account_product for users with permissions """
+        query = self.account_product_delete_mutation
+
+        # Give permissions
+        user = self.account_product.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_delete
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountProduct']['ok'], True)
+
+    def test_delete_account_product_permission_denied(self):
+        """ Check delete account_product permission denied error message """
+        query = self.account_product_delete_mutation
+        user = self.account_product.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_delete
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
