@@ -7,7 +7,6 @@ from django.db import models
 from .account import Account
 from .business import Business
 from .finance_quote_group import FinanceQuoteGroup
-from .finance_payment_method import FinancePaymentMethod
 
 from .helpers import model_string
 
@@ -25,6 +24,7 @@ class FinanceQuote(models.Model):
 
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="quotes")
     business = models.ForeignKey(Business, on_delete=models.SET_NULL, null=True, related_name="quotes")
+    finance_quote_group = models.ForeignKey(FinanceQuoteGroup, on_delete=models.CASCADE)
     # custom_to is used to control whether to copy relation info from an account or business, or not.
     custom_to = models.BooleanField(default=False)
     relation_company = models.CharField(max_length=255, default="")

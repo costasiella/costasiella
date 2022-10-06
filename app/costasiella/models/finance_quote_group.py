@@ -10,7 +10,7 @@ class FinanceQuoteGroup(models.Model):
     name = models.CharField(max_length=255, unique=True)
     next_id = models.PositiveIntegerField(default=1)
     due_after_days = models.PositiveSmallIntegerField(default=30)
-    prefix = models.CharField(max_length=255, default="INV")
+    prefix = models.CharField(max_length=255, default="QUO")
     prefix_year = models.BooleanField(default=True)
     auto_reset_prefix_year = models.BooleanField(default=True)
     terms = models.TextField(default="")
@@ -26,7 +26,7 @@ class FinanceQuoteGroup(models.Model):
             self.next_id = 1
             self.save()
 
-    def next_quote_number(self, year, first_invoice_this_year):
+    def next_quote_number(self, year, first_quote_this_year):
         """ Get next quote number """
         quote_number = self.prefix or ""
 
