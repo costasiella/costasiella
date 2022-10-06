@@ -272,6 +272,11 @@ CELERY_CACHE_BACKEND = 'django-cache'
 
 DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH = 191
 
+# Store task name & worker info in results
+# https://github.com/celery/django-celery-results/issues/7
+CELERY_TASK_TRACK_STARTED = True
+CELERY_RESULT_EXTENDED = True
+
 ##
 # CSRF Settings
 ##
