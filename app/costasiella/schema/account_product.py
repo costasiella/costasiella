@@ -1,4 +1,5 @@
 import graphene
+from decimal import Decimal
 
 from django.utils.translation import gettext as _
 from graphene_django import DjangoObjectType
@@ -103,7 +104,7 @@ class CreateAccountProduct(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
         organization_product = graphene.ID(required=True)
-        quantity = graphene.Int(required=False, default=1)
+        quantity = graphene.Decimal(required=False, default_value=Decimal(1))
 
     account_product = graphene.Field(AccountProductNode)
 
