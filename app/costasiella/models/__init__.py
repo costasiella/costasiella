@@ -34,6 +34,9 @@ from .finance_payment_batch_category import FinancePaymentBatchCategory
 from .finance_payment_batch_export import FinancePaymentBatchExport
 from .finance_payment_batch_item import FinancePaymentBatchItem
 from .finance_payment_method import FinancePaymentMethod
+from .finance_quote import FinanceQuote
+from .finance_quote_group import FinanceQuoteGroup
+from .finance_quote_item import FinanceQuoteItem
 from .finance_tax_rate import FinanceTaxRate
 
 from .integration_log_mollie import IntegrationLogMollie
