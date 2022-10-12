@@ -20,7 +20,7 @@ class FinanceQuoteGroupNode(DjangoObjectType):
             'display_public',
             'name',
             'next_id',
-            'due_after_days',
+            'expires_after_days',
             'prefix',
             'prefix_year',
             'auto_reset_prefix_year',

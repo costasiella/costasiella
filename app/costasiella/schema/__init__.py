@@ -43,6 +43,9 @@ from .finance_payment_batch_category import FinancePaymentBatchCategoryQuery, Fi
 from .finance_payment_batch_export import FinancePaymentBatchExportQuery
 from .finance_payment_batch_item import FinancePaymentBatchItemQuery
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
+from .finance_quote import FinanceQuoteQuery, FinanceQuoteMutation
+from .finance_quote_group import FinanceQuoteGroupQuery, FinanceQuoteGroupMutation
+from .finance_quote_item import FinanceQuoteItemQuery, FinanceQuoteItemMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .insight_account_inactive import InsightAccountInactiveQuery, InsightAccountInactiveMutation
@@ -148,6 +151,9 @@ class Query(AccountQuery,
             FinancePaymentBatchExportQuery,
             FinancePaymentBatchItemQuery,
             FinancePaymentMethodQuery,
+            FinanceQuoteQuery,
+            FinanceQuoteGroupQuery,
+            FinanceQuoteItemQuery,
             FinanceTaxRateQuery,
             InsightAccountInactiveQuery,
             InsightAccountInactiveAccountQuery,
@@ -238,6 +244,9 @@ class Mutation(AccountMutation,
                FinancePaymentBatchMutation,
                FinancePaymentBatchCategoryMutation,
                FinancePaymentMethodMutation,
+               FinanceQuoteMutation,
+               FinanceQuoteGroupMutation,
+               FinanceQuoteItemMutation,
                FinanceTaxRateMutation,
                InsightAccountInactiveMutation,
                OrganizationMutation,

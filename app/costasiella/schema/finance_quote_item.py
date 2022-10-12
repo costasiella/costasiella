@@ -30,7 +30,6 @@ class FinanceQuoteItemFilter(FilterSet):
         fields = [
             'id',
             'finance_quote',
-            'account_subscription'
         ]
         
         order_by = OrderingFilter(
