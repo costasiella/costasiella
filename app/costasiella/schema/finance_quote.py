@@ -160,9 +160,6 @@ class CreateFinanceQuote(graphene.relay.ClientIDMutation):
         finance_quote_group = graphene.ID(required=True)
         business = graphene.ID(required=False)
         summary = graphene.String(required=False, default_value="")
-        account_subscription = graphene.ID(required=False)
-        subscription_year = graphene.Int(required=False)
-        subscription_month = graphene.Int(required=False)
         
     finance_quote = graphene.Field(FinanceQuoteNode)
 
@@ -194,15 +191,6 @@ class CreateFinanceQuote(graphene.relay.ClientIDMutation):
             finance_quote.set_relation_info()
             finance_quote.save()
 
-        if ('account_subscription' in validation_result
-                and 'subscription_year' in validation_result
-                and 'subscription_month' in validation_result):
-            finance_quote.item_add_subscription(
-                validation_result['account_subscription'],
-                validation_result['subscription_year'],
-                validation_result['subscription_month']
-            )
-
         return CreateFinanceQuote(finance_quote=finance_quote)
 
 
@@ -210,7 +198,6 @@ class UpdateFinanceQuote(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         business = graphene.ID(required=False)
-        finance_payment_method = graphene.ID(required=False)
         summary = graphene.String(required=False)
         custom_to = graphene.Boolean(required=False)
         relation_company = graphene.String(required=False)
@@ -223,7 +210,7 @@ class UpdateFinanceQuote(graphene.relay.ClientIDMutation):
         relation_country = graphene.String(required=False)
         invoice_number = graphene.String(required=False)
         date_sent = graphene.types.datetime.Date(required=False)
-        date_due = graphene.types.datetime.Date(required=False)
+        date_expire = graphene.types.datetime.Date(required=False)
         status = graphene.String(required=False)
         terms = graphene.String(required=False)
         footer = graphene.String(required=False)
@@ -276,14 +263,14 @@ class UpdateFinanceQuote(graphene.relay.ClientIDMutation):
         if 'relation_country' in input:
             finance_quote.relation_country = input['relation_country']
 
-        if 'invoice_number' in input:
-            finance_quote.invoice_number = input['invoice_number']
+        if 'quote_number' in input:
+            finance_quote.quote_number = input['quote_number']
 
         if 'date_sent' in input:
             finance_quote.date_sent = input['date_sent']
 
-        if 'date_due' in input:
-            finance_quote.date_due = input['date_due']
+        if 'date_expire' in input:
+            finance_quote.date_expire = input['date_expire']
 
         if 'status' in input:
             finance_quote.status = input['status']
@@ -296,9 +283,6 @@ class UpdateFinanceQuote(graphene.relay.ClientIDMutation):
 
         if 'note' in input:
             finance_quote.note = input['note']
-
-        if 'finance_payment_method' in validation_result:
-            finance_quote.finance_payment_method = validation_result['finance_payment_method']
 
         # Applies custom relation address info only when customTo is set
         finance_quote.set_relation_info()
