@@ -135,7 +135,7 @@ class UpdateFinanceQuoteGroup(graphene.relay.ClientIDMutation):
         finance_quote_group.name = input['name']
 
         if 'next_id' in input:
-            finance_quote_group.due_after_days = input['next_id']
+            finance_quote_group.next_id = input['next_id']
 
         if 'expires_after_days' in input:
             finance_quote_group.expires_after_days = input['expires_after_days']
