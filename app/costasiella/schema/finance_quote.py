@@ -29,7 +29,7 @@ class FinanceQuoteNode(DjangoObjectType):
         fields = (
             'account',
             'business',
-            'finance_invoice_group',
+            'finance_quote_group',
             'custom_to',
             'relation_company',
             'relation_company_registration',
@@ -41,7 +41,7 @@ class FinanceQuoteNode(DjangoObjectType):
             'relation_country',
             'status',
             'summary',
-            'invoice_number',
+            'quote_number',
             'date_sent',
             'date_expire',
             'terms',
@@ -80,24 +80,24 @@ class FinanceQuoteNode(DjangoObjectType):
         require_login(user)
 
         # Own invoice always ok
-        finance_invoice = cls._meta.model.objects.get(id=id)
-        if finance_invoice.account == user:
-            return finance_invoice
+        finance_quote = cls._meta.model.objects.get(id=id)
+        if finance_quote.account == user:
+            return finance_quote
 
         # Permission required to invoices belonging to other accounts
         require_permission(user, 'costasiella.view_financequote')
 
-        return finance_invoice
+        return finance_quote
 
 
-class FinanceInvoiceQuery(graphene.ObjectType):
-    finance_invoices = DjangoFilterConnectionField(FinanceInvoiceNode)
-    finance_invoice = graphene.relay.Node.Field(FinanceInvoiceNode)
+class FinanceQuoteQuery(graphene.ObjectType):
+    finance_quotes = DjangoFilterConnectionField(FinanceQuoteNode)
+    finance_quote = graphene.relay.Node.Field(FinanceQuoteNode)
 
-    def resolve_finance_invoices(self, info, archived=False, **kwargs):
+    def resolve_finance_quotes(self, info, archived=False, **kwargs):
         user = info.context.user
         require_login(user)
-        view_permission = user.has_perm('costasiella.view_financeinvoice')
+        view_permission = user.has_perm('costasiella.view_financequote')
 
         if view_permission and 'account' in kwargs and kwargs['account']:
             # Allow user to filter by any account
@@ -112,9 +112,9 @@ class FinanceInvoiceQuery(graphene.ObjectType):
 
         order_by = '-pk'
         if account_id:
-            return FinanceInvoice.objects.filter(account=account_id).order_by(order_by)
+            return FinanceQuote.objects.filter(account=account_id).order_by(order_by)
         else:
-            return FinanceInvoice.objects.all().order_by(order_by)
+            return FinanceQuote.objects.all().order_by(order_by)
 
 
 def validate_create_update_input(input, update=False):
@@ -127,10 +127,10 @@ def validate_create_update_input(input, update=False):
     if not update:
         ## Create only
         # invoice group
-        rid = get_rid(input['finance_invoice_group'])
-        finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
-        result['finance_invoice_group'] = finance_invoice_group
-        if not finance_invoice_group:
+        rid = get_rid(input['finance_quote_group'])
+        finance_quote_group = FinanceQuoteGroup.objects.filter(id=rid.id).first()
+        result['finance_quote_group'] = finance_quote_group
+        if not finance_quote_group:
             raise Exception(_('Invalid Finance Invoice Group ID!'))
 
         # account
@@ -139,23 +139,6 @@ def validate_create_update_input(input, update=False):
         result['account'] = account
         if not account:
             raise Exception(_('Invalid Account ID!'))
-
-        # Check account_subscription
-        if 'account_subscription' in input:
-            if input['account_subscription']:
-                rid = get_rid(input['account_subscription'])
-                account_subscription = AccountSubscription.objects.filter(id=rid.id).first()
-                result['account_subscription'] = account_subscription
-                if not account_subscription:
-                    raise Exception(_('Invalid Account Subscription ID!'))
-
-        if 'subscription_year' in input:
-            is_year(input['subscription_year'])
-            result['subscription_year'] = input['subscription_year']
-
-        if 'subscription_month' in input:
-            is_month(input['subscription_month'])
-            result['subscription_month'] = input['subscription_month']
 
     # Check business
     if 'business' in input:
@@ -168,71 +151,62 @@ def validate_create_update_input(input, update=False):
         else:
             result['business'] = None
 
-    # Check finance payment method
-    if 'finance_payment_method' in input:
-        if input['finance_payment_method']:
-            rid = get_rid(input['finance_payment_method'])
-            finance_payment_method = FinancePaymentMethod.objects.filter(id=rid.id).first()
-            result['finance_payment_method'] = finance_payment_method
-            if not finance_payment_method:
-                raise Exception(_('Invalid Finance Payment Method ID!'))
-
     return result
 
 
-class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
+class CreateFinanceQuote(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
-        finance_invoice_group = graphene.ID(required=True)
+        finance_quote_group = graphene.ID(required=True)
         business = graphene.ID(required=False)
         summary = graphene.String(required=False, default_value="")
         account_subscription = graphene.ID(required=False)
         subscription_year = graphene.Int(required=False)
         subscription_month = graphene.Int(required=False)
         
-    finance_invoice = graphene.Field(FinanceInvoiceNode)
+    finance_quote = graphene.Field(FinanceQuoteNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_financeinvoice')
+        require_login_and_permission(user, 'costasiella.add_financequote')
 
         validation_result = validate_create_update_input(input)
-        finance_invoice_group = validation_result['finance_invoice_group']
+        finance_quote_group = validation_result['finance_quote_group']
 
-        finance_invoice = FinanceInvoice(
+        finance_quote = FinanceQuote(
             account=validation_result['account'],
-            finance_invoice_group=finance_invoice_group,
+            finance_quote_group=finance_quote_group,
             status='DRAFT',
-            terms=finance_invoice_group.terms,
-            footer=finance_invoice_group.footer
+            terms=finance_quote_group.terms,
+            footer=finance_quote_group.footer
         )
 
         if 'summary' in input:
-            finance_invoice.summary = input['summary']
+            finance_quote.summary = input['summary']
 
         # Save invoice
-        finance_invoice.save()
+        finance_quote.save()
 
         # Do this after an initial save to override the "invoice_to_business" field on an account, if set.
         if 'business' in validation_result:
-            finance_invoice.business = validation_result['business']
-            finance_invoice.set_relation_info()
-            finance_invoice.save()
+            finance_quote.business = validation_result['business']
+            finance_quote.set_relation_info()
+            finance_quote.save()
 
         if ('account_subscription' in validation_result
                 and 'subscription_year' in validation_result
                 and 'subscription_month' in validation_result):
-            finance_invoice.item_add_subscription(
+            finance_quote.item_add_subscription(
                 validation_result['account_subscription'],
                 validation_result['subscription_year'],
                 validation_result['subscription_month']
             )
 
-        return CreateFinanceInvoice(finance_invoice=finance_invoice)
+        return CreateFinanceQuote(finance_quote=finance_quote)
 
 
-class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
+class UpdateFinanceQuote(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         business = graphene.ID(required=False)
@@ -255,116 +229,85 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         footer = graphene.String(required=False)
         note = graphene.String(required=False)
 
-    finance_invoice = graphene.Field(FinanceInvoiceNode)
+    finance_quote = graphene.Field(FinanceQuoteNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_financeinvoice')
+        require_login_and_permission(user, 'costasiella.change_financequote')
 
         rid = get_rid(input['id'])
-        finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
-        if not finance_invoice:
+        finance_quote = FinanceQuote.objects.filter(id=rid.id).first()
+        if not finance_quote:
             raise Exception('Invalid Finance Invoice  ID!')
 
         validation_result = validate_create_update_input(input, update=True)
 
         if 'business' in validation_result:
-            finance_invoice.business = validation_result['business']
+            finance_quote.business = validation_result['business']
 
         if 'summary' in input:
-            finance_invoice.summary = input['summary']
+            finance_quote.summary = input['summary']
 
         if 'custom_to' in input:
-            finance_invoice.custom_to = input['custom_to']
+            finance_quote.custom_to = input['custom_to']
 
         if 'relation_company' in input:
-            finance_invoice.relation_company = input['relation_company']
+            finance_quote.relation_company = input['relation_company']
 
         if 'relation_company_registration' in input:
-            finance_invoice.relation_company_registration = input['relation_company_registration']
+            finance_quote.relation_company_registration = input['relation_company_registration']
 
         if 'relation_company_tax_registration' in input:
-            finance_invoice.relation_company_tax_registration = input['relation_company_tax_registration']
+            finance_quote.relation_company_tax_registration = input['relation_company_tax_registration']
 
         if 'relation_contact_name' in input:
-            finance_invoice.relation_contact_name = input['relation_contact_name']
+            finance_quote.relation_contact_name = input['relation_contact_name']
 
         if 'relation_address' in input:
-            finance_invoice.relation_address = input['relation_address']
+            finance_quote.relation_address = input['relation_address']
 
         if 'relation_postcode' in input:
-            finance_invoice.relation_postcode = input['relation_postcode']
+            finance_quote.relation_postcode = input['relation_postcode']
 
         if 'relation_city' in input:
-            finance_invoice.relation_city = input['relation_city']
+            finance_quote.relation_city = input['relation_city']
 
         if 'relation_country' in input:
-            finance_invoice.relation_country = input['relation_country']
+            finance_quote.relation_country = input['relation_country']
 
         if 'invoice_number' in input:
-            finance_invoice.invoice_number = input['invoice_number']
+            finance_quote.invoice_number = input['invoice_number']
 
         if 'date_sent' in input:
-            finance_invoice.date_sent = input['date_sent']
+            finance_quote.date_sent = input['date_sent']
 
         if 'date_due' in input:
-            finance_invoice.date_due = input['date_due']
+            finance_quote.date_due = input['date_due']
 
         if 'status' in input:
-            finance_invoice.status = input['status']
+            finance_quote.status = input['status']
 
         if 'terms' in input:
-            finance_invoice.terms = input['terms']
+            finance_quote.terms = input['terms']
 
         if 'footer' in input:
-            finance_invoice.footer = input['footer']
+            finance_quote.footer = input['footer']
 
         if 'note' in input:
-            finance_invoice.note = input['note']
+            finance_quote.note = input['note']
 
         if 'finance_payment_method' in validation_result:
-            finance_invoice.finance_payment_method = validation_result['finance_payment_method']
+            finance_quote.finance_payment_method = validation_result['finance_payment_method']
 
         # Applies custom relation address info only when customTo is set
-        finance_invoice.set_relation_info()
-        finance_invoice.save()
+        finance_quote.set_relation_info()
+        finance_quote.save()
 
-        return UpdateFinanceInvoice(finance_invoice=finance_invoice)
-
-
-class CancelAndCreateCreditFinanceInvoice(graphene.relay.ClientIDMutation):
-    """
-    Mutation to cancel an invoice and create a credit invoice.
-    Returns credit invoice
-    """
-    class Input:
-        id = graphene.ID(required=True)
-
-    finance_invoice = graphene.Field(FinanceInvoiceNode)
-
-    @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_financeinvoice')
-
-        rid = get_rid(input['id'])
-        finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
-        if not finance_invoice:
-            raise Exception('Invalid Finance Invoice  ID!')
-
-        credit_finance_invoice = None
-        # Check if a credit invoice already exists for this invoice. If so, fetch and return that without doing anything
-        qs = FinanceInvoice.objects.filter(credit_invoice_for=rid.id)
-        if qs.exists():
-            credit_finance_invoice = qs.first()
-        else:
-            credit_finance_invoice = finance_invoice.cancel_and_create_credit_invoice()
-
-        return CancelAndCreateCreditFinanceInvoice(finance_invoice=credit_finance_invoice)
+        return UpdateFinanceQuote(finance_quote=finance_quote)
 
 
-class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
+class DeleteFinanceQuote(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
 
@@ -373,21 +316,20 @@ class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_financeinvoice')
+        require_login_and_permission(user, 'costasiella.delete_financequote')
 
         rid = get_rid(input['id'])
 
-        finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
-        if not finance_invoice:
+        finance_quote = FinanceQuote.objects.filter(id=rid.id).first()
+        if not finance_quote:
             raise Exception('Invalid Finance Invoice ID!')
 
-        ok = bool(finance_invoice.delete())
+        ok = bool(finance_quote.delete())
 
-        return DeleteFinanceInvoice(ok=ok)
+        return DeleteFinanceQuote(ok=ok)
 
 
-class FinanceInvoiceMutation(graphene.ObjectType):
-    delete_finance_invoice = DeleteFinanceInvoice.Field()
-    create_finance_invoice = CreateFinanceInvoice.Field()
-    update_finance_invoice = UpdateFinanceInvoice.Field()
-    cancel_and_create_credit_finance_invoice = CancelAndCreateCreditFinanceInvoice.Field()
+class FinanceQuoteMutation(graphene.ObjectType):
+    delete_finance_quote = DeleteFinanceQuote.Field()
+    create_finance_quote = CreateFinanceQuote.Field()
+    update_finance_quote = UpdateFinanceQuote.Field()
