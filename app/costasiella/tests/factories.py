@@ -541,7 +541,7 @@ class FinanceQuoteGroupFactory(factory.DjangoModelFactory):
     display_public = True
     name = "Another group"
     next_id = 1
-    expire_after_days = 30
+    expires_after_days = 30
     prefix = 'QUOTE'
     prefix_year = True
     auto_reset_prefix_year = True

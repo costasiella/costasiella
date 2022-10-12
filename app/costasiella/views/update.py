@@ -105,7 +105,7 @@ def _update_to_2022_05():
         display_public=True,
         name="Default",
         next_id=1,
-        expire_after_days=30,
+        expires_after_days=30,
         prefix="QUO",
         prefix_year=True,
         auto_reset_prefix_year=True,
