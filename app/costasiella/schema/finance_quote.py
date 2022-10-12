@@ -79,12 +79,12 @@ class FinanceQuoteNode(DjangoObjectType):
         user = info.context.user
         require_login(user)
 
-        # Own invoice always ok
+        # Own quote always ok
         finance_quote = cls._meta.model.objects.get(id=id)
         if finance_quote.account == user:
             return finance_quote
 
-        # Permission required to invoices belonging to other accounts
+        # Permission required to quotes belonging to other accounts
         require_permission(user, 'costasiella.view_financequote')
 
         return finance_quote
@@ -107,7 +107,7 @@ class FinanceQuoteQuery(graphene.ObjectType):
             # return all
             account_id = None
         else:
-            # A user can only query their own invoices
+            # A user can only query their own quotes
             account_id = user.id
 
         order_by = '-pk'
@@ -123,10 +123,10 @@ def validate_create_update_input(input, update=False):
     """ 
     result = {}
 
-    # Fetch & check invoice group
+    # Fetch & check quote group
     if not update:
         ## Create only
-        # invoice group
+        # quote group
         rid = get_rid(input['finance_quote_group'])
         finance_quote_group = FinanceQuoteGroup.objects.filter(id=rid.id).first()
         result['finance_quote_group'] = finance_quote_group
@@ -182,7 +182,7 @@ class CreateFinanceQuote(graphene.relay.ClientIDMutation):
         if 'summary' in input:
             finance_quote.summary = input['summary']
 
-        # Save invoice
+        # Save quote
         finance_quote.save()
 
         # Do this after an initial save to override the "invoice_to_business" field on an account, if set.
@@ -208,7 +208,7 @@ class UpdateFinanceQuote(graphene.relay.ClientIDMutation):
         relation_postcode = graphene.String(required=False)
         relation_city = graphene.String(required=False)
         relation_country = graphene.String(required=False)
-        invoice_number = graphene.String(required=False)
+        quote_number = graphene.String(required=False)
         date_sent = graphene.types.datetime.Date(required=False)
         date_expire = graphene.types.datetime.Date(required=False)
         status = graphene.String(required=False)

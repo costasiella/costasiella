@@ -131,16 +131,16 @@ class FinanceQuote(models.Model):
             if not self.date_sent:
                 # Date is now if not supplied on creation
                 self.date_sent = timezone.now().date()
-            self.date_due = self.date_sent + datetime.timedelta(days=self.finance_quote_group.due_after_days)
+            self.date_expire = self.date_sent + datetime.timedelta(days=self.finance_quote_group.expires_after_days)
 
             # set quote number
             # Check if this is the first invoice in this group
             # (Needed to check if we should reset the numbering for this year)
             year = self.date_sent.year
             first_quote_in_group_this_year = self._first_quote_in_group_this_year(year)
-            self.quote_number = self.finance_quote_group.next_invoice_number(
+            self.quote_number = self.finance_quote_group.next_quote_number(
                 year,
-                first_quote_this_year = first_quote_in_group_this_year
+                first_quote_this_year=first_quote_in_group_this_year
             )
 
             # Increase next_id for invoice group
