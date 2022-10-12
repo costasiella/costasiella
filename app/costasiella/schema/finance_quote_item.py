@@ -110,7 +110,7 @@ def validate_create_update_input(input, update=False):
 
     ## Create only
     if not update:
-        # invoice
+        # quote
         rid = get_rid(input['finance_quote'])
         finance_quote = FinanceQuote.objects.filter(id=rid.id).first()
         result['finance_quote'] = finance_quote
@@ -197,7 +197,7 @@ class CreateFinanceQuoteItem(graphene.relay.ClientIDMutation):
         if 'finance_costcenter' in validation_result:
             finance_quote_item.finance_costcenter = validation_result['finance_costcenter']
 
-        # Save invoice_item
+        # Save quote_item
         finance_quote_item.save()
 
         return CreateFinanceQuoteItem(finance_quote_item=finance_quote_item)
@@ -235,18 +235,18 @@ class UpdateFinanceQuoteItem(graphene.relay.ClientIDMutation):
 
             if old_line_nr > new_line_nr:
                 items = FinanceQuoteItem.objects.filter(
-                    finance_quote = finance_quote_item.finance_quote,
-                    line_number__lt = old_line_nr,
-                    line_number__gte = new_line_nr
+                    finance_quote=finance_quote_item.finance_quote,
+                    line_number__lt=old_line_nr,
+                    line_number__gte=new_line_nr
                 )
                 for i in items:
                     i.line_number += 1
                     i.save()
             else:
                 items = FinanceQuoteItem.objects.filter(
-                    finance_quote = finance_quote_item.finance_quote,
-                    line_number__gt = old_line_nr,
-                    line_number__lte = new_line_nr
+                    finance_quote=finance_quote_item.finance_quote,
+                    line_number__gt=old_line_nr,
+                    line_number__lte=new_line_nr
                 )
                 for i in items:
                     i.line_number -= 1

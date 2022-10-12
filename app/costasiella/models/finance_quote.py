@@ -88,8 +88,7 @@ class FinanceQuote(models.Model):
         # Get totals from quote items
         from .finance_quote_item import FinanceQuoteItem
         from django.db.models import Sum
-
-        sums = FinanceQuoteItem.objects.filter(finance_invoice=self).aggregate(
+        sums = FinanceQuoteItem.objects.filter(finance_quote=self).aggregate(
             Sum('subtotal'), Sum('tax'), Sum('total')
         )
 
