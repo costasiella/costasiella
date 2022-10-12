@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from ..models import \
     FinanceInvoiceGroup, \
     FinanceInvoiceGroupDefault, \
+    FinanceQuoteGroup, \
     ScheduleEventTicket, \
     SystemMailTemplate
 from ..dudes import PermissionDude, SystemSettingDude, VersionDude
@@ -97,3 +98,16 @@ def _update_to_2022_05():
         finance_invoice_group=default_invoice_group
     )
     products_default.save()
+
+    # Create default quotes group
+    default_quote_group = FinanceQuoteGroup(
+        id=100,
+        display_public=True,
+        name="Default",
+        next_id=1,
+        expire_after_days=30,
+        prefix="QUO",
+        prefix_year=True,
+        auto_reset_prefix_year=True,
+    )
+    default_quote_group.save()
