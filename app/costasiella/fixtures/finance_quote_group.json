@@ -7,7 +7,7 @@
       "display_public": true,
       "name": "Default",
       "next_id": 1,
-      "expire_after_days": 30,
+      "expires_after_days": 30,
       "prefix": "QUO",
       "prefix_year": true,
       "auto_reset_prefix_year": true,
