@@ -31,12 +31,6 @@ class ClassCheckinDude:
         """
         qs = self._class_checkedin(account, schedule_item, date)
 
-        print(account)
-        print(schedule_item)
-        print(date)
-
-        print(qs.first())
-
         return qs.exists()
 
     def _class_checkedin(self, account, schedule_item, date):

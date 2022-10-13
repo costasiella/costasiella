@@ -35,7 +35,6 @@ class InsightAccountSubscriptionsDude:
             date_start__lte=date_until
         ).count()
 
-        print(count)
         return count
 
     def get_subscriptions_sold_year_summary_count(self, year):
@@ -43,8 +42,6 @@ class InsightAccountSubscriptionsDude:
         Return monthly counts of sold (new) subscriptions
         """
         data = []
-
-        print(year)
 
         for i in range(1, 13):
             date_from = datetime.date(year, i, 1)
@@ -96,11 +93,10 @@ class InsightAccountSubscriptionsDude:
         from ..models import AccountSubscription
 
         count = AccountSubscription.objects.filter(
-            (Q(date_end__gte = date_from) | Q(date_end__isnull=True)),
-            date_start__lte = date_until,
+            (Q(date_end__gte=date_from) | Q(date_end__isnull=True)),
+            date_start__lte=date_until,
         ).count()
 
-        print(count)
         return count
 
     def get_subscriptions_active_year_summary_count(self, year):

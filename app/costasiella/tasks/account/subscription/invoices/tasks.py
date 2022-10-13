@@ -120,18 +120,15 @@ def account_subscription_invoices_add_for_month_mollie_collection(year=None, mon
             finance_invoice_item = account_subscription.create_invoice_for_month(year, month)
             # Check if an invoice (item) was created
             if not finance_invoice_item:
-                print("No invoice found")
                 continue
 
             finance_invoice = finance_invoice_item.finance_invoice
             # Only continue when the invoice status == SENT
             if not finance_invoice.status == 'SENT':
-                print("invoice status not sent")
                 continue
 
             # Check if the amount of the invoice > 0:
             if not finance_invoice.total:
-                print("Invoice has amount 0")
                 continue
 
             # Create mollie recurring payment

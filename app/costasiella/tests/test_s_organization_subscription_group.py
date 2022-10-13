@@ -171,7 +171,6 @@ mutation DeleteOrganizationSubscriptionGroup($input: DeleteOrganizationSubscript
         query = self.subscriptiongroup_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['organizationSubscriptionGroup']['name'], subscriptiongroup.name)
         self.assertEqual(data['organizationSubscriptionGroup']['description'], subscriptiongroup.description)
 

@@ -27,7 +27,7 @@ class MailTemplateDude:
         self.template_order_items = 'mail/order_items.html'
 
         # Read default mail template
-        print(settings.BASE_DIR)
+        # print(settings.BASE_DIR)
         # template_default = os.path.join(
         #     settings.BASE_DIR,
         #     'templates',
@@ -241,9 +241,6 @@ class MailTemplateDude:
         # Throw a spectacular error if finance_order is not found :)
         if not finance_order:
             raise Exception(_("Finance order not found!"))
-
-        print(finance_order)
-        print(finance_order.items)
 
         # Fetch template
         mail_template = SystemMailTemplate.objects.get(pk=50000)
