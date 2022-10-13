@@ -82,8 +82,6 @@ def invoice_pdf(request, node_id, **kwargs):
     :param: POST: node_id - FinanceInvoiceNode ID
     """
     import weasyprint
-    print("InvoiceID:")
-    print(node_id)
 
     finance_invoice, html = invoice_html(node_id)
     if not _verifiy_permission_or_account(request, finance_invoice, **kwargs):

@@ -82,8 +82,6 @@ class InsightAccountSubscriptionsDude:
             subscriptions_sold_in_month = self.get_subscriptions_sold_period_data(date_from, date_until)
             data[i] = subscriptions_sold_in_month
 
-            # print(data)
-
         return data
 
     def get_subscriptions_active_period_count(self, date_from, date_until):
@@ -143,7 +141,5 @@ class InsightAccountSubscriptionsDude:
 
             subscriptions_active_in_month = self.get_subscriptions_active_period_data(date_from, date_until)
             data[i] = subscriptions_active_in_month
-
-            # print(data)
 
         return data

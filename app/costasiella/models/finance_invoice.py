@@ -674,13 +674,6 @@ class FinanceInvoice(models.Model):
             invoice_items__finance_invoice=self,
         ).annotate(invoice_amount=Sum("invoice_items__tax"))
 
-        # print(tax_rates)
-
-        # for t in tax_rates:
-        #     print(t.name)
-        #     print(t.rate_type)
-        #     print(t.invoice_amount)
-
         return tax_rates
 
     def is_paid(self):

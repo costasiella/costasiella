@@ -30,11 +30,8 @@ def export_csv_finance_payment_batch(request, node_id, **kwargs):
     :param: POST: node_id - FinanceInvoiceNode ID
     """
     import weasyprint
-    print("batchID:")
-    print(node_id)
 
     rid = get_rid(node_id)
-    print(rid)
     finance_payment_batch = FinancePaymentBatch.objects.get(id=rid.id)
     if not _verifiy_permission(request):
         raise Http404(_("Finance Payment Batch not found..."))

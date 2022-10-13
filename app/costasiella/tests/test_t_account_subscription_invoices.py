@@ -41,7 +41,6 @@ class TaskAccountSubscriptionInvoices(TestCase):
         account_subscription = f.AccountSubscriptionFactory.create()
         organization_subscription = account_subscription.organization_subscription
         price = f.OrganizationSubscriptionPriceFactory(organization_subscription=organization_subscription)
-        print(organization_subscription)
 
         date_start = account_subscription.date_start
 

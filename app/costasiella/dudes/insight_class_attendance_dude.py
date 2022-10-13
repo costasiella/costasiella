@@ -86,8 +86,6 @@ class InsightClassAttendanceDude:
     #     """
     #     data = []
     #
-    #     print(year)
-    #
     #     for i in range(1, 13):
     #         date_from = datetime.date(year, i, 1)
     #         last_day_month = calendar.monthrange(year, i)[1]
@@ -121,8 +119,6 @@ class InsightClassAttendanceDude:
     #
     #     data = OrderedDict()
     #
-    #     print(year)
-    #
     #     for i in range(1, 13):
     #         date_from = datetime.date(year, i, 1)
     #         last_day_month = calendar.monthrange(year, i)[1]
@@ -130,8 +126,6 @@ class InsightClassAttendanceDude:
     #
     #         subscriptions_sold_in_month = self.get_subscriptions_sold_period_data(date_from, date_until)
     #         data[i] = subscriptions_sold_in_month
-    #
-    #         # print(data)
     #
     #     return data
     #
@@ -147,7 +141,6 @@ class InsightClassAttendanceDude:
     #         date_start__lte = date_until,
     #     ).count()
     #
-    #     print(count)
     #     return count
     #
     #
@@ -156,8 +149,6 @@ class InsightClassAttendanceDude:
     #     Return monthly counts of active passes
     #     """
     #     data = []
-    #
-    #     print(year)
     #
     #     for i in range(1, 13):
     #         date_from = datetime.date(year, i, 1)
@@ -192,8 +183,6 @@ class InsightClassAttendanceDude:
     #
     #     data = OrderedDict()
     #
-    #     print(year)
-    #
     #     for i in range(1, 13):
     #         date_from = datetime.date(year, i, 1)
     #         last_day_month = calendar.monthrange(year, i)[1]
@@ -201,7 +190,5 @@ class InsightClassAttendanceDude:
     #
     #         subscriptions_active_in_month = self.get_subscriptions_active_period_data(date_from, date_until)
     #         data[i] = subscriptions_active_in_month
-    #
-    #         # print(data)
     #
     #     return data

@@ -60,8 +60,6 @@ class InsightRevenueDude:
             date_sent__lte=date_until,
         ).aggregate(Sum('total'), Sum('subtotal'), Sum('tax'))
 
-        # print(sums)
-
         return sums
 
     def get_revenue_total_year(self, year):

@@ -2526,8 +2526,6 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
             record = {k.lower(): v for k, v in record.items()}
 
             if record['id'] == 100:
-                print("Importing default group settings")
-
                 finance_invoice_group = id_map[100]
                 finance_invoice_group.archived = self._web2py_bool_to_python(record['archived'])
                 finance_invoice_group.display_public = self._web2py_bool_to_python(record['publicgroup'])

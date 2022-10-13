@@ -128,8 +128,6 @@ class GQLFinanceOrderItem(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        print(executed)
-
         self.assertEqual(
           data['financeOrderItems']['edges'][0]['node']['id'],
           to_global_id('FinanceOrderItemNode', order_item.id)

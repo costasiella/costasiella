@@ -28,7 +28,6 @@ class SalesDude:
 
         finance_invoice_item = None
         if create_invoice:
-            print('still alive')
             finance_invoice_item = self._sell_membership_create_invoice(account_membership)
 
         return {

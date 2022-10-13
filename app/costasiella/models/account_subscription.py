@@ -131,14 +131,12 @@ class AccountSubscription(models.Model):
 
         return credits_to_add
 
-
     def create_credits_for_month(self, year, month):
         # Calculate number of credits to give:
         # Total days (Add 1, when subtracted it's one day less)
         from .account_subscription_credit import AccountSubscriptionCredit
 
         credits_to_add = self._calculate_credits_for_month(year, month)
-        # print("Credits to add: %s" % credits_to_add)
 
         account_subscription_credit = AccountSubscriptionCredit(
             account_subscription=self,

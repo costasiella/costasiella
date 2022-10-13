@@ -142,6 +142,4 @@ class InsightAccountClasspassesDude:
             classpasses_active_in_month = self.get_classpasses_active_period_data(date_from, date_until)
             data[i] = classpasses_active_in_month
 
-            # print(data)
-
         return data

@@ -89,7 +89,6 @@ class CreateOrganizationClasstype(graphene.relay.ClientIDMutation):
 
         # Validate input
         if not len(input['name']):
-            print('validation error found')
             raise GraphQLError(_('Name is required'))
 
         url_website = input['url_website']

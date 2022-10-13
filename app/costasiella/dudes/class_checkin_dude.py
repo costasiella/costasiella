@@ -59,7 +59,6 @@ class ClassCheckinDude:
         """
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
-        print(qs)
         if qs.exists():
             # Already signed in, check for review check-in
             schedule_item_attendance = qs.first()
@@ -106,7 +105,6 @@ class ClassCheckinDude:
 
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
-        print(qs)
         if qs.exists():
             # Already signed in, check for review check-in
             schedule_item_attendance = qs.first()
@@ -312,7 +310,6 @@ class ClassCheckinDude:
         from ..models import ScheduleItemAttendance
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
-        print(qs)
         if qs.exists():
             # Already signed in, check for review check-in
             schedule_item_attendance = qs.first()

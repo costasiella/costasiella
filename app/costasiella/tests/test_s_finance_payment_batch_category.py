@@ -138,7 +138,6 @@ class GQLFinancePaymentBatchCategory(TestCase):
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-        print(executed)
 
         data = executed.get('data')
         self.assertEqual(data['financePaymentBatchCategories']['edges'][0]['node']['name'], payment_batch_category.name)

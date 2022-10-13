@@ -106,8 +106,6 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_list)
         data = executed.get('data')
-        print("########")
-        print(executed)
 
         self.assertEqual(
             data['scheduleEventTicketScheduleItems']['edges'][0]['node']['scheduleItem']['id'],

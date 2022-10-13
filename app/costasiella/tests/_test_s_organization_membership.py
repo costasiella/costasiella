@@ -659,7 +659,7 @@ class GQLOrganizationMembership(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
+
         self.assertEqual(data['archiveOrganizationMembership']['organizationMembership']['archived'], variables['input']['archived'])
 
 

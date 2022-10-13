@@ -442,9 +442,8 @@ class GQLFinanceTaxRate(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
-        self.assertEqual(data['archiveFinanceTaxRate']['financeTaxRate']['archived'], variables['input']['archived'])
 
+        self.assertEqual(data['archiveFinanceTaxRate']['financeTaxRate']['archived'], variables['input']['archived'])
 
     def test_archive_taxrate_anon_user(self):
         """ Archive taxrate denied for anon user """
@@ -458,7 +457,7 @@ class GQLFinanceTaxRate(TestCase):
             self.anon_user, 
             variables=variables
         )
-        data = executed.get('data')
+
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 

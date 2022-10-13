@@ -282,21 +282,6 @@ class ScheduleShiftsDayType(graphene.ObjectType):
 
         shifts_list = []
         for item in schedule_items:
-            # print("#############")
-            # print(item)
-            # print(item.date_start)
-            # print(item.date_end)
-            # print(item.time_start)
-            # print(item.time_end)
-            # print(item.status)
-            # print(item.organization_holiday_id)
-            # print(item.organization_holiday_name)
-            # print(item.description)
-            # print(item.account)
-            # print(item.account_id)
-            # print(item.role)
-            # print(item.count_attendance)
-
             holiday = False
             holiday_name = ""
             if item.organization_holiday_id:

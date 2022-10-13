@@ -271,8 +271,6 @@ class MailTemplateDude:
         content_template = Template(mail_template.content)
         content = content_template.render(content_context)
 
-        # print(items_html)
-
         # t = Template("My name is {{ my_name }}.")
         # c = Context({"my_name": "Adrian"})
         # t.render(c)
