@@ -92,7 +92,6 @@ class CreateOrganizationLocation(graphene.relay.ClientIDMutation):
 
         errors = []
         if not len(input['name']):
-            print('validation error found')
             raise GraphQLError(_('Name is required'))
             # errors.append(
             #     ValidationErrorMessage(

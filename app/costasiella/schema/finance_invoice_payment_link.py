@@ -36,9 +36,7 @@ class CreateFinanceInvoicePaymentLink(graphene.Mutation):
 
         from ..dudes.mollie_dude import MollieDude
 
-        print(info.context)
-        # print(info.context.build_absolute_uri())
-        
+
         user = info.context.user
         host = info.context.get_host()
         # https://docs.djangoproject.com/en/3.0/ref/request-response/

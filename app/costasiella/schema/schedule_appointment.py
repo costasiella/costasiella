@@ -166,19 +166,12 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleappointment')
 
-        print('############ resolve')
-        print(locals())
-        print(organization_location)
-
         validation_result = validate_schedule_appointments_query_date_input(
             date_from, 
             date_until, 
             order_by,
             organization_location,
         )
-
-
-        print(validation_result)
 
         delta = datetime.timedelta(days=1)
         date = date_from
@@ -235,8 +228,6 @@ class CreateScheduleAppointment(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleappointment')
-
-        print(input)
 
         result = validate_schedule_appointment_create_update_input(input)
 

@@ -624,7 +624,6 @@ class GQLAccountClasspass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['deleteAccountClasspass']['ok'], True)
 
     def test_delete_classpass_anon_user(self):

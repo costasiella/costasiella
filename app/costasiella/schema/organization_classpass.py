@@ -24,7 +24,6 @@ def validate_create_update_input(input, update=False):
     result = {}
     
     if not len(input['name']):
-        print('validation error found')
         raise GraphQLError(_('Name is required'))
 
     # Fetch & check tax rate

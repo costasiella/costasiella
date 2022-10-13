@@ -184,8 +184,6 @@ class FinancePaymentBatch(models.Model):
         if not self.include_zero_amounts:
             account_batch_items = account_batch_items.filter(amount__gt=0)
 
-        print(account_batch_items)
-
         for item in account_batch_items:
             # Get bank account
             account = item.account

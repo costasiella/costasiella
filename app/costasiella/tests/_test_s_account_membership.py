@@ -683,7 +683,6 @@ class GQLAccountMembership(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['deleteAccountMembership']['ok'], True)
 
     def test_delete_membership_anon_user(self):

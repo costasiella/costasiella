@@ -769,7 +769,6 @@ class GQLOrganizationClasspass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['archiveOrganizationClasspass']['organizationClasspass']['archived'], variables['input']['archived'])
 
 

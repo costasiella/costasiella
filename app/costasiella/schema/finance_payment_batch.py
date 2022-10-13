@@ -200,8 +200,6 @@ class UpdateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_financepaymentbatch')
 
-        print(input)
-
         rid = get_rid(input['id'])
         finance_payment_batch = FinancePaymentBatch.objects.filter(id=rid.id).first()
         if not finance_payment_batch:

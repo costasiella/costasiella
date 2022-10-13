@@ -71,7 +71,6 @@ class CreateFinanceQuoteGroup(graphene.relay.ClientIDMutation):
 
         errors = []
         if not len(input['name']):
-            print('validation error found')
             raise GraphQLError(_('Name is required'))
 
         finance_quote_group = FinanceQuoteGroup(
