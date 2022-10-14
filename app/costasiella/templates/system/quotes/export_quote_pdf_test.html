@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Quote</title>
+    <meta name="description" content="Quote">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pacifico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro">
+    <style>
+@page {
+  font-family: Pacifico;
+  margin: 3cm;
+  @bottom-left {
+    color: #1ee494;
+    content: '♥ Thank you!';
+  }
+  @bottom-right {
+    color: #a9a;
+    content: '{% if organization.email %} {{ organization.email }} {% endif %} {% if organization.phone %} | {{ organization.phone }} {% endif %}';
+    font-size: 9pt;
+  }
+}
+
+html {
+  color: #14213d;
+  font-family: Source Sans Pro;
+  font-size: 11pt;
+  line-height: 1.6;
+}
+body {
+  margin: 0;
+}
+
+h1 {
+  color: #1ee494;
+  font-family: Pacifico;
+  font-size: 40pt;
+  margin: 0;
+}
+
+aside {
+  display: flex;
+  margin: 2em 0 4em;
+}
+aside address {
+  font-style: normal;
+  white-space: pre-line;
+}
+aside address#from {
+  color: #a9a;
+  flex: 1;
+}
+aside address p {
+  margin: 0;
+}
+aside address#to {
+  text-align: right;
+}
+aside address#from strong {
+    font-style: bold;
+}
+
+dl {
+  position: absolute;
+  right: 0;
+  text-align: right;
+  top: 0;
+}
+dt, dd {
+  display: inline;
+  margin: 0;
+}
+dt {
+  color: #a9a;
+}
+dt::before {
+  content: '';
+  display: block;
+}
+dt::after {
+  content: ':';
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th {
+  border-bottom: .2mm solid #a9a;
+  color: #a9a;
+  font-size: 10pt;
+  font-weight: 400;
+  padding-bottom: .25cm;
+  text-transform: uppercase;
+}
+td {
+  padding-top: 7mm;
+}
+td:last-of-type {
+  color: #1ee494;
+  font-weight: bold;
+  text-align: right;
+}
+th, td {
+  text-align: center;
+}
+th:first-of-type, td:first-of-type {
+  text-align: left;
+}
+th:last-of-type, td:last-of-type {
+  text-align: right;
+}
+table#total {
+  background: #f6f6f6;
+  border-color: #f6f6f6;
+  border-style: solid;
+  border-width: 2cm 3cm;
+  bottom: 0;
+  font-size: 20pt;
+  margin: 1cm -3cm;
+  width: 18cm;
+}
+    </style>    
+  </head>
+
+  <body>
+    <h1>Quote</h1>
+
+    <aside>
+      <address id="from">
+        {{ organization.name|upper }}
+        {% if organization.address %}
+            {{ organization.address|safe }}
+        {% endif %}
+      </address>
+
+      <address id="to">
+        {% if quote.relation_company %}
+            {{ quote.relation_company }}<br>
+        {% endif %}
+        {% if quote.relation_company_registration %}
+            {{ quote.relation_company_registration }}<br>
+        {% endif %}
+        {% if quote.relation_company_tax_registration %}
+            {{ quote.CustomerCompanyTaxRegistration }}<br>
+        {% endif %}
+        {% if quote.relation_contact_name %}
+            {{ quote.relation_contact_name }}<br>
+        {% endif %}
+        {% if quote.relation_address %}
+            {{ quote.relation_address|safe }}<br>
+        {% endif %}
+        {% if quote.relation_postcode %}
+            {{ quote.relation_postcode|safe }}
+        {% endif %}
+        {% if quote.relation_city %}
+            {{ quote.relation_city|safe }}
+        {% endif %}
+        {% if quote.relation_country %}
+            <br> {{ quote.relation_country|safe }}
+        {% endif %}
+      </address>
+    </aside>
+
+    <dl id="informations">
+      <dt>Quote number</dt>
+      <dd>#{{quote.quote_number}}</dd>
+      <dt>Date</dt>
+      <dd>{{ quote.date_sent }}</dd>
+    </dl>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+          <th>Tax rate</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+            <tr>
+                <td><b>{{ item.product_name }}</b> <br> {{ item.description }}</td>
+                <td><span class="right">{{ currency_symbol}} {{ item.price }}</span></td>
+                <td><span class="right">{{ item.quantity }}</span></td>
+                <td><span class="right">{{ currency_symbol}} {{ item.subtotal }}</span></td>
+                <td><span class="right">{{ item.finance_tax_rate.name }} ({{ item.finance_tax_rate.rate_type }})</span></td>
+                <td><span class="right">{{ currency_symbol}} {{ item.total}}</span></td>
+            </tr>
+        {% endfor %}
+        <tr class="border-top">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><span class="right">Subtotal</span></td>
+            <td><span class="right">{{ currency_symbol}} {{ quote.subtotal }}</span></td>
+        </tr>
+        {% for tax_rate in tax_rates %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><span class="right">{{ tax_rate.name }} ({{ tax_rate.rate_type }})</span></td>
+                <td><span class="right">{{ currency_symbol}} {{ tax_rate.quote_amount }}</span></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="border-top"><span class="right">Total</span></td>
+            <td class="border-top"><span class="right">{{ currency_symbol}} {{ quote.total }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table id="total">
+      <thead>
+        <tr>
+          <th>Expiration</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ quote.date_expire }}</td>
+          <td>{{ currency_symbol}} {{ quote.total }}</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Don't forget the terms and footer -->
+    {% if quote.terms %}
+        <div>
+            <span>TERMS AND CONDITIONS</span>
+            {% autoescape off %}
+				{{ quote.terms }}
+			{% endautoescape %}
+        </div>
+    {% endif %}
+        {% if quote.footer %}
+        <footer>
+            <div>
+				{% autoescape off %}
+					{{ quote.footer }}
+				{% endautoescape %}
+            </div>
+        </footer>
+    {% endif %}
+    
+  </body>
+</html>

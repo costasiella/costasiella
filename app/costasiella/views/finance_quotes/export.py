@@ -149,7 +149,7 @@ def quote_html(node_id):
     )
     tax_rates = finance_quote.tax_rates_amounts()
 
-    template_path = 'system/quotes/export_quote_pdf.html'
+    template_path = 'system/quotes/export_quote_pdf_test.html'
     t = get_template(template_path)
 
     rendered_template = render_to_string(
@@ -157,9 +157,6 @@ def quote_html(node_id):
         {
             "currency_symbol": currency_symbol,
             "logo_url": logo_url,
-            "studio": {
-                "name": "studio name",
-            },
             "quote": finance_quote,
             "date_sent": finance_quote.date_sent,
             "organization": organization,
