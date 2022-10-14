@@ -44,20 +44,19 @@ aside {
 }
 aside address {
   font-style: normal;
-  white-space: pre-line;
+  white-space: normal;
 }
 aside address#from {
   color: #a9a;
   flex: 1;
 }
-aside address p {
-  margin: 0;
-}
 aside address#to {
   text-align: right;
 }
-aside address#from strong {
+aside address#from strong,
+aside address#to strong {
     font-style: bold;
+    font-weight: bold;
 }
 
 dl {
@@ -72,13 +71,6 @@ dt, dd {
 }
 dt {
   color: #a9a;
-}
-dt::before {
-  content: '';
-  display: block;
-}
-dt::after {
-  content: ':';
 }
 
 table {
@@ -164,7 +156,7 @@ table#total {
 
     <dl id="informations">
       <dt>Quote number</dt>
-      <dd>#{{quote.quote_number}}</dd>
+      <dd>#{{quote.quote_number}}</dd><br>
       <dt>Date</dt>
       <dd>{{ quote.date_sent }}</dd>
     </dl>
