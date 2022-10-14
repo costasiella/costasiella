@@ -6,14 +6,15 @@ from django.template.loader import get_template, render_to_string
 from django.utils.translation import gettext as _
 import openpyxl
 
-from ...models import FinanceQuoteItem
+from ...models import AppSettings, FinanceQuote, FinanceQuoteItem, Organization
 
 from ...modules.graphql_jwt_tools import get_user_from_cookie
+from ...modules.gql_tools import require_login_and_permission, get_rid
 
 
 def export_excel_finance_quotes(request, date_from, date_until, status, **kwargs):
     """
-    Export quotes as Excel
+    Export quote items as Excel
     """
     user = get_user_from_cookie(request)
     if not user.has_perm('costasiella.view_financequote'):
@@ -105,3 +106,107 @@ def export_excel_finance_quotes(request, date_from, date_until, status, **kwargs
     )
 
     return FileResponse(buffer, as_attachment=True, filename=filename)
+
+
+def _verifiy_permission_or_account(request, finance_quote, **kwargs):
+    """
+    :param request:
+    :param finance_quote:
+    :return:
+    """
+    user = get_user_from_cookie(request, **kwargs)
+
+    if not user:
+        return False
+
+    if user.has_perm('costasiella.view_financequote') or finance_quote.account == user:
+        return True
+    else:
+        return False
+
+
+def quote_html(node_id):
+    """
+    Return rendered quote html template
+    """
+    from ...dudes import SystemSettingDude
+
+    rid = get_rid(node_id)
+    finance_quote = FinanceQuote.objects.get(id=rid.id)
+
+    if not finance_quote:
+        raise Http404(_("Quote not found..."))
+
+    system_settings_dude = SystemSettingDude()
+    currency_symbol = system_settings_dude.get("finance_currency_symbol") or "€"
+
+    app_settings = AppSettings.objects.get(id=1)
+    organization = Organization.objects.get(id=100)
+    # Use the invoice logo for quotes as well
+    logo_url = organization.logo_invoice.url if organization.logo_invoice else ""
+    items = FinanceQuoteItem.objects.filter(
+        finance_quote=finance_quote
+    )
+    tax_rates = finance_quote.tax_rates_amounts()
+
+    template_path = 'system/quotes/export_quote_pdf.html'
+    t = get_template(template_path)
+
+    rendered_template = render_to_string(
+        template_path,
+        {
+            "currency_symbol": currency_symbol,
+            "logo_url": logo_url,
+            "studio": {
+                "name": "studio name",
+            },
+            "quote": finance_quote,
+            "date_sent": finance_quote.date_sent,
+            "organization": organization,
+            "items": items,
+            "tax_rates": tax_rates,
+        }
+    )
+
+    return [finance_quote, rendered_template]
+
+
+# Create your views here.
+def quote_pdf(request, node_id, **kwargs):
+    """
+    Export quote as PDF
+
+    :param: POST: node_id - FinanceQuoteNode ID
+    """
+    import weasyprint
+
+    finance_quote, html = quote_html(node_id)
+    if not _verifiy_permission_or_account(request, finance_quote, **kwargs):
+        raise Http404(_("Quote not found..."))
+
+    # Create a file-like buffer to receive PDF data.
+    buffer = io.BytesIO()
+    # Write pdf to memory buffer
+    weasyprint.HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(buffer)
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+
+    filename = _('quote') + '_' + finance_quote.quote_number + '.pdf'
+
+    return FileResponse(buffer, as_attachment=True, filename=filename)
+
+
+def quote_pdf_preview(request, node_id):
+    """
+    Preview for quote_pdf
+
+    :param: POST: node_id - FinanceQuoteNode ID
+    """
+
+    finance_quote, html = quote_html(node_id)
+    if not _verifiy_permission_or_account(request, finance_quote):
+        raise Http404(_("Quote not found..."))
+
+    return HttpResponse(html)

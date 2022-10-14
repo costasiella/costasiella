@@ -18,7 +18,7 @@ from .export_finance_invoice import invoice_pdf, invoice_pdf_preview
 from .finance_payment_batch.export import export_csv_finance_payment_batch
 
 # Finance Quotes
-from .finance_quotes.export import export_excel_finance_quotes
+from .finance_quotes.export import export_excel_finance_quotes, quote_pdf, quote_pdf_preview
 
 # Insight exports
 from .insight.export_insight_classpasses_active import export_excel_insight_classpasses_active
