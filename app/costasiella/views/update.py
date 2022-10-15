@@ -2,6 +2,9 @@ from django.http import Http404, HttpResponse
 from django.utils.translation import gettext as _
 
 from ..models import \
+    FinanceInvoiceGroup, \
+    FinanceInvoiceGroupDefault, \
+    FinanceQuoteGroup, \
     ScheduleEventTicket, \
     SystemMailTemplate
 from ..dudes import PermissionDude, SystemSettingDude, VersionDude
@@ -27,6 +30,9 @@ def update(request):
 
     if current_version < 2022.03:
         _update_to_2022_03()
+
+    if current_version < 2022.05:
+        _update_to_2022_05()
 
     # Set latest version
     new_version = version_dude.update_version()
@@ -71,10 +77,37 @@ def _update_to_2021_03():
 
 def _update_to_2022_03():
     """
-    Update db values ot 2022.03
+    Update db values to 2022.03
     :return: None
     """
     # Save tickets to populate subtotal, tax and total fields
     schedule_event_tickets = ScheduleEventTicket.objects.all()
     for ticket in schedule_event_tickets:
         ticket.save()
+
+
+def _update_to_2022_05():
+    """
+    Update db values to 2022.05
+    :return: None
+    """
+    # Set default invoice group for PRODUCTS
+    default_invoice_group = FinanceInvoiceGroup.objects.get(id=100)
+    products_default = FinanceInvoiceGroupDefault(
+        item_type="PRODUCTS",
+        finance_invoice_group=default_invoice_group
+    )
+    products_default.save()
+
+    # Create default quotes group
+    default_quote_group = FinanceQuoteGroup(
+        id=100,
+        display_public=True,
+        name="Default",
+        next_id=1,
+        expires_after_days=30,
+        prefix="QUO",
+        prefix_year=True,
+        auto_reset_prefix_year=True,
+    )
+    default_quote_group.save()

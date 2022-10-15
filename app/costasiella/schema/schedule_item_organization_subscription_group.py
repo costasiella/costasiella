@@ -43,7 +43,6 @@ class ScheduleItemOrganizationSubscriptionGroupQuery(graphene.ObjectType):
         require_login(user)
         # Has permission: return everything
         if user.has_perm('costasiella.view_scheduleitemorganizationsubscriptiongroup'):
-            print('user has view permission')
             return ScheduleItemOrganizationSubscriptionGroup.objects.filter().order_by('organization_subscription_group__name')
 
 

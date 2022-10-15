@@ -167,7 +167,6 @@ class GQLFinancePaymentBatch(TestCase):
         variables = self.variables_query_list
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-        print(executed)
 
         data = executed.get('data')
         self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['name'], finance_payment_batch.name)

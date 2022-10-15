@@ -190,8 +190,6 @@ class GQLOrganizationLocationRoom(TestCase):
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        print(data)
-
         # Public locations only
         non_public_found = False
         for item in data['organizationLocationRooms']['edges']:
@@ -199,7 +197,6 @@ class GQLOrganizationLocationRoom(TestCase):
                 non_public_found = True
 
         self.assertEqual(non_public_found, False)
-
 
     def test_query_permission_granted(self):
         """ Query list of location rooms """

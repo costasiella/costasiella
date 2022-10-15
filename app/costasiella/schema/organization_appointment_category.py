@@ -42,7 +42,6 @@ class OrganizationAppointmentCategoryQuery(graphene.ObjectType):
             raise Exception(m.user_not_logged_in)
 
         if user.has_perm('costasiella.view_organizationappointmentcategory'):
-            print('user has view permission')
             return OrganizationAppointmentCategory.objects.filter(archived = archived).order_by('name')
 
         # Return only public non-archived locations
@@ -63,7 +62,6 @@ class CreateOrganizationAppointmentCategory(graphene.relay.ClientIDMutation):
 
         errors = []
         if not len(input['name']):
-            print('validation error found')
             raise GraphQLError(_('Name is required'))
 
         organization_appointment_category = OrganizationAppointmentCategory(

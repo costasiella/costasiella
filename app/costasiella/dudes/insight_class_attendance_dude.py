@@ -57,8 +57,6 @@ class InsightClassAttendanceDude:
         iso_weekday = schedule_item.frequency_interval
         next_year = datetime.date(year + 1, 1, 1)
         first_weekday_in_year = date_tools_dude.get_first_isoweekday_in_first_week_of_year(year, iso_weekday)
-        print("FIRST WEEKDAY IN YEAR")
-        print(first_weekday_in_year)
         delta_one_week = datetime.timedelta(days=7)
 
         data = OrderedDict()
@@ -87,8 +85,6 @@ class InsightClassAttendanceDude:
     #     Return monthly counts of sold (new) subscriptions
     #     """
     #     data = []
-    #
-    #     print(year)
     #
     #     for i in range(1, 13):
     #         date_from = datetime.date(year, i, 1)
@@ -123,8 +119,6 @@ class InsightClassAttendanceDude:
     #
     #     data = OrderedDict()
     #
-    #     print(year)
-    #
     #     for i in range(1, 13):
     #         date_from = datetime.date(year, i, 1)
     #         last_day_month = calendar.monthrange(year, i)[1]
@@ -132,8 +126,6 @@ class InsightClassAttendanceDude:
     #
     #         subscriptions_sold_in_month = self.get_subscriptions_sold_period_data(date_from, date_until)
     #         data[i] = subscriptions_sold_in_month
-    #
-    #         # print(data)
     #
     #     return data
     #
@@ -149,7 +141,6 @@ class InsightClassAttendanceDude:
     #         date_start__lte = date_until,
     #     ).count()
     #
-    #     print(count)
     #     return count
     #
     #
@@ -158,8 +149,6 @@ class InsightClassAttendanceDude:
     #     Return monthly counts of active passes
     #     """
     #     data = []
-    #
-    #     print(year)
     #
     #     for i in range(1, 13):
     #         date_from = datetime.date(year, i, 1)
@@ -194,8 +183,6 @@ class InsightClassAttendanceDude:
     #
     #     data = OrderedDict()
     #
-    #     print(year)
-    #
     #     for i in range(1, 13):
     #         date_from = datetime.date(year, i, 1)
     #         last_day_month = calendar.monthrange(year, i)[1]
@@ -203,7 +190,5 @@ class InsightClassAttendanceDude:
     #
     #         subscriptions_active_in_month = self.get_subscriptions_active_period_data(date_from, date_until)
     #         data[i] = subscriptions_active_in_month
-    #
-    #         # print(data)
     #
     #     return data

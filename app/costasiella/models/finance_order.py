@@ -225,7 +225,6 @@ class FinanceOrder(models.Model):
                 )
 
                 if item.schedule_item and item.attendance_date:
-                    print("DELIVER CLASS CHECKIN FOR CLASS PASS")
                     self._deliver_checkin_class(
                         schedule_item=item.schedule_item,
                         attendance_date=item.attendance_date,

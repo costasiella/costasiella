@@ -340,8 +340,6 @@ class ScheduleClassesDayType(graphene.ObjectType):
             order_by_sql=order_by_sql
         )
 
-        # print(query)
-
         params = {
             "class_date": str(self.date),
             "iso_week_day": iso_week_day,
@@ -352,18 +350,9 @@ class ScheduleClassesDayType(graphene.ObjectType):
             "date_format": "%Y-%m-%d"
         }
         schedule_items = ScheduleItem.objects.raw(query, params=params)
-        # if str(self.date) == "2022-04-25":
-        #     print(schedule_items)
 
-        # from django.db import connection as conn
-        # print(conn.queries)
-
-        # print(self.date)
         classes_list = []
         for item in schedule_items:
-            # if str(self.date) == "2022-04-25":
-            #     print(item)
-
             holiday = False
             holiday_name = ""
             if item.organization_holiday_id:
@@ -442,30 +431,22 @@ def get_booking_status(schedule_item, date, booking_open_on, available_online_sp
 
     # https://docs.djangoproject.com/en/3.1/topics/i18n/timezones/#usage
     local_tz = pytz.timezone(settings.TIME_ZONE)
-    # print(local_tz)
-
     now = timezone.localtime(timezone.now())
-    # print("#### now ########")
-    # print(now)
-    # print(now.date())
-
     dt_start = datetime.datetime(date.year,
                                  date.month,
                                  date.day,
                                  int(schedule_item.time_start.hour),
                                  int(schedule_item.time_start.minute))
-    # print(dt_start)
+
     dt_start = local_tz.localize(dt_start)
-    # print(dt_start)
 
     dt_end = datetime.datetime(date.year,
                                date.month,
                                date.day,
                                int(schedule_item.time_end.hour),
                                int(schedule_item.time_end.minute))
-    # print(dt_end)
+
     dt_end = local_tz.localize(dt_end)
-    # print(dt_end)
 
     status = "FINISHED"
     if schedule_item.organization_holiday_id:

@@ -29,11 +29,12 @@ def validate_create_update_input(input, update=False):
 
     # Fetch & check tax rate
     if 'finance_tax_rate' in input:
-        rid = get_rid(input['finance_tax_rate'])
-        finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
-        result['finance_tax_rate'] = finance_tax_rate
-        if not finance_tax_rate:
-            raise Exception(_('Invalid Finance Tax Rate ID!'))
+        if input['finance_tax_rate']:
+            rid = get_rid(input['finance_tax_rate'])
+            finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
+            result['finance_tax_rate'] = finance_tax_rate
+            if not finance_tax_rate:
+                raise Exception(_('Invalid Finance Tax Rate ID!'))
 
     # Check GLAccount
     if 'finance_glaccount' in input:
@@ -195,7 +196,7 @@ class UpdateOrganizationProduct(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_organizationproduct')
-    
+
         rid = get_rid(input['id'])
         organization_product = OrganizationProduct.objects.filter(id=rid.id).first()
         if not organization_product:

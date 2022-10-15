@@ -7,6 +7,7 @@ from .account_document import AccountDocument
 from .account_finance_payment_batch_category_item import AccountFinancePaymentBatchCategoryItem
 from .account_membership import AccountMembership
 from .account_note import AccountNote
+from .account_product import AccountProduct
 from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .account_subscription import AccountSubscription
 from .account_subscription_alt_price import AccountSubscriptionAltPrice
@@ -33,6 +34,9 @@ from .finance_payment_batch_category import FinancePaymentBatchCategory
 from .finance_payment_batch_export import FinancePaymentBatchExport
 from .finance_payment_batch_item import FinancePaymentBatchItem
 from .finance_payment_method import FinancePaymentMethod
+from .finance_quote import FinanceQuote
+from .finance_quote_group import FinanceQuoteGroup
+from .finance_quote_item import FinanceQuoteItem
 from .finance_tax_rate import FinanceTaxRate
 
 from .integration_log_mollie import IntegrationLogMollie

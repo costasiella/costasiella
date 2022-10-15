@@ -6,6 +6,7 @@ from django.db import models
 from .account_classpass import AccountClasspass
 from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .account_membership import AccountMembership
+from .account_product import AccountProduct
 from .account_subscription import AccountSubscription
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
@@ -23,6 +24,11 @@ class FinanceInvoiceItem(models.Model):
                                                       default=None,
                                                       related_name="invoice_items")
     account_membership = models.ForeignKey(AccountMembership,
+                                           on_delete=models.SET_NULL,
+                                           null=True,
+                                           default=None,
+                                           related_name="invoice_items")
+    account_product = models.ForeignKey(AccountProduct,
                                            on_delete=models.SET_NULL,
                                            null=True,
                                            default=None,

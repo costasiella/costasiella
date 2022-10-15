@@ -421,7 +421,7 @@ class GQLFinanceGLAccount(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
+
         self.assertEqual(data['archiveFinanceGlaccount']['financeGlaccount']['archived'], variables['input']['archived'])
 
 

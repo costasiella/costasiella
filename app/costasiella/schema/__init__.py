@@ -12,6 +12,7 @@ from .account_finance_payment_batch_category_item import \
     AccountFinancePaymentBatchCategoryItemMutation
 # from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_note import AccountNoteQuery, AccountNoteMutation
+from .account_product import AccountProductQuery, AccountProductMutation
 from .account_schedule_event_ticket import AccountScheduleEventTicketQuery, AccountScheduleEventTicketMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 from .account_subscription_alt_price import AccountSubscriptionAltPriceQuery, AccountSubscriptionAltPriceMutation
@@ -42,6 +43,9 @@ from .finance_payment_batch_category import FinancePaymentBatchCategoryQuery, Fi
 from .finance_payment_batch_export import FinancePaymentBatchExportQuery
 from .finance_payment_batch_item import FinancePaymentBatchItemQuery
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
+from .finance_quote import FinanceQuoteQuery, FinanceQuoteMutation
+from .finance_quote_group import FinanceQuoteGroupQuery, FinanceQuoteGroupMutation
+from .finance_quote_item import FinanceQuoteItemQuery, FinanceQuoteItemMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .insight_account_inactive import InsightAccountInactiveQuery, InsightAccountInactiveMutation
@@ -122,6 +126,7 @@ class Query(AccountQuery,
             AccountDocumentQuery,
             AccountFinancePaymentBatchCategoryItemQuery,
             AccountNoteQuery,
+            AccountProductQuery,
             AccountScheduleEventTicketQuery,
             AccountSubscriptionQuery,
             AccountSubscriptionAltPriceQuery,
@@ -146,6 +151,9 @@ class Query(AccountQuery,
             FinancePaymentBatchExportQuery,
             FinancePaymentBatchItemQuery,
             FinancePaymentMethodQuery,
+            FinanceQuoteQuery,
+            FinanceQuoteGroupQuery,
+            FinanceQuoteItemQuery,
             FinanceTaxRateQuery,
             InsightAccountInactiveQuery,
             InsightAccountInactiveAccountQuery,
@@ -213,6 +221,7 @@ class Mutation(AccountMutation,
                AccountDocumentMutation,
                AccountFinancePaymentBatchCategoryItemMutation,
                AccountNoteMutation,
+               AccountProductMutation,
                AccountSubscriptionMutation,
                AccountScheduleEventTicketMutation,
                AccountSubscriptionAltPriceMutation,
@@ -235,6 +244,9 @@ class Mutation(AccountMutation,
                FinancePaymentBatchMutation,
                FinancePaymentBatchCategoryMutation,
                FinancePaymentMethodMutation,
+               FinanceQuoteMutation,
+               FinanceQuoteGroupMutation,
+               FinanceQuoteItemMutation,
                FinanceTaxRateMutation,
                InsightAccountInactiveMutation,
                OrganizationMutation,

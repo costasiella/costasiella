@@ -67,7 +67,6 @@ class OrganizationClasstypeQuery(graphene.ObjectType):
 
         # Has permission: return everything
         if user.has_perm('costasiella.view_organizationclasstype'):
-            print('user has view permission')
             return OrganizationClasstype.objects.filter(archived=archived).order_by('name')
 
         # Return only public non-archived classtypes
@@ -90,7 +89,6 @@ class CreateOrganizationClasstype(graphene.relay.ClientIDMutation):
 
         # Validate input
         if not len(input['name']):
-            print('validation error found')
             raise GraphQLError(_('Name is required'))
 
         url_website = input['url_website']

@@ -102,8 +102,6 @@ class CreateAccountSubscriptionAltPrice(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_accountsubscriptionaltprice')
 
-        print(input)
-
         # Validate input
         result = validate_create_update_input(input, update=False)
 

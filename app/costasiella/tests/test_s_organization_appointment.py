@@ -190,8 +190,6 @@ class GQLOrganizationAppointment(TestCase):
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        print(data)
-
         # Public locations only
         non_public_found = False
         for item in data['organizationAppointments']['edges']:

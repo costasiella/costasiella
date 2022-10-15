@@ -23,9 +23,6 @@ def account_subscription_credits_add_for_month(year, month):
     """
     date_dude = DateToolsDude()
 
-    # print("###############")
-    # print("Start adding credits")
-
     first_day_month = datetime.date(year, month, 1)
     last_day_month = date_dude.get_last_day_month(first_day_month)
 
@@ -44,7 +41,6 @@ def account_subscription_credits_add_for_month(year, month):
         billable_period = account_subscription.get_billable_period_in_month(year, month)
         if not billable_period['billable_days']:
             # No credits to give. No billable days
-            # print("no billable days")
             logger.warning('No billable days for subscription %s in month %s-%s' %
                            (account_subscription.id, year, month))
             continue
@@ -52,7 +48,6 @@ def account_subscription_credits_add_for_month(year, month):
         credits_given = account_subscription.get_credits_given_for_month(year, month)
         if credits_given.exists():
             # credits for this month have already been given
-            # print("Credits already added")
             logger.warning('Credits already given for subscription %s in month %s-%s' %
                            (account_subscription.id, year, month))
             continue
@@ -60,7 +55,6 @@ def account_subscription_credits_add_for_month(year, month):
         if (not account_subscription.organization_subscription.classes and
                 not account_subscription.organization_subscription.unlimited):
             # No classes defined for a subscription with limited nr of classes
-            # print("No classes defined")
             logger.warning('No classes defined for subscription %s' %
                            (account_subscription.id))
             continue

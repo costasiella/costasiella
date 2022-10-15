@@ -202,7 +202,7 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         query = self.discovery_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        print(data)
+
         self.assertEqual(data['organizationDiscovery']['name'], discovery.name)
         self.assertEqual(data['organizationDiscovery']['archived'], discovery.archived)
 

@@ -26,8 +26,6 @@ class SetupDude:
         Set the current version
         :return:
         """
-        print("we're running the setup function")
-
         if self.complete == "T":
             return _("Setup already complete... setup will not be executed again.")
         # Set current version

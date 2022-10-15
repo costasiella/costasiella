@@ -180,7 +180,6 @@ class UpdateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
                 if account_schedule_event_ticket.schedule_event_ticket.is_sold_out():
                     raise Exception(_("This ticket is sold out"))
                 else:
-                    print("set attendances to booked")
                     account_schedule_event_ticket.set_booking_status_schedule_item_attendances('BOOKED')
 
             # Cancel invoice

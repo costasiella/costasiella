@@ -108,8 +108,6 @@ class GQLAccountInstructorProfile(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        print(data)
-
         self.assertEqual(
           data['accountInstructorProfiles']['edges'][0]['node']['account']['id'],
           variables['id']

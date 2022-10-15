@@ -420,7 +420,7 @@ class GQLFinanceCostCenter(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
+
         self.assertEqual(data['archiveFinanceCostcenter']['financeCostcenter']['archived'], variables['input']['archived'])
 
 

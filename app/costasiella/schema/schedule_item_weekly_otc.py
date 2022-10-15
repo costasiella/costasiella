@@ -136,7 +136,6 @@ def validate_update_input(input):
     # Check OrganizationLevel
     if 'organization_level' in input:
         if input['organization_level']:
-            print('processing')
             rid = get_rid(input['organization_level'])
             organization_level = OrganizationLevel.objects.get(id=rid.id)
             result['organization_level'] = organization_level
@@ -233,8 +232,6 @@ class UpdateScheduleItemWeeklyOTC(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_scheduleitemweeklyotc')
-
-        print(input)
 
         result = validate_update_input(input)
 

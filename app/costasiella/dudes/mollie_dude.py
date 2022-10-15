@@ -42,15 +42,12 @@ class MollieDude:
         :return: 
         """
         is_valid_account = self._mollie_customer_check_valid(account, mollie)
-        print(is_valid_account)
 
         if not is_valid_account:
             mollie_customer = mollie.customers.create({
                 'name': account.full_name,
                 'email': account.email
             })
-
-            print(mollie_customer)
             mollie_customer_id = mollie_customer['id']
             account.mollie_customer_id = mollie_customer_id
             account.save()

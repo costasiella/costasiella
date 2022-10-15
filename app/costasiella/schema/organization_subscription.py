@@ -158,7 +158,6 @@ class OrganizationSubscriptionQuery(graphene.ObjectType):
         user = info.context.user
         # Has permission: return everything the user asked for
         if user.has_perm('costasiella.view_organizationsubscription'):
-            print('user has view permission')
             return OrganizationSubscription.objects.filter(archived=archived).order_by('name')
 
         # Return only public non-archived subscriptions

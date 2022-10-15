@@ -1,0 +1,19 @@
+[
+  {
+    "model": "costasiella.FinanceQuoteGroup",
+    "pk": 100,
+    "fields": {
+      "archived": false,
+      "display_public": true,
+      "name": "Default",
+      "next_id": 1,
+      "expires_after_days": 30,
+      "prefix": "QUO",
+      "prefix_year": true,
+      "auto_reset_prefix_year": true,
+      "terms": "",
+      "footer": "",
+      "code": ""
+    }
+  }
+]

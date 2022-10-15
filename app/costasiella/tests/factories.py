@@ -35,7 +35,7 @@ class FinanceInvoiceGroupFactory(factory.DjangoModelFactory):
     prefix_year = True
     auto_reset_prefix_year = True
     terms = 'Terms here... I guess'
-    footer = 'A prefectly formal and normal footer text'
+    footer = 'A perfectly formal and normal footer text'
     code = "70"
 
 
@@ -410,7 +410,7 @@ class OrganizationSubscriptionGroupSubscriptionFactory(factory.DjangoModelFactor
     organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
 
 
-class OrganizationProduct(factory.DjangoModelFactory):
+class OrganizationProductFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationProduct
 
@@ -531,6 +531,56 @@ class BusinessB2BFactory(factory.DjangoModelFactory):
     email_billing = "billing@business.com"
     registration = "1234DB56"
     tax_registration = "Chamber of Commerce: 1234DB56"
+
+
+class FinanceQuoteGroupFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceQuoteGroup
+
+    archived = False
+    display_public = True
+    name = "Another group"
+    next_id = 1
+    expires_after_days = 30
+    prefix = 'QUOTE'
+    prefix_year = True
+    auto_reset_prefix_year = True
+    terms = 'Terms here... I guess'
+    footer = 'A perfectly formal and normal footer text'
+    code = "7000"
+
+
+class FinanceQuoteFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceQuote
+
+    account = factory.SubFactory(RegularUserFactory)
+    finance_quote_group = factory.SubFactory(FinanceQuoteGroupFactory)
+    relation_company = "Company"
+    relation_company_registration = "123545ABC"
+    relation_company_tax_registration = "12334324BQ"
+    relation_contact_name = "Relation name"
+    relation_address = "Street 3243"
+    relation_postcode = "3423 BF"
+    relation_city = "City"
+    relation_country = "NL"
+    status = "DRAFT"
+    summary = "Quote summary"
+    note = "Quote note here"
+
+
+class FinanceQuoteItemFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceQuoteItem
+
+    finance_quote = factory.SubFactory(FinanceQuoteFactory)
+    product_name = "Product"
+    description = "Description"
+    quantity = 1
+    price = 12
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
 class OrganizationAppointmentPriceFactory(factory.DjangoModelFactory):
@@ -999,6 +1049,15 @@ class AccountScheduleEventTicketFactory(factory.DjangoModelFactory):
     cancelled = False
     payment_confirmation = False
     info_mail_sent = False
+
+
+class AccountProductFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountProduct
+
+    account = factory.SubFactory(RegularUserFactory)
+    organization_product = factory.SubFactory(OrganizationProductFactory)
+    quantity = 1
 
 
 class ScheduleEventMediaFactory(factory.DjangoModelFactory):

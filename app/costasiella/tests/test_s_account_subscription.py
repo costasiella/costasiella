@@ -689,7 +689,7 @@ class GQLAccountSubscription(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
+
         self.assertEqual(data['deleteAccountSubscription']['ok'], True)
 
     def test_delete_subscription_anon_user(self):
@@ -704,7 +704,7 @@ class GQLAccountSubscription(TestCase):
             self.anon_user,
             variables=variables
         )
-        data = executed.get('data')
+
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 

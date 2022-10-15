@@ -82,8 +82,6 @@ class InsightAccountClasspassesDude:
             classpasses_sold_in_month = self.get_classpasses_sold_period_data(date_from, date_until)
             data[i] = classpasses_sold_in_month
 
-            # print(data)
-
         return data
 
     def get_classpasses_active_period_count(self, date_from, date_until):
@@ -143,7 +141,5 @@ class InsightAccountClasspassesDude:
 
             classpasses_active_in_month = self.get_classpasses_active_period_data(date_from, date_until)
             data[i] = classpasses_active_in_month
-
-            # print(data)
 
         return data

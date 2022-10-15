@@ -2526,8 +2526,6 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
             record = {k.lower(): v for k, v in record.items()}
 
             if record['id'] == 100:
-                print("Importing default group settings")
-
                 finance_invoice_group = id_map[100]
                 finance_invoice_group.archived = self._web2py_bool_to_python(record['archived'])
                 finance_invoice_group.display_public = self._web2py_bool_to_python(record['publicgroup'])
@@ -2642,7 +2640,6 @@ ORDER BY i.id
             record = {k.lower(): v for k, v in record.items()}
 
             try:
-
                 try:
                     credit_invoice_for = id_map.get(record['credit_invoice_for'].id)
                 except AttributeError:
@@ -2652,34 +2649,41 @@ ORDER BY i.id
                 if record['description']:
                     summary = record['description'][:254]
 
-                finance_invoice = m.FinanceInvoice(
-                    account=self.auth_user_map.get(record['auth_customer_id'], None),
-                    finance_invoice_group=self.invoices_groups_map.get(record['invoices_groups_id'], None),
-                    finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
-                    instructor_payment=self._web2py_bool_to_python(record['teacherpayment']),
-                    employee_claim=self._web2py_bool_to_python(record['employeeclaim']),
-                    status=self.map_invoices_statuses.get(record['status']),
-                    summary=summary,
-                    invoice_number=record['invoiceid'],
-                    date_sent=record['datecreated'],
-                    date_due=record['datedue'],
-                    terms=record['terms'] or "",
-                    footer=record['footer'] or "",
-                    note=record['note'] or "",
-                    subtotal=record['totalprice'],
-                    tax=record['vat'],
-                    total=record['totalpricevat'],
-                    paid=record['paid'],
-                    balance=record['balance'],
-                    credit_invoice_for=credit_invoice_for
-                )
-                finance_invoice.save()
+                account = self.auth_user_map.get(record['auth_customer_id'], None)
+                if not account:
+                    logger.error("Import error for finance invoice: %s: %s" % (
+                        record['id'],
+                        "Account not found for OpenStudio customer ID: %s" % record['auth_customer_id']
+                    ))
+                else:
+                    finance_invoice = m.FinanceInvoice(
+                        account=self.auth_user_map.get(record['auth_customer_id'], None),
+                        finance_invoice_group=self.invoices_groups_map.get(record['invoices_groups_id'], None),
+                        finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
+                        instructor_payment=self._web2py_bool_to_python(record['teacherpayment']),
+                        employee_claim=self._web2py_bool_to_python(record['employeeclaim']),
+                        status=self.map_invoices_statuses.get(record['status']),
+                        summary=summary,
+                        invoice_number=record['invoiceid'],
+                        date_sent=record['datecreated'],
+                        date_due=record['datedue'],
+                        terms=record['terms'] or "",
+                        footer=record['footer'] or "",
+                        note=record['note'] or "",
+                        subtotal=record['totalprice'],
+                        tax=record['vat'],
+                        total=record['totalpricevat'],
+                        paid=record['paid'],
+                        balance=record['balance'],
+                        credit_invoice_for=credit_invoice_for
+                    )
+                    finance_invoice.save()
 
-                finance_invoice.invoice_number = record['invoiceid']
-                finance_invoice.save()
-                records_imported += 1
+                    finance_invoice.invoice_number = record['invoiceid']
+                    finance_invoice.save()
+                    records_imported += 1
 
-                id_map[record['id']] = finance_invoice
+                    id_map[record['id']] = finance_invoice
             except django.db.utils.IntegrityError as e:
                 logger.error("Import error for finance invoice: %s: %s" % (
                     record['id'],

@@ -20,8 +20,7 @@ class IntegrationMailChimpDude:
                 "api_key": mailchimp_api_key,
                 "server": mailchimp_server_prefix
             })
-            response = mailchimp.ping.get()
-            print(response)
+            # response = mailchimp.ping.get()
         else:
             mailchimp = False
 

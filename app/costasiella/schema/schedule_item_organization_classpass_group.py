@@ -42,7 +42,6 @@ class ScheduleItemOrganizationClasspassGroupQuery(graphene.ObjectType):
         require_login(user)
         # Has permission: return everything
         if user.has_perm('costasiella.view_scheduleitemorganizationclasspassgroup'):
-            print('user has view permission')
             return ScheduleItemOrganizationClasspassGroup.objects.filter().order_by('organization_classpass_group__name')
 
 

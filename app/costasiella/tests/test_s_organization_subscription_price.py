@@ -349,12 +349,9 @@ class GQLOrganizationSubscriptionPrice(TestCase):
             variables=variables
         )
 
-        print("################## create output###########")
         errors = executed.get('errors')
-        print(errors)
-
         data = executed.get('data')
-        print(data)
+
         self.assertEqual(
           data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['organizationSubscription']['id'], 
           variables['input']['organizationSubscription'])

@@ -92,15 +92,10 @@ query FinanceInvoiceGroupDefaults {
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of invoicegroupdefaults """
         query = self.invoicegroupdefaults_query
         
-        qs = models.FinanceInvoiceGroupDefault.objects.all()
-        for item in qs:
-            print(item)
-
         first_default = models.FinanceInvoiceGroupDefault.objects.all().first()
         default_invoice_group = models.FinanceInvoiceGroup.objects.get(pk=100)
 
@@ -232,7 +227,7 @@ query FinanceInvoiceGroupDefaults {
             variables=variables
         )
         data = executed.get('data')
-        print(data)
+
         self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['id'], variables['input']['id'])
         self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['financeInvoiceGroup']['id'], 
             variables['input']['financeInvoiceGroup']

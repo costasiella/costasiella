@@ -529,7 +529,6 @@ class GQLBusiness(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['deleteBusiness']['ok'], True)
         
     def test_delete_businesses_anon_user(self):
