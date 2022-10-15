@@ -38,7 +38,7 @@ services:
     image: simplycode/costasiella_celery_beat
     restart: always
     env_file:
-      - costasiella.envs
+      - costasiella.env
     build: 
       context: . 
       dockerfile: ./docker/celery_beat/Dockerfile

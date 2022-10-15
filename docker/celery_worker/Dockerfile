@@ -23,10 +23,6 @@ RUN mkdir /opt/sockets
 # Create static files directory
 RUN mkdir /opt/static
 
-# Environment variables
-ENV DJANGO_SETTINGS_MODULE=app.settings.production
-ENV DJANO_LOG_LEVEL=WARNING
-
 RUN chmod a+x /opt/docker-celery-entrypoint.sh
 
 CMD /opt/docker-celery-entrypoint.sh
