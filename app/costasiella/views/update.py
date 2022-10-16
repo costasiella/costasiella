@@ -111,3 +111,15 @@ def _update_to_2022_05():
         auto_reset_prefix_year=True,
     )
     default_quote_group.save()
+
+    # Add order creation notification mail template
+    mail_template_order_received = SystemMailTemplate(
+        id=45000,
+        name="notification_order_received",
+        subject="New order received!",
+        title="New order received!",
+        description="<ul><li>Order #{{order.id}}</li><li>Date {{order_date}}</li></ul>",
+        content="{{order_items}}",
+        comments="",
+    )
+    mail_template_order_received.save()
