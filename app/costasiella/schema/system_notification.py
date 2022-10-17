@@ -18,6 +18,7 @@ class SystemNotificationNode(DjangoObjectType):
         fields = (
             'name',
             'system_mail_template',
+            'accounts'
         )
         filter_fields = {
             'id': ['exact'],
