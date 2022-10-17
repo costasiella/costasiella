@@ -21,16 +21,16 @@ class SystemNotificationAccountNode(DjangoObjectType):
         )
         filter_fields = {
             'id': ['exact'],
-            'id': ['system_notification'],
+            'system_notification': ['exact'],
         }
         interfaces = (graphene.relay.Node, )
 
     @classmethod
-    def get_node(self, info, id):
+    def get_node(cls, info, id):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_systemnotificationaccount')
 
-        return self._meta.model.objects.get(id=id)
+        return cls._meta.model.objects.get(id=id)
 
 
 class SystemNotificationAccountQuery(graphene.ObjectType):
@@ -81,7 +81,7 @@ class CreateSystemNotificationAccount(graphene.relay.ClientIDMutation):
     system_notification_account = graphene.Field(SystemNotificationAccountNode)
 
     @classmethod
-    def mutate_ad_get_payload(cls, root, info, **input):
+    def mutate_and_get_payload(cls, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_systemnotificationaccount')
 
