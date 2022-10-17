@@ -34,7 +34,7 @@ class SystemNotificationNode(DjangoObjectType):
 
 class SystemNotificationQuery(graphene.ObjectType):
     system_notifications = DjangoFilterConnectionField(SystemNotificationNode)
-    system_mail_template = graphene.relay.Node.Field(SystemNotificationNode)
+    system_notification = graphene.relay.Node.Field(SystemNotificationNode)
 
     @staticmethod
     def resolve_mail_templates(self, info, **kwargs):
