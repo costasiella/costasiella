@@ -6,7 +6,8 @@ from ..models import \
     FinanceInvoiceGroupDefault, \
     FinanceQuoteGroup, \
     ScheduleEventTicket, \
-    SystemMailTemplate
+    SystemMailTemplate, \
+    SystemNotification
 from ..dudes import PermissionDude, SystemSettingDude, VersionDude
 
 
@@ -123,3 +124,11 @@ def _update_to_2022_05():
         comments="",
     )
     mail_template_order_received.save()
+
+    # Add notification for order received
+    system_notification = SystemNotification(
+        id=10000,
+        name="order_received",
+        system_mail_template=45000
+    )
+    system_notification.save()
