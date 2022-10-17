@@ -47,6 +47,7 @@ class MailTemplateDude:
         functions = {
             "class_info_mail": self._render_class_info_mail,
             "event_info_mail": self._render_event_info_mail,
+            "notification_order_received": self._render_template_notification_order_received,
             "order_received": self._render_template_order_received,
             "recurring_payment_failed": self._render_template_recurring_payment_failed,
             "trialpass_followup": self._render_template_triaplass_followup,
@@ -232,6 +233,60 @@ class MailTemplateDude:
     def _render_template_order_received(self):
         """
         Render order received template
+        :return: HTML message
+        """
+        from ..models import SystemMailTemplate
+        # Check if we have the required arguments
+        finance_order = self.kwargs.get('finance_order', None)
+
+        # Throw a spectacular error if finance_order is not found :)
+        if not finance_order:
+            raise Exception(_("Finance order not found!"))
+
+        # Fetch template
+        mail_template = SystemMailTemplate.objects.get(pk=50000)
+
+        # Render template items
+        description_context = Context({
+            "order": finance_order,
+            "order_date": finance_order.created_at.strftime(
+                self.app_settings_dude.date_format
+            )
+        })
+        description_template = Template(mail_template.description)
+        description = description_template.render(description_context)
+
+        # Render content (items table)
+        items_context = {
+            "order": finance_order,
+            "currency_symbol": "€"
+        }
+        items = render_to_string(
+            self.template_order_items,
+            items_context
+        )
+        content_context = Context({
+            "order": finance_order,
+            "order_items": items
+        })
+        content_template = Template(mail_template.content)
+        content = content_template.render(content_context)
+
+        # t = Template("My name is {{ my_name }}.")
+        # c = Context({"my_name": "Adrian"})
+        # t.render(c)
+
+        return dict(
+            subject=mail_template.subject,
+            title=mail_template.title,
+            description=description,
+            content=content,
+            comments=mail_template.comments
+        )
+
+    def _render_template_notification_order_received(self):
+        """
+        Render notification order received template
         :return: HTML message
         """
         from ..models import SystemMailTemplate
