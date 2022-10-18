@@ -1249,6 +1249,34 @@ class SystemMailChimpListFactory(factory.DjangoModelFactory):
     mailchimp_list_id = "abc124f0"
 
 
+class SystemMailTemplateFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SystemMailTemplate
+
+    name = "Test"
+    subject = "Test subject"
+    title = "Test title"
+    description = "Test description"
+    content = "Test content"
+    comments = "Test comments"
+
+
+class SystemNotificationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SystemNotification
+
+    name = "Newsletter"
+    system_mail_template = factory.SubFactory(SystemMailTemplateFactory)
+
+
+class SystemNotificationAccountFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SystemNotificationAccount
+
+    account = factory.SubFactory(RegularUserFactory)
+    system_notification = factory.SubFactory(SystemNotificationFactory)
+
+
 class SystemSettingFinanceCurrencyFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.SystemSetting
