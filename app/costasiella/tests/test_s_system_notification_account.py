@@ -30,6 +30,10 @@ class GQLSystemNotificationAccount(TestCase):
 
         self.system_notification_account = f.SystemNotificationAccountFactory.create()
 
+        self.variables_query_one = {
+            "id": to_global_id("SystemNotificationAccountNode", self.system_notification_account.id)
+        }
+
         self.variables_create = {
             "input": {
                 "account": to_global_id("AccountNode", self.system_notification_account.account.id),
@@ -71,6 +75,19 @@ class GQLSystemNotificationAccount(TestCase):
             id
           }
         }
+      }
+    }
+  }
+'''
+        self.system_notification_account_query = '''
+  query systemNotificationAccount($id: ID!) {
+    systemNotificationAccount(id: $id) {
+      id
+      account {
+        id
+      }
+      systemNotification {
+        id
       }
     }
   }
@@ -150,6 +167,53 @@ class GQLSystemNotificationAccount(TestCase):
         query = self.system_notification_accounts_query
 
         executed = execute_test_client_api_query(query, self.anon_user)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one(self):
+        """ Query system notification account """
+        query = self.system_notification_account_query
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
+        data = executed.get('data')
+        self.assertEqual(data['systemNotificationAccount']['account']['id'], to_global_id(
+            "AccountNode", self.system_notification_account.account.id
+        ))
+        self.assertEqual(data['systemNotificationAccount']['systemNotification']['id'], to_global_id(
+            "SystemNotificationNode",
+            self.system_notification_account.system_notification.id)
+        )
+
+    def test_query_one_permission_granted(self):
+        """ Query system notification account with user having view permission"""
+        query = self.system_notification_account_query
+        # Create regular user
+        user = self.system_notification_account.account
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_one)
+        data = executed.get('data')
+        self.assertEqual(data['systemNotificationAccount']['account']['id'], to_global_id(
+            "AccountNode", self.system_notification_account.account.id
+        ))
+
+    def test_query_one_permission_denied(self):
+        """ Query system notification account as user without view permission"""
+        query = self.system_notification_accounts_query
+        # Create regular user
+        user = self.system_notification_account.account
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_one)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_anon_user(self):
+        """ Query system notification account as anon user - deleted shouldn't be visible"""
+        query = self.system_notification_account_query
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_one)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
