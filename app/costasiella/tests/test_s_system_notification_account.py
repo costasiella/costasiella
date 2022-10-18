@@ -30,6 +30,14 @@ class GQLSystemNotificationAccount(TestCase):
 
         self.system_notification_account = f.SystemNotificationAccountFactory.create()
 
+        self.variables_create = {
+            "input": {
+                "account": to_global_id("AccountNode", self.system_notification_account.account.id),
+                "systemNotification": to_global_id(
+                    "SystemNotificationNode", self.system_notification_account.system_notification.id)
+            }
+        }
+
         self.system_notification_accounts_query = '''
   query systemNotificationAccounts($after: String, $before: String) {
     systemNotificationAccounts(first: 15, before: $before, after: $after) {
@@ -48,6 +56,22 @@ class GQLSystemNotificationAccount(TestCase):
           systemNotification {
             id
           }
+        }
+      }
+    }
+  }
+'''
+
+        self.system_notification_account_create_mutation = ''' 
+  mutation CreateSystemNotificationAccount($input:CreateSystemNotificationAccountInput!) {
+    createSystemNotificationAccount(input:$input) {
+      systemNotificationAccount {
+        id
+        account {
+          id
+        }
+        systemNotification {
+          id
         }
       }
     }
@@ -106,4 +130,72 @@ class GQLSystemNotificationAccount(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_system_notification_account(self):
+        """ Create a system notification account """
+        query = self.system_notification_account_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSystemNotificationAccount']['systemNotificationAccount']['account']['id'],
+                         variables['input']['account'])
+        self.assertEqual(
+            data['createSystemNotificationAccount']['systemNotificationAccount']['systemNotification']['id'],
+            variables['input']['systemNotification']
+        )
+
+    def test_create_system_notification_account_anon_user(self):
+        """ Create a system notification account """
+        query = self.system_notification_account_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_system_notification_account_permission_granted(self):
+        """ Create a system notification account """
+        query = self.system_notification_account_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = self.system_notification_account.account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSystemNotificationAccount']['systemNotificationAccount']['account']['id'],
+                         variables['input']['account'])
+
+    def test_create_system_notification_account_permission_denied(self):
+        """ Create a system notification account permission denied """
+        query = self.system_notification_account_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = self.system_notification_account.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 

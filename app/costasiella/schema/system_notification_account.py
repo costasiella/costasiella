@@ -85,7 +85,7 @@ class CreateSystemNotificationAccount(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_systemnotificationaccount')
 
-        result = validate_create_update_input(input)
+        result = validate_create_delete_input(input)
         system_notification_account = SystemNotificationAccount(
             account=result['account'],
             system_notification=result['system_notification']
