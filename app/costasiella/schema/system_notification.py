@@ -38,7 +38,7 @@ class SystemNotificationQuery(graphene.ObjectType):
     system_notification = graphene.relay.Node.Field(SystemNotificationNode)
 
     @staticmethod
-    def resolve_mail_templates(self, info, **kwargs):
+    def resolve_system_notifications(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_systemnotification')
 
