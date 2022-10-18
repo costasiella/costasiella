@@ -38,13 +38,13 @@ class SystemNotificationAccountQuery(graphene.ObjectType):
     system_notification_account = graphene.relay.Node.Field(SystemNotificationAccountNode)
 
     @staticmethod
-    def resolve_mail_templates(self, info, **kwargs):
+    def resolve_system_notification_accounts(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_systemnotificationaccount')
 
         # rid = get_rid()
         # return everything:
-        return SystemNotificationAccount.objects.all().order_by('system_mail_template')
+        return SystemNotificationAccount.objects.all().order_by('system_notification')
 
 def validate_create_delete_input(input):
     """
