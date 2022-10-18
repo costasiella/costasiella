@@ -76,7 +76,7 @@ def validate_create_update_input(input, update=False):
 class CreateSystemNotificationAccount(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID()
-        system_mail_template = graphene.ID()
+        system_notification = graphene.ID()
 
     system_notification_account = graphene.Field(SystemNotificationAccountNode)
 

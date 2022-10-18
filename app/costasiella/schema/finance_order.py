@@ -11,7 +11,8 @@ from ..models import AccountAcceptedDocument, FinanceOrder, OrganizationClasspas
     OrganizationSubscription, \
     OrganizationDocument, \
     ScheduleEventTicket, \
-    ScheduleItem
+    ScheduleItem, \
+    SystemNotification
 from ..models.choices.finance_order_statuses import get_finance_order_statuses
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid, get_error_code
 from ..modules.finance_tools import display_float_as_amount
@@ -256,6 +257,16 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
                              email_template="order_received",
                              finance_order=finance_order)
         mail_dude.send()
+
+        # Notify accounts to be notified
+        system_notification = SystemNotification.objects.filter(
+            name="order_received"
+        ).first()
+        for account in system_notification.accounts.all():
+            mail_dude = MailDude(account=account,
+                                 email_template="notification_order_received",
+                                 finance_order=finance_order)
+            mail_dude.send()
 
         return CreateFinanceOrder(finance_order=finance_order)
 
