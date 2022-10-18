@@ -38,6 +38,20 @@ class GQLSystemNotificationAccount(TestCase):
             }
         }
 
+        self.variables_delete_id = {
+            "input": {
+                "id": to_global_id("SystemNotificationAccountNode", self.system_notification_account.id)
+            }
+        }
+
+        self.variables_delete_account_and_notification = {
+            "input": {
+                "account": to_global_id("AccountNode", self.system_notification_account.account.id),
+                "systemNotification": to_global_id(
+                    "SystemNotificationNode", self.system_notification_account.system_notification.id)
+            }
+        }
+
         self.system_notification_accounts_query = '''
   query systemNotificationAccounts($after: String, $before: String) {
     systemNotificationAccounts(first: 15, before: $before, after: $after) {
@@ -74,6 +88,14 @@ class GQLSystemNotificationAccount(TestCase):
           id
         }
       }
+    }
+  }
+'''
+
+        self.system_notification_account_delete_mutation = ''' 
+  mutation DeleteSystemNotificationAccount($input:DeleteSystemNotificationAccountInput!) {
+    deleteSystemNotificationAccount(input:$input) {
+      ok
     }
   }
 '''
@@ -199,3 +221,70 @@ class GQLSystemNotificationAccount(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
+    def test_delete_system_notification_account_using_id(self):
+        """ Delete system notification account using an id """
+        query = self.system_notification_account_delete_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_delete_id
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteSystemNotificationAccount']['ok'], True)
+
+    def test_delete_system_notification_account_using_account_and_notification(self):
+        """ Delete system notification account using an id """
+        query = self.system_notification_account_delete_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_delete_account_and_notification
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteSystemNotificationAccount']['ok'], True)
+
+    def test_delete_system_notification_account_anon_user(self):
+        """ Delete system notification account using an id """
+        query = self.system_notification_account_delete_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_delete_id
+        )
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_system_notification_account_permission_granted(self):
+        """ Delete system notification account using an id - permission granted """
+        query = self.system_notification_account_delete_mutation
+
+        # Give permissions
+        user = self.system_notification_account.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_delete_id
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteSystemNotificationAccount']['ok'], True)
+
+    def test_delete_system_notification_account_permission_denied(self):
+        """ Check delete system notification account permission denied error message """
+        query = self.system_notification_account_delete_mutation
+
+        user = self.system_notification_account.account
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_delete_id
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
