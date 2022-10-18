@@ -46,7 +46,7 @@ class SystemNotificationAccountQuery(graphene.ObjectType):
         # return everything:
         return SystemNotificationAccount.objects.all().order_by('system_mail_template')
 
-def validate_create_update_input(input, update=False):
+def validate_create_delete_input(input):
     """
     Validate input
     """
@@ -97,7 +97,9 @@ class CreateSystemNotificationAccount(graphene.relay.ClientIDMutation):
 
 class DeleteSystemNotificationAccount(graphene.relay.ClientIDMutation):
     class Input:
-        id = graphene.ID(required=True)
+        id = graphene.ID(required=False)
+        account = graphene.ID(required=False)
+        system_notification = graphene.ID(required=False)
 
     ok = graphene.Boolean()
 
@@ -106,12 +108,24 @@ class DeleteSystemNotificationAccount(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.delete_systemnotificationaccount')
 
-        rid = get_rid(input['id'])
-        system_notification_account = SystemNotificationAccount.objects.filter(id=rid.id).first()
-        if not system_notification_account:
-            raise Exception('Invalid System Notification Account ID!')
+        result = validate_create_delete_input(input)
 
-        ok = bool(system_notification_account.delete())
+        if 'id' in input:
+            rid = get_rid(input['id'])
+            system_notification_account = SystemNotificationAccount.objects.filter(id=rid.id).first()
+            if not system_notification_account:
+                raise Exception('Invalid System Notification Account ID!')
+
+            ok = bool(system_notification_account.delete())
+        elif 'account' and 'system_notification' in result:
+            qs = SystemNotificationAccount.objects.filter(
+                account=result['account'],
+                system_notification=result['system_notification']
+            )
+
+            ok = bool(qs.delete())
+        else:
+            raise Exception("Either id or account and systemNotification need to be specified")
 
         return DeleteSystemNotificationAccount(ok=ok)
 
