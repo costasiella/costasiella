@@ -37,7 +37,11 @@ class OrganizationNode(DjangoObjectType):
             'logo_invoice',
             'logo_email',
             'logo_shop_header',
-            'logo_self_checkin'
+            'logo_self_checkin',
+            'branding_color_background',
+            'branding_color_text',
+            'branding_color_accent',
+            'branding_color_secondary',
         )
         filter_fields = ['archived', 'id']
         interfaces = (graphene.relay.Node, OrganizationNodeInterface,)
@@ -208,7 +212,11 @@ class UpdateOrganization(graphene.relay.ClientIDMutation):
         logo_shop_header_file_name = graphene.String(required=False)
         logo_self_checkin = graphene.String(required=False)
         logo_self_checkin_file_name = graphene.String(required=False)
-        
+        branding_color_background = graphene.String(required=False)
+        branding_color_text = graphene.String(required=False)
+        branding_color_accent = graphene.String(required=False)
+        branding_color_secondary = graphene.String(required=False)
+
     organization = graphene.Field(OrganizationNode)
 
     @classmethod
@@ -257,6 +265,18 @@ class UpdateOrganization(graphene.relay.ClientIDMutation):
         if 'logo_self_checkin' in input:
             organization.logo_self_checkin = get_content_file_from_base64_str(data_str=input['logo_self_checkin'],
                                                                        file_name=input['logo_self_checkin_file_name'])
+
+        if 'branding_color_background' in input:
+            organization.branding_color_background = input['branding_color_background']
+
+        if 'branding_color_text' in input:
+            organization.branding_color_text = input['branding_color_text']
+
+        if 'branding_color_accent' in input:
+            organization.branding_color_accent = input['branding_color_accent']
+
+        if 'branding_color_secondary' in input:
+            organization.branding_color_secondary = input['branding_color_secondary']
 
         organization.save()
 
