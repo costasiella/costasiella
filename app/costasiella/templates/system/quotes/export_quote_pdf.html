@@ -222,7 +222,7 @@ table#total {
             <td></td>
             <td></td>
             <td><span class="right"><strong>Subtotal</strong></span></td>
-            <td><span class="right">{{ currency_symbol}} {{ invoice.subtotal }}</span></td>
+            <td><span class="right">{{ currency_symbol}} {{ quote.subtotal }}</span></td>
         </tr>
         {% for tax_rate in tax_rates %}
             <tr>
@@ -231,7 +231,7 @@ table#total {
                 <td></td>
                 <td></td>
                 <td><span class="right">{{ tax_rate.name }} ({{ tax_rate.rate_type }})</span></td>
-                <td><span class="right">{{ currency_symbol}} {{ tax_rate.invoice_amount }}</span></td>
+                <td><span class="right">{{ currency_symbol}} {{ tax_rate.quote_amount }}</span></td>
             </tr>
         {% endfor %}
         <tr>
@@ -240,7 +240,7 @@ table#total {
             <td></td>
             <td></td>
             <td class="border-top"><span class="right"><strong>Total</strong></span></td>
-            <td class="border-top"><span class="right">{{ currency_symbol}} {{ invoice.total }}</span></td>
+            <td class="border-top"><span class="right">{{ currency_symbol}} {{ quote.total }}</span></td>
         </tr>
       </tbody>
     </table>
