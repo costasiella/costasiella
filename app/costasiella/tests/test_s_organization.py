@@ -39,9 +39,12 @@ class GQLOrganization(TestCase):
                 "email": "tests@costasiella.com",
                 "registration": "1234jhkd",
                 "taxRegistration": "1234jhkd",
+                "brandingColorBackground": "#111",
+                "brandingColorText": "#222",
+                "brandingColorAccent": "#333",
+                "brandingColorSecondary": "#444"
             }
         }
-
 
         self.organization_query = '''
   query Organization($id: ID!) {
@@ -53,6 +56,10 @@ class GQLOrganization(TestCase):
       email
       registration
       taxRegistration
+      brandingColorBackground
+      brandingColorText
+      brandingColorAccent
+      brandingColorSecondary
     }
   }
 '''
@@ -69,6 +76,10 @@ class GQLOrganization(TestCase):
         email
         registration
         taxRegistration
+        brandingColorBackground
+        brandingColorText
+        brandingColorAccent
+        brandingColorSecondary
       }
     }
   }
@@ -77,7 +88,6 @@ class GQLOrganization(TestCase):
     def tearDown(self):
         # This is run after every test
         pass
-
 
     def test_query_one(self):
         """ Query one  """   
@@ -93,6 +103,10 @@ class GQLOrganization(TestCase):
         self.assertEqual(data['organization']['email'], organization.email)
         self.assertEqual(data['organization']['registration'], organization.registration)
         self.assertEqual(data['organization']['taxRegistration'], organization.tax_registration)
+        self.assertEqual(data['organization']['brandingColorBackground'], organization.branding_color_background)
+        self.assertEqual(data['organization']['brandingColorText'], organization.branding_color_text)
+        self.assertEqual(data['organization']['brandingColorAccent'], organization.branding_color_accent)
+        self.assertEqual(data['organization']['brandingColorSecondary'], organization.branding_color_secondary)
 
     # Organizations are public, so no need to test this anymore
     # def test_query_one_anon_user(self):
@@ -114,7 +128,6 @@ class GQLOrganization(TestCase):
     #     errors = executed.get('errors')
     #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
         organization = models.Organization.objects.get(pk=100)
@@ -129,7 +142,6 @@ class GQLOrganization(TestCase):
         executed = execute_test_client_api_query(query, user, variables={"id": self.organization_id})
         data = executed.get('data')
         self.assertEqual(data['organization']['name'], organization.name)
-
 
     def test_update_organization(self):
         """ Update a  as admin user """
@@ -147,8 +159,16 @@ class GQLOrganization(TestCase):
         self.assertEqual(data['updateOrganization']['organization']['phone'], variables['input']['phone'])
         self.assertEqual(data['updateOrganization']['organization']['email'], variables['input']['email'])
         self.assertEqual(data['updateOrganization']['organization']['registration'], variables['input']['registration'])
-        self.assertEqual(data['updateOrganization']['organization']['taxRegistration'], variables['input']['taxRegistration'])
-
+        self.assertEqual(data['updateOrganization']['organization']['taxRegistration'],
+                         variables['input']['taxRegistration'])
+        self.assertEqual(data['updateOrganization']['organization']['brandingColorBackground'],
+                         variables['input']['brandingColorBackground'])
+        self.assertEqual(data['updateOrganization']['organization']['brandingColorText'],
+                         variables['input']['brandingColorText'])
+        self.assertEqual(data['updateOrganization']['organization']['brandingColorAccent'],
+                         variables['input']['brandingColorAccent'])
+        self.assertEqual(data['updateOrganization']['organization']['brandingColorSecondary'],
+                         variables['input']['brandingColorSecondary'])
 
     def test_update_organization_anon_user(self):
         """ Update a  as anonymous user """
@@ -160,10 +180,8 @@ class GQLOrganization(TestCase):
             self.anon_user, 
             variables=variables
         )
-        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_update_organization_permission_granted(self):
         """ Update a  as user with permission """
@@ -183,7 +201,6 @@ class GQLOrganization(TestCase):
         data = executed.get('data')
         self.assertEqual(data['updateOrganization']['organization']['name'], variables['input']['name'])
 
-
     def test_update_organization_permission_denied(self):
         """ Update a  as user without permissions """
         query = self.update_organization_mutation
@@ -196,7 +213,5 @@ class GQLOrganization(TestCase):
             user, 
             variables=variables
         )
-        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
