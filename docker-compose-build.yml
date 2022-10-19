@@ -24,8 +24,12 @@ services:
   vault:
     restart: always
     image: vault
+    command:
+      - "server"
     volumes:
       - /opt/docker/mounts/costasiella/vault_config:/vault/config
+    ports:
+      - "127.0.0.1:8200:8200"
   celery_worker:
     image: simplycode/costasiella_celery_worker
     restart: always
