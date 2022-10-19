@@ -15,6 +15,10 @@ class Organization(models.Model):
     logo_email = ImageField(upload_to='organization', default=None)
     logo_shop_header = ImageField(upload_to='organization', default=None)
     logo_self_checkin = ImageField(upload_to='organization', default=None)
+    branding_color_background = models.CharField(max_length=255, default="")
+    branding_color_text = models.CharField(max_length=255, default="")
+    branding_color_accent = models.CharField(max_length=255, default="")
+    branding_color_secondary = models.CharField(max_length=255, default="")
 
     def __str__(self):
         return self.name
