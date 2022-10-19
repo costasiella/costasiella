@@ -17,9 +17,15 @@ services:
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
+      - vault
   redis:
     restart: always
     image: redis:alpine
+  vault:
+    restart: always
+    image: vault
+    volumes:
+      - /opt/docker/mounts/costasiella/vault_config:/vault/config
   celery_worker:
     image: simplycode/costasiella_celery_worker
     restart: always
@@ -33,6 +39,7 @@ services:
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
+      - vault
       - backend
   celery_beat:
     image: simplycode/costasiella_celery_beat
@@ -47,5 +54,6 @@ services:
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
+      - vault
       - celery_worker
       - backend
