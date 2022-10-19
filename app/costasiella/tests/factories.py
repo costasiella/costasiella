@@ -127,6 +127,10 @@ class OrganizationFactory(factory.DjangoModelFactory):
     pk = 100
     archived = False
     name = "My Organization"
+    branding_color_background = "#f6f6f6"
+    branding_color_text = "#333"
+    branding_color_accent = "#1ee494"
+    branding_color_secondary = "#a9a"
 
 
 class OrganizationClasstypeFactory(factory.DjangoModelFactory):
