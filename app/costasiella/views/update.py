@@ -5,6 +5,7 @@ from ..models import \
     FinanceInvoiceGroup, \
     FinanceInvoiceGroupDefault, \
     FinanceQuoteGroup, \
+    Organization, \
     ScheduleEventTicket, \
     SystemMailTemplate, \
     SystemNotification
@@ -132,3 +133,11 @@ def _update_to_2022_05():
         system_mail_template=45000
     )
     system_notification.save()
+
+    # Set default branding colors for organization
+    organization = Organization.objects.get(id=100)
+    organization.branding_color_background = "#F6F6F6"
+    organization.branding_color_text = "#14213D"
+    organization.branding_color_accent = "#1EE494"
+    organization.branding_color_secondary = "#AA99AA"
+    organization.save()

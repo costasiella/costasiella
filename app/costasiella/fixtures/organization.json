@@ -4,7 +4,11 @@
     "pk": 100,
     "fields": {
       "archived": false,
-      "name": "My organization"
+      "name": "My organization",
+      "branding_color_background": "#F6F6F6",
+      "branding_color_text": "#14213D",
+      "branding_color_accent": "#1EE494",
+      "branding_color_secondary": "#AA99AA"
     }
   }
 ]
