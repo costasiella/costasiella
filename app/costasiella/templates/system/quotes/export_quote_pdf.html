@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pacifico" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" type="text/css">
     <style>
+@media print {
+    #terms {
+        page-break-before: always;
+    }
+}    
+
 @page {
   font-family: Pacifico;
   margin: 3cm;
@@ -17,14 +23,14 @@
   @bottom-right {
     color: {{ organization.branding_color_secondary }};
     content: '{% if organization.email %} {{ organization.email }} {% endif %} {% if organization.phone %} | {{ organization.phone }} {% endif %}';
-    font-size: 9pt;
+    font-size: 10pt;
   }
 }
 
 html {
   color: {{ organization.branding_color_text }};
   font-family: Source Sans Pro;
-  font-size: 11pt;
+  font-size: 10pt;
   line-height: 1.6;
 }
 body {
@@ -35,12 +41,32 @@ h1 {
   color: {{ organization.branding_color_accent }};
   font-family: Pacifico;
   font-size: 40pt;
-  margin: 0;
+  margin: 0
+}
+
+.color-secondary {
+    color: {{ organization.branding_color_secondary }}; 
+}
+
+img {
+    text-align: center;
+    max-height: 85px;
+    max-width: 5cm;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+hr {
+    color: {{ organization.branding_color_secondary }};
 }
 
 aside {
   display: flex;
-  margin: 2em 0 4em;
+  margin: 2em 0 2em;
+}
+aside dl {
+    text-align: right;
 }
 aside address {
   font-style: normal;
@@ -60,17 +86,14 @@ aside address#to strong {
 }
 
 dl {
-  position: absolute;
-  right: 0;
-  text-align: right;
-  top: 0;
+  margin-top: 0;
 }
 dt, dd {
   display: inline;
   margin: 0;
 }
 dt {
-  color: #a9a;
+  color: {{ organization.branding_color_secondary }};
 }
 
 table {
@@ -86,7 +109,9 @@ th {
   text-transform: uppercase;
 }
 td {
-  padding-top: 7mm;
+  padding-top: 1.5mm;
+  padding-bottom: 1.5mm;
+  vertical-align: top;
 }
 td:last-of-type {
   color: {{ organization.branding_color_accent }};
@@ -94,7 +119,7 @@ td:last-of-type {
   text-align: right;
 }
 th, td {
-  text-align: center;
+  text-align: right;
 }
 th:first-of-type, td:first-of-type {
   text-align: left;
@@ -102,11 +127,18 @@ th:first-of-type, td:first-of-type {
 th:last-of-type, td:last-of-type {
   text-align: right;
 }
+table#items tbody tr {
+    border-bottom: .2mm solid {{ organization.branding_color_secondary }};
+}
+table#items tbody tr:nth-last-child(-n+4) {
+    border-bottom: none;
+}
+
 table#total {
   background: {{ organization.branding_color_background }};
   border-color: {{ organization.branding_color_background }};
   border-style: solid;
-  border-width: 2cm 3cm;
+  border-width: 1cm 3cm;
   bottom: 0;
   font-size: 20pt;
   margin: 1cm -3cm;
@@ -127,6 +159,12 @@ table#total {
       </address>
 
       <address id="to">
+        <dl id="informations">
+          <dt>Quote number</dt>
+          <dd>#{{quote.quote_number}}</dd><br>
+          <dt>Date</dt>
+          <dd>{{ quote.date_sent }}</dd>
+        </dl>
         {% if quote.relation_company %}
             {{ quote.relation_company }}<br>
         {% endif %}
@@ -153,15 +191,10 @@ table#total {
         {% endif %}
       </address>
     </aside>
+    
+     <img src={{ logo_url }} />
 
-    <dl id="informations">
-      <dt>Quote number</dt>
-      <dd>#{{quote.quote_number}}</dd><br>
-      <dt>Date</dt>
-      <dd>{{ quote.date_sent }}</dd>
-    </dl>
-
-    <table>
+    <table id="items">
       <thead>
         <tr>
           <th>Product</th>
@@ -176,10 +209,10 @@ table#total {
         {% for item in items %}
             <tr>
                 <td><b>{{ item.product_name }}</b> <br> {{ item.description }}</td>
-                <td><span class="right">{{ currency_symbol}} {{ item.price }}</span></td>
+                <td><span class="right">{{ currency_symbol}} {{ item.price }} <br> {{ item.finance_tax_rate.name }} ({{ item.finance_tax_rate.rate_type }})</span></td>
                 <td><span class="right">{{ item.quantity }}</span></td>
-                <td><span class="right">{{ currency_symbol}} {{ item.subtotal }}</span></td>
-                <td><span class="right">{{ item.finance_tax_rate.name }} ({{ item.finance_tax_rate.rate_type }})</span></td>
+                <td><span class="right">{{ currency_symbol }} {{ item.subtotal }}</span></td>
+                <td><span class="right">{{ currency_symbol }} {{ item.tax }}</span></td>
                 <td><span class="right">{{ currency_symbol}} {{ item.total}}</span></td>
             </tr>
         {% endfor %}
@@ -188,8 +221,8 @@ table#total {
             <td></td>
             <td></td>
             <td></td>
-            <td><span class="right">Subtotal</span></td>
-            <td><span class="right">{{ currency_symbol}} {{ quote.subtotal }}</span></td>
+            <td><span class="right"><strong>Subtotal</strong></span></td>
+            <td><span class="right">{{ currency_symbol}} {{ invoice.subtotal }}</span></td>
         </tr>
         {% for tax_rate in tax_rates %}
             <tr>
@@ -198,7 +231,7 @@ table#total {
                 <td></td>
                 <td></td>
                 <td><span class="right">{{ tax_rate.name }} ({{ tax_rate.rate_type }})</span></td>
-                <td><span class="right">{{ currency_symbol}} {{ tax_rate.quote_amount }}</span></td>
+                <td><span class="right">{{ currency_symbol}} {{ tax_rate.invoice_amount }}</span></td>
             </tr>
         {% endfor %}
         <tr>
@@ -206,8 +239,8 @@ table#total {
             <td></td>
             <td></td>
             <td></td>
-            <td class="border-top"><span class="right">Total</span></td>
-            <td class="border-top"><span class="right">{{ currency_symbol}} {{ quote.total }}</span></td>
+            <td class="border-top"><span class="right"><strong>Total</strong></span></td>
+            <td class="border-top"><span class="right">{{ currency_symbol}} {{ invoice.total }}</span></td>
         </tr>
       </tbody>
     </table>
@@ -229,11 +262,12 @@ table#total {
     
     <!-- Don't forget the terms and footer -->
     {% if quote.terms %}
-        <div>
-            <span>TERMS AND CONDITIONS</span>
+        <div id="terms">
+            <strong class="color-secondary">TERMS AND CONDITIONS</strong><hr>
             {% autoescape off %}
 				{{ quote.terms }}
 			{% endautoescape %}
+			<hr>
         </div>
     {% endif %}
         {% if quote.footer %}
