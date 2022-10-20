@@ -22,7 +22,7 @@ from ..modules.gql_tools import get_rid
 
 class GQLFinanceOrder(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-    fixtures = ['app_settings.json', 'organization.json', 'system_mail_template.json']
+    fixtures = ['app_settings.json', 'organization.json', 'system_mail_template.json', 'system_notification']
 
     def setUp(self):
         # This is run before every test
