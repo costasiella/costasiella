@@ -1,0 +1,10 @@
+[
+  {
+    "model": "costasiella.SystemNotification",
+    "pk": 10000,
+    "fields": {
+      "name": "order_received",
+      "system_mail_template": 45000
+    }
+  }
+]

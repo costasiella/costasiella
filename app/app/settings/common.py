@@ -249,11 +249,11 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 # https://www.vaultproject.io/
 
 try:
-    VAULT_URL = os.environ['VAULT_ADDR']
+    VAULT_ADDR = os.environ['VAULT_ADDR']
     VAULT_TOKEN = os.environ['VAULT_TOKEN']
     VAULT_TRANSIT_KEY = os.environ['VAULT_TRANSIT_KEY']
 except KeyError:
-    VAULT_URL = "http://localhost:8200"
+    VAULT_ADDR = "http://localhost:8200"
     VAULT_TOKEN = "A token should be in an environment var called VAULT_TOKEN"
     VAULT_TRANSIT_KEY = "A transit key should be in an environment variable called VAULT_TRANSIT_KEY"
 

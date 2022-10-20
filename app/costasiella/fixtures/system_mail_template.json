@@ -24,6 +24,18 @@
   },
   {
     "model": "costasiella.SystemMailTemplate",
+    "pk": 45000,
+    "fields": {
+      "name": "notification_order_received",
+      "subject": "New order received!",
+      "title": "New order received!",
+      "description": "<ul><li>Order #{{order.id}}</li><li>Date {{order_date}}</li></ul>",
+      "content": "{{order_items}}",
+      "comments": ""
+    }
+  },
+  {
+    "model": "costasiella.SystemMailTemplate",
     "pk": 50000,
     "fields": {
       "name": "order_received",

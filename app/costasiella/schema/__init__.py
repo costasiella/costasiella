@@ -115,6 +115,8 @@ from .schedule_shift import ScheduleShiftQuery, ScheduleShiftMutation
 from .system_feature_shop import SystemFeatureShopQuery, SystemFeatureShopMutation
 from .system_mailchimp_list import SystemMailChimpListQuery, SystemMailChimpListMutation
 from .system_mail_template import SystemMailTemplateQuery, SystemMailTemplateMutation
+from .system_notification import SystemNotificationQuery
+from .system_notification_account import SystemNotificationAccountQuery, SystemNotificationAccountMutation
 from .system_setting import SystemSettingQuery, SystemSettingMutation
 
 
@@ -209,6 +211,8 @@ class Query(AccountQuery,
             SystemFeatureShopQuery,
             SystemMailChimpListQuery,
             SystemMailTemplateQuery,
+            SystemNotificationQuery,
+            SystemNotificationAccountQuery,
             SystemSettingQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
@@ -293,6 +297,7 @@ class Mutation(AccountMutation,
                SystemFeatureShopMutation,
                SystemMailChimpListMutation,
                SystemMailTemplateMutation,
+               SystemNotificationAccountMutation,
                SystemSettingMutation,
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()

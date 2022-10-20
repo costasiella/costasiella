@@ -31,14 +31,14 @@ class GQLFinanceCostCenter(TestCase):
         self.variables_create = {
             "input": {
                 "name": "New costcenter",
-                "code" : "8000"
+                "code": "8000"
             }
         }
 
         self.variables_update = {
             "input": {
                 "name": "Updated costcenter",
-                "code" : "9000"
+                "code": "9000"
             }
         }
 
@@ -290,7 +290,7 @@ class GQLFinanceCostCenter(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_create_location_permission_granted(self):
+    def test_create_costcenter_permission_granted(self):
         """ Allow creating costcenters for users with permissions """
         query = self.costcenter_create_mutation
         variables = self.variables_create

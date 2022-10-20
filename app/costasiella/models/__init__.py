@@ -88,4 +88,6 @@ from .schedule_event_media import ScheduleEventMedia
 from .system_feature_shop import SystemFeatureShop
 from .system_mailchimp_list import SystemMailChimpList
 from .system_mail_template import SystemMailTemplate
+from .system_notification import SystemNotification
+from .system_notification_account import SystemNotificationAccount
 from .system_setting import SystemSetting

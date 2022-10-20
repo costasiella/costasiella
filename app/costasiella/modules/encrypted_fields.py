@@ -35,12 +35,12 @@ class BaseEncryptedField(models.Field):
         if 'GITHUB_WORKFLOW' in os.environ or getattr(settings, 'TESTING', False):
             self.running_as_test = True
 
-        vault_url = getattr(settings, 'VAULT_URL', None)
+        vault_url = getattr(settings, 'VAULT_ADDR', None)
         vault_token = getattr(settings, 'VAULT_TOKEN', None)
         self.vault_transit_key = getattr(settings, 'VAULT_TRANSIT_KEY', None)
 
         if not vault_url:
-            raise ImproperlyConfigured('You must set the settings.VAULT_URL')
+            raise ImproperlyConfigured('You must set the settings.VAULT_ADDR')
 
         if not vault_token:
             raise ImproperlyConfigured('You must set the settings.VAULT_TOKEN')
