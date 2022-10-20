@@ -130,7 +130,7 @@ def _update_to_2022_05():
     system_notification = SystemNotification(
         id=10000,
         name="order_received",
-        system_mail_template=45000
+        system_mail_template=mail_template_order_received
     )
     system_notification.save()
 
