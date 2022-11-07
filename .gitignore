@@ -40,3 +40,5 @@ Dockerfile~
 app/celerybeat-schedule
 
 .DS_Store
+
+.idea/
