@@ -14,6 +14,7 @@ class FinanceExpense(models.Model):
     description = models.TextField(default="")
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     tax = models.DecimalField(max_digits=20, decimal_places=2)
+    total = models.DecimalField(max_digits=20, decimal_places=2)
     supplier = models.ForeignKey(Business, on_delete=models.SET_NULL, null=True, related_name="supplier_expenses")
     # TODO: Add client field later.
     # Without client field: not billable
@@ -25,3 +26,16 @@ class FinanceExpense(models.Model):
 
     def __str__(self):
         return model_string(self)
+
+    def save(self, *args, **kwargs):
+        self.total = self._calculate_total()
+
+        super(FinanceExpense, self).save(*args, **kwargs)
+
+    def _calculate_total(self):
+        from ..dudes import FinanceDude
+        finance_dude = FinanceDude()
+        return finance_dude.calculate_total(
+            subtotal=self.amount,
+            tax=self.tax
+        )
