@@ -6,14 +6,14 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import FinanceExpense
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..models import Business, FinanceExpense, FinanceGLAccount, FinanceCostCenter
+from ..modules.gql_tools import require_login_and_permission, get_rid, get_content_file_from_base64_str
 from ..modules.messages import Messages
 
 m = Messages()
 
 
-class FinanceTaxRateNode(DjangoObjectType):
+class FinanceExpenseNode(DjangoObjectType):
     class Meta:
         model = FinanceExpense
         fields = (
@@ -45,16 +45,54 @@ class FinanceTaxRateNode(DjangoObjectType):
 
 
 class FinanceExpenseQuery(graphene.ObjectType):
-    finance_expenses = DjangoFilterConnectionField(FinanceTaxRateNode)
-    finance_expense = graphene.relay.Node.Field(FinanceTaxRateNode)
+    finance_expenses = DjangoFilterConnectionField(FinanceExpenseNode)
+    finance_expense = graphene.relay.Node.Field(FinanceExpenseNode)
 
     def resolve_finance_expenses(self, info, archived=False, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeexpense')
 
-        ## return everything:
-        # if user.has_perm('costasiella.view_financeexpense'):
-        return FinanceExpense.objects.filter(archived=archived).order_by('date')
+        return FinanceExpense.objects.all().order_by('date')
+
+
+def validate_create_update_input(input):
+    """
+    Validate input
+    """
+    result = {}
+
+    if 'document' in input or 'document_file_name' in input:
+        if not (input.get('document', None) and input.get('document_file_name', None)):
+            raise Exception(_('When setting "document" or "documentFileName", both fields need to be present and set'))
+
+    # Check supplier (business)
+    if 'supplier' in input:
+        if input['supplier']:
+            rid = get_rid(input['supplier'])
+            supplier = Business.objects.get(id=rid.id)
+            result['supplier'] = supplier
+            if not supplier:
+                raise Exception('Invalid Supplier (Business) ID!')
+
+    # Check finance costcenter
+    if 'finance_costcenter' in input:
+        if input['finance_costcenter']:
+            rid = get_rid(input['finance_costcenter'])
+            finance_costcenter = FinanceCostCenter.objects.get(id=rid.id)
+            result['finance_costcenter'] = finance_costcenter
+            if not finance_costcenter:
+                raise Exception('Invalid Finance Cost Center ID!')
+
+    # Check account
+    if 'finance_glaccount' in input:
+        if input['finance_glaccount']:
+            rid = get_rid(input['finance_glaccount'])
+            finance_glaccount = FinanceGLAccount.objects.get(id=rid.id)
+            result['finance_glaccount'] = finance_glaccount
+            if not finance_glaccount:
+                raise Exception('Invalid Finance GL Account ID!')
+
+    return result
 
 
 class CreateFinanceExpense(graphene.relay.ClientIDMutation):
@@ -77,27 +115,32 @@ class CreateFinanceExpense(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financeexpense')
 
-        errors = []
-        if not len(input['name']):
-            raise GraphQLError(_('Name is required'))
+        result = validate_create_update_input(input)
 
-        # if not input['percentage'] and not input['percentage'] == 0:
-        #     raise GraphQLError(_('Percentage is required'))
-
-        if not validators.between(input['percentage'], 0, 100):
-            raise GraphQLError(_('Percentage has to be between 0 and 100'))
-
-        finance_tax_rate = FinanceTaxRate(
-            name=input['name'], 
-            percentage=input['percentage'],
-            rate_type=input['rateType']
+        finance_expense = FinanceExpense(
+            date=input['name'],
+            summary=input['summary'],
+            amount=input['amount'],
+            tax=input['tax'],
+            document=get_content_file_from_base64_str(data_str=input['document'],
+                                             file_name=input['document_file_name'])
         )
-        if input['code']:
-            finance_tax_rate.code = input['code']
 
-        finance_tax_rate.save()
+        if 'description' in input:
+            finance_expense.description = input['description']
 
-        return CreateFinanceTaxRate(finance_tax_rate=finance_tax_rate)
+        if 'supplier' in result:
+            finance_expense.supplier = result['supplier']
+
+        if 'finance_glaccount' in result:
+            finance_expense.finance_glaccount = result['finance_glaccount']
+
+        if 'finance_costcenter' in result:
+            finance_expense.finance_costcenter = result['finance_costcenter']
+
+        finance_expense.save()
+
+        return CreateFinanceExpense(finance_expense=finance_expense)
 
 
 class UpdateFinanceTaxRate(graphene.relay.ClientIDMutation):
