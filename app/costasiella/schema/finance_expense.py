@@ -13,6 +13,11 @@ from ..modules.messages import Messages
 m = Messages()
 
 
+class FinanceExpenseNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    url_protected_document = graphene.String()
+
+
 class FinanceExpenseNode(DjangoObjectType):
     class Meta:
         model = FinanceExpense
@@ -34,7 +39,7 @@ class FinanceExpenseNode(DjangoObjectType):
             'finance_glaccount': ['exact'], 
             'finance_costcenter': ['exact']
         }
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, FinanceExpenseNodeInterface, )
 
     @classmethod
     def get_node(self, info, id):
@@ -42,6 +47,12 @@ class FinanceExpenseNode(DjangoObjectType):
         require_login_and_permission(user, 'costasiella.view_financeexpense')
 
         return self._meta.model.objects.get(id=id)
+
+    def resolve_url_protected_document(self, info):
+        if self.document:
+            return self.document.url.replace(settings.MEDIA_URL, settings.MEDIA_PROTECTED_URL)
+        else:
+            return ''
 
 
 class FinanceExpenseQuery(graphene.ObjectType):
