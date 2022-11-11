@@ -28,6 +28,7 @@ class FinanceExpenseNode(DjangoObjectType):
             'amount',
             'tax',
             'total',
+            'supplier',
             'finance_glaccount',
             'finance_costcenter',
             'document'
