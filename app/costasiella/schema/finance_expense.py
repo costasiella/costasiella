@@ -8,6 +8,7 @@ from graphql import GraphQLError
 
 from ..models import Business, FinanceExpense, FinanceGLAccount, FinanceCostCenter
 from ..modules.gql_tools import require_login_and_permission, get_rid, get_content_file_from_base64_str
+from ..modules.finance_tools import display_float_as_amount
 from ..modules.messages import Messages
 
 m = Messages()
@@ -16,6 +17,9 @@ m = Messages()
 class FinanceExpenseNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     url_protected_document = graphene.String()
+    amount_display = graphene.String()
+    tax_display = graphene.String()
+    total_display = graphene.String()
 
 
 class FinanceExpenseNode(DjangoObjectType):
@@ -54,6 +58,15 @@ class FinanceExpenseNode(DjangoObjectType):
             return self.document.url.replace(settings.MEDIA_URL, settings.MEDIA_PROTECTED_URL)
         else:
             return ''
+
+    def resolve_amount_display(self, info):
+        return display_float_as_amount(self.amount)
+
+    def resolve_tax_display(self, info):
+        return display_float_as_amount(self.tax)
+
+    def resolve_total_display(self, info):
+        return display_float_as_amount(self.total)
 
 
 class FinanceExpenseQuery(graphene.ObjectType):
