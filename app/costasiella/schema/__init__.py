@@ -28,6 +28,7 @@ from .business import BusinessQuery, BusinessMutation
 from .django_celery_result_task_result import DjangoCeleryResultTaskResultQuery
 
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
+from .finance_expense import FinanceExpenseQuery, FinanceExpenseMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .finance_invoice import FinanceInvoiceQuery, FinanceInvoiceMutation
 from .finance_invoice_group import FinanceInvoiceGroupQuery, FinanceInvoiceGroupMutation
@@ -140,6 +141,7 @@ class Query(AccountQuery,
             BusinessQuery,
             DjangoCeleryResultTaskResultQuery,
             FinanceCostCenterQuery,
+            FinanceExpenseQuery,
             FinanceGLAccountQuery,
             FinanceInvoiceQuery,
             FinanceInvoiceGroupQuery,
@@ -236,6 +238,7 @@ class Mutation(AccountMutation,
                AppSettingsMutation,
                BusinessMutation,
                FinanceCostCenterMutation,
+               FinanceExpenseMutation,
                FinanceGLAccountMutation,
                FinanceInvoiceMutation,
                FinanceInvoiceGroupMutation,

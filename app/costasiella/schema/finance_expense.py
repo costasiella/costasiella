@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.conf import settings
 
 import validators
 import graphene
@@ -182,7 +183,7 @@ class UpdateFinanceExpense(graphene.relay.ClientIDMutation):
         document_file_name = graphene.String(required=False)
         document = graphene.String(required=False)  # File als base64 encoded string
         
-    finance_expense = graphene.Field(FinanceExpense)
+    finance_expense = graphene.Field(FinanceExpenseNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
