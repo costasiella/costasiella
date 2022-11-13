@@ -144,7 +144,7 @@ class CreateFinanceExpense(graphene.relay.ClientIDMutation):
         result = validate_create_update_input(input)
 
         finance_expense = FinanceExpense(
-            date=input['name'],
+            date=input['date'],
             summary=input['summary'],
             amount=input['amount'],
             tax=input['tax'],
