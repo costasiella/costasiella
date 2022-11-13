@@ -10,6 +10,10 @@ from .account.export_account_data import export_account_data
 
 # Document exports
 from .organization_document import privacy_policy, terms_and_conditions
+
+# Expense exports
+from .finance_expenses.export import export_excel_finance_expenses
+
 # Invoice exports
 from .finance_invoices.export import export_excel_finance_invoices
 from .export_finance_invoice import invoice_pdf, invoice_pdf_preview
