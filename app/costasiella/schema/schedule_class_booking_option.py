@@ -194,7 +194,11 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
         user = info.context.user
         require_login(user)
 
-        permission = user.has_perm('costasiella.view_scheduleitem') or user.has_perm('costasiella.view_selfcheckin')
+        permission = \
+            user.has_perm('costasiella.view_scheduleitem') or \
+            user.has_perm('costasiella.view_scheduleclass') or \
+            user.has_perm('costasiella.add_scheduleitemattendance') or \
+            user.has_perm('costasiella.view_selfcheckin')
 
         account = to_global_id('AccountNode', user.id)
         if 'account' in kwargs and kwargs['account'] and permission:
