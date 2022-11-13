@@ -13,7 +13,7 @@ from ...modules.graphql_jwt_tools import get_user_from_cookie
 
 def export_excel_finance_expenses(request, date_from, date_until, **kwargs):
     """
-    Export invoices as Excel
+    Export expenses as Excel
     """
     user = get_user_from_cookie(request)
     if not user.has_perm('costasiella.view_financeexpense'):
@@ -43,8 +43,8 @@ def export_excel_finance_expenses(request, date_from, date_until, **kwargs):
     ws.append(ws_header)
 
     finance_expenses = FinanceExpense.objects.filter(
-        Q(finance_invoice__date_sent__gte=date_from),
-        Q(finance_invoice__date_sent__lte=date_until),
+        Q(date__gte=date_from),
+        Q(date__lte=date_until),
     )
 
     # if status != "ALL":

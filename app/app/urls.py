@@ -50,7 +50,7 @@ urlpatterns = [
     path('d/export/account_data/',
          views.export_account_data,
          name="export_account_data"),
-    path('d/export/finance_expenses/excel/<str:node_id>',
+    path('d/export/finance_expenses/excel/<str:date_from>/<str:date_until>',
          views.export_excel_finance_expenses,
          name="export_excel_finance_expenses"),
     path('d/export/finance_payment_batch/csv/<str:node_id>',
