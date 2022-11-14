@@ -117,7 +117,7 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
             order_by = '-date'
             return ScheduleItemAttendance.objects.filter(account=account_id).order_by(order_by)
         else:
-            order_by = '-account__full_name'
+            order_by = 'account__full_name'
             return ScheduleItemAttendance.objects.all().order_by(order_by)
             
 
