@@ -116,7 +116,7 @@ class GQLFinanceExpense(TestCase):
             name
             code
           }
-          urlProtectedDocument
+          document
         }
       }
     }
@@ -260,6 +260,10 @@ class GQLFinanceExpense(TestCase):
             data['financeExpenses']['edges'][0]['node']['financeCostcenter']['id'],
             to_global_id("FinanceCostCenterNode", self.finance_expense.finance_costcenter.id)
         )
+        self.assertNotEqual(
+            data['financeExpenses']['edges'][0]['node']['document'],
+            None
+        )
 
     def test_query_permission_denied(self):
         """ Query list of finance expenses - check permission denied """
@@ -295,15 +299,27 @@ class GQLFinanceExpense(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
+    def test_query_one(self):
+        """ Query one finance expense """
+        query = self.finance_expense_query
 
-    # def test_query_one(self):
-    #     """ Query one schedule event media """
-    #     query = self.schedule_event_media_query
-    #
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleEventMedia']['id'], self.variables_query_one['id'])
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
+        data = executed.get('data')
+
+        self.assertEqual(data['financeExpense']['id'], self.variables_query_one['id'])
+        self.assertEqual(data['financeExpense']['date'], str(self.finance_expense.date))
+        self.assertEqual(data['financeExpense']['summary'], self.finance_expense.summary)
+        self.assertEqual(data['financeExpense']['description'], self.finance_expense.description)
+        self.assertEqual(data['financeExpense']['amount'], format(self.finance_expense.amount, ".2f"))
+        self.assertEqual(data['financeExpense']['tax'], format(self.finance_expense.tax, ".2f"))
+        self.assertEqual(data['financeExpense']['total'], format(self.finance_expense.total, ".2f"))
+        self.assertEqual(data['financeExpense']['supplier']['id'],
+                         to_global_id("BusinessNode", self.finance_expense.supplier.id))
+        self.assertEqual(data['financeExpense']['financeGlaccount']['id'],
+                         to_global_id("FinanceGLAccountNode", self.finance_expense.finance_glaccount.id))
+        self.assertEqual(data['financeExpense']['financeCostcenter']['id'],
+                         to_global_id("FinanceCostCenterNode", self.finance_expense.finance_costcenter.id))
+        self.assertNotEqual(data['financeExpense']['document'], None)
     #
     # def test_create_schedule_event_media(self):
     #     """ Create schedule event media """
