@@ -49,7 +49,7 @@ class FinanceCostCenterQuery(graphene.ObjectType):
 class CreateFinanceCostCenter(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
-        code = graphene.String(required=False, default_value="")
+        code = graphene.Int(required=False)
 
     finance_costcenter = graphene.Field(FinanceCostCenterNode)
 
@@ -58,13 +58,10 @@ class CreateFinanceCostCenter(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financecostcenter')
 
-        errors = []
-        if not len(input['name']):
-            raise GraphQLError(_('Name is required'))
-
         finance_costcenter = FinanceCostCenter(
             name=input['name'], 
         )
+
         if input['code']:
             finance_costcenter.code = input['code']
 
@@ -77,7 +74,7 @@ class UpdateFinanceCostCenter(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
-        code = graphene.String(default_value="")
+        code = graphene.Int(required=False)
         
     finance_costcenter = graphene.Field(FinanceCostCenterNode)
 
@@ -87,7 +84,6 @@ class UpdateFinanceCostCenter(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.change_financecostcenter')
 
         rid = get_rid(input['id'])
-
         finance_costcenter = FinanceCostCenter.objects.filter(id=rid.id).first()
         if not finance_costcenter:
             raise Exception('Invalid Finance Costcenter ID!')
@@ -95,7 +91,8 @@ class UpdateFinanceCostCenter(graphene.relay.ClientIDMutation):
         finance_costcenter.name = input['name']
         if input['code']:
             finance_costcenter.code = input['code']
-        finance_costcenter.save(force_update=True)
+
+        finance_costcenter.save()
 
         return UpdateFinanceCostCenter(finance_costcenter=finance_costcenter)
 
