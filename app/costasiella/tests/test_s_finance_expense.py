@@ -48,8 +48,8 @@ class GQLFinanceExpense(TestCase):
                   "date": "2022-01-01",
                   "summary": "test summary",
                   "description": "test description",
-                  "amount": 10,
-                  "tax": 2.1,
+                  "amount": "10",
+                  "tax": "2.10",
                   "supplier": to_global_id("BusinessNode", self.finance_expense.supplier.id),
                   "financeGlaccount": to_global_id("FinanceGLAccountNode",
                                                    self.finance_expense.finance_glaccount.id),
@@ -66,8 +66,8 @@ class GQLFinanceExpense(TestCase):
                   "date": "2022-01-01",
                   "summary": "test summary",
                   "description": "test description",
-                  "amount": 10,
-                  "tax": 2.1,
+                  "amount": "10",
+                  "tax": "2.10",
                   "supplier": to_global_id("BusinessNode", self.finance_expense.supplier.id),
                   "financeGlaccount": to_global_id("FinanceGLAccountNode",
                                                    self.finance_expense.finance_glaccount.id),
@@ -353,79 +353,87 @@ class GQLFinanceExpense(TestCase):
 
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    #
-    # def test_create_schedule_event_media(self):
-    #     """ Create schedule event media """
-    #     query = self.schedule_event_media_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['description'],
-    #                      variables['input']['description'])
-    #     self.assertNotEqual(data['createScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
-    #
-    #     schedule_event_media = models.ScheduleEventMedia.objects.last()
-    #     self.assertNotEqual(schedule_event_media.image, None)
-    #
-    # def test_create_schedule_event_media_anon_user(self):
-    #     """ Don't allow creating schedule event media for non-logged in users """
-    #     query = self.schedule_event_media_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_schedule_event_media_permission_granted(self):
-    #     """ Allow creating schedule event media for users with permissions """
-    #     query = self.schedule_event_media_create_mutation
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #
-    # def test_create_schedule_event_media_permission_denied(self):
-    #     """ Check create schedule event media permission denied error message """
-    #     query = self.schedule_event_media_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    def test_create_finance_expense(self):
+        """ Create finance expense """
+        query = self.finance_expense_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['date'],
+                         variables['input']['date'])
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['summary'],
+                         variables['input']['summary'])
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['amount'],
+                         variables['input']['amount'])
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['tax'],
+                         variables['input']['tax'])
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['supplier']['id'],
+                         variables['input']['supplier'])
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['financeGlaccount']['id'],
+                         variables['input']['financeGlaccount'])
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['financeCostcenter']['id'],
+                         variables['input']['financeCostcenter'])
+
+        finance_expense = models.FinanceExpense.objects.last()
+        self.assertNotEqual(finance_expense.document, None)
+
+    def test_create_finance_expense_anon_user(self):
+        """ Don't allow creating finance expenses for non-logged in users """
+        query = self.finance_expense_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_finance_expense_granted(self):
+        """ Allow creating finance expense for users with permissions """
+        query = self.finance_expense_create_mutation
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['date'],
+                         variables['input']['date'])
+
+    def test_create_finance_expense_permission_denied(self):
+        """ Check create finance expense permission denied error message """
+        query = self.finance_expense_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_update_schedule_event_media(self):
     #     """ Update schedule event media """
