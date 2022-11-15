@@ -19,7 +19,7 @@ class FinanceCostCenterFactory(factory.DjangoModelFactory):
 
     archived = False
     name = "First cost center"
-    code = "9000"
+    code = 9000
 
 
 class FinanceInvoiceGroupFactory(factory.DjangoModelFactory):
@@ -45,7 +45,7 @@ class FinanceGLAccountFactory(factory.DjangoModelFactory):
 
     archived = False
     name = "First glaccount"
-    code = "8000"
+    code = 8000
 
 
 class FinancePaymentBatchCategoryCollectionFactory(factory.DjangoModelFactory):
