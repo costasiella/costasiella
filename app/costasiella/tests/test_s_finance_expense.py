@@ -320,6 +320,39 @@ class GQLFinanceExpense(TestCase):
         self.assertEqual(data['financeExpense']['financeCostcenter']['id'],
                          to_global_id("FinanceCostCenterNode", self.finance_expense.finance_costcenter.id))
         self.assertNotEqual(data['financeExpense']['document'], None)
+
+    def test_query_one_permission_granted(self):
+        """ Query one finance expense - using a user with permission to view """
+        query = self.finance_expense_query
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_one)
+        data = executed.get('data')
+
+        self.assertEqual(data['financeExpense']['id'], self.variables_query_one['id'])
+
+    def test_query_one_permission_denied(self):
+        """ Query one finance expense - using a user without permission """
+        query = self.finance_expense_query
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_one)
+        errors = executed.get("errors")
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_anon_user(self):
+        """ Query one finance expense - using a user without permission """
+        query = self.finance_expense_query
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_one)
+        errors = executed.get("errors")
+
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
     #
     # def test_create_schedule_event_media(self):
     #     """ Create schedule event media """
