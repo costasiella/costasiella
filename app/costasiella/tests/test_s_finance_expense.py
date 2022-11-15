@@ -197,6 +197,7 @@ class GQLFinanceExpense(TestCase):
           id
         }
         document
+      }
     }
   }
 '''
@@ -434,142 +435,150 @@ class GQLFinanceExpense(TestCase):
         )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_schedule_event_media(self):
-    #     """ Update schedule event media """
-    #     query = self.schedule_event_media_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['description'],
-    #                      variables['input']['description'])
-    #     self.assertNotEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
-    #
-    #     schedule_event_media = models.ScheduleEventMedia.objects.last()
-    #     self.assertNotEqual(schedule_event_media.image, None)
-    #
-    # def test_update_schedule_event_media_anon_user(self):
-    #     """ Don't allow updating schedule event media for non-logged in users """
-    #     query = self.schedule_event_media_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_schedule_event_media_permission_granted(self):
-    #     """ Allow updating schedule event media for users with permissions """
-    #     query = self.schedule_event_media_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-    #                      variables['input']['sortOrder'])
-    #
-    # def test_update_schedule_event_media_permission_denied(self):
-    #     """ Check update schedule event media permission denied error message """
-    #     query = self.schedule_event_media_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_delete_schedule_event_media(self):
-    #     """ Delete a schedule event media """
-    #     query = self.schedule_event_media_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-    #
-    #     exists = models.OrganizationDocument.objects.exists()
-    #     self.assertEqual(exists, False)
-    #
-    # def test_delete_schedule_event_media_anon_user(self):
-    #     """ Delete a schedule event media """
-    #     query = self.schedule_event_media_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_schedule_event_media_permission_granted(self):
-    #     """ Allow deleting schedule event medias for users with permissions """
-    #     query = self.schedule_event_media_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-    #
-    # def test_delete_schedule_event_media_permission_denied(self):
-    #     """ Check delete schedule event media permission denied error message """
-    #     query = self.schedule_event_media_delete_mutation
-    #     variables = self.variables_delete
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_finance_expense(self):
+        """ Update finance expense """
+        query = self.finance_expense_update_mutation
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['date'],
+                         variables['input']['date'])
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['summary'],
+                         variables['input']['summary'])
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['amount'],
+                         variables['input']['amount'])
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['tax'],
+                         variables['input']['tax'])
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['supplier']['id'],
+                         variables['input']['supplier'])
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['financeGlaccount']['id'],
+                         variables['input']['financeGlaccount'])
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['financeCostcenter']['id'],
+                         variables['input']['financeCostcenter'])
+
+        finance_expense = models.FinanceExpense.objects.last()
+        self.assertNotEqual(finance_expense.document, None)
+
+    def test_update_finance_expense_anon_user(self):
+        """ Don't allow updating finance expenses for non-logged in users """
+        query = self.finance_expense_update_mutation
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_finance_expense_permission_granted(self):
+        """ Allow updating finance expense for users with permissions """
+        query = self.finance_expense_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['date'],
+                         variables['input']['date'])
+
+    def test_update_finance_expense_permission_denied(self):
+        """ Check update finance expense permission denied error message """
+        query = self.finance_expense_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_finance_expense(self):
+        """ Delete a finance expense """
+        query = self.finance_expense_delete_mutation
+        variables = self.variables_delete
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['deleteFinanceExpense']['ok'], True)
+
+        exists = models.OrganizationDocument.objects.exists()
+        self.assertEqual(exists, False)
+
+    def test_delete_finance_expense_anon_user(self):
+        """ Delete a finance expense """
+        query = self.finance_expense_delete_mutation
+        variables = self.variables_delete
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_finance_expense_permission_granted(self):
+        """ Allow deleting finance expenses for users with permissions """
+        query = self.finance_expense_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteFinanceExpense']['ok'], True)
+
+    def test_delete_finance_expense_permission_denied(self):
+        """ Check delete finance expense permission denied error message """
+        query = self.finance_expense_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
