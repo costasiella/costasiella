@@ -36,6 +36,7 @@ class ScheduleItemEnrollmentNode(DjangoObjectType):
         filter_fields = {
             'schedule_item': ['exact'],
             'account_subscription': ['exact'],
+            'account_subscription__account': ['exact'],
             'date_start': ['exact', 'gte', 'lte'],
             'date_end': ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull']
         }
