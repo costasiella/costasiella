@@ -138,7 +138,8 @@ class AccountNode(DjangoObjectType):
             'created_at',
             # Reverse relations
             'classpasses',
-            'subscriptions'
+            'subscriptions',
+            'accountinstructorprofile',
         )
         interfaces = (graphene.relay.Node, AccountNodeInterface,)
 
@@ -375,6 +376,13 @@ class AccountNode(DjangoObjectType):
             require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
         return AccountSubscription.objects.filter(account=self.id).order_by('-date_start')[:2]
+
+    def resolve_accountinstructorprofile_latest(self, info, **kwargs):
+        user = info.context.user
+        if not user.id == self.id:
+            require_login_and_permission(user, 'costasiella.view_accountinstructorprofile')
+
+        return self.accountinstructorprofile
 
 
 class GroupNode(DjangoObjectType):
