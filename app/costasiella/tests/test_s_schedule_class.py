@@ -37,21 +37,18 @@ class GQLScheduleClass(TestCase):
         self.variables_query_list = {
             'dateFrom': str(a_monday),
             'dateUntil': str(a_monday + datetime.timedelta(days=6)),
-            'attendanceCountType': "ATTENDING_AND_BOOKED"
         }
 
         a_last_friday_of_the_month = datetime.date(2022, 4, 29)
         self.variables_query_last_weekday_of_month_list = {
             'dateFrom': str(a_last_friday_of_the_month),
             'dateUntil': str(a_last_friday_of_the_month + datetime.timedelta(days=6)),
-            'attendanceCountType': "ATTENDING_AND_BOOKED"
         }
 
         status_monday = datetime.date(2030, 12, 30)
         self.variables_query_list_status = {
             'dateFrom': str(status_monday),
             'dateUntil': str(status_monday + datetime.timedelta(days=6)),
-            'attendanceCountType': "ATTENDING_AND_BOOKED"
         }
 
         self.organization_location_room = f.OrganizationLocationRoomFactory.create()
@@ -139,7 +136,6 @@ class GQLScheduleClass(TestCase):
       $organizationClasstype: ID,
       $organizationLevel: ID,
       $organizationLocation: ID,
-      $attendanceCountType: String!
     ){
     scheduleClasses(
         dateFrom:$dateFrom, 
@@ -149,7 +145,6 @@ class GQLScheduleClass(TestCase):
         organizationClasstype: $organizationClasstype,
         organizationLevel: $organizationLevel,
         organizationLocation: $organizationLocation,
-        attendanceCountType: $attendanceCountType,
         publicOnly: false
     ){
       date

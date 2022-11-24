@@ -14,6 +14,7 @@ from graphql_relay import to_global_id
 
 from ..models import Account, \
     ScheduleItem, \
+    ScheduleItemAttendance, \
     ScheduleItemWeeklyOTC, \
     OrganizationClasstype, \
     OrganizationLevel, \
@@ -56,7 +57,9 @@ class ScheduleClassType(graphene.ObjectType):
     display_public = graphene.Boolean()
     info_mail_content = graphene.String()
     spaces = graphene.Int()
-    count_attendance = graphene.Int()
+    count_booked = graphene.Int()
+    count_attending = graphene.Int()
+    count_attending_and_booked = graphene.Int()
     available_spaces_online = graphene.Int()
     available_spaces_total = graphene.Int()
     booking_open_on = graphene.types.datetime.Date()
@@ -76,7 +79,6 @@ class ScheduleClassesDayType(graphene.ObjectType):
     filter_id_organization_location = graphene.ID()
     public_only = graphene.Boolean()
     classes = graphene.List(ScheduleClassType)
-    attendance_count_type = graphene.String()
 
     def resolve_booking_open_on(self, info=None):
         """
@@ -92,26 +94,36 @@ class ScheduleClassesDayType(graphene.ObjectType):
         return self.order_by
 
     def resolve_classes(self, info):
-        def _get_attendance_count_sql():
+        def _get_count_attending_sql():
             """
 
             :return:
             """
-            attendance_count_sql = """( SELECT COUNT(csia.id) as count_sia 
-                    FROM costasiella_scheduleitemattendance csia 
-                    WHERE csia.schedule_item_id = csi.id AND
-                          csia.date = %(class_date)s AND """
+            count_types = [
+                'ATTENDING',
+                'BOOKED',
+                'ATTENDING_AND_BOOKED'
+            ]
 
-            if self.attendance_count_type == "ATTENDING":
-                attendance_count_sql += 'csia.booking_status = "ATTENDING" )'
-            if self.attendance_count_type == "BOOKED":
-                attendance_count_sql += 'csia.booking_status = "BOOKED" )'
-            if self.attendance_count_type == "ATTENDING_AND_BOOKED":
-                attendance_count_sql += 'csia.booking_status != "CANCELLED" )'
+            count_attendance_sql = ""
 
-            attendance_count_sql += " AS count_attendance"
+            for count_type in count_types:
+                count_attendance_sql += """( SELECT COUNT(csia.id) as count_sia 
+                        FROM costasiella_scheduleitemattendance csia 
+                        WHERE csia.schedule_item_id = csi.id AND
+                              csia.date = %(class_date)s AND """
 
-            return attendance_count_sql
+                if count_type == "ATTENDING":
+                    count_attendance_sql += 'csia.booking_status = "ATTENDING" )'
+                    count_attendance_sql += " AS count_attending,"
+                if count_type == "BOOKED":
+                    count_attendance_sql += 'csia.booking_status = "BOOKED" )'
+                    count_attendance_sql += " AS count_booked,"
+                if count_type == "ATTENDING_AND_BOOKED":
+                    count_attendance_sql += 'csia.booking_status != "CANCELLED" )'
+                    count_attendance_sql += " AS count_attending_and_booked "
+
+            return count_attendance_sql
 
         def _get_where_query():
             """
@@ -336,7 +348,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             ORDER BY {order_by_sql}
         """.format(
             where_sql=_get_where_query(),
-            attendance_count_sql=_get_attendance_count_sql(),
+            attendance_count_sql=_get_count_attending_sql(),
             order_by_sql=order_by_sql
         )
 
@@ -361,8 +373,12 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
             total_spaces = item.spaces or 0
             walk_in_spaces = item.walk_in_spaces or 0
-            count_attendance = item.count_attendance or 0
-            available_online_spaces = calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance)
+            count_attending = item.count_attending or 0
+            count_booked = item.count_booked or 0
+            count_attending_and_booked = item.count_attending_and_booked or 0
+            available_online_spaces = calculate_available_spaces_online(
+                total_spaces, walk_in_spaces, count_attending_and_booked
+            )
             booking_open_on = self.resolve_booking_open_on()
             schedule_item_id = to_global_id('ScheduleItemNode', item.pk)
 
@@ -386,9 +402,11 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     time_end=item.time_end,
                     display_public=item.display_public,
                     spaces=total_spaces,
-                    count_attendance=count_attendance,
+                    count_attending=count_attending,
+                    count_booked=count_booked,
+                    count_attending_and_booked=count_attending_and_booked,
                     available_spaces_online=available_online_spaces,
-                    available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
+                    available_spaces_total=calculate_available_spaces_total(total_spaces, count_attending_and_booked),
                     booking_open_on=booking_open_on,
                     booking_status=get_booking_status(item, self.date, booking_open_on, available_online_spaces),
                     url_booking=get_url_booking(info, schedule_item_id, self.date)
@@ -565,8 +583,7 @@ def validate_schedule_classes_query_date_input(date_from,
                                                instructor,
                                                organization_classtype,
                                                organization_level,
-                                               organization_location,
-                                               attendance_count_type,
+                                               organization_location
                                                ):
     """
     Check if date_until >= date_start
@@ -609,10 +626,6 @@ def validate_schedule_classes_query_date_input(date_from,
         organization_location_id = rid.id
         result['organization_location_id'] = organization_location_id
 
-    valid_attendance_count_types = ['ATTENDING', 'BOOKED', 'ATTENDING_AND_BOOKED']
-    if attendance_count_type not in valid_attendance_count_types:
-        raise Exception(_("attendance_count_type should be in ATTENDING, BOOKED or ATTENDING_AND_BOOKED"))
-
     return result
 
 
@@ -630,7 +643,6 @@ class ScheduleClassQuery(graphene.ObjectType):
         organization_level=graphene.ID(),
         organization_location=graphene.ID(),
         public_only=graphene.Boolean(),
-        attendance_count_type=graphene.String(),
     )
 
     def resolve_schedule_class(self,
@@ -649,14 +661,29 @@ class ScheduleClassQuery(graphene.ObjectType):
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
+        count_attending = ScheduleItemAttendance.objects.filter(
+            schedule_item=schedule_item,
+            date=date,
+            booking_status="ATTENDING"
+        ).count()
+
+        count_booked = ScheduleItemAttendance.objects.filter(
+            schedule_item=schedule_item,
+            date=date,
+            booking_status="BOOKED"
+        ).count()
+
         sih = ScheduleItemHelper()
         schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, date)
 
         booking_open_on = calculate_booking_open_on(date)
+
         total_spaces = schedule_item.spaces or 0
         walk_in_spaces = schedule_item.walk_in_spaces or 0
-        count_attendance = schedule_item.count_attendance or 0
-        available_online_spaces = calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance)
+        count_attending_and_booked = count_attending + count_booked
+        available_online_spaces = calculate_available_spaces_online(
+            total_spaces, walk_in_spaces, count_attending_and_booked
+        )
 
         schedule_class = ScheduleClassType(
             date=date,
@@ -675,9 +702,11 @@ class ScheduleClassQuery(graphene.ObjectType):
             time_end=schedule_item.time_end,
             info_mail_content=schedule_item.info_mail_content,
             spaces=total_spaces,
-            count_attendance=count_attendance,
+            count_attending=count_attending,
+            count_booked=count_booked,
+            count_attending_and_booked=count_attending_and_booked,
             available_spaces_online=available_online_spaces,
-            available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
+            available_spaces_total=calculate_available_spaces_total(total_spaces, count_attending_and_booked),
             booking_open_on=booking_open_on,
             booking_status=get_booking_status(schedule_item, date, booking_open_on, available_online_spaces)
         )
@@ -694,7 +723,6 @@ class ScheduleClassQuery(graphene.ObjectType):
                                  organization_level=None,
                                  organization_location=None,
                                  public_only=True,
-                                 attendance_count_type="attending_and_booked"
                                  ):
         user = info.context.user
         user_has_view_permission = check_if_user_has_permission(user, [
@@ -710,7 +738,6 @@ class ScheduleClassQuery(graphene.ObjectType):
             organization_classtype,
             organization_level,
             organization_location,
-            attendance_count_type
         )
 
         delta = datetime.timedelta(days=1)
@@ -719,7 +746,6 @@ class ScheduleClassQuery(graphene.ObjectType):
         while date <= date_until:
             day = ScheduleClassesDayType()
             day.date = date
-            day.attendance_count_type = attendance_count_type
 
             if order_by:
                 day.order_by = order_by
@@ -821,7 +847,6 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         walk_in_spaces = graphene.Int(required=True)
         display_public = graphene.Boolean(required=True, default_value=False)
         info_mail_content = graphene.String()
-
 
     schedule_item = graphene.Field(ScheduleItemNode)
 
