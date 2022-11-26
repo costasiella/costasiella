@@ -718,7 +718,8 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
             # Check current password
             # https://docs.djangoproject.com/en/2.2/topics/auth/customizing/
             if not check_password(input['password_current'], user.password):
-                raise GraphQLError(_("Current password is incorrect, please try again"), extensions={'code': 'CURRENT_PASSWORD_INCORRECT'})
+                raise GraphQLError(_("Current password is incorrect, please try again"),
+                                   extensions={'code': 'CURRENT_PASSWORD_INCORRECT'})
 
             # Check strength of new password
             # https://docs.djangoproject.com/en/2.2/topics/auth/passwords/
