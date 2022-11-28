@@ -11,6 +11,7 @@ from graphql_relay import to_global_id
 from graphql import GraphQLError
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.password_validation import validate_password
 from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -705,7 +706,10 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
             if not account:
                 raise Exception('Invalid Account ID!')
 
-            account.set_password(input['password_new'])
+            new_password = input['password_new']
+            validate_password(new_password)
+
+            account.set_password(new_password)
             account.save()
         else:
             # Change password for current user
