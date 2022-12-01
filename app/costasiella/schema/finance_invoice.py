@@ -221,8 +221,8 @@ def validate_create_update_input(input, update=False):
 
 class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
     class Input:
-        account = graphene.ID(required=False)
         finance_invoice_group = graphene.ID(required=True)
+        account = graphene.ID(required=False)
         business = graphene.ID(required=False)
         summary = graphene.String(required=False, default_value="")
         account_subscription = graphene.ID(required=False)
@@ -247,7 +247,7 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         )
 
         if 'account' in validation_result:
-            finance_invoice.account = validation_result['account'],
+            finance_invoice.account = validation_result['account']
 
         if 'summary' in input:
             finance_invoice.summary = input['summary']
