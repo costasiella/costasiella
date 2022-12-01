@@ -901,15 +901,15 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
 class UpdateScheduleClass(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        frequency_type = graphene.String(required=True)
-        frequency_interval = graphene.Int(required=True)
-        organization_location_room = graphene.ID(required=True)
-        organization_classtype = graphene.ID(required=True)
-        organization_level = graphene.ID(required=False, default_value=None)
-        date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
-        time_start = graphene.types.datetime.Time(required=True)
-        time_end = graphene.types.datetime.Time(required=True)
+        frequency_type = graphene.String(required=False)
+        frequency_interval = graphene.Int(required=False)
+        organization_location_room = graphene.ID(required=False)
+        organization_classtype = graphene.ID(required=False)
+        organization_level = graphene.ID(required=False)
+        date_start = graphene.types.datetime.Date(required=False)
+        date_end = graphene.types.datetime.Date(required=False)
+        time_start = graphene.types.datetime.Time(required=False)
+        time_end = graphene.types.datetime.Time(required=False)
         spaces = graphene.types.Int(required=False)
         walk_in_spaces = graphene.Int(required=False)
         display_public = graphene.Boolean(required=False)
@@ -932,16 +932,23 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         if schedule_item.frequency_type == "WEEKLY" and input['frequency_type'] == 'SPECIFIC':
             raise Exception('Unable to change weekly class into one time class')
 
-        schedule_item.frequency_type = input['frequency_type']
-        schedule_item.frequency_interval = input['frequency_interval']
-        schedule_item.date_start = input['date_start']
-        schedule_item.time_start = input['time_start']
-        schedule_item.time_end = input['time_end']
+        if 'frequency_type' in input:
+            schedule_item.frequency_type = input['frequency_type']
 
-        # Optional fields
-        date_end = input.get('date_end', None)
-        if date_end:
-            schedule_item.date_end = date_end
+        if 'frequency_interval' in input:
+            schedule_item.frequency_interval = input['frequency_interval']
+
+        if 'date_start' in input:
+            schedule_item.date_start = input['date_start']
+
+        if 'date_end' in input:
+            schedule_item.date_end = input['date_end']
+
+        if 'time_start' in input:
+            schedule_item.time_start = input['time_start']
+
+        if 'time_end' in input:
+            schedule_item.time_end = input['time_end']
 
         if 'display_public' in input:
             schedule_item.display_public = input['display_public']
