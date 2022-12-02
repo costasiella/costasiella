@@ -13,12 +13,14 @@ class InsightAccountSubscriptionsDude:
         data = []
 
         data_sold = self.get_subscriptions_sold_year_summary_count(year)
+        data_stopped = self.get_subscriptions_stopped_year_summary_count(year)
         data_active = self.get_subscriptions_active_year_summary_count(year)
 
         for i in range(0, 12):
             data.append({
                 'month': i + 1,
                 'sold': data_sold[i],
+                'stopped': data_stopped[i],
                 'active': data_active[i]
             })
 
