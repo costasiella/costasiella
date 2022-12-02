@@ -708,7 +708,7 @@ class GQLFinanceInvoice(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_create_location_permission_granted(self):
+    def test_create_invoice_permission_granted(self):
         """ Allow creating invoices for users with permissions """
         query = self.invoice_create_mutation
 
@@ -727,10 +727,11 @@ class GQLFinanceInvoice(TestCase):
             user, 
             variables=variables
         )
+
         data = executed.get('data')
         self.assertEqual(
-            data['createFinanceInvoice']['financeInvoice']['account']['id'], 
-            variables['input']['account']
+            data['createFinanceInvoice']['financeInvoice']['summary'],
+            variables['input']['summary']
         )
 
     def test_create_invoice_permission_denied(self):

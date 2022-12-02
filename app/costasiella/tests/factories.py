@@ -19,7 +19,7 @@ class FinanceCostCenterFactory(factory.DjangoModelFactory):
 
     archived = False
     name = "First cost center"
-    code = "9000"
+    code = 9000
 
 
 class FinanceInvoiceGroupFactory(factory.DjangoModelFactory):
@@ -45,7 +45,7 @@ class FinanceGLAccountFactory(factory.DjangoModelFactory):
 
     archived = False
     name = "First glaccount"
-    code = "8000"
+    code = 8000
 
 
 class FinancePaymentBatchCategoryCollectionFactory(factory.DjangoModelFactory):
@@ -536,6 +536,45 @@ class BusinessB2BFactory(factory.DjangoModelFactory):
     registration = "1234DB56"
     tax_registration = "Chamber of Commerce: 1234DB56"
 
+
+class BusinessSupplierFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Business
+
+    b2b = True
+    supplier = True
+    name = "Great supplier"
+    address = "Businessroad 101"
+    postcode = "1234DB"
+    city = "B-Town"
+    country = "NL"
+    phone = "+31612345678"
+    phone_2 = "+31612345678"
+    email_contact = "contact@business.com"
+    email_billing = "billing@business.com"
+    registration = "1234DB56"
+    tax_registration = "Chamber of Commerce: 1234DB56"
+
+
+class FinanceExpenseFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceExpense
+
+    date = datetime.date(2022, 1, 1)
+    summary = "test expense summary"
+    description = "test expense description"
+    amount = 10
+    tax = 2.1
+    supplier = factory.SubFactory(BusinessSupplierFactory)
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
+    # date_end is None
+    # https://factoryboy.readthedocs.io/en/latest/orms.html
+    # Refer to the part "Extra Fields (class dactory.django.FileField)"
+    document = factory.django.FileField(
+        from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test.pdf"),
+    )
 
 class FinanceQuoteGroupFactory(factory.DjangoModelFactory):
     class Meta:

@@ -13,12 +13,14 @@ class InsightAccountSubscriptionsDude:
         data = []
 
         data_sold = self.get_subscriptions_sold_year_summary_count(year)
+        data_stopped = self.get_subscriptions_stopped_year_summary_count(year)
         data_active = self.get_subscriptions_active_year_summary_count(year)
 
         for i in range(0, 12):
             data.append({
                 'month': i + 1,
                 'sold': data_sold[i],
+                'stopped': data_stopped[i],
                 'active': data_active[i]
             })
 
@@ -60,8 +62,8 @@ class InsightAccountSubscriptionsDude:
         from ..models import AccountSubscription
 
         qs = AccountSubscription.objects.filter(
-            date_start__gte = date_from,
-            date_start__lte = date_until
+            date_start__gte=date_from,
+            date_start__lte=date_until
         ).order_by("date_start")
 
         return qs
@@ -81,6 +83,66 @@ class InsightAccountSubscriptionsDude:
 
             subscriptions_sold_in_month = self.get_subscriptions_sold_period_data(date_from, date_until)
             data[i] = subscriptions_sold_in_month
+
+        return data
+
+    def get_subscriptions_stopped_period_count(self, date_from, date_until):
+        """
+        Return count of stopped (ended) subscriptions in a period
+        """
+        from ..models import AccountSubscription
+
+        count = AccountSubscription.objects.filter(
+            date_end__gte=date_from,
+            date_end__lte=date_until
+        ).count()
+
+        return count
+
+    def get_subscriptions_stopped_year_summary_count(self, year):
+        """
+        Return monthly counts of stopped (ended) subscriptions
+        """
+        data = []
+
+        for i in range(1, 13):
+            date_from = datetime.date(year, i, 1)
+            last_day_month = calendar.monthrange(year, i)[1]
+            date_until = datetime.date(year, i, last_day_month)
+
+            stopped_in_month = self.get_subscriptions_stopped_period_count(date_from, date_until)
+            data.append(stopped_in_month)
+
+        return data
+
+    def get_subscriptions_stopped_period_data(self, date_from, date_until):
+        """
+        Return data list of stopped subscriptions in a period
+        """
+        from ..models import AccountSubscription
+
+        qs = AccountSubscription.objects.filter(
+            date_end__gte=date_from,
+            date_end__lte=date_until
+        ).order_by("date_end")
+
+        return qs
+
+    def get_subscriptions_stopped_year_data(self, year):
+        """
+        Get subscriptions stopped (ended) year data
+        """
+        from collections import OrderedDict
+
+        data = OrderedDict()
+
+        for i in range(1, 13):
+            date_from = datetime.date(year, i, 1)
+            last_day_month = calendar.monthrange(year, i)[1]
+            date_until = datetime.date(year, i, last_day_month)
+
+            subscriptions_stopped_in_month = self.get_subscriptions_stopped_period_data(date_from, date_until)
+            data[i] = subscriptions_stopped_in_month
 
         return data
 
@@ -120,8 +182,8 @@ class InsightAccountSubscriptionsDude:
         from ..models import AccountSubscription
 
         qs = AccountSubscription.objects.filter(
-            (Q(date_end__gte = date_from) | Q(date_end__isnull=True)),
-            date_start__lte = date_until,
+            (Q(date_end__gte=date_from) | Q(date_end__isnull=True)),
+            date_start__lte=date_until,
         ).order_by("date_start")
 
         return qs

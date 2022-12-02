@@ -112,7 +112,9 @@ class ScheduleItem(models.Model):
     role = models.CharField(default="", max_length=50, choices=INSTRUCTOR_ROLES)
     role_2 = models.CharField(default="", max_length=50, choices=INSTRUCTOR_ROLES)
     description = models.CharField(max_length=255, default="")
-    count_attendance = models.IntegerField(null=True)
+    count_booked = models.IntegerField(null=True)
+    count_attending = models.IntegerField(null=True)
+    count_attending_and_booked = models.IntegerField(null=True)
     organization_holiday_id = models.IntegerField(null=True)
     organization_holiday_name = models.CharField(max_length=255, default="")
     ################ END EMPTY FIELDS ##################

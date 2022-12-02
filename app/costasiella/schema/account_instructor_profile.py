@@ -38,8 +38,6 @@ def validate_create_update_input(input, update=False):
     # if not organization_classpass:
     #     raise Exception(_('Invalid Organization InstructorProfile ID!'))
 
-
-
     return result
 
 
@@ -83,12 +81,11 @@ class AccountInstructorProfileQuery(graphene.ObjectType):
     # From "Account"
     # account_instructor_profile = graphene.relay.Node.Field(AccountInstructorProfileNode)
 
-
     def resolve_account_instructor_profiles(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountinstructorprofile')
 
-        ## return everything:
+        # return everything:
         return AccountInstructorProfile.objects.all().order_by('account__full_name')
 
 

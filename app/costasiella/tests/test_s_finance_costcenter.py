@@ -15,7 +15,6 @@ from .. import models
 from .. import schema
 
 
-
 class GQLFinanceCostCenter(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
@@ -31,14 +30,14 @@ class GQLFinanceCostCenter(TestCase):
         self.variables_create = {
             "input": {
                 "name": "New costcenter",
-                "code": "8000"
+                "code": 8000
             }
         }
 
         self.variables_update = {
             "input": {
                 "name": "Updated costcenter",
-                "code": "9000"
+                "code": 9000
             }
         }
 

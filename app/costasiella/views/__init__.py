@@ -10,6 +10,10 @@ from .account.export_account_data import export_account_data
 
 # Document exports
 from .organization_document import privacy_policy, terms_and_conditions
+
+# Expense exports
+from .finance_expenses.export import export_excel_finance_expenses
+
 # Invoice exports
 from .finance_invoices.export import export_excel_finance_invoices
 from .export_finance_invoice import invoice_pdf, invoice_pdf_preview
@@ -25,6 +29,7 @@ from .insight.export_insight_classpasses_active import export_excel_insight_clas
 from .insight.export_insight_classpasses_sold import export_excel_insight_classpasses_sold
 from .insight.export_insight_subscriptions_active import export_excel_insight_subscriptions_active
 from .insight.export_insight_subscriptions_sold import export_excel_insight_subscriptions_sold
+from .insight.export_insight_subscriptions_stopped import export_excel_insight_subscriptions_stopped
 
 # Mollie
 from .integration.mollie_webhook import mollie_webhook

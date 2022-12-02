@@ -32,14 +32,14 @@ class GQLFinanceGLAccount(TestCase):
         self.variables_create = {
             "input": {
                 "name": "New glaccount",
-                "code" : "8000"
+                "code": 8000
             }
         }
 
         self.variables_update = {
             "input": {
                 "name": "Updated glaccount",
-                "code" : "9000"
+                "code": 9000
             }
         }
 
@@ -162,7 +162,6 @@ class GQLFinanceGLAccount(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_permission_granted(self):
         """ Query list of glaccounts with view permission """

@@ -11,6 +11,7 @@ from graphql_relay import to_global_id
 from graphql import GraphQLError
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.password_validation import validate_password
 from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -138,7 +139,8 @@ class AccountNode(DjangoObjectType):
             'created_at',
             # Reverse relations
             'classpasses',
-            'subscriptions'
+            'subscriptions',
+            'accountinstructorprofile',
         )
         interfaces = (graphene.relay.Node, AccountNodeInterface,)
 
@@ -375,6 +377,13 @@ class AccountNode(DjangoObjectType):
             require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
         return AccountSubscription.objects.filter(account=self.id).order_by('-date_start')[:2]
+
+    def resolve_accountinstructorprofile_latest(self, info, **kwargs):
+        user = info.context.user
+        if not user.id == self.id:
+            require_login_and_permission(user, 'costasiella.view_accountinstructorprofile')
+
+        return self.accountinstructorprofile
 
 
 class GroupNode(DjangoObjectType):
@@ -697,7 +706,10 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
             if not account:
                 raise Exception('Invalid Account ID!')
 
-            account.set_password(input['password_new'])
+            new_password = input['password_new']
+            validate_password(new_password)
+
+            account.set_password(new_password)
             account.save()
         else:
             # Change password for current user
@@ -710,7 +722,8 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
             # Check current password
             # https://docs.djangoproject.com/en/2.2/topics/auth/customizing/
             if not check_password(input['password_current'], user.password):
-                raise GraphQLError(_("Current password is incorrect, please try again"), extensions={'code': 'CURRENT_PASSWORD_INCORRECT'})
+                raise GraphQLError(_("Current password is incorrect, please try again"),
+                                   extensions={'code': 'CURRENT_PASSWORD_INCORRECT'})
 
             # Check strength of new password
             # https://docs.djangoproject.com/en/2.2/topics/auth/passwords/

@@ -13,6 +13,11 @@ from ..modules.messages import Messages
 m = Messages()
 
 
+class ScheduleEventNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    url_shop = graphene.String()
+
+
 class ScheduleEventNode(DjangoObjectType):
     class Meta:
         model = ScheduleEvent
@@ -40,10 +45,12 @@ class ScheduleEventNode(DjangoObjectType):
             # Reverse relations,
             'media',
             'schedule_items',
-            'tickets'
+            'tickets',
+            # Interface fields
+            'urlShop'
         )
         filter_fields = ['archived', 'display_public', 'display_shop']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, ScheduleEventNodeInterface, )
 
     @classmethod
     def get_node(self, info, id):
@@ -54,6 +61,18 @@ class ScheduleEventNode(DjangoObjectType):
             return schedule_event
         else:
             return schedule_event
+
+    def resolve_url_shop(self, info):
+        try:
+            scheme = info.context.scheme
+            host = info.context.get_host()
+
+            url_shop = f"{scheme}://{host}/#/shop/events/{self.id}"
+        except AttributeError:
+            # Eg. When calling from another part piece of code instead of the API, info.context won't be available
+            url_shop = ""
+
+        return url_shop
 
 
 class ScheduleEventQuery(graphene.ObjectType):

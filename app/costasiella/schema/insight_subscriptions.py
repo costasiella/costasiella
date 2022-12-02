@@ -12,6 +12,7 @@ m = Messages()
 class InsightAccountSubscriptionsMonthType(graphene.ObjectType):
     month = graphene.Int()
     sold = graphene.Int()
+    stopped = graphene.Int()
     active = graphene.Int()
 
 
@@ -29,6 +30,7 @@ class InsightAccountSubscriptionsYearType(graphene.ObjectType):
             insight_subscriptions_month_type = InsightAccountSubscriptionsMonthType()
             insight_subscriptions_month_type.month = item['month']
             insight_subscriptions_month_type.sold = item['sold']
+            insight_subscriptions_month_type.stopped = item['stopped']
             insight_subscriptions_month_type.active = item['active']
 
             months.append(insight_subscriptions_month_type)

@@ -49,7 +49,7 @@ class FinanceGLAccountQuery(graphene.ObjectType):
 class CreateFinanceGLAccount(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
-        code = graphene.String(required=False, default_value="")
+        code = graphene.Int(required=False)
 
     finance_glaccount = graphene.Field(FinanceGLAccountNode)
 
@@ -58,13 +58,10 @@ class CreateFinanceGLAccount(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financeglaccount')
 
-        errors = []
-        if not len(input['name']):
-            raise GraphQLError(_('Name is required'))
-
         finance_glaccount = FinanceGLAccount(
             name=input['name'], 
         )
+
         if input['code']:
             finance_glaccount.code = input['code']
 
@@ -77,7 +74,7 @@ class UpdateFinanceGLAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
-        code = graphene.String(default_value="")
+        code = graphene.Int(required=False)
         
     finance_glaccount = graphene.Field(FinanceGLAccountNode)
 
@@ -95,7 +92,8 @@ class UpdateFinanceGLAccount(graphene.relay.ClientIDMutation):
         finance_glaccount.name = input['name']
         if input['code']:
             finance_glaccount.code = input['code']
-        finance_glaccount.save(force_update=True)
+
+        finance_glaccount.save()
 
         return UpdateFinanceGLAccount(finance_glaccount=finance_glaccount)
 

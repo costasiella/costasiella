@@ -9,7 +9,8 @@ from ..modules.encrypted_fields import EncryptedTextField
 
 class AccountFinancePaymentBatchCategoryItem(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="payment_batch_category_items")
-    finance_payment_batch_category = models.ForeignKey(FinancePaymentBatchCategory, on_delete=models.CASCADE)
+    finance_payment_batch_category = models.ForeignKey(
+        FinancePaymentBatchCategory, on_delete=models.CASCADE, null=True)
     year = models.IntegerField()
     month = models.IntegerField()
     amount = models.DecimalField(max_digits=20, decimal_places=2)

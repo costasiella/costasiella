@@ -16,6 +16,7 @@ from sorl.thumbnail import get_thumbnail
 
 m = Messages()
 
+
 class AccountDocumentNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     url_protected_document = graphene.String()
@@ -89,7 +90,7 @@ class CreateAccountDocument(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
         document_file_name = graphene.String(required=True)
-        document = graphene.String(required=True) # File als base64 encoded string
+        document = graphene.String(required=True)  # File als base64 encoded string
         description = graphene.String(required=True)
 
     account_document = graphene.Field(AccountDocumentNode)
@@ -102,10 +103,10 @@ class CreateAccountDocument(graphene.relay.ClientIDMutation):
         result = validate_create_input(input)
 
         account_document = AccountDocument(
-            account = result['account'],
-            description = input['description'],
-            document = get_content_file_from_base64_str(data_str=input['document'],
-                                                        file_name=input['document_file_name'])
+            account=result['account'],
+            description=input['description'],
+            document=get_content_file_from_base64_str(data_str=input['document'],
+                                                      file_name=input['document_file_name'])
         )
 
         account_document.save()

@@ -159,19 +159,17 @@ def validate_create_update_input(input, update=False):
     # Fetch & check invoice group
     if not update:
         ## Create only
+
+        # Check if account or business is in input
+        if 'account' not in input and 'business' not in input:
+            raise Exception(_('Either the account or business field is required to create an invoice.'))
+
         # invoice group
         rid = get_rid(input['finance_invoice_group'])
         finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
         result['finance_invoice_group'] = finance_invoice_group
         if not finance_invoice_group:
             raise Exception(_('Invalid Finance Invoice Group ID!'))
-
-        # account
-        rid = get_rid(input['account'])
-        account = Account.objects.filter(id=rid.id).first()
-        result['account'] = account
-        if not account:
-            raise Exception(_('Invalid Account ID!'))
 
         # Check account_subscription
         if 'account_subscription' in input:
@@ -189,6 +187,14 @@ def validate_create_update_input(input, update=False):
         if 'subscription_month' in input:
             is_month(input['subscription_month'])
             result['subscription_month'] = input['subscription_month']
+
+    # account
+    if 'account' in input:
+        rid = get_rid(input['account'])
+        account = Account.objects.filter(id=rid.id).first()
+        result['account'] = account
+        if not account:
+            raise Exception(_('Invalid Account ID!'))
 
     # Check business
     if 'business' in input:
@@ -215,8 +221,8 @@ def validate_create_update_input(input, update=False):
 
 class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
     class Input:
-        account = graphene.ID(required=True)
         finance_invoice_group = graphene.ID(required=True)
+        account = graphene.ID(required=False)
         business = graphene.ID(required=False)
         summary = graphene.String(required=False, default_value="")
         account_subscription = graphene.ID(required=False)
@@ -234,12 +240,14 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         finance_invoice_group = validation_result['finance_invoice_group']
 
         finance_invoice = FinanceInvoice(
-            account=validation_result['account'],
             finance_invoice_group=finance_invoice_group,
             status='DRAFT',
             terms=finance_invoice_group.terms,
             footer=finance_invoice_group.footer
         )
+
+        if 'account' in validation_result:
+            finance_invoice.account = validation_result['account']
 
         if 'summary' in input:
             finance_invoice.summary = input['summary']
@@ -268,6 +276,7 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
 class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        account = graphene.ID(required=False)
         business = graphene.ID(required=False)
         finance_payment_method = graphene.ID(required=False)
         summary = graphene.String(required=False)
@@ -301,6 +310,9 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Invoice  ID!')
 
         validation_result = validate_create_update_input(input, update=True)
+
+        if 'account' in validation_result:
+            finance_invoice.account = validation_result['account']
 
         if 'business' in validation_result:
             finance_invoice.business = validation_result['business']
