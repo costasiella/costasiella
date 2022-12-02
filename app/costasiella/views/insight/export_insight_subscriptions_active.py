@@ -28,7 +28,7 @@ def export_excel_insight_subscriptions_active(request, year):
         _("Relation"),
         _("Subscription"),
         _("Start"),
-        _("Expiration")
+        _("End")
     ]
 
     for month in range(1, 13):

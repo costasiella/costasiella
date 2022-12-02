@@ -8,7 +8,7 @@ from ...dudes import InsightAccountSubscriptionsDude
 
 
 # Create your views here.
-def export_excel_insight_subscriptions_sold(request, year):
+def export_excel_insight_subscriptions_stopped(request, year):
     """
     Export 
 
@@ -21,7 +21,7 @@ def export_excel_insight_subscriptions_sold(request, year):
         raise Http404("Permission denied")
 
     ias_dude = InsightAccountSubscriptionsDude()
-    data = ias_dude.get_subscriptions_sold_year_data(year)
+    data = ias_dude.get_subscriptions_stopped_year_data(year)
 
     wb = openpyxl.workbook.Workbook(write_only=True)
     ws_header = [
@@ -54,6 +54,6 @@ def export_excel_insight_subscriptions_sold(request, year):
     # present the option to save the file.
     buffer.seek(0)
 
-    filename = _('subscriptions_sold') + '_' + str(year) + '.xlsx'
+    filename = _('subscriptions_stopped') + '_' + str(year) + '.xlsx'
 
     return FileResponse(buffer, as_attachment=True, filename=filename)
