@@ -6,6 +6,8 @@ from django.db import models
 from .account_subscription import AccountSubscription
 from .schedule_item_attendance import ScheduleItemAttendance
 
+from .helpers import model_string
+
 
 class AccountSubscriptionCredit(models.Model):
     # add additional fields in here
@@ -24,13 +26,17 @@ class AccountSubscriptionCredit(models.Model):
     schedule_item_attendance = models.ForeignKey(ScheduleItemAttendance,
                                                  on_delete=models.CASCADE,
                                                  null=True)
-    mutation_type = models.CharField(max_length=255, choices=MUTATION_TYPES, default="ADD")
-    mutation_amount = models.DecimalField(max_digits=20, decimal_places=1)
+    expiration = models.DateField()
     description = models.TextField(default="")
     subscription_year = models.IntegerField(null=True)
     subscription_month = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)  # can be used at mutation_datetime
     updated_at = models.DateTimeField(auto_now=True, editable=False)
+    # Legacy fields begin - Can be removed from mid 2023.
+    # On removal, include backwards compatibility break in release notes.
+    mutation_type = models.CharField(max_length=255, choices=MUTATION_TYPES, default="ADD")
+    mutation_amount = models.DecimalField(max_digits=20, decimal_places=1)
+    # Legacy fields end
 
     def __str__(self):
-        return str(self.created_at) + ' [' + self.mutation_type + '] ' + str(self.mutation_amount)
+        return model_string(self)
