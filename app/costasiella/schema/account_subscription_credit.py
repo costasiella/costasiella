@@ -45,6 +45,7 @@ class AccountSubscriptionCreditNode(DjangoObjectType):
             'schedule_item_attendance',
             'mutation_type',
             'mutation_amount',
+            'expiration',
             'description',
             'subscription_year',
             'subscription_month',
@@ -80,8 +81,6 @@ class AccountSubscriptionCreditQuery(graphene.ObjectType):
 class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
     class Input:
         account_subscription = graphene.ID(required=True)
-        mutation_type = graphene.String(required=True)
-        mutation_amount = graphene.Decimal(required=True)
         description = graphene.String(required=False, default_value="")
 
     account_subscription_credit = graphene.Field(AccountSubscriptionCreditNode)
@@ -96,8 +95,6 @@ class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
 
         account_subscription_credit = AccountSubscriptionCredit(
             account_subscription=result['account_subscription'],
-            mutation_type=input['mutation_type'],
-            mutation_amount=input['mutation_amount'],
             description=input['description']
         )
 
@@ -109,8 +106,7 @@ class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
 class UpdateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        mutation_type = graphene.String(required=True)
-        mutation_amount = graphene.Decimal(required=True)
+        expiration = graphene.types.Date()
         description = graphene.String(required=False, default_value="")
         
     account_subscription_credit = graphene.Field(AccountSubscriptionCreditNode)
@@ -125,10 +121,9 @@ class UpdateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
         if not account_subscription_credit:
             raise Exception('Invalid Account Subscription Credit ID!')
 
-        result = validate_create_update_input(input, update=True)
+        validate_create_update_input(input, update=True)
 
-        account_subscription_credit.mutation_type = input['mutation_type']
-        account_subscription_credit.mutation_amount = input['mutation_amount']
+        account_subscription_credit.expiration = input['expiration']
         account_subscription_credit.description = input['description']
 
         account_subscription_credit.save()
