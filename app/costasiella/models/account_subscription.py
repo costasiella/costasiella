@@ -338,28 +338,30 @@ class AccountSubscription(models.Model):
 
         return qs.exists()
 
+    def get_next_booking_credit(self):
+        """
+
+        :return:
+        """
+        from .account_subscription_credit import AccountSubscriptionCredit
+
+        
+
     def get_credits_total(self):
         """
 
         :return: Float
         """
-        from django.db.models import Sum
         from .account_subscription_credit import AccountSubscriptionCredit
 
-        qs_add = AccountSubscriptionCredit.objects.filter(
-            account_subscription=self.id,
-            mutation_type="ADD"
-        ).aggregate(Sum('mutation_amount'))
-        qs_sub = AccountSubscriptionCredit.objects.filter(
-            account_subscription=self.id,
-            mutation_type="SUB"
-        ).aggregate(Sum('mutation_amount'))
+        # Get credit records with expiration >= today, that haven't been used yet (no schedule item attendance)
+        qs = AccountSubscriptionCredit.objects.filter(
+            account_subscription=self,
+            expiration__gte=timezone.now().date(),
+            schedule_item_attendance__isnull=True
+        )
 
-        total_add = qs_add['mutation_amount__sum'] or 0
-        total_sub = qs_sub['mutation_amount__sum'] or 0
-
-        # Round to 1 decimal and return
-        return round(total_add - total_sub, 1)
+        return qs.count()
 
     def get_usable_credits_total(self):
         """
@@ -372,7 +374,7 @@ class AccountSubscription(models.Model):
         else:
             return_value = credits_total
 
-        return round(return_value, 1)
+        return return_value
 
     def get_credits_given_for_month(self, year, month):
         """
