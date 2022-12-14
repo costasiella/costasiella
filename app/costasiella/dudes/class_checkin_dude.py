@@ -1,6 +1,8 @@
 from django.utils.translation import gettext as _
 
-from ..modules.cs_errors import CSClassBookingSubscriptionBlockedError, \
+from ..modules.cs_errors import \
+    CSClassBookingSubscriptionAlreadyBookedError, \
+    CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
     CSClassBookingSubscriptionNoCreditsError
 
@@ -315,7 +317,9 @@ class ClassCheckinDude:
             schedule_item_attendance = qs.first()
 
             if not schedule_item_attendance == 'REVIEW':
-                raise Exception(_('This account is already checked in to this class'))
+                raise CSClassBookingSubscriptionAlreadyBookedError(
+                    _('This account is already checked in to this class')
+                )
             # else:
             #TODO: Write review check-ins code
 

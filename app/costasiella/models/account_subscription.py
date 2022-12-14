@@ -13,7 +13,9 @@ from .account import Account
 from .organization_subscription import OrganizationSubscription
 from .finance_payment_method import FinancePaymentMethod
 
-from ..modules.cs_errors import CSClassBookingSubscriptionBlockedError, \
+from ..modules.cs_errors import \
+    CSClassBookingSubscriptionAlreadyBookedError, \
+    CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
     CSClassBookingSubscriptionNoCreditsError
 
@@ -279,6 +281,8 @@ class AccountSubscription(models.Model):
                     online_booking=False,
                     booking_status="BOOKED"
                 )
+            except CSClassBookingSubscriptionAlreadyBookedError:
+                pass
             except CSClassBookingSubscriptionBlockedError:
                 pass
             except CSClassBookingSubscriptionPausedError:
