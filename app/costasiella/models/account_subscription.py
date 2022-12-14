@@ -338,14 +338,20 @@ class AccountSubscription(models.Model):
 
         return qs.exists()
 
-    def get_next_booking_credit(self):
+    def get_next_credit(self):
         """
 
         :return:
         """
         from .account_subscription_credit import AccountSubscriptionCredit
 
-        
+        available_credits = AccountSubscriptionCredit.objects.filter(
+            account_subscription=self,
+            expiration__gte=timezone.now().date(),
+            schedule_item_attendance__isnull=True
+        ).order_by('created_at', 'id')
+
+        return available_credits.first()
 
     def get_credits_total(self):
         """

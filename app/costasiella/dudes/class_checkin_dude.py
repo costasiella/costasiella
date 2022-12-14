@@ -344,6 +344,7 @@ class ClassCheckinDude:
         if date_invalid_condition:
             raise Exception(_('This subscription is not valid on this date.'))
 
+        # Book class
         schedule_item_attendance = ScheduleItemAttendance(
             attendance_type="SUBSCRIPTION",
             account=account,
@@ -353,10 +354,12 @@ class ClassCheckinDude:
             online_booking=online_booking,
             booking_status=booking_status
         )
-
         schedule_item_attendance.save()
 
-        self.class_checkin_subscription_subtract_credit(schedule_item_attendance)
+        # Take credit (Link oldest credit to attendance)
+        account_subscription_credit = account_subscription.get_next_credit()
+        account_subscription_credit.schedule_item_attendance = schedule_item_attendance
+        account_subscription_credit.save()
 
         self.send_info_mail(
             account=account,
@@ -365,46 +368,6 @@ class ClassCheckinDude:
         )
 
         return schedule_item_attendance
-
-    def class_checkin_subscription_subtract_credit(self, schedule_item_attendance):
-        """
-        Subtract one credit from a subscription when checking in to a class
-        :param account_subscription:
-        :param schedule_item:
-        :param date:
-        :return:
-        """
-        from ..dudes import AppSettingsDude, ClassScheduleDude
-        from ..models import AccountSubscriptionCredit
-
-        app_settings_dude = AppSettingsDude()
-        class_schedule_dude = ClassScheduleDude()
-
-        schedule_item_otc = class_schedule_dude.schedule_class_with_otc_data(
-            schedule_item_attendance.schedule_item,
-            schedule_item_attendance.date
-        )
-
-        # Get otc date time, type and location, if any.
-        description = _("{date} {time} - {classtype} in {location}").format(
-            date=schedule_item_attendance.date.strftime(
-                app_settings_dude.date_format
-            ),
-            time=schedule_item_attendance.schedule_item.time_start.strftime(
-                app_settings_dude.time_format
-            ),
-            classtype=schedule_item_otc.organization_classtype.name,
-            location=schedule_item_otc.organization_location_room.organization_location.name
-        )
-
-        account_subscription_credit = AccountSubscriptionCredit(
-            account_subscription=schedule_item_attendance.account_subscription,
-            schedule_item_attendance=schedule_item_attendance,
-            mutation_amount=1,
-            mutation_type="SUB",
-            description=description
-        )
-        account_subscription_credit.save()
 
     def subscription_class_permissions(self, account_subscription):
         """

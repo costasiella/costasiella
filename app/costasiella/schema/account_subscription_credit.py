@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -35,6 +36,9 @@ def validate_create_update_input(input, update=False):
 
     return result
 
+class OrganizationSubscriptionCreditNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    expired = graphene.Boolean()
 
 class AccountSubscriptionCreditNode(DjangoObjectType):
     class Meta:
@@ -55,15 +59,23 @@ class AccountSubscriptionCreditNode(DjangoObjectType):
         filter_fields = {
             'account_subscription': ['exact'],
         }
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, OrganizationSubscriptionCreditNodeInterface, )
 
     @classmethod
-    def get_node(self, info, id):
+    def get_node(cls, info, id):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountsubscriptioncredit')
 
-        return self._meta.model.objects.get(id=id)
+        return cls._meta.model.objects.get(id=id)
 
+    def resolve_expired(self, info):
+        today = timezone.now().date()
+        expired = False
+
+        if self.expiration < today:
+            expired = True
+
+        return expired
 
 class AccountSubscriptionCreditQuery(graphene.ObjectType):
     account_subscription_credits = DjangoFilterConnectionField(AccountSubscriptionCreditNode)
