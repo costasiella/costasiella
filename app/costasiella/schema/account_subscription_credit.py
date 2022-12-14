@@ -23,9 +23,6 @@ def validate_create_update_input(input, update=False):
     """ 
     result = {}
 
-    if not input['mutation_type'] in ['ADD', 'SUB']:
-        raise Exception(_('Invalid mutation type; ADD and SUB are accepted'))
-
     # Fetch & check account subscription
     if not update:
         rid = get_rid(input['account_subscription'])
