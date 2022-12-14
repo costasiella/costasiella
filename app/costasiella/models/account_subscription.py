@@ -1,5 +1,7 @@
 import datetime
+import calendar
 import logging
+import math
 from collections import namedtuple
 
 from django.utils.translation import gettext as _
@@ -119,36 +121,69 @@ class AccountSubscription(models.Model):
         last_day_month = date_dude.get_last_day_month(first_day_month)
         total_days = (last_day_month - first_day_month) + datetime.timedelta(days=1)
         billable_period = self.get_billable_period_in_month(year, month)
-        billable_days=billable_period['billable_days']
+        billable_days = billable_period['billable_days']
 
         percent = float(billable_days) / float(total_days.days)
         classes = self.organization_subscription.classes
         if self.organization_subscription.subscription_unit == 'MONTH':
-            credits_to_add = round(classes * percent, 1)
+            credits_to_add = math.ceil(classes * percent)
         else:
-            weeks_in_month = round(total_days.days / float(7), 1)
-            credits_to_add = round((weeks_in_month * (classes or 0)) * percent, 1)
+            credits = 0
+            if classes == 1:
+                # 1 * 53 = 53
+                # one day / week = 55 credits / year
+                # 7 long months = 7 * 5 = 35
+                # 5 shorter months = 5 * 4 = 20
+                last_day_of_month = calendar.monthrange(year, month)[1]
+                if last_day_of_month == 31:
+                    credits = 5
+                else:
+                    credits = 4
+            elif classes == 2:
+                # 53 * 2 = 106 || 12 * 9 = 108
+                credits = 9
+            elif classes == 3:
+                # 53 * 3 = 159 || 12 * 14 = 168
+                credits = 14
+            elif classes == 4:
+                # 53 * 4 = 212 || 12 * 18 = 216
+                credits = 18
+            elif classes == 5:
+                # One credit short here, but it's the closest
+                # 53 * 5 = 265 || 12 * 22 = 264
+                credits = 22
+            elif classes == 6:
+                # 53 * 6 = 318 || 12 * 27 = 324
+                credits = 27
+
+            credits_to_add = math.ceil(credits * percent)
 
         return credits_to_add
 
     def create_credits_for_month(self, year, month):
-        # Calculate number of credits to give:
-        # Total days (Add 1, when subtracted it's one day less)
+        """
+        Add subscription credits for a given month
+        :param year: int
+        :param month: int
+        :return: Number of credits added
+        """
         from .account_subscription_credit import AccountSubscriptionCredit
 
-        credits_to_add = self._calculate_credits_for_month(year, month)
+        credit_validity_in_days = self.organization_subscription.credit_accumulation_days or 31
+        expiration = timezone.now().date() + datetime.timedelta(days=credit_validity_in_days)
 
-        account_subscription_credit = AccountSubscriptionCredit(
-            account_subscription=self,
-            mutation_type="ADD",
-            mutation_amount=credits_to_add,
-            description=_("Credits %s-%s") % (year, month),
-            subscription_year=year,
-            subscription_month=month,
-        )
-        account_subscription_credit.save()
+        number_of_credits_to_add = self._calculate_credits_for_month(year, month)
+        for i in range(0, number_of_credits_to_add):
+            account_subscription_credit = AccountSubscriptionCredit(
+                account_subscription=self,
+                expiration=expiration,
+                description=_("Credit %s-%s") % (year, month),
+                subscription_year=year,
+                subscription_month=month,
+            )
+            account_subscription_credit.save()
 
-        return account_subscription_credit
+        return number_of_credits_to_add
 
     def get_enrollments_in_month(self, year, month):
         """

@@ -35,7 +35,7 @@ class AccountSubscriptionCredit(models.Model):
     # Legacy fields begin - Can be removed from mid 2023.
     # On removal, include backwards compatibility break in release notes.
     mutation_type = models.CharField(max_length=255, choices=MUTATION_TYPES, default="ADD")
-    mutation_amount = models.DecimalField(max_digits=20, decimal_places=1)
+    mutation_amount = models.DecimalField(max_digits=20, decimal_places=1, default=1)
     # Legacy fields end
 
     def __str__(self):
