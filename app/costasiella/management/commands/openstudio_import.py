@@ -753,7 +753,7 @@ class Command(BaseCommand):
                 classes=record['classes'] or 0,
                 subscription_unit=self.map_validity_units_subscriptions.get(record['subscriptionunit'], 'MONTH'),
                 reconciliation_classes=record['reconciliationclasses'],
-                credit_accumulation_days=record['creditvalidity'] or 1,
+                credit_validity=record['creditvalidity'] or 1,
                 unlimited=self._web2py_bool_to_python(record['unlimited']),
                 terms_and_conditions=record['terms'] or "",
                 registration_fee=record['registrationfee'] or 0,
