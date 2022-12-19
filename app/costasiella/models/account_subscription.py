@@ -171,10 +171,15 @@ class AccountSubscription(models.Model):
         """
         from .account_subscription_credit import AccountSubscriptionCredit
 
-        credit_validity_in_days = self.organization_subscription.credit_accumulation_days or 31
+        credit_validity_in_days = self.organization_subscription.credit_validity or 31
         expiration = timezone.now().date() + datetime.timedelta(days=credit_validity_in_days)
 
         number_of_credits_to_add = self._calculate_credits_for_month(year, month)
+
+        #TODO: Link credits to reconciliation credits first
+
+        # Then freely give the remaining ones.
+
         for i in range(0, number_of_credits_to_add):
             account_subscription_credit = AccountSubscriptionCredit(
                 account_subscription=self,
