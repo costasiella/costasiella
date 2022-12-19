@@ -9,7 +9,7 @@ from graphql import GraphQLError
 import validators
 
 from ..models import AccountSubscription, AccountSubscriptionCredit
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import get_error_code, require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 from sorl.thumbnail import get_thumbnail
@@ -33,9 +33,11 @@ def validate_create_update_input(input, update=False):
 
     return result
 
+
 class OrganizationSubscriptionCreditNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     expired = graphene.Boolean()
+
 
 class AccountSubscriptionCreditNode(DjangoObjectType):
     class Meta:
@@ -74,17 +76,25 @@ class AccountSubscriptionCreditNode(DjangoObjectType):
 
         return expired
 
+
 class AccountSubscriptionCreditQuery(graphene.ObjectType):
     account_subscription_credits = DjangoFilterConnectionField(AccountSubscriptionCreditNode)
     account_subscription_credit = graphene.relay.Node.Field(AccountSubscriptionCreditNode)
 
     def resolve_account_subscription_credits(self, info, account_subscription, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountsubscriptioncredit')
-        rid = get_rid(account_subscription)
+        require_login(user)
 
-        # return everything:
-        return AccountSubscriptionCredit.objects.filter(account_subscription__id=rid.id).order_by('-created_at')
+        rid = get_rid(account_subscription)
+        account_subscription = AccountSubscription.objects.get(id=rid.id)
+
+        if not (user.has_perm('costasiella.view_accountsubscriptioncredit') or account_subscription.account == user):
+            raise GraphQLError(m.user_permission_denied, extensions={'code': get_error_code('USER_PERMISSION_DENIED')})
+
+        # return requested information:
+        return AccountSubscriptionCredit.objects.filter(
+            account_subscription__id=rid.id
+        ).order_by('-created_at')
 
 
 class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
