@@ -30,7 +30,9 @@ m = Messages()
 
 class ScheduleItemNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
-    count_attendance = graphene.Int()
+    count_booked = graphene.Int()
+    count_attending = graphene.Int()
+    count_attending_and_booked = graphene.Int()
 
 
 class ScheduleItemNode(DjangoObjectType):
@@ -89,9 +91,24 @@ class ScheduleItemNode(DjangoObjectType):
             require_login_and_one_of_permissions(user, permissions)
             return schedule_item
 
-    def resolve_count_attendance(self, info):
-        filter = Q(schedule_item_id=self.id) & ~Q(booking_status="CANCELLED")
-        count_attendance = ScheduleItemAttendance.objects.filter(filter).count()
+    def resolve_count_attending(self, info):
+        count_attendance = ScheduleItemAttendance.objects.filter(
+            Q(schedule_item_id=self.id) & Q(booking_status="ATTENDING")
+        ).count()
+
+        return count_attendance
+
+    def resolve_count_booked(self, info):
+        count_attendance = ScheduleItemAttendance.objects.filter(
+            Q(schedule_item_id=self.id) & Q(booking_status="BOOKED")
+        ).count()
+
+        return count_attendance
+
+    def resolve_count_attending_and_booked(self, info):
+        count_attendance = ScheduleItemAttendance.objects.filter(
+            Q(schedule_item_id=self.id) & ~Q(booking_status="CANCELLED")
+        ).count()
 
         return count_attendance
 

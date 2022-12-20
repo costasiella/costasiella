@@ -45,9 +45,7 @@ class ScheduleEventNode(DjangoObjectType):
             # Reverse relations,
             'media',
             'schedule_items',
-            'tickets',
-            # Interface fields
-            'urlShop'
+            'tickets'
         )
         filter_fields = ['archived', 'display_public', 'display_shop']
         interfaces = (graphene.relay.Node, ScheduleEventNodeInterface, )
