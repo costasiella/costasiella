@@ -1,4 +1,5 @@
 import graphene
+from graphene_django.debug import DjangoDebug
 import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
@@ -218,6 +219,7 @@ class Query(AccountQuery,
             SystemSettingQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
+    debug = graphene.Field(DjangoDebug, name="_debug")
 
 
 class Mutation(AccountMutation,
@@ -310,6 +312,8 @@ class Mutation(AccountMutation,
     delete_token_cookie = graphql_jwt.DeleteJSONWebTokenCookie.Field()
     # Long running refresh tokens
     delete_refresh_token_cookie = graphql_jwt.DeleteRefreshTokenCookie.Field()
+    # _debug field
+    debug = graphene.Field(DjangoDebug, name="_debug")
 
 
 # Main schema definition
