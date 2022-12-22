@@ -21,11 +21,12 @@ class AccountSubscriptionCredit(models.Model):
     ]
 
     advance = models.BooleanField(default=False)
+    reconciled = models.DateTimeField(null=True)
     account_subscription = models.ForeignKey(AccountSubscription,
                                              on_delete=models.CASCADE,
                                              related_name="credits")
     schedule_item_attendance = models.ForeignKey(ScheduleItemAttendance,
-                                                 on_delete=models.CASCADE,
+                                                 on_delete=models.SET_NULL,
                                                  null=True)
     expiration = models.DateField()
     description = models.TextField(default="")
