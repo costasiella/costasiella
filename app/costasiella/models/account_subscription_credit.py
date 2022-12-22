@@ -20,6 +20,7 @@ class AccountSubscriptionCredit(models.Model):
         ('SUB', _("Subtract")),
     ]
 
+    advance = models.BooleanField(default=False)
     account_subscription = models.ForeignKey(AccountSubscription,
                                              on_delete=models.CASCADE,
                                              related_name="credits")
