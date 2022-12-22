@@ -1,4 +1,7 @@
+import datetime
+
 from django.utils.translation import gettext as _
+from django.utils import timezone
 
 from ..modules.cs_errors import \
     CSClassBookingSubscriptionAlreadyBookedError, \
@@ -309,7 +312,8 @@ class ClassCheckinDude:
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
-        from ..models import ScheduleItemAttendance
+        from ..models import AccountSubscriptionCredit, ScheduleItemAttendance
+
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
         if qs.exists():
@@ -361,7 +365,23 @@ class ClassCheckinDude:
         schedule_item_attendance.save()
 
         # Take credit (Link oldest credit to attendance)
-        account_subscription_credit = account_subscription.get_next_credit()
+        # Give an advance credit if total credits < 0
+        # This is ok, because above is a guard clause that checks for the hard limit (with advance credits included)
+        if account_subscription.get_credits_total() < 0:
+            today = timezone.now().date()
+            validity_in_days = account_subscription.organization_subscription.credit_validity
+            expiration = today + datetime.timedelta(days=validity_in_days)
+
+            account_subscription_credit = AccountSubscriptionCredit(
+                advance=True,
+                account_subscription=account_subscription,
+                expiration=expiration,
+                description=_("Advance credit")
+            )
+            account_subscription_credit.save()
+        else:
+            account_subscription_credit = account_subscription.get_next_credit()
+
         account_subscription_credit.schedule_item_attendance = schedule_item_attendance
         account_subscription_credit.save()
 
