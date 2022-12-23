@@ -31,7 +31,7 @@ class VersionDude:
     @staticmethod
     def get_latest_version():
         return {
-            "version": "2022.06",
+            "version": "2022.07",
             "version_patch": "0"
         }
 
