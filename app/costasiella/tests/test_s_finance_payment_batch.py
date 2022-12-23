@@ -56,7 +56,7 @@ class GQLFinancePaymentBatch(TestCase):
         }
 
         self.finance_payment_batches_query = '''
-  query FinancePaymentBatches($after: String, $before: String, $batchType: String!) {
+  query FinancePaymentBatches($after: String, $before: String, $batchType: CostasiellaFinancePaymentBatchBatchTypeChoices!) {
     financePaymentBatches(first: 15, before: $before, after: $after, batchType: $batchType) {
       pageInfo {
         startCursor
