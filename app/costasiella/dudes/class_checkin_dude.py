@@ -367,7 +367,7 @@ class ClassCheckinDude:
         # Take credit (Link oldest credit to attendance)
         # Give an advance credit if total credits < 0
         # This is ok, because above is a guard clause that checks for the hard limit (with advance credits included)
-        if account_subscription.get_credits_total() < 0:
+        if account_subscription.get_credits_total() < 1:
             today = timezone.now().date()
             validity_in_days = account_subscription.organization_subscription.credit_validity
             expiration = today + datetime.timedelta(days=validity_in_days)
