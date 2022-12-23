@@ -34,10 +34,15 @@ class FinanceQuoteGroupNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_financequotegroup')
 
-        return self._meta.model.objects.get(id=id)
+        finance_quote_group = self._meta.model.objects.get(id=id)
+        # When user has a quote that have the quote group return it, otherwise require permission
+        if user.quotes.filter(finance_quote_group=finance_quote_group).exists():
+            return finance_quote_group
+        else:
+            require_login_and_permission(user, 'costasiella.view_financequotegroup')
 
+        return finance_quote_group
 
 class FinanceQuoteGroupQuery(graphene.ObjectType):
     finance_quote_groups = DjangoFilterConnectionField(FinanceQuoteGroupNode)
