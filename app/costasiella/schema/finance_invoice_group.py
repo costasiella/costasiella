@@ -6,7 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import FinanceInvoiceGroup
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
@@ -34,10 +34,16 @@ class FinanceInvoiceGroupNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_financeinvoicegroup')
+        require_login(user)
 
-        return self._meta.model.objects.get(id=id)
+        finance_invoice_group = self._meta.model.objects.get(id=id)
+        # When user has an invoice that have the invoice group return it, otherwise require permission
+        if user.invoices.filter(finance_invoice_group=finance_invoice_group).exists():
+            return finance_invoice_group
+        else:
+            require_login_and_permission(user, 'costasiella.view_financeinvoicegroup')
 
+        return finance_invoice_group
 
 class FinanceInvoiceGroupQuery(graphene.ObjectType):
     finance_invoice_groups = DjangoFilterConnectionField(FinanceInvoiceGroupNode)
