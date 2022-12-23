@@ -2,7 +2,7 @@ amqp==5.0.9
 aniso8601==9.0.1
 argon2-cffi==21.3.0
 argon2-cffi-bindings==21.2.0
-asgiref==3.4.1
+asgiref==3.6.0
 async-timeout==4.0.2
 billiard==3.6.4.0
 Brotli==1.0.9
@@ -22,9 +22,9 @@ cssselect2==0.2.2
 decorator==4.3.2
 defusedxml==0.7.1
 Deprecated==1.2.13
-Django==4.0.7
+Django==4.1.4
 django-allauth==0.47.0
-django-celery-beat==2.3.0
+django-celery-beat==2.4.0
 django-celery-results==2.4.0
 django-cors-headers==3.13.0
 django-defender==0.9.5
