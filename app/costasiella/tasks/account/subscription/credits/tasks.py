@@ -26,10 +26,11 @@ def account_subscription_credits_add_for_month(year, month):
     first_day_month = datetime.date(year, month, 1)
     last_day_month = date_dude.get_last_day_month(first_day_month)
 
-    # Fetch rows
+    # Fetch not unlimited rows
     qs = AccountSubscription.objects.filter(
         Q(date_start__lte=last_day_month) &
-        (Q(date_end__gte=first_day_month) | Q(date_end__isnull=True))
+        (Q(date_end__gte=first_day_month) | Q(date_end__isnull=True)),
+        Q(organization_subscription__unlimited=False)
     )
 
     if not qs.exists():
