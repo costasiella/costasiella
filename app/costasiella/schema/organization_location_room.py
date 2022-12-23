@@ -27,13 +27,16 @@ class OrganizationLocationRoomNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_organizationlocationroom',
-            'costasiella.view_selfcheckin'
-        ])
+
+        room = self._meta.model.objects.get(id=id)
+        if room.archived or not room.display_public:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_organizationlocationroom',
+                'costasiella.view_selfcheckin'
+            ])
 
         # Return only public non-archived location rooms
-        return self._meta.model.objects.get(id=id)
+        return room
 
 
 class OrganizationLocationRoomQuery(graphene.ObjectType):
