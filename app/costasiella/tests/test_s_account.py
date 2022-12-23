@@ -355,15 +355,28 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
     def test_query_one_permission_denied(self):
-        """ Permission denied message when user lacks authorization """   
+        """ Permission denied message when user lacks authorization to view other acounts """
+        # Create regular user
+        account = f.RegularUserFactory.create()
+        instructor = f.InstructorFactory.create()
+        node_id = to_global_id('AccountNode', account.pk)
+
+        # Now query single account and check
+        executed = execute_test_client_api_query(self.account_query, instructor, variables={"id": node_id})
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_accounts_can_view_own_without_permissions(self):
+        """ Accounts can get their own info """
         # Create regular user
         account = f.RegularUserFactory.create()
         node_id = to_global_id('AccountNode', account.pk)
 
         # Now query single account and check
         executed = execute_test_client_api_query(self.account_query, account, variables={"id": node_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        data = executed.get('data')
+        self.assertEqual(data['account']['firstName'], account.first_name)
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -373,7 +386,6 @@ class GQLAccount(TransactionTestCase):
         account.save()
 
         node_id = to_global_id('AccountNode', account.pk)
-
         # Now query single location and check   
         executed = execute_test_client_api_query(self.account_query, account, variables={"id": node_id})
         data = executed.get('data')
