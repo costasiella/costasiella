@@ -62,7 +62,7 @@ class GQLFinanceOrder(TestCase):
         # }
 
         self.orders_query = '''
-  query FinanceOrders($after: String, $before: String, $status: String) {
+  query FinanceOrders($after: String, $before: String, $status: CostasiellaFinanceOrderStatusChoices) {
     financeOrders(first: 15, before: $before, after: $after, status: $status) {
       pageInfo {
         hasNextPage
