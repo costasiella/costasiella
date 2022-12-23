@@ -44,6 +44,8 @@ class AccountSubscriptionCreditNode(DjangoObjectType):
         model = AccountSubscriptionCredit
         # Fields to include
         fields = (
+            'advance',
+            'reconciled',
             'account_subscription',
             'schedule_item_attendance',
             'mutation_type',
@@ -63,9 +65,14 @@ class AccountSubscriptionCreditNode(DjangoObjectType):
     @classmethod
     def get_node(cls, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountsubscriptioncredit')
+        require_login(user)
 
-        return cls._meta.model.objects.get(id=id)
+        account_subscription_credit = cls._meta.model.objects.get(id=id)
+        if not account_subscription_credit.account_subscription.account == user:
+            # Allow users to get credits for their own subscriptions, but require permissions for all others.
+            require_login_and_permission(user, 'costasiella.view_accountsubscriptioncredit')
+
+        return account_subscription_credit
 
     def resolve_expired(self, info):
         today = timezone.now().date()
