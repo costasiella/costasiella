@@ -63,7 +63,6 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
         require_login(user)
 
         schedule_item_attendance = cls._meta.model.objects.get(id=id)
-
         # Accounts can view their own attendance
         if not schedule_item_attendance.account.id == user.id:
             require_login_and_one_of_permissions(user, [

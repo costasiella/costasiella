@@ -1043,8 +1043,7 @@ class AccountSubscriptionCreditAttendanceSubFactory(factory.DjangoModelFactory):
 
     schedule_item_attendance = factory.SubFactory(ScheduleItemAttendanceSubscriptionFactory)
     account_subscription = factory.SelfAttribute('schedule_item_attendance.account_subscription')
-    mutation_type = "SUB"
-    mutation_amount = 1
+    expiration = datetime.date(2099, 12, 31)
     description = "Test subscription SUB mutation"
 
 
