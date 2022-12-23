@@ -170,16 +170,25 @@ class AccountSubscription(models.Model):
         """
         from .account_subscription_credit import AccountSubscriptionCredit
 
+        now = timezone.now()
         credit_validity_in_days = self.organization_subscription.credit_validity or 31
-        expiration = timezone.now().date() + datetime.timedelta(days=credit_validity_in_days)
+        expiration = now.date() + datetime.timedelta(days=credit_validity_in_days)
 
         number_of_credits_to_add = self._calculate_credits_for_month(year, month)
 
-        #TODO: Link credits to reconciliation credits first
+        # Link credits to advance credits first
+        unreconcilded_advance_credits = AccountSubscriptionCredit.objects.filter(
+            advance=True,
+            reconciled__isnull=True,
+            account_subscription=self,
+        )
 
-        # Then freely give the remaining ones.
+        count_unreconciled_advance_credits = unreconcilded_advance_credits.count()
+        unreconcilded_advance_credits.update(reconciled=now)
 
-        for i in range(0, number_of_credits_to_add):
+        # Then give the remaining ones.
+        remaining_credits_to_add = number_of_credits_to_add - count_unreconciled_advance_credits
+        for i in range(0, remaining_credits_to_add):
             account_subscription_credit = AccountSubscriptionCredit(
                 account_subscription=self,
                 expiration=expiration,
