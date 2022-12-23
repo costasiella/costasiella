@@ -142,11 +142,17 @@ class OrganizationSubscriptionNode(DjangoObjectType):
 
         # Return only public non-archived subscriptions without a further permission check
         organization_subscription = self._meta.model.objects.get(id=id)
+        user_has_subscription = user.subscriptions.filter(organization_subscription=organization_subscription).exists()
 
-        if (not organization_subscription.display_public and not organization_subscription.display_shop) or \
+        if user_has_subscription:
+            # Users can get info about subscriptions they have
+            return organization_subscription
+        elif (not organization_subscription.display_public and not organization_subscription.display_shop) or \
                 organization_subscription.archived:
+            # But for all other archived or non-public ones, they need permissions
             require_login_and_permission(user, 'costasiella.view_organizationsubscription')
 
+        # Return if user has permission, or it's public and not archived.
         return organization_subscription
 
 
