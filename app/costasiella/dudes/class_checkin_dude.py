@@ -365,9 +365,17 @@ class ClassCheckinDude:
         schedule_item_attendance.save()
 
         # Take credit (Link oldest credit to attendance)
-        # Give an advance credit if total credits < 0
-        # This is ok, because above is a guard clause that checks for the hard limit (with advance credits included)
-        if account_subscription.get_credits_total() < 1:
+        # Give a credit for unlimited subscriptions, so booking is always possible
+        if account_subscription.organization_subscription.unlimited:
+            account_subscription_credit = AccountSubscriptionCredit(
+                account_subscription=account_subscription,
+                expiration=timezone.now().date(),
+                description=_("Unlimited")
+            )
+            account_subscription_credit.save()
+        elif account_subscription.get_credits_total() < 1:
+            # Give an advance credit if total credits < 0
+            # This is ok, because above is a guard clause that checks for the hard limit (with advance credits included)
             today = timezone.now().date()
             validity_in_days = account_subscription.organization_subscription.credit_validity
             expiration = today + datetime.timedelta(days=validity_in_days)
