@@ -6,7 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import FinanceQuoteGroup
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
@@ -34,6 +34,7 @@ class FinanceQuoteGroupNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
+        require_login(user)
 
         finance_quote_group = self._meta.model.objects.get(id=id)
         # When user has a quote that have the quote group return it, otherwise require permission
