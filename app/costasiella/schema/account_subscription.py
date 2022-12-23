@@ -84,9 +84,15 @@ class AccountSubscriptionNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountsubscription')
+        require_login(user)
 
-        return self._meta.model.objects.get(id=id)
+        permission = 'costasiella.view_accountsubscription'
+        account_subscription = self._meta.model.objects.get(id=id)
+
+        if not (user.has_perm(permission) or account_subscription.account == user):
+            require_login_and_permission(user, permission)
+
+        return account_subscription
 
     def resolve_credit_total(self, info):
         account_subscription = self._meta.model.objects.get(id=self.id)
