@@ -202,7 +202,6 @@ GRAPHENE = {
     'SCHEMA': 'costasiella.schema.schema',
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
-        'graphene_django.debug.DjangoDebugMiddleware'
     ],
     'RELAY_CONNECTION_MAX_LIMIT': 1000,
 }
