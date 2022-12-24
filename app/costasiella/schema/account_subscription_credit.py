@@ -68,6 +68,7 @@ class AccountSubscriptionCreditNode(DjangoObjectType):
         require_login(user)
 
         account_subscription_credit = cls._meta.model.objects.get(id=id)
+        #TODO: Perhaps add a filter here that raises an exception if the mutation_type field isn't "SINGLE"?
         if not account_subscription_credit.account_subscription.account == user:
             # Allow users to get credits for their own subscriptions, but require permissions for all others.
             require_login_and_permission(user, 'costasiella.view_accountsubscriptioncredit')
@@ -99,8 +100,10 @@ class AccountSubscriptionCreditQuery(graphene.ObjectType):
             raise GraphQLError(m.user_permission_denied, extensions={'code': get_error_code('USER_PERMISSION_DENIED')})
 
         # return requested information:
+        # Include mutation_type=SINGLE to prevent old style credits from appearing
         return AccountSubscriptionCredit.objects.filter(
-            account_subscription__id=rid.id
+            account_subscription__id=rid.id,
+            mutation_type="SINGLE",
         ).order_by('-created_at')
 
 
