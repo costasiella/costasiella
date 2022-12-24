@@ -16,6 +16,7 @@ class AccountSubscriptionCredit(models.Model):
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
     MUTATION_TYPES = [
+        ("SINGLE", _("Single")),
         ('ADD', _("Add")),
         ('SUB', _("Subtract")),
     ]
@@ -36,7 +37,7 @@ class AccountSubscriptionCredit(models.Model):
     updated_at = models.DateTimeField(auto_now=True, editable=False)
     # Legacy fields begin - Can be removed from mid 2023.
     # On removal, include backwards compatibility break in release notes.
-    mutation_type = models.CharField(max_length=255, choices=MUTATION_TYPES, default="ADD")
+    mutation_type = models.CharField(max_length=255, choices=MUTATION_TYPES, default="SINGLE")
     mutation_amount = models.DecimalField(max_digits=20, decimal_places=1, default=1)
     # Legacy fields end
 
