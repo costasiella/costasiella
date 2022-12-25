@@ -57,8 +57,12 @@ class GQLAccountSubscriptionCredit(TestCase):
             accountSubscription {
               id
             }
-            mutationType
-            mutationAmount
+            scheduleItemAttendance {
+              id
+            }
+            advance
+            reconciled
+            expiration
             description
             createdAt
           }
@@ -74,8 +78,12 @@ class GQLAccountSubscriptionCredit(TestCase):
         accountSubscription {
           id
         }
-        mutationType
-        mutationAmount
+        scheduleItemAttendance {
+          id
+        }
+        advance
+        reconciled
+        expiration
         description
         createdAt
       }
@@ -90,8 +98,9 @@ class GQLAccountSubscriptionCredit(TestCase):
         accountSubscription {
           id
         }
-        mutationType
-        mutationAmount
+        advance
+        reconciled
+        expiration
         description
         createdAt
       }
@@ -107,8 +116,9 @@ class GQLAccountSubscriptionCredit(TestCase):
         accountSubscription {
           id
         }
-        mutationType
-        mutationAmount
+        advance
+        reconciled
+        expiration
         description
         createdAt
       }
