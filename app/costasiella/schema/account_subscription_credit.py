@@ -48,8 +48,6 @@ class AccountSubscriptionCreditNode(DjangoObjectType):
             'reconciled',
             'account_subscription',
             'schedule_item_attendance',
-            'mutation_type',
-            'mutation_amount',
             'expiration',
             'description',
             'subscription_year',
