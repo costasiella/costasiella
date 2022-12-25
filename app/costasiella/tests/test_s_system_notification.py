@@ -24,6 +24,7 @@ class GQLSystemNotification(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_systemmailtemplate = 'view_systemmailtemplate'
         self.permission_view = 'view_systemnotification'
         self.permission_add = 'add_systemnotification'
         self.permission_change = 'change_systemnotification'
@@ -76,6 +77,9 @@ class GQLSystemNotification(TestCase):
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        # System mail template permission
+        permission = Permission.objects.get(codename=self.permission_view_systemmailtemplate)
         user.user_permissions.add(permission)
         user.save()
 
