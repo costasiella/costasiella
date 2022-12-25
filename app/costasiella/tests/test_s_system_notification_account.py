@@ -279,7 +279,7 @@ class GQLSystemNotificationAccount(TestCase):
         permission = Permission.objects.get(codename=self.permission_view_systemnotification)
         user.user_permissions.add(permission)
         user.save()
-        
+
         executed = execute_test_client_api_query(
             query,
             user,
