@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils.translation import gettext as _
 from django.utils import timezone
 
@@ -120,9 +122,12 @@ class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=False)
 
+        today = timezone.now().date()
         account_subscription_credit = AccountSubscriptionCredit(
             account_subscription=result['account_subscription'],
-            description=input['description']
+            description=input['description'],
+            expiration=today + datetime.timedelta(
+                days=result['account_subscription'].organization_subscription.credit_validity)
         )
 
         account_subscription_credit.save()
