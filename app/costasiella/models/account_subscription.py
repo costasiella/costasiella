@@ -379,6 +379,7 @@ class AccountSubscription(models.Model):
 
         # Get credit records with expiration >= today, that haven't been used yet (no schedule item attendance)
         qs = AccountSubscriptionCredit.objects.filter(
+            mutation_type="SINGLE",
             account_subscription=self,
             expiration__gte=timezone.now().date(),
             schedule_item_attendance__isnull=True
