@@ -312,12 +312,17 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         if schedule_item_attendance.account_classpass:
              schedule_item_attendance.account_classpass.update_classes_remaining()
 
-        # Refund subscription credit (remove it)
+        # Update subscription credit status
         if schedule_item_attendance.account_subscription:
+            # Refund subscription credit (Unlink schedule item attendance)
             if input['booking_status'] == 'CANCELLED':
-                AccountSubscriptionCredit.objects.filter(
+                account_subscription_credit = AccountSubscriptionCredit.objects.filter(
                     schedule_item_attendance=schedule_item_attendance,
-                ).delete()
+                ).first()
+                account_subscription_credit.schedule_item_attendance = None
+                account_subscription_credit.save()
+
+            # Link schedule item attendance to a credit, if not already linked
             if input['booking_status'] == 'BOOKED' or input['booking_status'] == 'ATTENDING':
                 qs = AccountSubscriptionCredit.objects.filter(
                     schedule_item_attendance=schedule_item_attendance
@@ -325,7 +330,7 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
                 if not qs.exists():
                     from ..dudes import ClassCheckinDude
                     class_checkin_dude = ClassCheckinDude()
-                    class_checkin_dude.class_checkin_subscription_subtract_credit(schedule_item_attendance)
+                    class_checkin_dude.class_checkin_subscription_take_credit(schedule_item_attendance)
 
         return UpdateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 

@@ -363,6 +363,7 @@ class AccountSubscription(models.Model):
         from .account_subscription_credit import AccountSubscriptionCredit
 
         available_credits = AccountSubscriptionCredit.objects.filter(
+            mutation_type="SINGLE",
             account_subscription=self,
             expiration__gte=timezone.now().date(),
             schedule_item_attendance__isnull=True
@@ -413,7 +414,7 @@ class AccountSubscription(models.Model):
             Q(account_subscription=self) &
             Q(subscription_year=year) &
             Q(subscription_month=month) &
-            Q(mutation_type='ADD')
+            Q(mutation_type='SINGLE')
         )
 
         return qs

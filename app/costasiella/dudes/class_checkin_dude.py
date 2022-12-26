@@ -312,7 +312,7 @@ class ClassCheckinDude:
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
-        from ..models import AccountSubscriptionCredit, ScheduleItemAttendance
+        from ..models import ScheduleItemAttendance
 
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
@@ -365,6 +365,26 @@ class ClassCheckinDude:
         schedule_item_attendance.save()
 
         # Take credit (Link oldest credit to attendance)
+        self.class_checkin_subscription_take_credit(
+            schedule_item_attendance=schedule_item_attendance
+        )
+
+        # Send info mail
+        self.send_info_mail(
+            account=account,
+            schedule_item=schedule_item,
+            date=date,
+        )
+
+        return schedule_item_attendance
+
+    def class_checkin_subscription_take_credit(self, schedule_item_attendance):
+        from ..models import AccountSubscriptionCredit
+
+        print("Linking check in to credit")
+
+        account_subscription = schedule_item_attendance.account_subscription
+        # Take credit (Link oldest credit to attendance)
         # Give a credit for unlimited subscriptions, so booking is always possible
         if account_subscription.organization_subscription.unlimited:
             account_subscription_credit = AccountSubscriptionCredit(
@@ -388,18 +408,13 @@ class ClassCheckinDude:
             )
             account_subscription_credit.save()
         else:
+            # Regular flow, get next credit in line (first in, first out)
             account_subscription_credit = account_subscription.get_next_credit()
 
         account_subscription_credit.schedule_item_attendance = schedule_item_attendance
         account_subscription_credit.save()
 
-        self.send_info_mail(
-            account=account,
-            schedule_item=schedule_item,
-            date=date,
-        )
-
-        return schedule_item_attendance
+        print(account_subscription_credit.id)
 
     def subscription_class_permissions(self, account_subscription):
         """
