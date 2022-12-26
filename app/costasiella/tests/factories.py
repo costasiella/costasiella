@@ -753,19 +753,20 @@ class AccountSubscriptionPauseFactory(factory.DjangoModelFactory):
     description = "Pause test description"
 
 
-class AccountSubscriptionCreditAddFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.AccountSubscriptionCredit
-
-    class Params:
-        initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
-
-    account_subscription = factory.LazyAttribute(
-        lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
-            AccountSubscriptionFactory
-        )
-    )
-    description = "Test add mutation"
+# class AccountSubscriptionCreditAddFactory(factory.DjangoModelFactory):
+#     class Meta:
+#         model = models.AccountSubscriptionCredit
+#
+#     class Params:
+#         initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+#
+#     account_subscription = factory.LazyAttribute(
+#         lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
+#             AccountSubscriptionFactory
+#         )
+#     )
+#     description = "Test add mutation"
+#     expiration = datetime.date(2099, 12, 31)
 
 
 class AccountMembershipFactory(factory.DjangoModelFactory):
@@ -1035,7 +1036,7 @@ class ScheduleItemEnrollmentFactory(factory.DjangoModelFactory):
     date_end = datetime.date(2999, 12, 30)
 
 
-class AccountSubscriptionCreditAttendanceSubFactory(factory.DjangoModelFactory):
+class AccountSubscriptionCreditAttendanceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscriptionCredit
 
