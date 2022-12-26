@@ -69,7 +69,7 @@ class Account(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return model_string(self)
+        return f"Account: {self.email} ({self.id})"
 
     def save(self, *args, **kwargs):
         name = [self.first_name, self.last_name]
