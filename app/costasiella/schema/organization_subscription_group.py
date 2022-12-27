@@ -25,9 +25,12 @@ class OrganizationSubscriptionGroupNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
     @classmethod
-    def get_node(self, info, id):
+    def get_node(self, info, id, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organizationsubscriptiongroup')
+
+        # Allow returning data when coming from schedule_event_subscription_group_discount
+        if not info.path.typename == "ScheduleEventSubscriptionGroupDiscountNode":
+            require_login_and_permission(user, 'costasiella.view_organizationsubscriptiongroup')
 
         return self._meta.model.objects.get(id=id)
 
