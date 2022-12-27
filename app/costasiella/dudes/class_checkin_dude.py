@@ -381,8 +381,6 @@ class ClassCheckinDude:
     def class_checkin_subscription_take_credit(self, schedule_item_attendance):
         from ..models import AccountSubscriptionCredit
 
-        print("Linking check in to credit")
-
         account_subscription = schedule_item_attendance.account_subscription
         # Take credit (Link oldest credit to attendance)
         # Give a credit for unlimited subscriptions, so booking is always possible
@@ -413,8 +411,6 @@ class ClassCheckinDude:
 
         account_subscription_credit.schedule_item_attendance = schedule_item_attendance
         account_subscription_credit.save()
-
-        print(account_subscription_credit.id)
 
     def subscription_class_permissions(self, account_subscription):
         """

@@ -683,9 +683,7 @@ class GQLScheduleItemAttendance(TestCase):
         qs = models.AccountSubscriptionCredit.objects.filter(
             account_subscription=account_subscription
         )
-        for account_subscription_credit in qs:
-            self.assertEqual(account_subscription_credit.mutation_amount, 1)
-            self.assertEqual(account_subscription_credit.mutation_type, "SUB")
+        self.assertEqual(qs.exists(), True)
 
     def test_create_schedule_class_subscription_attendance_blocked(self):
         """ Shouldn't be able to check-in with a blocked subscription """
@@ -924,7 +922,7 @@ class GQLScheduleItemAttendance(TestCase):
         """ Update a class attendance status to cancelled and check that 1 credit is returned """
         query = self.schedule_item_attendance_update_mutation
 
-        account_subscription_credit = f.AccountSubscriptionCreditAttendanceSubFactory.create()
+        account_subscription_credit = f.AccountSubscriptionCreditAttendanceFactory.create()
         schedule_item_attendance = account_subscription_credit.schedule_item_attendance
         account_subscription = schedule_item_attendance.account_subscription
         credits_total_before = account_subscription.get_credits_total()
@@ -1076,7 +1074,7 @@ class GQLScheduleItemAttendance(TestCase):
         """
         query = self.schedule_item_attendance_delete_mutation
 
-        account_subscription_credit = f.AccountSubscriptionCreditAttendanceSubFactory.create()
+        account_subscription_credit = f.AccountSubscriptionCreditAttendanceFactory.create()
         schedule_item_attendance = account_subscription_credit.schedule_item_attendance
         account_subscription = schedule_item_attendance.account_subscription
         credits_total_before = account_subscription.get_credits_total()
