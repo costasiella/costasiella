@@ -27,12 +27,18 @@ class OrganizationSubscriptionGroupNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id, **kwargs):
         user = info.context.user
+        print(info.path.typename)
 
-        # Allow returning data when coming from schedule_event_subscription_group_discount
-        if not info.path.typename == "ScheduleEventSubscriptionGroupDiscountNode":
-            require_login_and_permission(user, 'costasiella.view_organizationsubscriptiongroup')
+        organization_subscription_group = self._meta.model.objects.get(id=id)
 
-        return self._meta.model.objects.get(id=id)
+        # Allow returning data when coming from schedule_event_subscription_group_discount and subscription group
+        if ( not info.path.typename == "ScheduleEventSubscriptionGroupDiscountNode" or
+             not info.path.typename == "OrganizationSubscriptionGroupSubscriptionNode" ):
+            return organization_subscription_group
+
+        require_login_and_permission(user, 'costasiella.view_organizationsubscriptiongroup')
+
+        return organization_subscription_group
 
 
 class OrganizationSubscriptionGroupQuery(graphene.ObjectType):
