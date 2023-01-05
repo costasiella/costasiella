@@ -98,6 +98,7 @@ class ScheduleItem(models.Model):
         through='ScheduleItemOrganizationSubscriptionGroup', 
         related_name='subscription_groups'
     )
+    info_mail_enabled = models.BooleanField(default=True)
     info_mail_content = models.TextField(default="")
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account")
     account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account_2")
