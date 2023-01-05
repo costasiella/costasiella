@@ -245,6 +245,8 @@ class ScheduleItemHelper:
                 schedule_item.time_start = schedule_item_weekly_otc.time_start
             if schedule_item_weekly_otc.time_end:
                 schedule_item.time_end = schedule_item_weekly_otc.time_end
+            if schedule_item_weekly_otc.info_mail_enabled:
+                schedule_item.info_mail_enabled = schedule_item_weekly_otc.info_mail_enabled
             if schedule_item_weekly_otc.info_mail_content:
                 schedule_item.info_mail_content = schedule_item_weekly_otc.info_mail_content
             if schedule_item_weekly_otc.status:
