@@ -27,7 +27,6 @@ class OrganizationSubscriptionGroupNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id, **kwargs):
         user = info.context.user
-        print(info.path.typename)
 
         organization_subscription_group = self._meta.model.objects.get(id=id)
 
