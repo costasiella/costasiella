@@ -917,6 +917,7 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         spaces = graphene.types.Int(required=False)
         walk_in_spaces = graphene.Int(required=False)
         display_public = graphene.Boolean(required=False)
+        info_mail_enabled = graphene.Boolean(required=False)
         info_mail_content = graphene.String(default_value="")
 
     schedule_item = graphene.Field(ScheduleItemNode)
