@@ -701,6 +701,7 @@ class ScheduleClassQuery(graphene.ObjectType):
             organization_level=schedule_item.organization_level,
             time_start=schedule_item.time_start,
             time_end=schedule_item.time_end,
+            info_mail_enabled=schedule_item.info_mail_enabled,
             info_mail_content=schedule_item.info_mail_content,
             spaces=total_spaces,
             count_attending=count_attending,
