@@ -60,6 +60,7 @@ class ScheduleItemNode(DjangoObjectType):
             'display_public',
             'organization_classpass_groups',
             'organization_subscription_groups',
+            'info_mail_enabled',
             'info_mail_content',
             'account',
             'account_2',
