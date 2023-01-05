@@ -3,7 +3,6 @@ import datetime
 from django.utils.translation import gettext as _
 from django.utils import timezone
 
-from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 
 from ..modules.cs_errors import \
     CSClassBookingSubscriptionAlreadyBookedError, \
@@ -21,6 +20,7 @@ class ClassCheckinDude:
         :param date: datetime.date object
         :return:
         """
+        from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
         from ..dudes.mail_dude import MailDude
 
         # Use the helper to make sure we're also checking one time change (otc) data
