@@ -3,6 +3,8 @@ import datetime
 from django.utils.translation import gettext as _
 from django.utils import timezone
 
+from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
+
 from ..modules.cs_errors import \
     CSClassBookingSubscriptionAlreadyBookedError, \
     CSClassBookingSubscriptionBlockedError, \
@@ -21,11 +23,16 @@ class ClassCheckinDude:
         """
         from ..dudes.mail_dude import MailDude
 
-        mail_dude = MailDude(account=account,
-                             email_template="class_info_mail",
-                             schedule_item=schedule_item,
-                             date=date)
-        mail_dude.send()
+        # Use the helper to make sure we're also checking one time change (otc) data
+        sih = ScheduleItemHelper()
+        schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, date)
+
+        if schedule_item.info_mail_enabled:
+            mail_dude = MailDude(account=account,
+                                 email_template="class_info_mail",
+                                 schedule_item=schedule_item,
+                                 date=date)
+            mail_dude.send()
 
     def class_check_checkedin(self, account, schedule_item, date):
         """
