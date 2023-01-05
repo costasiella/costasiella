@@ -951,6 +951,7 @@ class SchedulePublicWeeklyClassOTCFactory(factory.DjangoModelFactory):
     organization_level = factory.SelfAttribute('schedule_item.organization_level')
     time_start = datetime.time(11, 0)
     time_end = datetime.time(12, 30)
+    info_mail_enabled = False
 
 
 class SchedulePublicLastWeekdayOfMonthClassFactory(factory.DjangoModelFactory):
