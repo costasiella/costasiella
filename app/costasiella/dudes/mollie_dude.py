@@ -19,7 +19,7 @@ class MollieDude:
         :param request: Django request
         """
         host = request.get_host()
-        webhook_url = "https://" + host + "/d/mollie/webhook"
+        webhook_url = "https://" + host + "/d/mollie/webhook/"
 
         return webhook_url
 
@@ -31,7 +31,7 @@ class MollieDude:
         system_setting_dude = SystemSettingDude()
         host = system_setting_dude.get("system_hostname")
 
-        webhook_url = "https://" + host + "/d/mollie/webhook"
+        webhook_url = "https://" + host + "/d/mollie/webhook/"
 
         return webhook_url
 
