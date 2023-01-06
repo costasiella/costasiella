@@ -603,7 +603,7 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['classes'], variables['input']['classes'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['subscriptionUnit'], variables['input']['subscriptionUnit'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['reconciliationClasses'], variables['input']['reconciliationClasses'])
-        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['creditAccumulationDays'], variables['input']['creditAccumulationDays'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['creditValidity'], variables['input']['creditValidity'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['quickStatsAmount'],
                          str(variables['input']['quickStatsAmount']))
