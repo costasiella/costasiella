@@ -181,8 +181,8 @@ mutation DeleteOrganizationSubscriptionGroup($input: DeleteOrganizationSubscript
 
         node_id = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-        data = executed.get('data')
-        self.assertEqual(data['organizationSubscriptionGroup']['name'], subscriptiongroup.name)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
     def test_query_one_no_permission(self):
         """ Permission denied message when user lacks authorization """   
@@ -193,8 +193,8 @@ mutation DeleteOrganizationSubscriptionGroup($input: DeleteOrganizationSubscript
         node_id = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-        data = executed.get('data')
-        self.assertEqual(data['organizationSubscriptionGroup']['name'], subscriptiongroup.name)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -335,7 +335,6 @@ mutation DeleteOrganizationSubscriptionGroup($input: DeleteOrganizationSubscript
             self.anon_user, 
             variables=variables
         )
-        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
