@@ -25,6 +25,9 @@ class GQLOrganizationAppointmentPrice(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_account = 'view_account'
+        self.permission_view_appointment = 'view_organizationappointment'
+        self.permission_view_finance_taxrate = 'view_financetaxrate'
         self.permission_view = 'view_organizationappointmentprice'
         self.permission_add = 'add_organizationappointmentprice'
         self.permission_change = 'change_organizationappointmentprice'
@@ -219,6 +222,12 @@ class GQLOrganizationAppointmentPrice(TestCase):
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename='view_organizationappointmentprice')
         user.user_permissions.add(permission)
+        # Account
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
+        # Appointment
+        permission = Permission.objects.get(codename=self.permission_view_appointment)
+        user.user_permissions.add(permission)
         user.save()
 
         executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
@@ -287,6 +296,12 @@ class GQLOrganizationAppointmentPrice(TestCase):
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename='view_organizationappointmentprice')
         user.user_permissions.add(permission)
+        # Account
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
+        # Appointment
+        permission = Permission.objects.get(codename=self.permission_view_appointment)
+        user.user_permissions.add(permission)
         user.save()
 
         # First query appointments to get node id easily
@@ -345,6 +360,15 @@ class GQLOrganizationAppointmentPrice(TestCase):
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        # Account
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
+        # Appointment
+        permission = Permission.objects.get(codename=self.permission_view_appointment)
+        user.user_permissions.add(permission)
+        # Tax rate
+        permission = Permission.objects.get(codename=self.permission_view_finance_taxrate)
         user.user_permissions.add(permission)
         user.save()
 
@@ -430,6 +454,12 @@ class GQLOrganizationAppointmentPrice(TestCase):
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        # Account
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
+        # Appointment
+        permission = Permission.objects.get(codename=self.permission_view_appointment)
         user.user_permissions.add(permission)
         user.save()
 
