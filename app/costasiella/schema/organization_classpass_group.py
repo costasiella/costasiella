@@ -25,12 +25,17 @@ class OrganizationClasspassGroupNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
     @classmethod
-    def get_node(self, info, id):
+    def get_node(self, info, id, **kwargs):
         user = info.context.user
+        organization_classpass_group = self._meta.model.objects.get(id=id)
+
+        # Allow returning data when coming from schedule_event_subscription_group_discount and subscription group
+        if ( info.path.typename == "OrganizationClasspassGroupClasspassNode" ):
+            return organization_classpass_group
+
         require_login_and_permission(user, 'costasiella.view_organizationclasspassgroup')
 
-        return self._meta.model.objects.get(id=id)
-
+        return organization_classpass_group
 
 class OrganizationClasspassGroupQuery(graphene.ObjectType):
     organization_classpass_groups = DjangoFilterConnectionField(OrganizationClasspassGroupNode)
