@@ -307,6 +307,9 @@ class GQLOrganizationAppointment(TestCase):
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename='view_organizationappointment')
         user.user_permissions.add(permission)
+        # Category
+        permission = Permission.objects.get(codename=self.permission_view_category)
+        user.user_permissions.add(permission)
         user.save()
         appointment = f.OrganizationAppointmentFactory.create()
 
@@ -362,6 +365,9 @@ class GQLOrganizationAppointment(TestCase):
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        # Category
+        permission = Permission.objects.get(codename=self.permission_view_category)
         user.user_permissions.add(permission)
         user.save()
 
