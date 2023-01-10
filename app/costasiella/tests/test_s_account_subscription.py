@@ -487,12 +487,15 @@ class GQLAccountSubscription(TestCase):
             account,
             variables=variables
         )
+        print(executed)
         data = executed.get('data')
 
         self.assertEqual(
             data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
             variables['input']['organizationSubscription']
         )
+        # TODO: Remove this payment method from the query in the frontend
+        # TODO: Check this on DB level instead of API, user doesn't have permission to view payment methods
         self.assertEqual(
             data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
             to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
