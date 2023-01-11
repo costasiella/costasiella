@@ -185,16 +185,7 @@ class GQLAccountProduct(TestCase):
         query = self.account_products_query
         user = self.account_product.account
 
-        # # View account
-        # permission = Permission.objects.get(codename=self.permission_view_account)
-        # user.user_permissions.add(permission)
-        # # View organization product
-        # permission = Permission.objects.get(codename=self.permission_view_organization_product)
-        # user.user_permissions.add(permission)
-        # user.save()
-
         executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-        print(executed)
         data = executed.get('data')
         self.assertEqual(
             data['accountProducts']['edges'][0]['node']['account']['id'],
