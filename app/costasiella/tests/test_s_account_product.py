@@ -30,6 +30,8 @@ class GQLAccountProduct(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_account = 'view_account'
+        self.permission_view_organization_product = 'view_organizationproduct'
         self.permission_view = 'view_accountproduct'
         self.permission_add = 'add_accountproduct'
         self.permission_change = 'change_accountproduct'
@@ -163,8 +165,15 @@ class GQLAccountProduct(TestCase):
         # Create regular user
         permission = Permission.objects.get(codename=self.permission_view)
         other_user.user_permissions.add(permission)
+        # View account
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        other_user.user_permissions.add(permission)
+        # View organization product
+        permission = Permission.objects.get(codename=self.permission_view_organization_product)
+        other_user.user_permissions.add(permission)
         other_user.save()
         executed = execute_test_client_api_query(query, other_user, variables=self.variables_query)
+
         data = executed.get('data')
         self.assertEqual(
             data['accountProducts']['edges'][0]['node']['account']['id'],
@@ -176,7 +185,16 @@ class GQLAccountProduct(TestCase):
         query = self.account_products_query
         user = self.account_product.account
 
+        # # View account
+        # permission = Permission.objects.get(codename=self.permission_view_account)
+        # user.user_permissions.add(permission)
+        # # View organization product
+        # permission = Permission.objects.get(codename=self.permission_view_organization_product)
+        # user.user_permissions.add(permission)
+        # user.save()
+
         executed = execute_test_client_api_query(query, user, variables=self.variables_query)
+        print(executed)
         data = executed.get('data')
         self.assertEqual(
             data['accountProducts']['edges'][0]['node']['account']['id'],

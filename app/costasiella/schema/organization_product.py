@@ -106,9 +106,16 @@ class OrganizationProductNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
+
+        organization_product = self._meta.model.objects.get(id=id)
+
+        # Allow users to view organization products, if they're added to their account
+        if info.path.typename == "AccountProductNode":
+            return organization_product
+
         require_login_and_permission(user, 'costasiella.view_organizationproduct')
 
-        return self._meta.model.objects.get(id=id)
+        return organization_product
 
 
 class OrganizationProductQuery(graphene.ObjectType):
