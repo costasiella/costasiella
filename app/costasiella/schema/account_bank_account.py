@@ -61,9 +61,12 @@ class AccountBankAccountNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountbankaccount')
 
-        return self._meta.model.objects.get(id=id)
+        account_bank_account = self._meta.model.objects.get(id=id)
+        if not account_bank_account.account == user:
+            require_login_and_permission(user, 'costasiella.view_accountbankaccount')
+
+        return account_bank_account
 
 
 class AccountBankAccountQuery(graphene.ObjectType):
