@@ -17,8 +17,7 @@ from .. import models
 from .. import schema
 
 from ..tasks.account.subscription.credits.tasks import \
-    account_subscription_credits_add_for_month, \
-    account_subscription_credits_expire
+    account_subscription_credits_add_for_month
 
 
 class TaskAccountSubscriptionCredits(TestCase):
@@ -52,14 +51,21 @@ class TaskAccountSubscriptionCredits(TestCase):
         result = account_subscription_credits_add_for_month(year, month)
         self.assertEqual(result, "Added credits for 1 subscriptions")
 
-        # Check expiration amount
-        add_mutation = models.AccountSubscriptionCredit.objects.filter(
-            account_subscription=account_subscription,
-            mutation_type="ADD"
-        ).first()
-        self.assertEqual(float(add_mutation.mutation_amount), expected_credits)
-        self.assertEqual(add_mutation.subscription_year, year)
-        self.assertEqual(add_mutation.subscription_month, month)
+        # Check number of credits added
+        qs = models.AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription
+        )
+        self.assertEqual(qs.count(), expected_credits)
+        # Check contents of first credit given
+        first_credit = qs.first()
+        # Check credit expiration
+        organization_subscription = account_subscription.organization_subscription
+        credit_validity = organization_subscription.credit_validity
+        expected_expiration = today + datetime.timedelta(days=credit_validity)
+        self.assertEqual(first_credit.expiration, expected_expiration)
+        # Check subscription year & month are set
+        self.assertEqual(first_credit.subscription_year, year)
+        self.assertEqual(first_credit.subscription_month, month)
 
     def test_account_subscription_credits_add_for_month_process_enrollments(self):
         """ Are enrolled classes booked """
@@ -76,22 +82,3 @@ class TaskAccountSubscriptionCredits(TestCase):
         # Check classes booked
         classes_booked = models.ScheduleItemAttendance.objects.filter(account_subscription=account_subscription)
         self.assertEqual(len(classes_booked) > 1, True)
-
-    def test_expire_subscription_credits(self):
-        """ Test credit expiration """
-        account_subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
-        account_subscription = account_subscription_credit.account_subscription
-        account_subscription_credit.created_at = account_subscription_credit.created_at - datetime.timedelta(days=100)
-        account_subscription_credit.save()
-
-        # Start credits expiration
-        result = account_subscription_credits_expire()
-        # Check result message
-        self.assertEqual(result, "Expired credits for 1 subscriptions")
-
-        # Check expiration amount
-        sub_mutation = models.AccountSubscriptionCredit.objects.filter(
-            account_subscription=account_subscription,
-            mutation_type="SUB"
-        ).first()
-        self.assertEqual(sub_mutation.mutation_amount, account_subscription_credit.mutation_amount)
