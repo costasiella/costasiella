@@ -24,6 +24,7 @@ class ScheduleItemAttendanceNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     cancellation_until = graphene.types.datetime.DateTime()
     cancellation_possible = graphene.Boolean()
+    uncancellation_possible = graphene.Boolean()
 
 
 class ScheduleItemAttendanceNode(DjangoObjectType):
@@ -88,6 +89,24 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
             return True
         else:
             return False
+
+    def resolve_uncancellation_possible(self, info):
+        from ..dudes import ClassCheckinDude
+
+        uncancel_possible = True
+
+        now = timezone.now()
+        if now.date() > self.date:
+            # It's not possible to book classes in the past
+            uncancel_possible = False
+
+        class_checkin_dude = ClassCheckinDude()
+        class_is_full = class_checkin_dude.check_class_is_full(self.schedule_item, self.date)
+        if class_is_full:
+            uncancel_possible = False
+
+        # Invert value, cancellation is only possible if the class isn't full
+        return uncancel_possible
 
 
 class ScheduleItemAttendanceQuery(graphene.ObjectType):

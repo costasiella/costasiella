@@ -2,6 +2,7 @@ import datetime
 
 from django.utils.translation import gettext as _
 from django.utils import timezone
+from django.db.models import Q
 
 
 from ..modules.cs_errors import \
@@ -51,12 +52,34 @@ class ClassCheckinDude:
         """
         from ..models import ScheduleItemAttendance
         schedule_item_attendance = ScheduleItemAttendance.objects.filter(
-            account=account,
-            schedule_item=schedule_item,
-            date=date
+            Q(account=account),
+            Q(schedule_item=schedule_item),
+            Q(date=date),
+            # ~Q(booking_status="CANCELLED")
         )
         
         return schedule_item_attendance
+
+    def check_class_is_full(self, schedule_item, date):
+        from ..models import ScheduleItemAttendance
+        # from ..schema.schedule_class import calculate_available_spaces_online
+
+        is_full = False
+
+        spaces_total = schedule_item.spaces
+        qs = ScheduleItemAttendance.objects.filter(
+            Q(schedule_item=schedule_item),
+            Q(date=date),
+            ~Q(booking_status="CANCELLED")
+        )
+        spaces_taken = qs.count()
+        # We could look at online spaces only here, but it's also nice to allow as many people as possible to
+        # uncancel their cancellations.
+        if spaces_total - spaces_taken < 1:
+            is_full = True
+
+        return is_full
+
 
     def sell_classpass_and_class_checkin(self, 
                                          account,
@@ -338,8 +361,9 @@ class ClassCheckinDude:
         if account_subscription.account != account:
             raise Exception(_("This subscription doesn't belong to this account"))
 
-        # Check credits remaining
-        if (account_subscription.get_usable_credits_total() - 1) < 0:
+        # Check credits remaining if not unlimited
+        if (account_subscription.get_usable_credits_total() - 1) < 0 and \
+                not account_subscription.organization_subscription.unlimited:
             raise CSClassBookingSubscriptionNoCreditsError(_("Insufficient credits available to book this class"))
 
         # Check blocked:
