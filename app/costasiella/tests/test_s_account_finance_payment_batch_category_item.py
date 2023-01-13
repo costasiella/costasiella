@@ -25,6 +25,8 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_account = 'view_account'
+        self.permission_view_category = 'view_financepaymentbatchcategory'
         self.permission_view = 'view_accountfinancepaymentbatchcategoryitem'
         self.permission_add = 'add_accountfinancepaymentbatchcategoryitem'
         self.permission_change = 'change_accountfinancepaymentbatchcategoryitem'
@@ -312,6 +314,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
         user = f.InstructorFactory.create()
         permission = Permission.objects.get(codename=self.permission_view)
         user.user_permissions.add(permission)
+        # View category
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
         user.save()
         account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
 
@@ -387,6 +392,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
         # Create regular user
         user = account
         permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        # View category
+        permission = Permission.objects.get(codename=self.permission_view_category)
         user.user_permissions.add(permission)
         user.save()
 
@@ -483,6 +491,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
         # Create regular user
         user = account_finance_payment_batch_category_item.account
         permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        # View category
+        permission = Permission.objects.get(codename=self.permission_view_category)
         user.user_permissions.add(permission)
         user.save()
 
