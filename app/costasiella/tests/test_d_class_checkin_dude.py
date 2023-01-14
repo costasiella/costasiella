@@ -200,3 +200,36 @@ class TestDudeClassCheckinDude(TestCase):
             schedule_item=weekly_class,
             date=a_monday
         )
+
+    def test_subscription_checkin_expired_credits_raises_no_credits_exception(self):
+        """
+        No Credits exception should be raised when trying to do a check-in without credits & not unlimited
+        :return:
+        """
+        from ..dudes import ClassCheckinDude
+
+        class_checkin_dude = ClassCheckinDude()
+
+        account_subscription_credit = f.AccountSubscriptionCreditFactory.create()
+        # Expire one day before "a_monday" (scroll down)
+        account_subscription_credit.expiration = datetime.date(2023, 1, 1)
+        account_subscription_credit.save()
+        account_subscription = account_subscription_credit.account_subscription
+        organization_subscription = account_subscription.organization_subscription
+        organization_subscription.unlimited = False
+        organization_subscription.reconciliation_classes = 0
+        organization_subscription.save()
+        weekly_class = f.SchedulePublicWeeklyClassFactory.create()
+
+        # Do check-in and there should be a credit.
+        # Class takes place on a monday
+        a_monday = datetime.date(2023, 1, 2)
+
+        self.assertRaises(
+            CSClassBookingSubscriptionNoCreditsError,
+            class_checkin_dude.class_checkin_subscription,
+            account=account_subscription.account,
+            account_subscription=account_subscription,
+            schedule_item=weekly_class,
+            date=a_monday
+        )
