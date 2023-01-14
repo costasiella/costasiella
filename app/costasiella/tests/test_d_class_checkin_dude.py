@@ -2,29 +2,24 @@
 # These invoice items will change depending on values set in the database and should therefore be tested to be sure
 # that the correct values are being set for the new invoice items.
 
-# from graphql.error.located_error import GraphQLLocatedError
-import graphql
-import base64
 import datetime
 
-from django.contrib.auth import get_user_model
 from django.test import TestCase
-from graphene.test import Client
-from graphql_relay import to_global_id
 from ..modules.date_tools import last_day_month
 
 # Create your tests here.
-from django.db.models import Sum
-from django.contrib.auth.models import AnonymousUser, Permission
-from django.utils import timezone
+from django.contrib.auth.models import AnonymousUser
 
 from . import factories as f
-from .helpers import execute_test_client_api_query
 from .. import dudes
 from .. import models
-from .. import schema
 
-from ..tasks.account.subscription.invoices.tasks import account_subscription_invoices_add_for_month
+from ..modules.cs_errors import \
+    CSClassBookingSubscriptionAlreadyBookedError, \
+    CSClassBookingSubscriptionBlockedError, \
+    CSClassBookingSubscriptionPausedError, \
+    CSClassBookingSubscriptionNoCreditsError
+
 
 
 class TestDudeClassCheckinDude(TestCase):
@@ -100,7 +95,7 @@ class TestDudeClassCheckinDude(TestCase):
 
     def test_subscription_checkin_unlimted_credit_granted(self):
         """
-
+        Unlimitec subscriptions get credit on check-in
         :return:
         """
         from ..dudes import ClassCheckinDude
@@ -108,6 +103,11 @@ class TestDudeClassCheckinDude(TestCase):
         class_checkin_dude = ClassCheckinDude()
 
         account_subscription = f.AccountSubscriptionFactory.create()
+        organzation_subscription = account_subscription.organization_subscription
+        organzation_subscription.unlimited = True
+        organzation_subscription.classes = 0
+        organzation_subscription.save()
+
         weekly_class = f.SchedulePublicWeeklyClassFactory.create()
 
         qs = models.AccountSubscriptionCredit.objects.filter(
@@ -129,3 +129,74 @@ class TestDudeClassCheckinDude(TestCase):
             account_subscription=account_subscription
         )
         self.assertEqual(qs.exists(), True)
+
+    def test_subscription_checkin_limited_advance_credit_granted(self):
+        """
+        Check that an advance credit is granted
+        :return:
+        """
+        from ..dudes import ClassCheckinDude
+
+        class_checkin_dude = ClassCheckinDude()
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        organization_subscription = account_subscription.organization_subscription
+        organization_subscription.unlimited = False
+        organization_subscription.reconciliation_classes = 1
+        organization_subscription.save()
+        weekly_class = f.SchedulePublicWeeklyClassFactory.create()
+
+        qs = models.AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription
+        )
+        self.assertEqual(qs.exists(), False)
+
+        # Do check-in and there should be a credit.
+        # Class takes place on a monday
+        a_monday = datetime.date(2023, 1, 2)
+
+        class_checkin_dude.class_checkin_subscription(
+            account=account_subscription.account,
+            account_subscription=account_subscription,
+            schedule_item=weekly_class,
+            date=a_monday
+        )
+        qs = models.AccountSubscriptionCredit.objects.filter(
+            advance=True,
+            account_subscription=account_subscription
+        )
+        self.assertEqual(qs.exists(), True)
+
+    def test_subscription_checkin_without_credits_raises_no_credits_exception(self):
+        """
+        No Credits exception should be raised when trying to do a check-in without credits & not unlimited
+        :return:
+        """
+        from ..dudes import ClassCheckinDude
+
+        class_checkin_dude = ClassCheckinDude()
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        organization_subscription = account_subscription.organization_subscription
+        organization_subscription.unlimited = False
+        organization_subscription.reconciliation_classes = 0
+        organization_subscription.save()
+        weekly_class = f.SchedulePublicWeeklyClassFactory.create()
+
+        qs = models.AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription
+        )
+        self.assertEqual(qs.exists(), False)
+
+        # Do check-in and there should be a credit.
+        # Class takes place on a monday
+        a_monday = datetime.date(2023, 1, 2)
+
+        self.assertRaises(
+            CSClassBookingSubscriptionNoCreditsError,
+            class_checkin_dude.class_checkin_subscription,
+            account=account_subscription.account,
+            account_subscription=account_subscription,
+            schedule_item=weekly_class,
+            date=a_monday
+        )
