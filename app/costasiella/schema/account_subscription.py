@@ -96,7 +96,9 @@ class AccountSubscriptionNode(DjangoObjectType):
 
     def resolve_credit_total(self, info):
         account_subscription = self._meta.model.objects.get(id=self.id)
-        return account_subscription.get_credits_total()
+        today = timezone.now().date()
+
+        return account_subscription.get_credits_total(today)
 
 
 class AccountSubscriptionQuery(graphene.ObjectType):

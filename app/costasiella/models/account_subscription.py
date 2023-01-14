@@ -371,7 +371,7 @@ class AccountSubscription(models.Model):
 
         return available_credits.first()
 
-    def get_credits_total(self):
+    def get_credits_total(self, date):
         """
 
         :return: Float
@@ -382,18 +382,18 @@ class AccountSubscription(models.Model):
         qs = AccountSubscriptionCredit.objects.filter(
             mutation_type="SINGLE",
             account_subscription=self,
-            expiration__gte=timezone.now().date(),
+            expiration__gte=date,
             schedule_item_attendance__isnull=True
         )
 
         return qs.count()
 
-    def get_usable_credits_total(self):
+    def get_usable_credits_total(self, date):
         """
         Get total credits and add reconciliation credits from subscription (if any)
         :return: Float
         """
-        credits_total = self.get_credits_total()
+        credits_total = self.get_credits_total(date)
         if self.organization_subscription.reconciliation_classes:
             return_value = credits_total + self.organization_subscription.reconciliation_classes
         else:

@@ -362,9 +362,10 @@ class ClassCheckinDude:
             raise Exception(_("This subscription doesn't belong to this account"))
 
         # Check credits remaining if not unlimited
-        if (account_subscription.get_usable_credits_total() - 1) < 0 and \
+        if (account_subscription.get_usable_credits_total(date) - 1) < 0 and \
                 not account_subscription.organization_subscription.unlimited:
-            raise CSClassBookingSubscriptionNoCreditsError(_("Insufficient credits available to book this class"))
+            raise CSClassBookingSubscriptionNoCreditsError(
+                _("Insufficient credits available on %s to book this class") % date)
 
         # Check blocked:
         if account_subscription.get_blocked_on_date(date):
@@ -422,7 +423,7 @@ class ClassCheckinDude:
                 description=_("Unlimited")
             )
             account_subscription_credit.save()
-        elif account_subscription.get_credits_total() < 1:
+        elif account_subscription.get_credits_total(schedule_item_attendance.date) < 1:
             # Give an advance credit if total credits < 0
             # This is ok, because above is a guard clause that checks for the hard limit (with advance credits included)
             today = timezone.now().date()

@@ -925,7 +925,7 @@ class GQLScheduleItemAttendance(TestCase):
         account_subscription_credit = f.AccountSubscriptionCreditAttendanceFactory.create()
         schedule_item_attendance = account_subscription_credit.schedule_item_attendance
         account_subscription = schedule_item_attendance.account_subscription
-        credits_total_before = account_subscription.get_credits_total()
+        credits_total_before = account_subscription.get_credits_total(schedule_item_attendance.date)
 
         variables = self.variables_update_classpass
         variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
@@ -938,7 +938,7 @@ class GQLScheduleItemAttendance(TestCase):
         )
         data = executed.get('data')
 
-        credits_total_after = account_subscription.get_credits_total()
+        credits_total_after = account_subscription.get_credits_total(schedule_item_attendance.date)
 
         self.assertEqual(
           data['updateScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'],
@@ -1077,7 +1077,7 @@ class GQLScheduleItemAttendance(TestCase):
         account_subscription_credit = f.AccountSubscriptionCreditAttendanceFactory.create()
         schedule_item_attendance = account_subscription_credit.schedule_item_attendance
         account_subscription = schedule_item_attendance.account_subscription
-        credits_total_before = account_subscription.get_credits_total()
+        credits_total_before = account_subscription.get_credits_total(schedule_item_attendance.date)
 
         variables = self.variables_delete
         variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
@@ -1089,7 +1089,7 @@ class GQLScheduleItemAttendance(TestCase):
         )
         data = executed.get('data')
 
-        credits_total_after = account_subscription.get_credits_total()
+        credits_total_after = account_subscription.get_credits_total(schedule_item_attendance.date)
 
         self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
         self.assertEqual(credits_total_before + 1, credits_total_after)
