@@ -199,7 +199,7 @@ table#total {
         <tr>
           <th>Product</th>
           <th>Price</th>
-          <th>Quantity</th>
+          <th>Qty</th>
           <th>Subtotal</th>
           <th>Tax</th>
           <th>Total</th>
@@ -208,12 +208,12 @@ table#total {
       <tbody>
         {% for item in items %}
             <tr>
-                <td><b>{{ item.product_name }}</b> <br> {{ item.description }}</td>
-                <td><span class="right">{{ currency_symbol}} {{ item.price }} <br> {{ item.finance_tax_rate.name }} ({{ item.finance_tax_rate.rate_type }})</span></td>
-                <td><span class="right">{{ item.quantity }}</span></td>
-                <td><span class="right">{{ currency_symbol }} {{ item.subtotal }}</span></td>
-                <td><span class="right">{{ currency_symbol }} {{ item.tax }}</span></td>
-                <td><span class="right">{{ currency_symbol}} {{ item.total}}</span></td>
+                <td class="item-product"><b>{{ item.product_name }}</b> <br> {{ item.description|linebreaksbr }}</td>
+                <td class="item-price"><span class="right">{{ currency_symbol}} {{ item.price }} <br> {{ item.finance_tax_rate.name }} ({{ item.finance_tax_rate.rate_type }})</span></td>
+                <td class="item-qty"><span class="right">{{ item.quantity }}</span></td>
+                <td class="item-subtotal"><span class="right">{{ currency_symbol }} {{ item.subtotal }}</span></td>
+                <td class="item-tax"><span class="right">{{ currency_symbol }} {{ item.tax }}</span></td>
+                <td class="item-total"><span class="right">{{ currency_symbol}} {{ item.total}}</span></td>
             </tr>
         {% endfor %}
         <tr class="border-top">
