@@ -1046,6 +1046,14 @@ class AccountSubscriptionCreditAttendanceFactory(factory.DjangoModelFactory):
     expiration = datetime.date(2099, 12, 31)
     description = "Test AccountSubscription credit"
 
+class AccountSubscriptionCreditFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionCredit
+
+    account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+    expiration = datetime.date(2099, 12, 31)
+    description = "Test AccountSubscription credit"
+
 
 class ScheduleEventFactory(factory.DjangoModelFactory):
     class Meta:
