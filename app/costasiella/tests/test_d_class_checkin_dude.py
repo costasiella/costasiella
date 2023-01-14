@@ -98,4 +98,34 @@ class TestDudeClassCheckinDude(TestCase):
         credit_3 = models.AccountSubscriptionCredit.objects.get(id=account_subscription_credit_3.id)
         self.assertEqual(credit_3.schedule_item_attendance, None)
 
-        
+    def test_subscription_checkin_unlimted_credit_granted(self):
+        """
+
+        :return:
+        """
+        from ..dudes import ClassCheckinDude
+
+        class_checkin_dude = ClassCheckinDude()
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        weekly_class = f.SchedulePublicWeeklyClassFactory.create()
+
+        qs = models.AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription
+        )
+        self.assertEqual(qs.exists(), False)
+
+        # Do check-in and there should be a credit.
+        # Class takes place on a monday
+        a_monday = datetime.date(2023, 1, 2)
+
+        class_checkin_dude.class_checkin_subscription(
+            account=account_subscription.account,
+            account_subscription=account_subscription,
+            schedule_item=weekly_class,
+            date=a_monday
+        )
+        qs = models.AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription
+        )
+        self.assertEqual(qs.exists(), True)
