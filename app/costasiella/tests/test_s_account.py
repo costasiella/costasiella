@@ -1,6 +1,6 @@
 import graphene
 import os
-from django.test import TransactionTestCase
+from django.test import TestCase
 from graphene.test import Client
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.contrib.auth import get_user_model
@@ -19,7 +19,7 @@ from .factories import AdminUserFactory
 from allauth.account.models import EmailAddress
 
 
-class GQLAccount(TransactionTestCase):
+class GQLAccount(TestCase):
     # use TransActionTestCase to db is reset after each query
     # https://docs.djangoproject.com/en/2.2/topics/testing/overview/
 
