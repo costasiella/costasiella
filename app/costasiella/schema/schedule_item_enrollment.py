@@ -86,7 +86,7 @@ class ScheduleItemEnrollmentQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitemenrollment')
 
-        return ScheduleItemEnrollment.objects.order_by('account_subscription__account__fullname')
+        return ScheduleItemEnrollment.objects.order_by('account_subscription__account__full_name')
 
         ## Code below can someday be modified to allow a filtering enrollments by accounts & allow users to
         ## view their own enrollments
