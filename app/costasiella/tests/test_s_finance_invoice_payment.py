@@ -317,6 +317,9 @@ class GQLFinanceInvoicePayment(TestCase):
 
         invoice_item = f.FinanceInvoiceItemFactory.create()
         invoice = invoice_item.finance_invoice
+        invoice.total = self.variables_create['input']['amount']
+        invoice.save()
+
         variables = self.variables_create
         variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
 
@@ -347,6 +350,10 @@ class GQLFinanceInvoicePayment(TestCase):
             data['createFinanceInvoicePayment']['financeInvoicePayment']['financePaymentMethod']['id'], 
             variables['input']['financePaymentMethod']
         )
+
+        # Check whether the status has changed to paid
+        invoice = models.FinanceInvoice.objects.get(id=invoice.id)
+        self.assertEqual(invoice.status, "PAID")
 
     def test_create_invoice_payment_anon_user(self):
         """ Don't allow creating invoice payments for non-logged in users """
