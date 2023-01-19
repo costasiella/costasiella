@@ -132,6 +132,7 @@ class Command(BaseCommand):
         self.customers_payment_info_mandates_map = None
         self.classes_map = None
         self.classes_attendance_map = None
+        self.classes_reservation_map = None
         self.classes_otc_map = None
         self.classes_otc_mail_map = None
         self.classes_school_classcards_groups_map = None
@@ -392,6 +393,7 @@ class Command(BaseCommand):
         self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
         self.classes_map = self._import_classes()
         self.classes_attendance_map = self._import_classes_attendance()
+        self.classes_reservation_map = self._import_classes_reservation()
         self.classes_otc_map = self._import_classes_otc()
         self.classes_otc_mail_map = self._import_classes_otc_mail()
         self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
@@ -1694,6 +1696,48 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import classes attendance: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_classes_reservation(self):
+        """
+        Fetch classes_reservation and import it into schedule_item_enrollments in Costasiella
+        :return:
+        """
+        query = "SELECT * FROM classes_reservation where ResType='recurring'"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                date_end = None
+                if record['enddate']:
+                    date_end = record['enddate']
+
+                schedule_item_enrollment = m.ScheduleItemEnrollment(
+                    schedule_item=self.classes_map.get(record['classes_id'], None),
+                    account_subscription=self.customers_subscriptions_map.get(record['customers_subscriptions_id']),
+                    date_start=record['startdate'],
+                    date_end=date_end,
+
+                )
+                schedule_item_enrollment.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_enrollment
+            except django.db.utils.IntegrityError as e:
+                logger.error("Import error for class reservation id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import classes reservation: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
