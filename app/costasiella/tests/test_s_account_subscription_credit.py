@@ -40,6 +40,14 @@ class GQLAccountSubscriptionCredit(TestCase):
             }
         }
 
+        self.variables_create_multiple = {
+            "input": {
+                "accountSubscription": to_global_id("AccountSubscriptionNode", self.account_subscription.id),
+                "description": "test create",
+                "amount": 3,
+            }
+        }
+
         self.variables_update = {
             "input": {
                 "expiration": "2999-01-01",
@@ -353,6 +361,28 @@ class GQLAccountSubscriptionCredit(TestCase):
             data['createAccountSubscriptionCredit']['accountSubscriptionCredit']['description'],
             self.variables_create['input']['description']
         )
+
+    def test_create_subscription_credit_multiple(self):
+        """ Create multiple account subscription credit """
+        query = self.subscription_credit_create_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_create_multiple
+        )
+        data = executed.get('data')
+
+        count = models.AccountSubscriptionCredit.objects.filter(
+            account_subscription=self.account_subscription
+        ).count()
+
+        # input amount +1 == count because there is one credit created in setup
+        self.assertEqual(
+            self.variables_create_multiple['input']['amount'] + 1,
+            count,
+        )
+
 
     def test_create_subscription_anon_user(self):
         """ Don't allow creating account subscription credit for non-logged in users """

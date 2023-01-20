@@ -108,9 +108,14 @@ class AccountSubscriptionCreditQuery(graphene.ObjectType):
 
 
 class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
+    """
+    Returns the last credit added if amount > 1.
+    This behavior is strange, but it's ok for now.
+    """
     class Input:
         account_subscription = graphene.ID(required=True)
         description = graphene.String(required=False, default_value="")
+        amount = graphene.Int(required=False, default_value=1)
 
     account_subscription_credit = graphene.Field(AccountSubscriptionCreditNode)
 
@@ -123,14 +128,16 @@ class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
         result = validate_create_update_input(input, update=False)
 
         today = timezone.now().date()
-        account_subscription_credit = AccountSubscriptionCredit(
-            account_subscription=result['account_subscription'],
-            description=input['description'],
-            expiration=today + datetime.timedelta(
-                days=result['account_subscription'].organization_subscription.credit_validity)
-        )
 
-        account_subscription_credit.save()
+        for i in range(0, input['amount']):
+            account_subscription_credit = AccountSubscriptionCredit(
+                account_subscription=result['account_subscription'],
+                description=input['description'],
+                expiration=today + datetime.timedelta(
+                    days=result['account_subscription'].organization_subscription.credit_validity)
+            )
+
+            account_subscription_credit.save()
 
         return CreateAccountSubscriptionCredit(account_subscription_credit=account_subscription_credit)
 
