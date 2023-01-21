@@ -83,6 +83,8 @@ class ScheduleItem(models.Model):
                                  help_text="Total spaces for this class.")
     walk_in_spaces = models.IntegerField(null=True, default=0,
                                          help_text="Number of walk-in spaces (Can't be booked online).")
+    enrollment_spaces = models.IntegerField(null=True, default=0,
+                                            help_text="Number of spaces for enrollments. (Used for enrollments only")
     date_start = models.DateField()
     date_end = models.DateField(default=None, null=True)
     time_start = models.TimeField()
@@ -116,6 +118,7 @@ class ScheduleItem(models.Model):
     count_booked = models.IntegerField(null=True)
     count_attending = models.IntegerField(null=True)
     count_attending_and_booked = models.IntegerField(null=True)
+    count_enrolled = models.IntegerField(null=True)
     organization_holiday_id = models.IntegerField(null=True)
     organization_holiday_name = models.CharField(max_length=255, default="")
     ################ END EMPTY FIELDS ##################
