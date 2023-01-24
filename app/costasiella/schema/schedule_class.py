@@ -15,6 +15,7 @@ from graphql_relay import to_global_id
 from ..models import Account, \
     ScheduleItem, \
     ScheduleItemAttendance, \
+    ScheduleItemEnrollment, \
     ScheduleItemWeeklyOTC, \
     OrganizationClasstype, \
     OrganizationLevel, \
@@ -680,6 +681,12 @@ class ScheduleClassQuery(graphene.ObjectType):
             booking_status="BOOKED"
         ).count()
 
+        count_enrolled = ScheduleItemEnrollment.objects.filter(
+            Q(schedule_item = schedule_item),
+            Q(date_start__gte = date),
+            (Q(date_end__lte = date) | Q(date_end__isnull = True)),
+        ).count()
+
         sih = ScheduleItemHelper()
         schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, date)
 
@@ -687,6 +694,7 @@ class ScheduleClassQuery(graphene.ObjectType):
 
         total_spaces = schedule_item.spaces or 0
         walk_in_spaces = schedule_item.walk_in_spaces or 0
+        enrollment_spaces = schedule_item.enrollment_spaces or 0
         count_attending_and_booked = count_attending + count_booked
         available_online_spaces = calculate_available_spaces_online(
             total_spaces, walk_in_spaces, count_attending_and_booked
@@ -710,9 +718,11 @@ class ScheduleClassQuery(graphene.ObjectType):
             info_mail_enabled=schedule_item.info_mail_enabled,
             info_mail_content=schedule_item.info_mail_content,
             spaces=total_spaces,
+            enrollment_spaces=enrollment_spaces,
             count_attending=count_attending,
             count_booked=count_booked,
             count_attending_and_booked=count_attending_and_booked,
+            count_enrolled=count_enrolled,
             available_spaces_online=available_online_spaces,
             available_spaces_total=calculate_available_spaces_total(total_spaces, count_attending_and_booked),
             booking_open_on=booking_open_on,
