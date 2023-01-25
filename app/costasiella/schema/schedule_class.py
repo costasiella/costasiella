@@ -59,7 +59,7 @@ class ScheduleClassType(graphene.ObjectType):
     info_mail_enabled = graphene.Boolean()
     info_mail_content = graphene.String()
     spaces = graphene.Int()
-    spaces_enrollment = graphene.Int()
+    enrollment_spaces = graphene.Int()
     count_booked = graphene.Int()
     count_attending = graphene.Int()
     count_attending_and_booked = graphene.Int()
@@ -378,6 +378,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
             total_spaces = item.spaces or 0
             walk_in_spaces = item.walk_in_spaces or 0
+            enrollment_spaces = item.enrollment_spaces or 0
             count_attending = item.count_attending or 0
             count_booked = item.count_booked or 0
             count_attending_and_booked = item.count_attending_and_booked or 0
