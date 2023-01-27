@@ -68,6 +68,7 @@ class GQLScheduleClass(TestCase):
                 "timeEnd": "12:30:00",
                 "spaces": 20,
                 "walkInSpaces": 5,
+                "enrollmentSpaces": 10,
                 "displayPublic": True,
                 "infoMailEnabled": False
             }
@@ -103,6 +104,7 @@ class GQLScheduleClass(TestCase):
                 "timeEnd": "17:30:00",
                 "spaces": 20,
                 "walkInSpaces": 5,
+                "enrollmentSpaces": 12,
                 "displayPublic": True,
                 "infoMailEnabled": False
             }
@@ -245,6 +247,7 @@ class GQLScheduleClass(TestCase):
         timeEnd
         displayPublic
         infoMailEnabled
+        enrollmentSpaces
       }
     }
   }
@@ -280,6 +283,7 @@ class GQLScheduleClass(TestCase):
         timeEnd
         displayPublic
         infoMailEnabled
+        enrollmentSpaces
       }
     }
   }
@@ -968,6 +972,8 @@ class GQLScheduleClass(TestCase):
                          variables['input']['displayPublic'])
         self.assertEqual(data['createScheduleClass']['scheduleItem']['infoMailEnabled'],
                          variables['input']['infoMailEnabled'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['enrollmentSpaces'],
+                         variables['input']['enrollmentSpaces'])
 
     def test_create_scheduleclass_last_weekday_of_month(self):
         """ Create a weekly scheduleclass """
@@ -1135,6 +1141,8 @@ class GQLScheduleClass(TestCase):
                          variables['input']['displayPublic'])
         self.assertEqual(data['updateScheduleClass']['scheduleItem']['infoMailEnabled'],
                          variables['input']['infoMailEnabled'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['enrollmentSpaces'],
+                         variables['input']['enrollmentSpaces'])
 
     def test_update_scheduleclass_last_weekday_of_month(self):
         """ Update a scheduleclass """
