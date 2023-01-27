@@ -53,6 +53,7 @@ class ScheduleItemNode(DjangoObjectType):
             'name',
             'spaces',
             'walk_in_spaces',
+            'enrollment_spaces',
             'date_start',
             'date_end',
             'time_start',
