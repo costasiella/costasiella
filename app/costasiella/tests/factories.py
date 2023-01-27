@@ -933,6 +933,7 @@ class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     time_start = datetime.time(6, 0)
     time_end = datetime.time(9, 0)
     display_public = True
+    enrollment_spaces = 10
 
 
 class SchedulePublicWeeklyClassOTCFactory(factory.DjangoModelFactory):

@@ -181,6 +181,7 @@ class GQLScheduleClass(TestCase):
         timeEnd
         displayPublic
         bookingStatus
+        enrollmentSpaces
       }
     }
   }
@@ -209,6 +210,7 @@ class GQLScheduleClass(TestCase):
       bookingStatus
       bookingOpenOn
       infoMailEnabled
+      enrollmentSpaces
     }
   }
 '''
@@ -371,6 +373,10 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(
             data['scheduleClasses'][0]['classes'][0]['displayPublic'],
             schedule_class.display_public
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['enrollmentSpaces'],
+            schedule_class.enrollment_spaces
         )
 
     def test_query_last_weekday_of_month(self):
@@ -697,6 +703,7 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['scheduleClass']['frequencyType'], schedule_class.frequency_type)
         self.assertEqual(data['scheduleClass']['timeStart'], str(schedule_class.time_start))
         self.assertEqual(data['scheduleClass']['timeEnd'], str(schedule_class.time_end))
+        self.assertEqual(data['scheduleClass']['enrollmentSpaces'], schedule_class.enrollment_spaces)
         self.assertEqual(data['scheduleClass']['organizationLocationRoom']['id'],
                          to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id))
         self.assertEqual(data['scheduleClass']['organizationClasstype']['id'],
