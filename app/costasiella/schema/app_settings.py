@@ -4,6 +4,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
+from django.conf import settings
 
 from ..models import AppSettings, SystemSetting
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
@@ -16,6 +17,7 @@ class AppSettingsNodeInterface(graphene.Interface):
     time_format_moment = graphene.String()
     date_time_format_moment = graphene.String()
     online_payments_available = graphene.Boolean()
+    account_signup_enabled = graphene.Boolean()
 
 
 class AppSettingsNode(DjangoObjectType):
@@ -59,6 +61,24 @@ class AppSettingsNode(DjangoObjectType):
                 mollie_configured = True
 
         return mollie_configured
+
+    def resolve_account_signup_enabled(self, info):
+        """
+        Check if account sign up is open or closed
+        :param info:
+        :return:
+        """
+        signup_enabled = True
+
+        try:
+            if settings.ACCOUNT_ADAPTER == \
+                    'costasiella.allauth_adapters.account_adapter_no_signup.AccountAdapterNoSignup':
+                signup_enabled = False
+        except AttributeError:
+            # settings.ACCOUNT_ADAPTER is not set and the default values are used
+            pass
+
+        return signup_enabled
 
     @classmethod
     def get_node(self, info, id):

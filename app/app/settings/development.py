@@ -35,6 +35,9 @@ ORPHANED_APPS_MEDIABASE_DIRS = {
     }
 }
 
+# Uncomment the line below to disable user signups
+# ACCOUNT_ADAPTER = 'costasiella.allauth_adapters.account_adapter_no_signup.AccountAdapterNoSignup'
+
 # Re-enable this once it doesn't break promises
 # 'graphene_django.debug.DjangoDebugMiddleware'
 if DEBUG:
