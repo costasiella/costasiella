@@ -154,18 +154,31 @@ class CreateScheduleItemEnrollment(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleitemenrollment')
 
+        date_start = input['date_start']
+
         validation_result = validate_schedule_item_enrollment_create_update_input(input)
+        account_subscription = validation_result['account_subscription']
 
         schedule_item_enrollment = ScheduleItemEnrollment(
             schedule_item=validation_result['schedule_item'],
-            account_subscription=validation_result['account_subscription'],
-            date_start=input['date_start']
+            account_subscription=account_subscription,
+            date_start=date_start
         )
 
         if 'date_end' in input:
             schedule_item_enrollment.date_end = input['date_end']
 
         schedule_item_enrollment.save()
+
+        # Book enrollment classes for this and next month
+        first_day_of_month = datetime.date(date_start.year, date_start.month, 1)
+        first_day_of_next_month = first_day_of_month + datetime.timedelta(days=32)
+        account_subscription.book_enrolled_classes_for_month(
+            first_day_of_month.year, first_day_of_month.month
+        )
+        account_subscription.book_enrolled_classes_for_month(
+            first_day_of_next_month.year, first_day_of_next_month.month
+        )
 
         return CreateScheduleItemEnrollment(schedule_item_enrollment=schedule_item_enrollment)
 
