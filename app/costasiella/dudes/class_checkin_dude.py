@@ -6,6 +6,8 @@ from django.db.models import Q
 
 
 from ..modules.cs_errors import \
+    CSClassFullyBookedError, \
+    CSClassDoesNotTakePlaceOnDateError, \
     CSClassBookingSubscriptionAlreadyBookedError, \
     CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
@@ -342,6 +344,7 @@ class ClassCheckinDude:
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
+        from .class_schedule_dude import ClassScheduleDude
         from ..models import ScheduleItemAttendance
 
         # Check if not already signed in
@@ -374,6 +377,17 @@ class ClassCheckinDude:
         # Check paused:
         if account_subscription.get_paused_on_date(date):
             raise CSClassBookingSubscriptionPausedError(_("This subscription is paused on %s") % date)
+
+        #TODO: Put the next two checks into a general function that can be used in all check-in functions
+
+        # Check full
+        if self.check_class_is_full(schedule_item, date):
+            raise CSClassFullyBookedError(_("This class is fully booked on %s") % date)
+
+        # Check class takes place
+        class_schedule_dude = ClassScheduleDude()
+        if not class_schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
+            raise CSClassDoesNotTakePlaceOnDateError(_("This class doesn't take place on %s") % date)
 
         # Subscription valid on date
         if account_subscription.date_end:
