@@ -766,6 +766,9 @@ class GQLScheduleClass(TestCase):
     def test_query_one_booking_status_full(self):
         """ Query one schedule_item as admin - booking status full """
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        schedule_class.spaces = 0
+        schedule_class.save()
+
         today = datetime.date.today()
         next_monday = next_weekday(today, 1)
 
