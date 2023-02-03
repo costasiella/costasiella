@@ -22,7 +22,7 @@ cssselect2==0.2.2
 decorator==4.3.2
 defusedxml==0.7.1
 Deprecated==1.2.13
-Django==4.0.7
+Django==4.0.9
 django-allauth==0.47.0
 django-celery-beat==2.3.0
 django-celery-results==2.4.0
