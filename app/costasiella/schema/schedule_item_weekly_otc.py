@@ -5,7 +5,13 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype, OrganizationLocationRoom, OrganizationLevel
+from ..models import Account, \
+    ScheduleItem, \
+    ScheduleItemWeeklyOTC, \
+    OrganizationClasstype, \
+    OrganizationLocationRoom, \
+    OrganizationLevel, \
+    OrganizationShift
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
