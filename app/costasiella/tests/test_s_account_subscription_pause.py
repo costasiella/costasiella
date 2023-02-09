@@ -1,4 +1,6 @@
 # from graphql.error.located_error import GraphQLLocatedError
+import datetime
+
 import graphql
 import base64
 
@@ -310,6 +312,75 @@ class GQLAccountSubscriptionPause(TestCase):
             data['createAccountSubscriptionPause']['accountSubscriptionPause']['description'],
             variables['input']['description']
         )
+
+    def test_create_subscription_pause_booked_classes_in_pause_cancelled(self):
+        """ Create an account subscription pause and check if classed booked within pause are cancelled """
+        query = self.subscription_pause_create_mutation
+
+        schedule_item_attendance = f.ScheduleItemAttendanceSubscriptionFactory.create()
+        account_subscription = schedule_item_attendance.account_subscription
+        account_subscription_credit = f.AccountSubscriptionCreditFactory.create(
+            account_subscription=account_subscription
+        )
+        account_subscription_credit.schedule_item_attendance = schedule_item_attendance
+        account_subscription_credit.save()
+
+        variables = self.variables_create
+        variables['input']['accountSubscription'] = to_global_id(
+            'AccountSubscriptionNode', account_subscription.id
+        )
+        variables['input']['dateStart'] = str(schedule_item_attendance.date)
+        variables['input']['dateEnd'] = str(schedule_item_attendance.date + datetime.timedelta(days=7))
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountSubscriptionPause']['accountSubscriptionPause']['accountSubscription']['id'],
+            variables['input']['accountSubscription']
+        )
+
+        refetched_schedule_item_attendance = models.ScheduleItemAttendance.objects.get(id=schedule_item_attendance.id)
+        self.assertEqual(refetched_schedule_item_attendance.booking_status, 'CANCELLED')
+
+    def test_create_subscription_pause_booked_classes_credit_returned(self):
+        """ Create an account subscription pause and check if credits for classed booked within pause are returned """
+        query = self.subscription_pause_create_mutation
+
+        schedule_item_attendance = f.ScheduleItemAttendanceSubscriptionFactory.create()
+        account_subscription = schedule_item_attendance.account_subscription
+        account_subscription_credit = f.AccountSubscriptionCreditFactory.create(
+            account_subscription=account_subscription
+        )
+        account_subscription_credit.schedule_item_attendance = schedule_item_attendance
+        account_subscription_credit.save()
+
+        variables = self.variables_create
+        variables['input']['accountSubscription'] = to_global_id(
+            'AccountSubscriptionNode', account_subscription.id
+        )
+        variables['input']['dateStart'] = str(schedule_item_attendance.date)
+        variables['input']['dateEnd'] = str(schedule_item_attendance.date + datetime.timedelta(days=7))
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountSubscriptionPause']['accountSubscriptionPause']['accountSubscription']['id'],
+            variables['input']['accountSubscription']
+        )
+
+        refetched_credit = models.AccountSubscriptionCredit.objects.get(id=account_subscription_credit.id)
+        self.assertEqual(refetched_credit.schedule_item_attendance, None)
+
 
     def test_create_subscription_pause_raises_exception_when_min_duration_not_reached(self):
         """
