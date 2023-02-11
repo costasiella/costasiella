@@ -124,7 +124,7 @@ class MailTemplateDude:
                 class_time = schedule_item_weekly_otc.time_start
 
             if schedule_item_weekly_otc.organization_classtype:
-                classtype = schedule_item_weekly_otc.classtype.name
+                classtype = schedule_item_weekly_otc.organization_classtype.name
 
             if schedule_item_weekly_otc.organization_location_room:
                 location = schedule_item_weekly_otc.organization_location_room.organization_location.name
