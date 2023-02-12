@@ -369,7 +369,7 @@ class OrganizationSubscriptionFactory(factory.DjangoModelFactory):
     min_duration = 1
     classes = 1
     subscription_unit = "WEEK"
-    credit_accumulation_days = 1
+    credit_validity = 1
     reconciliation_classes = 1
     registration_fee = 20
     unlimited = False
@@ -753,21 +753,20 @@ class AccountSubscriptionPauseFactory(factory.DjangoModelFactory):
     description = "Pause test description"
 
 
-class AccountSubscriptionCreditAddFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.AccountSubscriptionCredit
-
-    class Params:
-        initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
-
-    account_subscription = factory.LazyAttribute(
-        lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
-            AccountSubscriptionFactory
-        )
-    )
-    mutation_type = "ADD"
-    mutation_amount = 10
-    description = "Test add mutation"
+# class AccountSubscriptionCreditAddFactory(factory.DjangoModelFactory):
+#     class Meta:
+#         model = models.AccountSubscriptionCredit
+#
+#     class Params:
+#         initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+#
+#     account_subscription = factory.LazyAttribute(
+#         lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
+#             AccountSubscriptionFactory
+#         )
+#     )
+#     description = "Test add mutation"
+#     expiration = datetime.date(2099, 12, 31)
 
 
 class AccountMembershipFactory(factory.DjangoModelFactory):
@@ -934,6 +933,8 @@ class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     time_start = datetime.time(6, 0)
     time_end = datetime.time(9, 0)
     display_public = True
+    spaces = 10
+    enrollment_spaces = 10
 
 
 class SchedulePublicWeeklyClassOTCFactory(factory.DjangoModelFactory):
@@ -952,6 +953,7 @@ class SchedulePublicWeeklyClassOTCFactory(factory.DjangoModelFactory):
     organization_level = factory.SelfAttribute('schedule_item.organization_level')
     time_start = datetime.time(11, 0)
     time_end = datetime.time(12, 30)
+    info_mail_enabled = False
 
 
 class SchedulePublicLastWeekdayOfMonthClassFactory(factory.DjangoModelFactory):
@@ -1037,15 +1039,22 @@ class ScheduleItemEnrollmentFactory(factory.DjangoModelFactory):
     date_end = datetime.date(2999, 12, 30)
 
 
-class AccountSubscriptionCreditAttendanceSubFactory(factory.DjangoModelFactory):
+class AccountSubscriptionCreditAttendanceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscriptionCredit
 
     schedule_item_attendance = factory.SubFactory(ScheduleItemAttendanceSubscriptionFactory)
     account_subscription = factory.SelfAttribute('schedule_item_attendance.account_subscription')
-    mutation_type = "SUB"
-    mutation_amount = 1
-    description = "Test subscription SUB mutation"
+    expiration = datetime.date(2099, 12, 31)
+    description = "Test AccountSubscription credit"
+
+class AccountSubscriptionCreditFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionCredit
+
+    account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+    expiration = datetime.date(2099, 12, 31)
+    description = "Test AccountSubscription credit"
 
 
 class ScheduleEventFactory(factory.DjangoModelFactory):

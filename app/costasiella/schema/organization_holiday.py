@@ -29,9 +29,14 @@ class OrganizationHolidayNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
+
+        organization_holiday = self._meta.model.objects.get(id=id)
+        if info.path.typename == "OrganizationHolidayLocationNode":
+            return organization_holiday
+
         require_login_and_permission(user, 'costasiella.view_organizationholiday')
 
-        return self._meta.model.objects.get(id=id)
+        return organization_holiday
 
 
 class OrganizationHolidayQuery(graphene.ObjectType):

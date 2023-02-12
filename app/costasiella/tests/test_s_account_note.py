@@ -26,6 +26,7 @@ class GQLAccountNote(TestCase):
         self.permission_view = 'view_accountnote'
         self.permission_view_backoffice = 'view_accountnotebackoffice'
         self.permission_view_instructors = 'view_accountnoteinstructors'
+        self.permission_view_account = 'view_account'
         self.permission_add = 'add_accountnote'
         self.permission_change = 'change_accountnote'
         self.permission_delete = 'delete_accountnote'
@@ -50,7 +51,7 @@ class GQLAccountNote(TestCase):
         }
 
         self.account_notes_query = '''
-  query AccountNotes($after: String, $before: String, $account: ID!, $noteType: String!) {
+  query AccountNotes($after: String, $before: String, $account: ID!, $noteType: CostasiellaAccountNoteNoteTypeChoices!) {
     accountNotes(first: 15, before: $before, after: $after, account: $account, noteType: $noteType ) {
       pageInfo {
         startCursor
@@ -209,6 +210,9 @@ class GQLAccountNote(TestCase):
         user = get_user_model().objects.get(pk=account_note.account.id)
         permission = Permission.objects.get(codename='view_accountnote')
         user.user_permissions.add(permission)
+        # View account
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
         user.save()
 
         executed = execute_test_client_api_query(query, user, variables=variables)
@@ -295,6 +299,10 @@ class GQLAccountNote(TestCase):
         # View backoffice notes permission
         permission = Permission.objects.get(codename=self.permission_view_backoffice)
         user.user_permissions.add(permission)
+        # View account
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
+
         user.save()
 
         variables = {
@@ -452,6 +460,9 @@ class GQLAccountNote(TestCase):
 
         user = account_note.account
         permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        # View account
+        permission = Permission.objects.get(codename=self.permission_view_account)
         user.user_permissions.add(permission)
         user.save()
 

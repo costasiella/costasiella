@@ -132,6 +132,7 @@ class Command(BaseCommand):
         self.customers_payment_info_mandates_map = None
         self.classes_map = None
         self.classes_attendance_map = None
+        self.classes_reservation_map = None
         self.classes_otc_map = None
         self.classes_otc_mail_map = None
         self.classes_school_classcards_groups_map = None
@@ -140,7 +141,6 @@ class Command(BaseCommand):
         self.shifts_map = None
         self.shifts_otc_map = None
         self.shifts_staff_map = None
-        self.customers_subscriptions_credits_map = None
         self.workshops_map = None
         self.workshops_activities_map = None
         self.workshops_products_map = None
@@ -392,6 +392,7 @@ class Command(BaseCommand):
         self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
         self.classes_map = self._import_classes()
         self.classes_attendance_map = self._import_classes_attendance()
+        self.classes_reservation_map = self._import_classes_reservation()
         self.classes_otc_map = self._import_classes_otc()
         self.classes_otc_mail_map = self._import_classes_otc_mail()
         self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
@@ -400,7 +401,6 @@ class Command(BaseCommand):
         self.shifts_map = self._import_shifts()
         self.shifts_otc_map = self._import_shifts_otc()
         self.shifts_staff_map = self._import_shifs_staff()
-        self.customers_subscriptions_credits_map = self._import_customers_subscriptions_credits()
         self.workshops_map = self._import_workshops()
         self.workshops_activities_map = self._import_workshops_activities()
         self.workshops_products_map = self._import_workshops_products()
@@ -753,7 +753,7 @@ class Command(BaseCommand):
                 classes=record['classes'] or 0,
                 subscription_unit=self.map_validity_units_subscriptions.get(record['subscriptionunit'], 'MONTH'),
                 reconciliation_classes=record['reconciliationclasses'],
-                credit_accumulation_days=record['creditvalidity'] or 1,
+                credit_validity=record['creditvalidity'] or 1,
                 unlimited=self._web2py_bool_to_python(record['unlimited']),
                 terms_and_conditions=record['terms'] or "",
                 registration_fee=record['registrationfee'] or 0,
@@ -1699,6 +1699,48 @@ class Command(BaseCommand):
 
         return id_map
 
+    def _import_classes_reservation(self):
+        """
+        Fetch classes_reservation and import it into schedule_item_enrollments in Costasiella
+        :return:
+        """
+        query = "SELECT * FROM classes_reservation where ResType='recurring'"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                date_end = None
+                if record['enddate']:
+                    date_end = record['enddate']
+
+                schedule_item_enrollment = m.ScheduleItemEnrollment(
+                    schedule_item=self.classes_map.get(record['classes_id'], None),
+                    account_subscription=self.customers_subscriptions_map.get(record['customers_subscriptions_id']),
+                    date_start=record['startdate'],
+                    date_end=date_end,
+
+                )
+                schedule_item_enrollment.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_enrollment
+            except django.db.utils.IntegrityError as e:
+                logger.error("Import error for class reservation id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import classes reservation: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
     def _import_classes_otc(self):
         """
         Fetch classes and import it in Costasiella.
@@ -2054,44 +2096,69 @@ class Command(BaseCommand):
         :param cursor: MySQL db cursor
         :return: None
         """
-        query = "SELECT * FROM customers_subscriptions_credits"
+        today = timezone.now().date()
+
+        query = """
+SELECT 
+	customers_subscriptions_id, 
+	( SELECT CEILING(SUM(mutationamount)) 
+		FROM customers_subscriptions_credits csc_added 
+		WHERE customers_subscriptions_id = csc.customers_subscriptions_id 
+		AND MutationType = "add") as credits_added,
+	( SELECT FLOOR(SUM(mutationamount)) 
+		FROM customers_subscriptions_credits csc_added 
+		WHERE customers_subscriptions_id = csc.customers_subscriptions_id 
+		AND MutationType = "sub") as credits_used,
+	( SELECT credits_added - credits_used) as credits_remaining
+FROM customers_subscriptions_credits csc 
+GROUP BY customers_subscriptions_id 
+        """
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
-        id_map = {}
         records_imported = 0
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
-            try:
-                account_subscription_credit = m.AccountSubscriptionCredit(
-                    account_subscription=self.customers_subscriptions_map.get(
-                        record['customers_subscriptions_id'], None
-                    ),
-                    schedule_item_attendance=self.classes_attendance_map.get(
-                        record['classes_attendance_id'], None
-                    ),
-                    mutation_type=record['mutationtype'].upper(),
-                    mutation_amount=record['mutationamount'],
-                    description=record['description'] or "",
-                    subscription_year=record['subscriptionyear'],
-                    subscription_month=record['subscriptionmonth']
+            if record['credits_remaining'] > 0:
+                ## Calculate expiration
+                account_subscription = account_subscription=self.customers_subscriptions_map.get(
+                    record['customers_subscriptions_id'], None
                 )
-                account_subscription_credit.save()
-                records_imported += 1
+                if not account_subscription:
+                    logger.error("Import error for customers subscriptions credits (subscription id): %s" % (
+                        record['customers_subscriptions_id']
+                    ))
+                    continue
 
-                id_map[record['id']] = account_subscription_credit
-            except django.db.utils.IntegrityError as e:
-                logger.error("Import error for customers subscriptions credits id: %s: %s" % (
-                    record['id'],
-                    e
-                ))
+                credit_validity = account_subscription.organization_subscription.credit_validity
+                credit_expiration = today + datetime.timedelta(days=credit_validity)
+
+                for i in range(0, record['credits_remaining']):
+                    try:
+                        # With expiration defined by organization subscription
+                        account_subscription_credit = m.AccountSubscriptionCredit(
+                            account_subscription=account_subscription,
+                            expiration=credit_expiration,
+                            description="Imported from OpenStudio"
+                        )
+                        account_subscription_credit.save()
+                        records_imported += 1
+
+                    except django.db.utils.IntegrityError as e:
+                        logger.error("Import error for customers subscriptions credits id: %s: %s" % (
+                            record['id'],
+                            e
+                        ))
 
         log_message = "Import customers subscriptions credits: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
-        return id_map
+        # No id map is generated, as the credit schema in Costasiella differs from the one in OpenStudio
+        # There can be no 1:1 mapping of credits.
+
+        return None
 
     def _import_workshop_picture(self, schedule_event, os_picture_file_name, sort_order):
         """

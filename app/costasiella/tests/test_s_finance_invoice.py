@@ -68,7 +68,7 @@ class GQLFinanceInvoice(TestCase):
         }
 
         self.invoices_query = '''
-  query FinanceInvoices($after: String, $before: String, $status: String) {
+  query FinanceInvoices($after: String, $before: String, $status: CostasiellaFinanceInvoiceStatusChoices) {
     financeInvoices(first: 15, before: $before, after: $after, status: $status) {
       pageInfo {
         hasNextPage

@@ -37,6 +37,7 @@ class ScheduleItemWeeklyOTC(models.Model):
                                  help_text="Total spaces for this class.")
     walk_in_spaces = models.IntegerField(null=True, default=0,
                                          help_text="Number of walk-in spaces (Can't be booked online).")
+    info_mail_enabled = models.BooleanField(default=True)
     info_mail_content = models.TextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -24,6 +24,7 @@ class GQLFinancePaymentBatchExport(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_batch = 'view_financepaymentbatch'
         self.permission_view = 'view_financepaymentbatchexport'
 
         self.finance_payment_batch_export = f.FinancePaymentBatchExportFactory.create()
@@ -111,6 +112,9 @@ class GQLFinancePaymentBatchExport(TestCase):
         user = self.finance_payment_batch_export.account
         permission = Permission.objects.get(codename=self.permission_view)
         user.user_permissions.add(permission)
+        # Batch
+        permission = Permission.objects.get(codename=self.permission_view_batch)
+        user.user_permissions.add(permission)
         user.save()
 
         executed = execute_test_client_api_query(query, user, variables=variables)
@@ -172,6 +176,9 @@ class GQLFinancePaymentBatchExport(TestCase):
         """ Respond with data when user has permission """
         user = self.finance_payment_batch_export.account
         permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        # Batch
+        permission = Permission.objects.get(codename=self.permission_view_batch)
         user.user_permissions.add(permission)
         user.save()
         # Payment method Cash from fixtures

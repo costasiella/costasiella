@@ -35,7 +35,8 @@ class ScheduleEventTicket(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return model_string(self)
+        return f"Schedule Event Ticket: {self.schedule_event.name} - {self.name} ({self.price})"
+        # return model_string(self)
 
     def save(self, *args, **kwargs):
         self.subtotal = self._calculate_subtotal()

@@ -26,6 +26,7 @@ class GQLFinanceInvoiceGroupDefaultDefault(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_group = 'view_financeinvoicegroup'
         self.permission_view = 'view_financeinvoicegroupdefault'
         self.permission_add = 'add_financeinvoicegroupdefault'
         self.permission_change = 'change_financeinvoicegroupdefault'
@@ -130,6 +131,9 @@ query FinanceInvoiceGroupDefaults {
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename='view_financeinvoicegroupdefault')
+        user.user_permissions.add(permission)
+        # View group
+        permission = Permission.objects.get(codename=self.permission_view_group)
         user.user_permissions.add(permission)
         user.save()
 
@@ -265,6 +269,9 @@ query FinanceInvoiceGroupDefaults {
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        # View group
+        permission = Permission.objects.get(codename=self.permission_view_group)
         user.user_permissions.add(permission)
         user.save()
 

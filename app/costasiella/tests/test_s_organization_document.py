@@ -69,7 +69,7 @@ class GQLOrganizationDocument(TestCase):
         }
 
         self.organization_documents_query = '''
-  query OrganizationDocuments($documentType: String!) {
+  query OrganizationDocuments($documentType: CostasiellaOrganizationDocumentDocumentTypeChoices!) {
     organizationDocuments(documentType:$documentType) {
       pageInfo {
         hasNextPage

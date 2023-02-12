@@ -1,6 +1,15 @@
-from django.utils.translation import gettext as _
+import datetime
 
-from ..modules.cs_errors import CSClassBookingSubscriptionBlockedError, \
+from django.utils.translation import gettext as _
+from django.utils import timezone
+from django.db.models import Q
+
+
+from ..modules.cs_errors import \
+    CSClassFullyBookedError, \
+    CSClassDoesNotTakePlaceOnDateError, \
+    CSClassBookingSubscriptionAlreadyBookedError, \
+    CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
     CSClassBookingSubscriptionNoCreditsError
 
@@ -14,13 +23,19 @@ class ClassCheckinDude:
         :param date: datetime.date object
         :return:
         """
+        from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
         from ..dudes.mail_dude import MailDude
 
-        mail_dude = MailDude(account=account,
-                             email_template="class_info_mail",
-                             schedule_item=schedule_item,
-                             date=date)
-        mail_dude.send()
+        # Use the helper to make sure we're also checking one time change (otc) data
+        sih = ScheduleItemHelper()
+        schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, date)
+
+        if schedule_item.info_mail_enabled:
+            mail_dude = MailDude(account=account,
+                                 email_template="class_info_mail",
+                                 schedule_item=schedule_item,
+                                 date=date)
+            mail_dude.send()
 
     def class_check_checkedin(self, account, schedule_item, date):
         """
@@ -39,12 +54,34 @@ class ClassCheckinDude:
         """
         from ..models import ScheduleItemAttendance
         schedule_item_attendance = ScheduleItemAttendance.objects.filter(
-            account=account,
-            schedule_item=schedule_item,
-            date=date
+            Q(account=account),
+            Q(schedule_item=schedule_item),
+            Q(date=date),
+            # ~Q(booking_status="CANCELLED")
         )
         
         return schedule_item_attendance
+
+    def check_class_is_full(self, schedule_item, date):
+        from ..models import ScheduleItemAttendance
+        # from ..schema.schedule_class import calculate_available_spaces_online
+
+        is_full = False
+
+        spaces_total = schedule_item.spaces
+        qs = ScheduleItemAttendance.objects.filter(
+            Q(schedule_item=schedule_item),
+            Q(date=date),
+            ~Q(booking_status="CANCELLED")
+        )
+        spaces_taken = qs.count()
+        # We could look at online spaces only here, but it's also nice to allow as many people as possible to
+        # uncancel their cancellations.
+        if spaces_total - spaces_taken < 1:
+            is_full = True
+
+        return is_full
+
 
     def sell_classpass_and_class_checkin(self, 
                                          account,
@@ -307,7 +344,9 @@ class ClassCheckinDude:
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
+        from .class_schedule_dude import ClassScheduleDude
         from ..models import ScheduleItemAttendance
+
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
         if qs.exists():
@@ -315,7 +354,9 @@ class ClassCheckinDude:
             schedule_item_attendance = qs.first()
 
             if not schedule_item_attendance == 'REVIEW':
-                raise Exception(_('This account is already checked in to this class'))
+                raise CSClassBookingSubscriptionAlreadyBookedError(
+                    _('This account is already checked in to this class')
+                )
             # else:
             #TODO: Write review check-ins code
 
@@ -323,9 +364,11 @@ class ClassCheckinDude:
         if account_subscription.account != account:
             raise Exception(_("This subscription doesn't belong to this account"))
 
-        # Check credits remaining
-        if (account_subscription.get_usable_credits_total() - 1) < 0:
-            raise CSClassBookingSubscriptionNoCreditsError(_("Insufficient credits available to book this class"))
+        # Check credits remaining if not unlimited
+        if (account_subscription.get_usable_credits_total(date) - 1) < 0 and \
+                not account_subscription.organization_subscription.unlimited:
+            raise CSClassBookingSubscriptionNoCreditsError(
+                _("Insufficient credits available on %s to book this class") % date)
 
         # Check blocked:
         if account_subscription.get_blocked_on_date(date):
@@ -334,6 +377,17 @@ class ClassCheckinDude:
         # Check paused:
         if account_subscription.get_paused_on_date(date):
             raise CSClassBookingSubscriptionPausedError(_("This subscription is paused on %s") % date)
+
+        #TODO: Put the next two checks into a general function that can be used in all check-in functions
+
+        # Check full
+        if self.check_class_is_full(schedule_item, date):
+            raise CSClassFullyBookedError(_("This class is fully booked on %s") % date)
+
+        # Check class takes place
+        class_schedule_dude = ClassScheduleDude()
+        if not class_schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
+            raise CSClassDoesNotTakePlaceOnDateError(_("This class doesn't take place on %s") % date)
 
         # Subscription valid on date
         if account_subscription.date_end:
@@ -344,6 +398,7 @@ class ClassCheckinDude:
         if date_invalid_condition:
             raise Exception(_('This subscription is not valid on this date.'))
 
+        # Book class
         schedule_item_attendance = ScheduleItemAttendance(
             attendance_type="SUBSCRIPTION",
             account=account,
@@ -353,11 +408,14 @@ class ClassCheckinDude:
             online_booking=online_booking,
             booking_status=booking_status
         )
-
         schedule_item_attendance.save()
 
-        self.class_checkin_subscription_subtract_credit(schedule_item_attendance)
+        # Take credit (Link oldest credit to attendance)
+        self.class_checkin_subscription_take_credit(
+            schedule_item_attendance=schedule_item_attendance
+        )
 
+        # Send info mail
         self.send_info_mail(
             account=account,
             schedule_item=schedule_item,
@@ -366,44 +424,38 @@ class ClassCheckinDude:
 
         return schedule_item_attendance
 
-    def class_checkin_subscription_subtract_credit(self, schedule_item_attendance):
-        """
-        Subtract one credit from a subscription when checking in to a class
-        :param account_subscription:
-        :param schedule_item:
-        :param date:
-        :return:
-        """
-        from ..dudes import AppSettingsDude, ClassScheduleDude
+    def class_checkin_subscription_take_credit(self, schedule_item_attendance):
         from ..models import AccountSubscriptionCredit
 
-        app_settings_dude = AppSettingsDude()
-        class_schedule_dude = ClassScheduleDude()
+        account_subscription = schedule_item_attendance.account_subscription
+        # Take credit (Link oldest credit to attendance)
+        # Give a credit for unlimited subscriptions, so booking is always possible
+        if account_subscription.organization_subscription.unlimited:
+            account_subscription_credit = AccountSubscriptionCredit(
+                account_subscription=account_subscription,
+                expiration=timezone.now().date(),
+                description=_("Unlimited")
+            )
+            account_subscription_credit.save()
+        elif account_subscription.get_credits_total(schedule_item_attendance.date) < 1:
+            # Give an advance credit if total credits < 0
+            # This is ok, because above is a guard clause that checks for the hard limit (with advance credits included)
+            today = timezone.now().date()
+            validity_in_days = account_subscription.organization_subscription.credit_validity
+            expiration = today + datetime.timedelta(days=validity_in_days)
 
-        schedule_item_otc = class_schedule_dude.schedule_class_with_otc_data(
-            schedule_item_attendance.schedule_item,
-            schedule_item_attendance.date
-        )
+            account_subscription_credit = AccountSubscriptionCredit(
+                advance=True,
+                account_subscription=account_subscription,
+                expiration=expiration,
+                description=_("Advance credit")
+            )
+            account_subscription_credit.save()
+        else:
+            # Regular flow, get next credit in line (first in, first out)
+            account_subscription_credit = account_subscription.get_next_credit()
 
-        # Get otc date time, type and location, if any.
-        description = _("{date} {time} - {classtype} in {location}").format(
-            date=schedule_item_attendance.date.strftime(
-                app_settings_dude.date_format
-            ),
-            time=schedule_item_attendance.schedule_item.time_start.strftime(
-                app_settings_dude.time_format
-            ),
-            classtype=schedule_item_otc.organization_classtype.name,
-            location=schedule_item_otc.organization_location_room.organization_location.name
-        )
-
-        account_subscription_credit = AccountSubscriptionCredit(
-            account_subscription=schedule_item_attendance.account_subscription,
-            schedule_item_attendance=schedule_item_attendance,
-            mutation_amount=1,
-            mutation_type="SUB",
-            description=description
-        )
+        account_subscription_credit.schedule_item_attendance = schedule_item_attendance
         account_subscription_credit.save()
 
     def subscription_class_permissions(self, account_subscription):

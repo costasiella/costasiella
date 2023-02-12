@@ -21,7 +21,7 @@ from .schedule_item import ScheduleItemNode
 from .schedule_item_price import ScheduleItemPriceNode
 
 from ..dudes import ClassCheckinDude, ClassScheduleDude
-
+from ..modules.gql_tools import get_error_code
 
 m = Messages()
 
@@ -41,6 +41,7 @@ class ScheduleClassBookingSubscriptionType(graphene.ObjectType):
     allowed = graphene.Boolean()  
     blocked = graphene.Boolean()
     paused = graphene.Boolean()
+    credits_on_date = graphene.Int()
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
     
@@ -163,6 +164,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
                     allowed=allowed,
                     blocked=blocked,
                     paused=paused,
+                    credits_on_date=subscription.get_credits_total(self.date),
                     account_subscription=subscription,
                 )
             )
@@ -256,7 +258,9 @@ def validate_schedule_class_booking_options_input(account, schedule_item, date, 
     # Check if schedule item takes place on date
     schedule_dude = ClassScheduleDude()
     if not schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
-        raise Exception("This class doesn't take place on date: " + str(date))
+        raise GraphQLError(
+            f"This class doesn't take place on date: {date}" ,
+            extensions={'code': get_error_code('CLASS_DOESNT_TAKE_PLACE_ON_DATE')})
 
     return result
 

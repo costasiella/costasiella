@@ -1,4 +1,5 @@
 import graphene
+from graphene_django.debug import DjangoDebug
 import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
@@ -218,6 +219,7 @@ class Query(AccountQuery,
             SystemSettingQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
+    debug = graphene.Field(DjangoDebug, name="_debug")
 
 
 class Mutation(AccountMutation,

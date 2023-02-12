@@ -13,6 +13,8 @@ from ..modules.encrypted_fields import EncryptedTextField
 from .choices.account_country_codes import get_account_country_codes
 from .choices.account_genders import get_account_genders
 
+from .helpers import model_string
+
 
 class Account(AbstractUser):
     # add additional fields in here
@@ -67,7 +69,7 @@ class Account(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "Account: %s" % self.email
+        return f"Account: {self.email} ({self.id})"
 
     def save(self, *args, **kwargs):
         name = [self.first_name, self.last_name]

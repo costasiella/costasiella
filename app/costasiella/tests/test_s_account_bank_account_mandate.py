@@ -25,6 +25,8 @@ class GQLAccountBankAccountMandate(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_account = 'view_account'
+        self.permission_view_bank_account = 'view_accountbankaccount'
         self.permission_view = 'view_accountbankaccountmandate'
         self.permission_add = 'add_accountbankaccountmandate'
         self.permission_change = 'change_accountbankaccountmandate'
@@ -214,6 +216,12 @@ class GQLAccountBankAccountMandate(TestCase):
         user = f.InstructorFactory.create()
         permission = Permission.objects.get(codename='view_accountbankaccountmandate')
         user.user_permissions.add(permission)
+        # View bank account
+        permission = Permission.objects.get(codename=self.permission_view_bank_account)
+        user.user_permissions.add(permission)
+        # View bank account
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
         user.save()
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
@@ -287,15 +295,17 @@ class GQLAccountBankAccountMandate(TestCase):
         user = f.InstructorFactory.create()
         permission = Permission.objects.get(codename='view_accountbankaccountmandate')
         user.user_permissions.add(permission)
+        # View bank account
+        permission = Permission.objects.get(codename=self.permission_view_bank_account)
+        user.user_permissions.add(permission)
         user.save()
         account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
 
-        # First query locations to get node id easily
-        node_id = to_global_id('AccountBankAccountMandateNode', account_bank_account_mandate.pk)
-
         # Now query single location and check
         query = self.account_bank_account_mandate_query
-        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        executed = execute_test_client_api_query(query, user, variables={"id": to_global_id(
+            "AccountBankAccountMandateNode", account_bank_account_mandate.id
+        )})
         data = executed.get('data')
         self.assertEqual(data['accountBankAccountMandate']['accountBankAccount']['id'],
           to_global_id('AccountBankAccountNode', account_bank_account_mandate.account_bank_account.pk))
@@ -426,6 +436,9 @@ class GQLAccountBankAccountMandate(TestCase):
         # Create regular user
         user = account_bank_account_mandate.account_bank_account.account
         permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        # View bank account
+        permission = Permission.objects.get(codename=self.permission_view_bank_account)
         user.user_permissions.add(permission)
         user.save()
 

@@ -1,7 +1,16 @@
-from django.http import Http404, HttpResponse
+import datetime
+
 from django.utils.translation import gettext as _
 
+from math import ceil
+
+from django.http import Http404, HttpResponse
+from django.utils import timezone
+from django.db.models import Q, Sum
+
 from ..models import \
+    AccountSubscription, \
+    AccountSubscriptionCredit, \
     FinanceInvoiceGroup, \
     FinanceInvoiceGroupDefault, \
     FinanceQuoteGroup, \
@@ -35,6 +44,9 @@ def update(request):
 
     if current_version < 2022.05:
         _update_to_2022_05()
+
+    if current_version < 2022.07:
+        _update_to_2022_07()
 
     # Set latest version
     new_version = version_dude.update_version()
@@ -141,3 +153,48 @@ def _update_to_2022_05():
     organization.branding_color_accent = "#1EE494"
     organization.branding_color_secondary = "#AA99AA"
     organization.save()
+
+def _update_to_2022_07():
+    """
+    Update db values to 2022.07
+    :return: None
+    """
+    ## Migrate to individual credits
+    now = timezone.now()
+    today = now.date()
+    # Loop over all active account non-unlimited subscriptions
+    # Credit for unlimited subscriptions
+    account_subscriptions = AccountSubscription.objects.filter(
+        Q(date_start__lte=today) &
+        (Q(date_end__gte=today) | Q(date_end__isnull=True)),
+        Q(organization_subscription__unlimited=False)
+    )
+    for account_subscription in account_subscriptions:
+        ## Calculate expiration
+        credit_validity = account_subscription.organization_subscription.credit_validity
+        credit_expiration = today + datetime.timedelta(days=credit_validity)
+
+        ## Count current total for each (rounded up)
+        qs_add = AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription,
+            mutation_type="ADD"
+        ).aggregate(Sum('mutation_amount'))
+        qs_sub = AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription,
+            mutation_type="SUB"
+        ).aggregate(Sum('mutation_amount'))
+
+        total_add = qs_add['mutation_amount__sum'] or 0
+        total_sub = qs_sub['mutation_amount__sum'] or 0
+
+        # Round up to nearest int
+        total_credits_to_add = ceil(total_add - total_sub)
+        # Use a range to add individual credits
+        for i in range(0, total_credits_to_add):
+            # With expiration defined by organization subscription
+            account_subscription_credit = AccountSubscriptionCredit(
+                account_subscription=account_subscription,
+                expiration=credit_expiration,
+                description=_("Migrated from previous credit system")
+            )
+            account_subscription_credit.save()

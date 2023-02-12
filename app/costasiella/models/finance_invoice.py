@@ -113,12 +113,16 @@ class FinanceInvoice(models.Model):
         self.paid = payment_sum['amount__sum'] or 0
         self.balance = self.total - self.paid
 
+        if self.balance <= 0:
+            self.status = "PAID"
+
         self.save(update_fields=[
             "subtotal",
             "tax",
             "total",
             "paid",
-            "balance"
+            "balance",
+            "status"
         ])
 
     def _first_invoice_in_group_this_year(self, year): 

@@ -25,6 +25,7 @@ class GQLScheduleItemAccount(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_account = 'view_account'
         self.permission_view = 'view_scheduleitemaccount'
         self.permission_add = 'add_scheduleitemaccount'
         self.permission_change = 'change_scheduleitemaccount'
@@ -212,7 +213,10 @@ class GQLScheduleItemAccount(TestCase):
 
         # Create regular user
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_scheduleitemaccount')
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        # View account
+        permission = Permission.objects.get(codename=self.permission_view_account)
         user.user_permissions.add(permission)
         user.save()
 
@@ -299,7 +303,10 @@ class GQLScheduleItemAccount(TestCase):
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_scheduleitemaccount')
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        # Permission view account
+        permission = Permission.objects.get(codename=self.permission_view_account)
         user.user_permissions.add(permission)
         user.save()
         
@@ -374,6 +381,9 @@ class GQLScheduleItemAccount(TestCase):
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        # Permission view account
+        permission = Permission.objects.get(codename=self.permission_view_account)
         user.user_permissions.add(permission)
         user.save()
 
@@ -476,6 +486,9 @@ class GQLScheduleItemAccount(TestCase):
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        # Permission view account
+        permission = Permission.objects.get(codename=self.permission_view_account)
         user.user_permissions.add(permission)
         user.save()
 

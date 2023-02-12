@@ -51,6 +51,7 @@ class GQLScheduleItemWeeklyOTC(TestCase):
                 "organizationLevel": to_global_id('OrganizationLevelNode', self.class_otc.organization_level.id),
                 "timeStart": "04:30:00",
                 "timeEnd": "07:00:00",
+                "infoMailEnabled": True
             }
         }
 
@@ -98,6 +99,7 @@ class GQLScheduleItemWeeklyOTC(TestCase):
           }
           timeStart
           timeEnd
+          infoMailEnabled
         }
       }
     }
@@ -198,6 +200,7 @@ class GQLScheduleItemWeeklyOTC(TestCase):
         }
         timeStart
         timeEnd
+        infoMailEnabled
       }
     }
   }
@@ -263,6 +266,8 @@ class GQLScheduleItemWeeklyOTC(TestCase):
         )
         self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['timeStart'], str(self.class_otc.time_start))
         self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['timeEnd'], str(self.class_otc.time_end))        
+        self.assertEqual(data['scheduleItemWeeklyOtcs']['edges'][0]['node']['infoMailEnabled'],
+                         self.class_otc.info_mail_enabled)
 
 
     def test_query_permission_denied(self):
@@ -365,6 +370,10 @@ class GQLScheduleItemWeeklyOTC(TestCase):
         self.assertEqual(
           data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['timeEnd'], 
           variables['input']['timeEnd']
+        )
+        self.assertEqual(
+          data['updateScheduleItemWeeklyOtc']['scheduleItemWeeklyOtc']['infoMailEnabled'],
+          variables['input']['infoMailEnabled']
         )
 
 

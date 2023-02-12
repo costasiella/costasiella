@@ -124,6 +124,7 @@ class CreateAccountSubscriptionPause(graphene.relay.ClientIDMutation):
         )
 
         account_subscription_pause.save()
+        account_subscription_pause.cancel_booked_classes_during_pause()
 
         return CreateAccountSubscriptionPause(account_subscription_pause=account_subscription_pause)
 

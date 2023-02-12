@@ -15,6 +15,7 @@ from graphql_relay import to_global_id
 from ..models import Account, \
     ScheduleItem, \
     ScheduleItemAttendance, \
+    ScheduleItemEnrollment, \
     ScheduleItemWeeklyOTC, \
     OrganizationClasstype, \
     OrganizationLevel, \
@@ -55,11 +56,14 @@ class ScheduleClassType(graphene.ObjectType):
     time_start = graphene.types.datetime.Time()
     time_end = graphene.types.datetime.Time()
     display_public = graphene.Boolean()
+    info_mail_enabled = graphene.Boolean()
     info_mail_content = graphene.String()
     spaces = graphene.Int()
+    enrollment_spaces = graphene.Int()
     count_booked = graphene.Int()
     count_attending = graphene.Int()
     count_attending_and_booked = graphene.Int()
+    count_enrolled = graphene.Int()
     available_spaces_online = graphene.Int()
     available_spaces_total = graphene.Int()
     booking_open_on = graphene.types.datetime.Date()
@@ -270,6 +274,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                      THEN csiotc.walk_in_spaces
                      ELSE csi.walk_in_spaces
                      END AS walk_in_spaces,
+               csi.enrollment_spaces as enrollment_spaces,
                {attendance_count_sql}
             FROM costasiella_scheduleitem csi
             LEFT JOIN costasiella_organizationlocationroom csi_olr ON csi.organization_location_room_id = csi_olr.id
@@ -373,9 +378,11 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
             total_spaces = item.spaces or 0
             walk_in_spaces = item.walk_in_spaces or 0
+            enrollment_spaces = item.enrollment_spaces or 0
             count_attending = item.count_attending or 0
             count_booked = item.count_booked or 0
             count_attending_and_booked = item.count_attending_and_booked or 0
+            count_enrolled = item.count_enrolled or 0
             available_online_spaces = calculate_available_spaces_online(
                 total_spaces, walk_in_spaces, count_attending_and_booked
             )
@@ -402,9 +409,11 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     time_end=item.time_end,
                     display_public=item.display_public,
                     spaces=total_spaces,
+                    enrollment_spaces=enrollment_spaces,
                     count_attending=count_attending,
                     count_booked=count_booked,
                     count_attending_and_booked=count_attending_and_booked,
+                    count_enrolled=count_enrolled,
                     available_spaces_online=available_online_spaces,
                     available_spaces_total=calculate_available_spaces_total(total_spaces, count_attending_and_booked),
                     booking_open_on=booking_open_on,
@@ -673,6 +682,12 @@ class ScheduleClassQuery(graphene.ObjectType):
             booking_status="BOOKED"
         ).count()
 
+        count_enrolled = ScheduleItemEnrollment.objects.filter(
+            Q(schedule_item = schedule_item),
+            Q(date_start__gte = date),
+            (Q(date_end__lte = date) | Q(date_end__isnull = True)),
+        ).count()
+
         sih = ScheduleItemHelper()
         schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, date)
 
@@ -680,6 +695,7 @@ class ScheduleClassQuery(graphene.ObjectType):
 
         total_spaces = schedule_item.spaces or 0
         walk_in_spaces = schedule_item.walk_in_spaces or 0
+        enrollment_spaces = schedule_item.enrollment_spaces or 0
         count_attending_and_booked = count_attending + count_booked
         available_online_spaces = calculate_available_spaces_online(
             total_spaces, walk_in_spaces, count_attending_and_booked
@@ -700,11 +716,14 @@ class ScheduleClassQuery(graphene.ObjectType):
             organization_level=schedule_item.organization_level,
             time_start=schedule_item.time_start,
             time_end=schedule_item.time_end,
+            info_mail_enabled=schedule_item.info_mail_enabled,
             info_mail_content=schedule_item.info_mail_content,
             spaces=total_spaces,
+            enrollment_spaces=enrollment_spaces,
             count_attending=count_attending,
             count_booked=count_booked,
             count_attending_and_booked=count_attending_and_booked,
+            count_enrolled=count_enrolled,
             available_spaces_online=available_online_spaces,
             available_spaces_total=calculate_available_spaces_total(total_spaces, count_attending_and_booked),
             booking_open_on=booking_open_on,
@@ -845,7 +864,9 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         time_end = graphene.types.datetime.Time(required=True)
         spaces = graphene.types.Int(required=True)
         walk_in_spaces = graphene.Int(required=True)
+        enrollment_spaces = graphene.Int(required=False)
         display_public = graphene.Boolean(required=True, default_value=False)
+        info_mail_enabled = graphene.Boolean(required=False)
         info_mail_content = graphene.String()
 
     schedule_item = graphene.Field(ScheduleItemNode)
@@ -866,17 +887,21 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
             time_end=input['time_end'],   
             display_public=input['display_public'],
             spaces=input['spaces'],
-            walk_in_spaces=input['walk_in_spaces']
+            walk_in_spaces=input['walk_in_spaces'],
         )
 
         # Optional fields
-        date_end = input.get('date_end', None)
-        if date_end:
-            schedule_item.date_end = date_end
+        if 'date_end' in input:
+            schedule_item.date_end = input['date_end']
 
-        info_mail_content = input.get('info_mail_content', None)
-        if info_mail_content:
-            schedule_item.info_mail_content = info_mail_content
+        if 'info_mail_content' in input:
+            schedule_item.info_mail_content = input['info_mail_content']
+
+        if 'info_mail_enabled' in input:
+            schedule_item.info_mail_enabled = input['info_mail_enabled']
+
+        if 'enrollment_spaces' in input:
+            schedule_item.enrollment_spaces = input['enrollment_spaces']
 
         # Fields requiring additional validation
         if result['organization_location_room']:
@@ -912,7 +937,9 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         time_end = graphene.types.datetime.Time(required=False)
         spaces = graphene.types.Int(required=False)
         walk_in_spaces = graphene.Int(required=False)
+        enrollment_spaces = graphene.Int(required=False)
         display_public = graphene.Boolean(required=False)
+        info_mail_enabled = graphene.Boolean(required=False)
         info_mail_content = graphene.String(default_value="")
 
     schedule_item = graphene.Field(ScheduleItemNode)
@@ -958,6 +985,12 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
 
         if 'walk_in_spaces' in input:
             schedule_item.walk_in_spaces = input['walk_in_spaces']
+
+        if 'enrollment_spaces' in input:
+            schedule_item.enrollment_spaces = input['enrollment_spaces']
+
+        if 'info_mail_enabled' in input:
+            schedule_item.info_mail_enabled = input['info_mail_enabled']
 
         if 'info_mail_content' in input:
             schedule_item.info_mail_content = input['info_mail_content']

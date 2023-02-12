@@ -5,7 +5,13 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype, OrganizationLocationRoom, OrganizationLevel
+from ..models import Account, \
+    ScheduleItem, \
+    ScheduleItemWeeklyOTC, \
+    OrganizationClasstype, \
+    OrganizationLocationRoom, \
+    OrganizationLevel, \
+    OrganizationShift
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -38,6 +44,7 @@ class ScheduleItemWeeklyOTCNode(DjangoObjectType):
             'time_end',
             'spaces',
             'walk_in_spaces',
+            'info_mail_enabled',
             'info_mail_content',
             'created_at',
             'updated_at'
@@ -224,8 +231,9 @@ class UpdateScheduleItemWeeklyOTC(graphene.relay.ClientIDMutation):
         time_end = graphene.types.datetime.Time(required=False)
         spaces = graphene.Int(required=False)
         walk_in_spaces = graphene.Int(required=False)
+        info_mail_enabled = graphene.Boolean(required=False)
         info_mail_content = graphene.String(required=False)
-        
+
     schedule_item_weekly_otc = graphene.Field(ScheduleItemWeeklyOTCNode)
 
     @classmethod
@@ -282,6 +290,9 @@ class UpdateScheduleItemWeeklyOTC(graphene.relay.ClientIDMutation):
 
         if 'walk_in_spaces' in input:
             schedule_item_weekly_otc.walk_in_spaces = input['walk_in_spaces']
+
+        if 'info_mail_enabled' in input:
+            schedule_item_weekly_otc.info_mail_enabled = input['info_mail_enabled']
 
         if 'info_mail_content' in input:
             schedule_item_weekly_otc.info_mail_content = input['info_mail_content']

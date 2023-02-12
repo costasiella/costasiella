@@ -273,15 +273,33 @@ class GQLOrganizationLocationRoom(TestCase):
         # Now query single location and check
         query = self.location_room_query
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationLocationRoom']['name'], location_room.name)
+
+    def test_query_one_anon_user_archived_or_non_public(self):
+        """ Deny permission for anon users Query one location room """
+        location_room = f.OrganizationLocationRoomFactory.create()
+        location_room.archived = True
+        location_room.display_public = False
+        location_room.save()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('OrganizationLocationRoomNode', location_room.pk)
+
+        # Now query single location and check
+        query = self.location_room_query
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_query_one_permission_denied(self):
+    def test_query_one_permission_denied_archived(self):
         """ Permission denied message when user lacks authorization """   
         # Create regular user
         user = f.RegularUserFactory.create()
         location_room = f.OrganizationLocationRoomFactory.create()
+        location_room.archived = True
+        location_room.save()
 
         # First query locations to get node id easily
         node_id = to_global_id('OrganizationLocationRoomNode', location_room.pk)
@@ -292,14 +310,50 @@ class GQLOrganizationLocationRoom(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
+    def test_query_one_permission_denied_non_public(self):
+        """ Permission denied message when user lacks authorization """
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        location_room = f.OrganizationLocationRoomFactory.create()
+        location_room.display_public = False
+        location_room.save()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('OrganizationLocationRoomNode', location_room.pk)
+
+        # Now query single location and check
+        query = self.location_room_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_no_permission(self):
+        """ Ok when user lacks authorization for archived & public """
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        location_room = f.OrganizationLocationRoomFactory.create()
+
+
+        # First query locations to get node id easily
+        node_id = to_global_id('OrganizationLocationRoomNode', location_room.pk)
+
+        # Now query single location and check
+        query = self.location_room_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationLocationRoom']['name'], location_room.name)
+
 
     def test_query_one_permission_granted(self):
-        """ Respond with data when user has permission """   
+        """ Respond with data when user has permission to view archived & non public rooms """
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename='view_organizationlocationroom')
         user.user_permissions.add(permission)
         user.save()
         location_room = f.OrganizationLocationRoomFactory.create()
+        location_room.archived = True
+        location_room.display_public = False
+        location_room.save()
 
         # First query locations to get node id easily
         node_id = to_global_id('OrganizationLocationRoomNode', location_room.pk)

@@ -3,7 +3,7 @@ import graphql
 import base64
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from graphene.test import Client
 
 # Create your tests here.
@@ -32,7 +32,6 @@ class GQLAppSettings(TestCase):
         self.permission_change = 'change_appsettings'
         self.permission_delete = 'delete_appsettings'
 
-
         self.variables_update = {
             "input": {
                 "dateFormat": "DD-MM-YYYY",
@@ -45,6 +44,7 @@ class GQLAppSettings(TestCase):
     appSettings(id: "QXBwU2V0dGluZ3NOb2RlOjE=") {
       dateFormat
       timeFormat
+      accountSignupEnabled
     }
   }
 '''
@@ -76,6 +76,18 @@ class GQLAppSettings(TestCase):
 
         self.assertEqual(data['appSettings']['dateFormat'], "YYYY-MM-DD")
         self.assertEqual(data['appSettings']['timeFormat'], "24")
+        self.assertTrue(data['appSettings']['accountSignupEnabled'])
+
+    @override_settings(ACCOUNT_ADAPTER=\
+                               'costasiella.allauth_adapters.account_adapter_no_signup.AccountAdapterNoSignup')
+    def test_query_one_signup_closed(self):
+        """ Query appsettings as admin - signup closed """
+        # print(to_global_id('AppSettingsNode', 1))
+
+        executed = execute_test_client_api_query(self.appsettings_query, self.admin_user)
+        data = executed.get('data')
+
+        self.assertFalse(data['appSettings']['accountSignupEnabled'])
 
 
     # query is allowed publicly

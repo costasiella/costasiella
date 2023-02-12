@@ -24,6 +24,7 @@ class ScheduleItemAttendanceNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     cancellation_until = graphene.types.datetime.DateTime()
     cancellation_possible = graphene.Boolean()
+    uncancellation_possible = graphene.Boolean()
 
 
 class ScheduleItemAttendanceNode(DjangoObjectType):
@@ -63,7 +64,6 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
         require_login(user)
 
         schedule_item_attendance = cls._meta.model.objects.get(id=id)
-
         # Accounts can view their own attendance
         if not schedule_item_attendance.account.id == user.id:
             require_login_and_one_of_permissions(user, [
@@ -89,6 +89,24 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
             return True
         else:
             return False
+
+    def resolve_uncancellation_possible(self, info):
+        from ..dudes import ClassCheckinDude
+
+        uncancel_possible = True
+
+        now = timezone.now()
+        if now.date() > self.date:
+            # It's not possible to book classes in the past
+            uncancel_possible = False
+
+        class_checkin_dude = ClassCheckinDude()
+        class_is_full = class_checkin_dude.check_class_is_full(self.schedule_item, self.date)
+        if class_is_full:
+            uncancel_possible = False
+
+        # Invert value, cancellation is only possible if the class isn't full
+        return uncancel_possible
 
 
 class ScheduleItemAttendanceQuery(graphene.ObjectType):
@@ -313,12 +331,17 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         if schedule_item_attendance.account_classpass:
              schedule_item_attendance.account_classpass.update_classes_remaining()
 
-        # Refund subscription credit (remove it)
+        # Update subscription credit status
         if schedule_item_attendance.account_subscription:
+            # Refund subscription credit (Unlink schedule item attendance)
             if input['booking_status'] == 'CANCELLED':
-                AccountSubscriptionCredit.objects.filter(
+                account_subscription_credit = AccountSubscriptionCredit.objects.filter(
                     schedule_item_attendance=schedule_item_attendance,
-                ).delete()
+                ).first()
+                account_subscription_credit.schedule_item_attendance = None
+                account_subscription_credit.save()
+
+            # Link schedule item attendance to a credit, if not already linked
             if input['booking_status'] == 'BOOKED' or input['booking_status'] == 'ATTENDING':
                 qs = AccountSubscriptionCredit.objects.filter(
                     schedule_item_attendance=schedule_item_attendance
@@ -326,7 +349,7 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
                 if not qs.exists():
                     from ..dudes import ClassCheckinDude
                     class_checkin_dude = ClassCheckinDude()
-                    class_checkin_dude.class_checkin_subscription_subtract_credit(schedule_item_attendance)
+                    class_checkin_dude.class_checkin_subscription_take_credit(schedule_item_attendance)
 
         return UpdateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 

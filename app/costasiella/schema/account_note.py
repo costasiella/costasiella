@@ -8,7 +8,7 @@ from graphql import GraphQLError
 
 from ..models import Account, AccountNote
 from ..models.choices.account_note_types import get_account_note_types
-from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..dudes.system_setting_dude import SystemSettingDude
 

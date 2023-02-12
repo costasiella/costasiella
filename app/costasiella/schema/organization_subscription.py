@@ -79,7 +79,7 @@ class OrganizationSubscriptionNode(DjangoObjectType):
             'classes',
             'subscription_unit',
             'reconciliation_classes',
-            'credit_accumulation_days',
+            'credit_validity',
             'unlimited',
             'terms_and_conditions',
             'registration_fee',
@@ -142,11 +142,17 @@ class OrganizationSubscriptionNode(DjangoObjectType):
 
         # Return only public non-archived subscriptions without a further permission check
         organization_subscription = self._meta.model.objects.get(id=id)
+        user_has_subscription = user.subscriptions.filter(organization_subscription=organization_subscription).exists()
 
-        if (not organization_subscription.display_public and not organization_subscription.display_shop) or \
+        if user_has_subscription:
+            # Users can get info about subscriptions they have
+            return organization_subscription
+        elif (not organization_subscription.display_public and not organization_subscription.display_shop) or \
                 organization_subscription.archived:
+            # But for all other archived or non-public ones, they need permissions
             require_login_and_permission(user, 'costasiella.view_organizationsubscription')
 
+        # Return if user has permission, or it's public and not archived.
         return organization_subscription
 
 
@@ -175,7 +181,7 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
         classes = graphene.Int(required=True, default_value=1)
         subscription_unit = graphene.String(required=True)
         reconciliation_classes = graphene.Int(required=False, default_value=0)
-        credit_accumulation_days = graphene.Int(required=False, default_value=0)
+        credit_validity = graphene.Int(required=False, default_value=0)
         unlimited = graphene.Boolean(required=True, default_value=False)
         terms_and_conditions = graphene.String(required=False, default_value="")
         registration_fee = graphene.Decimal(required=False, default_value=Decimal(0))
@@ -203,7 +209,7 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
             classes=input['classes'],
             subscription_unit=input['subscription_unit'],
             reconciliation_classes=input['reconciliation_classes'],
-            credit_accumulation_days=input['credit_accumulation_days'],
+            credit_validity=input['credit_validity'],
             unlimited=input['unlimited'],
             terms_and_conditions=input['terms_and_conditions'],
             registration_fee=input['registration_fee'],
@@ -233,7 +239,7 @@ class UpdateOrganizationSubscription(graphene.relay.ClientIDMutation):
         classes = graphene.Int(required=False)
         subscription_unit = graphene.String(required=False)
         reconciliation_classes = graphene.Int(required=False)
-        credit_accumulation_days = graphene.Int(required=False)
+        credit_validity = graphene.Int(required=False)
         unlimited = graphene.Boolean(required=False)
         terms_and_conditions = graphene.String(required=False)
         registration_fee = graphene.Decimal(required=False)
@@ -282,8 +288,8 @@ class UpdateOrganizationSubscription(graphene.relay.ClientIDMutation):
         if 'reconciliation_classes' in input:
             subscription.reconciliation_classes=input['reconciliation_classes']
 
-        if 'credit_accumulation_days' in input:
-            subscription.credit_accumulation_days = input['credit_accumulation_days']
+        if 'credit_validity' in input:
+            subscription.credit_validity = input['credit_validity']
 
         if 'unlimited' in input:
             subscription.unlimited = input['unlimited']

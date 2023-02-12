@@ -43,6 +43,9 @@ GRAPHQL_JWT = {
 STATIC_ROOT = "/opt/static"
 MEDIA_ROOT = "/opt/media"
 
+# Uncomment the line below to disable user signups
+# ACCOUNT_ADAPTER = 'costasiella.allauth_adapters.account_adapter_no_signup.AccountAdapterNoSignup'
+
 # Orphaned files cleanup
 ORPHANED_APPS_MEDIABASE_DIRS = {
     'costasiella': {

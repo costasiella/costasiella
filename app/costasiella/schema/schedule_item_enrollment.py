@@ -9,6 +9,7 @@ from django.conf import settings
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
+from django_filters import FilterSet, OrderingFilter
 
 from ..models import AccountSubscription, ScheduleItem, ScheduleItemEnrollment
 from ..modules.gql_tools import require_login, require_login_and_permission, \
@@ -20,10 +21,29 @@ from ..tasks import cancel_booked_classes_after_enrollment_end
 
 m = Messages()
 
+class ScheduleItemEnrollmentFilter(FilterSet):
+    class Meta:
+        model = ScheduleItemEnrollment
+        fields = {
+            'schedule_item': ['exact'],
+            'account_subscription': ['exact'],
+            'account_subscription__account': ['exact'],
+            'date_start': ['exact', 'gte', 'lte'],
+            'date_end': ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull']
+        }
+
+    order_by = OrderingFilter(
+        fields=(
+            ('date_start', 'date_start'), # order by field, display name (used in query)
+            ('account_subscription__account__full_name', 'full_name'), # order by field, display name (used in query)
+        )
+    )
+
 
 class ScheduleItemEnrollmentNode(DjangoObjectType):
     class Meta:
         model = ScheduleItemEnrollment
+        filterset_class = ScheduleItemEnrollmentFilter
         fields = (
             'schedule_item',
             'account_subscription',
@@ -33,13 +53,13 @@ class ScheduleItemEnrollmentNode(DjangoObjectType):
             'updated_at'
         )
         # account_schedule_event_ticket_Isnull filter can be used to differentiate class & event enrollment
-        filter_fields = {
-            'schedule_item': ['exact'],
-            'account_subscription': ['exact'],
-            'account_subscription__account': ['exact'],
-            'date_start': ['exact', 'gte', 'lte'],
-            'date_end': ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull']
-        }
+        # filter_fields = {
+        #     'schedule_item': ['exact'],
+        #     'account_subscription': ['exact'],
+        #     'account_subscription__account': ['exact'],
+        #     'date_start': ['exact', 'gte', 'lte'],
+        #     'date_end': ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull']
+        # }
         interfaces = (graphene.relay.Node,)
 
     @classmethod
@@ -51,14 +71,22 @@ class ScheduleItemEnrollmentNode(DjangoObjectType):
 
 
 class ScheduleItemEnrollmentQuery(graphene.ObjectType):
-    schedule_item_enrollments = DjangoFilterConnectionField(ScheduleItemEnrollmentNode)
+    # finance_quote_items = DjangoFilterConnectionField(
+    #     FinanceQuoteItemNode,
+    #     filterset_class=FinanceQuoteItemFilter,
+    #     orderBy=graphene.List(of_type=graphene.String)
+    # )
+
+    schedule_item_enrollments = DjangoFilterConnectionField(
+        ScheduleItemEnrollmentNode
+    )
     schedule_item_enrollment = graphene.relay.Node.Field(ScheduleItemEnrollmentNode)
 
     def resolve_schedule_item_enrollments(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitemenrollment')
 
-        return ScheduleItemEnrollment.objects.order_by('-date_start')
+        return ScheduleItemEnrollment.objects.order_by('account_subscription__account__full_name')
 
         ## Code below can someday be modified to allow a filtering enrollments by accounts & allow users to
         ## view their own enrollments
@@ -126,18 +154,31 @@ class CreateScheduleItemEnrollment(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleitemenrollment')
 
+        date_start = input['date_start']
+
         validation_result = validate_schedule_item_enrollment_create_update_input(input)
+        account_subscription = validation_result['account_subscription']
 
         schedule_item_enrollment = ScheduleItemEnrollment(
             schedule_item=validation_result['schedule_item'],
-            account_subscription=validation_result['account_subscription'],
-            date_start=input['date_start']
+            account_subscription=account_subscription,
+            date_start=date_start
         )
 
         if 'date_end' in input:
             schedule_item_enrollment.date_end = input['date_end']
 
         schedule_item_enrollment.save()
+
+        # Book enrollment classes for this and next month
+        first_day_of_month = datetime.date(date_start.year, date_start.month, 1)
+        first_day_of_next_month = first_day_of_month + datetime.timedelta(days=32)
+        account_subscription.book_enrolled_classes_for_month(
+            first_day_of_month.year, first_day_of_month.month
+        )
+        account_subscription.book_enrolled_classes_for_month(
+            first_day_of_next_month.year, first_day_of_next_month.month
+        )
 
         return CreateScheduleItemEnrollment(schedule_item_enrollment=schedule_item_enrollment)
 

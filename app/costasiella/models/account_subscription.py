@@ -1,5 +1,7 @@
 import datetime
+import calendar
 import logging
+import math
 from collections import namedtuple
 
 from django.utils.translation import gettext as _
@@ -11,7 +13,9 @@ from .account import Account
 from .organization_subscription import OrganizationSubscription
 from .finance_payment_method import FinancePaymentMethod
 
-from ..modules.cs_errors import CSClassBookingSubscriptionBlockedError, \
+from ..modules.cs_errors import \
+    CSClassBookingSubscriptionAlreadyBookedError, \
+    CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
     CSClassBookingSubscriptionNoCreditsError
 
@@ -23,7 +27,6 @@ class AccountSubscription(models.Model):
     # instructor and employee will use OneToOne fields. An account can optionally be a instructor or employee.
     # Editable parameter docs
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
-
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="subscriptions")
     organization_subscription = models.ForeignKey(OrganizationSubscription, on_delete=models.CASCADE)
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
@@ -119,36 +122,83 @@ class AccountSubscription(models.Model):
         last_day_month = date_dude.get_last_day_month(first_day_month)
         total_days = (last_day_month - first_day_month) + datetime.timedelta(days=1)
         billable_period = self.get_billable_period_in_month(year, month)
-        billable_days=billable_period['billable_days']
+        billable_days = billable_period['billable_days']
 
         percent = float(billable_days) / float(total_days.days)
         classes = self.organization_subscription.classes
         if self.organization_subscription.subscription_unit == 'MONTH':
-            credits_to_add = round(classes * percent, 1)
+            credits_to_add = math.ceil(classes * percent)
         else:
-            weeks_in_month = round(total_days.days / float(7), 1)
-            credits_to_add = round((weeks_in_month * (classes or 0)) * percent, 1)
+            credits = 0
+            if classes == 1:
+                # 1 * 53 = 53
+                # one day / week = 55 credits / year
+                # 7 long months = 7 * 5 = 35
+                # 5 shorter months = 5 * 4 = 20
+                last_day_of_month = calendar.monthrange(year, month)[1]
+                if last_day_of_month == 31:
+                    credits = 5
+                else:
+                    credits = 4
+            elif classes == 2:
+                # 53 * 2 = 106 || 12 * 9 = 108
+                credits = 9
+            elif classes == 3:
+                # 53 * 3 = 159 || 12 * 14 = 168
+                credits = 14
+            elif classes == 4:
+                # 53 * 4 = 212 || 12 * 18 = 216
+                credits = 18
+            elif classes == 5:
+                # One credit short here, but it's the closest
+                # 53 * 5 = 265 || 12 * 22 = 264
+                credits = 22
+            elif classes == 6:
+                # 53 * 6 = 318 || 12 * 27 = 324
+                credits = 27
+
+            credits_to_add = math.ceil(credits * percent)
 
         return credits_to_add
 
     def create_credits_for_month(self, year, month):
-        # Calculate number of credits to give:
-        # Total days (Add 1, when subtracted it's one day less)
+        """
+        Add subscription credits for a given month
+        :param year: int
+        :param month: int
+        :return: Number of credits added
+        """
         from .account_subscription_credit import AccountSubscriptionCredit
 
-        credits_to_add = self._calculate_credits_for_month(year, month)
+        now = timezone.now()
+        credit_validity_in_days = self.organization_subscription.credit_validity or 31
+        expiration = now.date() + datetime.timedelta(days=credit_validity_in_days)
 
-        account_subscription_credit = AccountSubscriptionCredit(
+        number_of_credits_to_add = self._calculate_credits_for_month(year, month)
+
+        # Link credits to advance credits first
+        unreconcilded_advance_credits = AccountSubscriptionCredit.objects.filter(
+            advance=True,
+            reconciled__isnull=True,
             account_subscription=self,
-            mutation_type="ADD",
-            mutation_amount=credits_to_add,
-            description=_("Credits %s-%s") % (year, month),
-            subscription_year=year,
-            subscription_month=month,
         )
-        account_subscription_credit.save()
 
-        return account_subscription_credit
+        count_unreconciled_advance_credits = unreconcilded_advance_credits.count()
+        unreconcilded_advance_credits.update(reconciled=now)
+
+        # Then give the remaining ones.
+        remaining_credits_to_add = number_of_credits_to_add - count_unreconciled_advance_credits
+        for i in range(0, remaining_credits_to_add):
+            account_subscription_credit = AccountSubscriptionCredit(
+                account_subscription=self,
+                expiration=expiration,
+                description=_("Credit %s-%s") % (year, month),
+                subscription_year=year,
+                subscription_month=month,
+            )
+            account_subscription_credit.save()
+
+        return number_of_credits_to_add
 
     def get_enrollments_in_month(self, year, month):
         """
@@ -244,6 +294,8 @@ class AccountSubscription(models.Model):
                     online_booking=False,
                     booking_status="BOOKED"
                 )
+            except CSClassBookingSubscriptionAlreadyBookedError:
+                pass
             except CSClassBookingSubscriptionBlockedError:
                 pass
             except CSClassBookingSubscriptionPausedError:
@@ -303,41 +355,51 @@ class AccountSubscription(models.Model):
 
         return qs.exists()
 
-    def get_credits_total(self):
+    def get_next_credit(self):
+        """
+
+        :return:
+        """
+        from .account_subscription_credit import AccountSubscriptionCredit
+
+        available_credits = AccountSubscriptionCredit.objects.filter(
+            mutation_type="SINGLE",
+            account_subscription=self,
+            expiration__gte=timezone.now().date(),
+            schedule_item_attendance__isnull=True
+        ).order_by('created_at', 'id')
+
+        return available_credits.first()
+
+    def get_credits_total(self, date):
         """
 
         :return: Float
         """
-        from django.db.models import Sum
         from .account_subscription_credit import AccountSubscriptionCredit
 
-        qs_add = AccountSubscriptionCredit.objects.filter(
-            account_subscription=self.id,
-            mutation_type="ADD"
-        ).aggregate(Sum('mutation_amount'))
-        qs_sub = AccountSubscriptionCredit.objects.filter(
-            account_subscription=self.id,
-            mutation_type="SUB"
-        ).aggregate(Sum('mutation_amount'))
+        # Get credit records with expiration >= today, that haven't been used yet (no schedule item attendance)
+        qs = AccountSubscriptionCredit.objects.filter(
+            mutation_type="SINGLE",
+            account_subscription=self,
+            expiration__gte=date,
+            schedule_item_attendance__isnull=True
+        )
 
-        total_add = qs_add['mutation_amount__sum'] or 0
-        total_sub = qs_sub['mutation_amount__sum'] or 0
+        return qs.count()
 
-        # Round to 1 decimal and return
-        return round(total_add - total_sub, 1)
-
-    def get_usable_credits_total(self):
+    def get_usable_credits_total(self, date):
         """
         Get total credits and add reconciliation credits from subscription (if any)
         :return: Float
         """
-        credits_total = self.get_credits_total()
+        credits_total = self.get_credits_total(date)
         if self.organization_subscription.reconciliation_classes:
             return_value = credits_total + self.organization_subscription.reconciliation_classes
         else:
             return_value = credits_total
 
-        return round(return_value, 1)
+        return return_value
 
     def get_credits_given_for_month(self, year, month):
         """
@@ -352,7 +414,7 @@ class AccountSubscription(models.Model):
             Q(account_subscription=self) &
             Q(subscription_year=year) &
             Q(subscription_month=month) &
-            Q(mutation_type='ADD')
+            Q(mutation_type='SINGLE')
         )
 
         return qs

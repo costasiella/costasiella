@@ -198,12 +198,17 @@ class AccountNode(DjangoObjectType):
     @classmethod
     def get_node(cls, info, id):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_account',
-            'costasiella.view_selfcheckin'
-        ])
+        require_login(user)
 
-        return cls._meta.model.objects.get(id=id)
+        account = cls._meta.model.objects.get(id=id)
+        if not account == user:
+            # Allow a user to get their own account. In all other cases, check permissions.
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+                'costasiella.view_selfcheckin'
+            ])
+
+        return account
 
     def resolve_address(self, info, **kwargs):
         user = info.context.user

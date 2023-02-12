@@ -47,7 +47,7 @@ class GQLOrganizationSubscription(TestCase):
                 "classes": 1,
                 "subscriptionUnit": "WEEK",
                 "reconciliationClasses": 1,
-                "creditAccumulationDays": 1,               
+                "creditValidity": 1,
                 "unlimited": False,
                 "termsAndConditions": "T and C here",
                 "registrationFee": 30,
@@ -68,7 +68,7 @@ class GQLOrganizationSubscription(TestCase):
                 "classes": 1,
                 "subscriptionUnit": "WEEK",
                 "reconciliationClasses": 1,
-                "creditAccumulationDays": 1,
+                "creditValidity": 1,
                 "unlimited": False,
                 "termsAndConditions": "T and C here",
                 "registrationFee": 30,
@@ -107,7 +107,7 @@ class GQLOrganizationSubscription(TestCase):
           subscriptionUnit
           subscriptionUnitDisplay
           reconciliationClasses
-          creditAccumulationDays
+          creditValidity
           unlimited
           termsAndConditions
           registrationFee
@@ -143,7 +143,7 @@ class GQLOrganizationSubscription(TestCase):
       subscriptionUnit
       subscriptionUnitDisplay
       reconciliationClasses
-      creditAccumulationDays
+      creditValidity
       unlimited
       termsAndConditions
       registrationFee
@@ -210,7 +210,7 @@ class GQLOrganizationSubscription(TestCase):
         subscriptionUnit
         subscriptionUnitDisplay
         reconciliationClasses
-        creditAccumulationDays
+        creditValidity
         unlimited
         termsAndConditions
         quickStatsAmount
@@ -243,7 +243,7 @@ class GQLOrganizationSubscription(TestCase):
         subscriptionUnit
         subscriptionUnitDisplay
         reconciliationClasses
-        creditAccumulationDays
+        creditValidity
         unlimited
         termsAndConditions
         quickStatsAmount
@@ -308,8 +308,8 @@ class GQLOrganizationSubscription(TestCase):
                          # format(subscription.get_price_first_month(today), ".2f"))
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['reconciliationClasses'],
                          subscription.reconciliation_classes)
-        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['creditAccumulationDays'],
-                         subscription.credit_accumulation_days)
+        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['creditValidity'],
+                         subscription.credit_validity)
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['unlimited'], subscription.unlimited)
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['quickStatsAmount'],
                          format(subscription.quick_stats_amount, ".2f"))
@@ -430,8 +430,8 @@ class GQLOrganizationSubscription(TestCase):
           display_subscription_unit(subscription.subscription_unit)
         )
         self.assertEqual(data['organizationSubscription']['reconciliationClasses'], subscription.reconciliation_classes)
-        self.assertEqual(data['organizationSubscription']['creditAccumulationDays'],
-                         subscription.credit_accumulation_days)
+        self.assertEqual(data['organizationSubscription']['creditValidity'],
+                         subscription.credit_validity)
         self.assertEqual(data['organizationSubscription']['unlimited'], subscription.unlimited)
         self.assertEqual(data['organizationSubscription']['accountRegistrationFee'],
                          format(subscription.registration_fee, ".2f"))
@@ -521,7 +521,7 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['classes'], variables['input']['classes'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['subscriptionUnit'], variables['input']['subscriptionUnit'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['reconciliationClasses'], variables['input']['reconciliationClasses'])
-        self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['creditAccumulationDays'], variables['input']['creditAccumulationDays'])
+        self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['creditValidity'], variables['input']['creditValidity'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['quickStatsAmount'],
                          str(variables['input']['quickStatsAmount']))
@@ -603,7 +603,7 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['classes'], variables['input']['classes'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['subscriptionUnit'], variables['input']['subscriptionUnit'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['reconciliationClasses'], variables['input']['reconciliationClasses'])
-        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['creditAccumulationDays'], variables['input']['creditAccumulationDays'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['creditValidity'], variables['input']['creditValidity'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['quickStatsAmount'],
                          str(variables['input']['quickStatsAmount']))

@@ -35,6 +35,14 @@ ORPHANED_APPS_MEDIABASE_DIRS = {
     }
 }
 
+# Uncomment the line below to disable user signups
+# ACCOUNT_ADAPTER = 'costasiella.allauth_adapters.account_adapter_no_signup.AccountAdapterNoSignup'
+
+# Re-enable this once it doesn't break promises
+# 'graphene_django.debug.DjangoDebugMiddleware'
+if DEBUG:
+    GRAPHENE['MIDDLEWARE'].append('costasiella.middlewares.DjangoDebugMiddleware')
+
 # GraphQL JWT settings with long expiration. Uncomment during development if useful for graphiQL auth for example.
 GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,

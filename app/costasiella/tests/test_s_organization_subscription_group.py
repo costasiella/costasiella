@@ -178,12 +178,13 @@ mutation DeleteOrganizationSubscriptionGroup($input: DeleteOrganizationSubscript
         """ Deny permission for anon users Query one subscriptiongroup """   
         query = self.subscriptiongroup_query
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
+
         node_id = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_query_one_permission_denied(self):
+    def test_query_one_no_permission(self):
         """ Permission denied message when user lacks authorization """   
         query = self.subscriptiongroup_query
         
@@ -334,7 +335,6 @@ mutation DeleteOrganizationSubscriptionGroup($input: DeleteOrganizationSubscript
             self.anon_user, 
             variables=variables
         )
-        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 

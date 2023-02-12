@@ -94,6 +94,7 @@ def get_content_file_from_base64_str(data_str, file_name):
 
 def get_error_code(error_code):
     error_codes = [
+        "CLASS_DOESNT_TAKE_PLACE_ON_DATE",
         "USER_CURRENTLY_LOGGED_IN",
         "USER_INVALID_ORDER_STATUS",
         "USER_NOT_LOGGED_IN",

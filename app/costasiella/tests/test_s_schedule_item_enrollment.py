@@ -20,6 +20,8 @@ from graphql_relay import to_global_id
 
 class GQLScheduleItemEnrollment(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    fixtures = ['app_settings.json', 'organization.json', 'system_mail_template.json']
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()

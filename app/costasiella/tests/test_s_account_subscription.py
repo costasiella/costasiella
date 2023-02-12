@@ -180,6 +180,31 @@ class GQLAccountSubscription(TestCase):
   }
 '''
 
+        # Same as regular subscription, but without financePaymentMethod field
+        self.subscription_create_mutation_shop_direct_debit = ''' 
+  mutation CreateAccountSubscription($input: CreateAccountSubscriptionInput!) {
+    createAccountSubscription(input: $input) {
+      accountSubscription {
+        id
+        account {
+          id
+          firstName
+          lastName
+          email
+        }
+        organizationSubscription {
+          id
+          name
+        }
+        dateStart
+        dateEnd
+        note
+        registrationFeePaid        
+      }
+    }
+  }
+'''
+
         self.subscription_update_mutation = '''
   mutation UpdateAccountSubscription($input: UpdateAccountSubscriptionInput!) {
     updateAccountSubscription(input: $input) {
@@ -473,7 +498,7 @@ class GQLAccountSubscription(TestCase):
 
         finance_payment_method = models.FinancePaymentMethod.objects.get(id=103)
 
-        query = self.subscription_create_mutation
+        query = self.subscription_create_mutation_shop_direct_debit
 
         account = f.RegularUserFactory.create()
         organization_subscription = f.OrganizationSubscriptionFactory.create()
@@ -493,10 +518,9 @@ class GQLAccountSubscription(TestCase):
             data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
             variables['input']['organizationSubscription']
         )
-        self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
-            to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-        )
+        latest_account_subscription = models.AccountSubscription.objects.latest('id')
+
+        self.assertEqual(latest_account_subscription.finance_payment_method.id, 103)
 
     def test_create_subscription_user_shop_direct_debit_cant_start_in_past(self):
         """ Allow users to create subscriptions for their own account """

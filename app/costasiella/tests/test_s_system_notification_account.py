@@ -23,6 +23,8 @@ class GQLSystemNotificationAccount(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_account = 'view_account'
+        self.permission_view_systemnotification = 'view_systemnotification'
         self.permission_view = 'view_systemnotificationaccount'
         self.permission_add = 'add_systemnotificationaccount'
         self.permission_change = 'change_systemnotificationaccount'
@@ -143,6 +145,12 @@ class GQLSystemNotificationAccount(TestCase):
         user = self.system_notification_account.account
         permission = Permission.objects.get(codename=self.permission_view)
         user.user_permissions.add(permission)
+        # View account permission
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
+        # View system notification permission
+        permission = Permission.objects.get(codename=self.permission_view_systemnotification)
+        user.user_permissions.add(permission)
         user.save()
 
         executed = execute_test_client_api_query(query, user)
@@ -190,6 +198,12 @@ class GQLSystemNotificationAccount(TestCase):
         # Create regular user
         user = self.system_notification_account.account
         permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        # View account permission
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
+        # View system notification permission
+        permission = Permission.objects.get(codename=self.permission_view_systemnotification)
         user.user_permissions.add(permission)
         user.save()
 
@@ -257,6 +271,12 @@ class GQLSystemNotificationAccount(TestCase):
         # Create regular user
         user = self.system_notification_account.account
         permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        # View account permission
+        permission = Permission.objects.get(codename=self.permission_view_account)
+        user.user_permissions.add(permission)
+        # View system notification permission
+        permission = Permission.objects.get(codename=self.permission_view_systemnotification)
         user.user_permissions.add(permission)
         user.save()
 
@@ -329,6 +349,9 @@ class GQLSystemNotificationAccount(TestCase):
         # Give permissions
         user = self.system_notification_account.account
         permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        # View account permission
+        permission = Permission.objects.get(codename=self.permission_view_account)
         user.user_permissions.add(permission)
         user.save()
 

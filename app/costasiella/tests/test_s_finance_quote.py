@@ -68,7 +68,7 @@ class GQLFinanceQuote(TestCase):
         }
 
         self.quotes_query = '''
-  query FinanceQuotes($after: String, $before: String, $status: String) {
+  query FinanceQuotes($after: String, $before: String, $status: CostasiellaFinanceQuoteStatusChoices) {
     financeQuotes(first: 15, before: $before, after: $after, status: $status) {
       pageInfo {
         hasNextPage
@@ -558,7 +558,7 @@ class GQLFinanceQuote(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_create_location_permission_granted(self):
+    def test_create_quote_permission_granted(self):
         """ Allow creating quotes for users with permissions """
         query = self.quote_create_mutation
 

@@ -26,6 +26,9 @@ class GQLOrganizationClasspass(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
+        self.permission_view_finance_taxrate = 'view_financetaxrate'
+        self.permission_view_finance_costcenter = 'view_financecostcenter'
+        self.permission_view_finance_glaccount = 'view_financeglaccount'
         self.permission_view = 'view_organizationclasspass'
         self.permission_add = 'add_organizationclasspass'
         self.permission_change = 'change_organizationclasspass'
@@ -599,6 +602,13 @@ class GQLOrganizationClasspass(TestCase):
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_add)
         user.user_permissions.add(permission)
+        # Tax rate, costcenter & glaccount
+        permission = Permission.objects.get(codename=self.permission_view_finance_taxrate)
+        user.user_permissions.add(permission)
+        permission = Permission.objects.get(codename=self.permission_view_finance_glaccount)
+        user.user_permissions.add(permission)
+        permission = Permission.objects.get(codename=self.permission_view_finance_costcenter)
+        user.user_permissions.add(permission)
         user.save()
 
         executed = execute_test_client_api_query(
@@ -711,6 +721,13 @@ class GQLOrganizationClasspass(TestCase):
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        # Tax rate, costcenter & glaccount
+        permission = Permission.objects.get(codename=self.permission_view_finance_taxrate)
+        user.user_permissions.add(permission)
+        permission = Permission.objects.get(codename=self.permission_view_finance_glaccount)
+        user.user_permissions.add(permission)
+        permission = Permission.objects.get(codename=self.permission_view_finance_costcenter)
         user.user_permissions.add(permission)
         user.save()
 
