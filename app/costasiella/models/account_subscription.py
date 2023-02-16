@@ -14,6 +14,8 @@ from .organization_subscription import OrganizationSubscription
 from .finance_payment_method import FinancePaymentMethod
 
 from ..modules.cs_errors import \
+    CSClassDoesNotTakePlaceOnDateError, \
+    CSClassFullyBookedError, \
     CSClassBookingSubscriptionAlreadyBookedError, \
     CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
@@ -294,6 +296,10 @@ class AccountSubscription(models.Model):
                     online_booking=False,
                     booking_status="BOOKED"
                 )
+            except CSClassDoesNotTakePlaceOnDateError:
+                pass
+            except CSClassFullyBookedError:
+                pass
             except CSClassBookingSubscriptionAlreadyBookedError:
                 pass
             except CSClassBookingSubscriptionBlockedError:
