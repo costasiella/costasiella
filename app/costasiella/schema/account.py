@@ -198,9 +198,12 @@ class AccountNode(DjangoObjectType):
     @classmethod
     def get_node(cls, info, id):
         user = info.context.user
-        require_login(user)
 
         account = cls._meta.model.objects.get(id=id)
+        if info.path.typename == "ScheduleEventNode":
+            return account
+
+        require_login(user)
         if not account == user:
             # Allow a user to get their own account. In all other cases, check permissions.
             require_login_and_one_of_permissions(user, [

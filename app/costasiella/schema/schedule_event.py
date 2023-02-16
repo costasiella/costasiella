@@ -72,7 +72,6 @@ class ScheduleEventNode(DjangoObjectType):
 
         return url_shop
 
-
 class ScheduleEventQuery(graphene.ObjectType):
     schedule_events = DjangoFilterConnectionField(ScheduleEventNode)
     schedule_event = graphene.relay.Node.Field(ScheduleEventNode)
