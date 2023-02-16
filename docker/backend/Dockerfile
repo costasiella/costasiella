@@ -16,14 +16,12 @@ COPY ./docker/backend/docker-backend-entrypoint.sh /opt/
 COPY ./requirements.txt /opt/
 
 # Install required packages
-RUN pip install --no-cache-dir -r /opt/requirements.txt
+RUN pip install --no-cache-dir -r /opt/requirements.txt && \
+	pip install --no-cache-dir uwsgi
 
 # Create sockets & static directory
-RUN mkdir /opt/sockets && mkdir /opt/static
-
-# Install uWSGI
-RUN pip install uwsgi
-
-RUN chmod a+x /opt/docker-backend-entrypoint.sh
+RUN mkdir /opt/sockets && \
+	mkdir /opt/static && \
+	chmod a+x /opt/docker-backend-entrypoint.sh
 
 CMD /opt/docker-backend-entrypoint.sh

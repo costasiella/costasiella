@@ -19,8 +19,8 @@ COPY ./requirements.txt /opt/
 RUN pip install --no-cache-dir -r /opt/requirements.txt
 
 # Create sockets & static directory
-RUN mkdir /opt/sockets && mkdir /opt/static
-
-RUN chmod a+x /opt/docker-celery-entrypoint.sh
+RUN mkdir /opt/sockets && \
+	mkdir /opt/static && \
+	chmod a+x /opt/docker-celery-entrypoint.sh
 
 CMD /opt/docker-celery-entrypoint.sh
