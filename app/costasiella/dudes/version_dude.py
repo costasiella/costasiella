@@ -32,7 +32,7 @@ class VersionDude:
     def get_latest_version():
         return {
             "version": "2023.01",
-            "version_patch": "01"
+            "version_patch": "02"
         }
 
     def update_version(self):
