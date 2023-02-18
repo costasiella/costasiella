@@ -6,7 +6,7 @@ LABEL version="0.03"
 # Get the latest & greatest & install software
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y libffi-dev libmariadb-dev build-essential && \
+    apt-get install -y libffi-dev libmariadb-dev  libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 build-essential && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
