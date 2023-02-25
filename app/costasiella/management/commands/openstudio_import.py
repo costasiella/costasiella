@@ -1630,7 +1630,7 @@ class Command(BaseCommand):
                     organization_classtype=self.school_classtypes_map.get(record['school_classtypes_id'], None),
                     organization_level=self.school_levels_map.get(record['school_levels_id'], None),
                     spaces=record['maxstudents'],
-                    walk_in_spaces=record['walkinspaces'],
+                    walk_in_spaces=record['walkinspaces'] or 0,
                     date_start=record['startdate'],
                     date_end=record['enddate'],
                     time_start=str(record['starttime']),
