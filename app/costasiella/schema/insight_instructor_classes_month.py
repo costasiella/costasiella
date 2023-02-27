@@ -12,7 +12,6 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..dudes import InsightInstructorClassesDude
 from ..models import ScheduleItem
 
 from ..modules.gql_tools import get_rid, require_login_and_permission
