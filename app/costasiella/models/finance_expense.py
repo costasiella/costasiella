@@ -14,6 +14,7 @@ class FinanceExpense(models.Model):
     description = models.TextField(default="")
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     tax = models.DecimalField(max_digits=20, decimal_places=2)
+    percentage = models.DecimalField(max_digits=20, decimal_places=2, default=100)
     total = models.DecimalField(max_digits=20, decimal_places=2)
     supplier = models.ForeignKey(Business, on_delete=models.SET_NULL, null=True, related_name="supplier_expenses")
     # TODO: Add client field later.

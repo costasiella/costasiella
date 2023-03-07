@@ -21,6 +21,7 @@ class FinanceExpenseNodeInterface(graphene.Interface):
     amount_display = graphene.String()
     tax_display = graphene.String()
     total_display = graphene.String()
+    percentage_display = graphene.String()
 
 
 class FinanceExpenseNode(DjangoObjectType):
@@ -32,6 +33,7 @@ class FinanceExpenseNode(DjangoObjectType):
             'description',
             'amount',
             'tax',
+            'percentage',
             'total',
             'supplier',
             'finance_glaccount',
@@ -68,6 +70,9 @@ class FinanceExpenseNode(DjangoObjectType):
 
     def resolve_total_display(self, info):
         return display_float_as_amount(self.total)
+
+    def resolve_percentage_display(self, info):
+        return f"{self.percentage} %"
 
 
 class FinanceExpenseQuery(graphene.ObjectType):
@@ -128,6 +133,7 @@ class CreateFinanceExpense(graphene.relay.ClientIDMutation):
         description = graphene.String(required=False)
         amount = graphene.Decimal(required=True)
         tax = graphene.Decimal(required=True)
+        percentage = graphene.Decimal(required=False, default_vaule=100)
         supplier = graphene.ID(required=False)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)
@@ -151,6 +157,9 @@ class CreateFinanceExpense(graphene.relay.ClientIDMutation):
             document=get_content_file_from_base64_str(data_str=input['document'],
                                              file_name=input['document_file_name'])
         )
+
+        if 'percentage' in input:
+            finance_expense.percentage = input['percentage']
 
         if 'description' in input:
             finance_expense.description = input['description']
@@ -177,6 +186,7 @@ class UpdateFinanceExpense(graphene.relay.ClientIDMutation):
         description = graphene.String(required=False)
         amount = graphene.Decimal(required=False)
         tax = graphene.Decimal(required=False)
+        percentage = graphene.Decimal(required=False)
         supplier = graphene.ID(required=False)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)
@@ -212,6 +222,9 @@ class UpdateFinanceExpense(graphene.relay.ClientIDMutation):
 
         if 'tax' in input:
             finance_expense.tax = input['tax']
+
+        if 'percentage' in input:
+            finance_expense.percentage = input['percentage']
 
         if 'supplier' in result:
             finance_expense.supplier = result['supplier']

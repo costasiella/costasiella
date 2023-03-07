@@ -50,6 +50,7 @@ class GQLFinanceExpense(TestCase):
                   "description": "test description",
                   "amount": "10",
                   "tax": "2.10",
+                  "percentage": "80",
                   "supplier": to_global_id("BusinessNode", self.finance_expense.supplier.id),
                   "financeGlaccount": to_global_id("FinanceGLAccountNode",
                                                    self.finance_expense.finance_glaccount.id),
@@ -68,6 +69,7 @@ class GQLFinanceExpense(TestCase):
                   "description": "test description",
                   "amount": "10",
                   "tax": "2.10",
+                  "percentage": "80",
                   "supplier": to_global_id("BusinessNode", self.finance_expense.supplier.id),
                   "financeGlaccount": to_global_id("FinanceGLAccountNode",
                                                    self.finance_expense.finance_glaccount.id),
@@ -101,6 +103,7 @@ class GQLFinanceExpense(TestCase):
           description
           amount
           tax
+          percentage
           total
           supplier {
             id
@@ -132,6 +135,7 @@ class GQLFinanceExpense(TestCase):
       description
       amount
       tax
+      percentage
       total
       supplier {
         id
@@ -161,6 +165,7 @@ class GQLFinanceExpense(TestCase):
         amount
         tax
         total
+        percentage
         supplier {
           id
         }
@@ -186,6 +191,7 @@ class GQLFinanceExpense(TestCase):
         description
         amount
         tax
+        percentage
         total
         supplier {
           id
@@ -244,6 +250,10 @@ class GQLFinanceExpense(TestCase):
         self.assertEqual(
             data['financeExpenses']['edges'][0]['node']['tax'],
             format(self.finance_expense.tax, ".2f")
+        )
+        self.assertEqual(
+            data['financeExpenses']['edges'][0]['node']['percentage'],
+            format(self.finance_expense.percentage, ".2f")
         )
         self.assertEqual(
             data['financeExpenses']['edges'][0]['node']['total'],
@@ -313,6 +323,7 @@ class GQLFinanceExpense(TestCase):
         self.assertEqual(data['financeExpense']['description'], self.finance_expense.description)
         self.assertEqual(data['financeExpense']['amount'], format(self.finance_expense.amount, ".2f"))
         self.assertEqual(data['financeExpense']['tax'], format(self.finance_expense.tax, ".2f"))
+        self.assertEqual(data['financeExpense']['percentage'], format(self.finance_expense.percentage, ".2f"))
         self.assertEqual(data['financeExpense']['total'], format(self.finance_expense.total, ".2f"))
         self.assertEqual(data['financeExpense']['supplier']['id'],
                          to_global_id("BusinessNode", self.finance_expense.supplier.id))
@@ -376,6 +387,8 @@ class GQLFinanceExpense(TestCase):
                          variables['input']['amount'])
         self.assertEqual(data['createFinanceExpense']['financeExpense']['tax'],
                          variables['input']['tax'])
+        self.assertEqual(data['createFinanceExpense']['financeExpense']['percentage'],
+                         variables['input']['percentage'])
         self.assertEqual(data['createFinanceExpense']['financeExpense']['supplier']['id'],
                          variables['input']['supplier'])
         self.assertEqual(data['createFinanceExpense']['financeExpense']['financeGlaccount']['id'],
@@ -458,6 +471,8 @@ class GQLFinanceExpense(TestCase):
                          variables['input']['amount'])
         self.assertEqual(data['updateFinanceExpense']['financeExpense']['tax'],
                          variables['input']['tax'])
+        self.assertEqual(data['updateFinanceExpense']['financeExpense']['percentage'],
+                         variables['input']['percentage'])
         self.assertEqual(data['updateFinanceExpense']['financeExpense']['supplier']['id'],
                          variables['input']['supplier'])
         self.assertEqual(data['updateFinanceExpense']['financeExpense']['financeGlaccount']['id'],
