@@ -46,6 +46,6 @@ class FinanceExpense(models.Model):
         )
     def _calculate_total(self):
         if self.percentage:
-            return self.total * (self.percentage / 100)
+            return self._calculate_subtotal() * (self.percentage / 100)
         else:
-            return self.total
+            return self._calculate_subtotal()

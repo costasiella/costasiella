@@ -104,6 +104,7 @@ class GQLFinanceExpense(TestCase):
           amount
           tax
           percentage
+          subtotal
           total
           supplier {
             id
@@ -136,6 +137,7 @@ class GQLFinanceExpense(TestCase):
       amount
       tax
       percentage
+      subtotal
       total
       supplier {
         id
@@ -164,6 +166,7 @@ class GQLFinanceExpense(TestCase):
         description
         amount
         tax
+        subtotal
         total
         percentage
         supplier {
@@ -192,6 +195,7 @@ class GQLFinanceExpense(TestCase):
         amount
         tax
         percentage
+        subtotal
         total
         supplier {
           id
@@ -254,6 +258,10 @@ class GQLFinanceExpense(TestCase):
         self.assertEqual(
             data['financeExpenses']['edges'][0]['node']['percentage'],
             format(self.finance_expense.percentage, ".2f")
+        )
+        self.assertEqual(
+            data['financeExpenses']['edges'][0]['node']['subtotal'],
+            format(self.finance_expense.subtotal, ".2f")
         )
         self.assertEqual(
             data['financeExpenses']['edges'][0]['node']['total'],
@@ -324,6 +332,7 @@ class GQLFinanceExpense(TestCase):
         self.assertEqual(data['financeExpense']['amount'], format(self.finance_expense.amount, ".2f"))
         self.assertEqual(data['financeExpense']['tax'], format(self.finance_expense.tax, ".2f"))
         self.assertEqual(data['financeExpense']['percentage'], format(self.finance_expense.percentage, ".2f"))
+        self.assertEqual(data['financeExpense']['subtotal'], format(self.finance_expense.subtotal, ".2f"))
         self.assertEqual(data['financeExpense']['total'], format(self.finance_expense.total, ".2f"))
         self.assertEqual(data['financeExpense']['supplier']['id'],
                          to_global_id("BusinessNode", self.finance_expense.supplier.id))
