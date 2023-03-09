@@ -14,11 +14,13 @@ class FinanceExpense(models.Model):
     description = models.TextField(default="")
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     tax = models.DecimalField(max_digits=20, decimal_places=2)
-    percentage = models.DecimalField(max_digits=20, decimal_places=2, default=100)
-    # Subtotal holds amount + tax
-    subtotal = models.DecimalField(max_digits=20, decimal_places=2)
-    # Total holds subtotal * percentage / 100
+    # total holds amount + tax
     total = models.DecimalField(max_digits=20, decimal_places=2)
+    percentage = models.DecimalField(max_digits=20, decimal_places=2, default=100)
+    percentage_amount = models.DecimalField(max_digits=20, decimal_places=2)
+    percentage_tax = models.DecimalField(max_digits=20, decimal_places=2)
+    # Subtotal holds amount + tax
+    percentage_total = models.DecimalField(max_digits=20, decimal_places=2)
     supplier = models.ForeignKey(Business, on_delete=models.SET_NULL, null=True, related_name="supplier_expenses")
     # TODO: Add client field later.
     # Without client field: not billable
@@ -32,20 +34,23 @@ class FinanceExpense(models.Model):
         return model_string(self)
 
     def save(self, *args, **kwargs):
-        self.subtotal = self._calculate_subtotal()
         self.total = self._calculate_total()
+        self.percentage_amount = self._calculate_percentage(self.amount)
+        self.percentage_tax = self._calculate_percentage(self.tax)
+        self.percentage_total = self._calculate_percentage(self.total)
 
         super(FinanceExpense, self).save(*args, **kwargs)
 
-    def _calculate_subtotal(self):
+    def _calculate_total(self):
         from ..dudes import FinanceDude
         finance_dude = FinanceDude()
         return finance_dude.calculate_total(
             subtotal=self.amount,
             tax=self.tax
         )
-    def _calculate_total(self):
+
+    def _calculate_percentage(self, value):
         if self.percentage:
-            return self._calculate_subtotal() * (self.percentage / 100)
+            return value * (self.percentage / 100)
         else:
-            return self._calculate_subtotal()
+            return value
