@@ -21,6 +21,8 @@ class FinanceExpenseNodeInterface(graphene.Interface):
     amount_display = graphene.String()
     tax_display = graphene.String()
     subtotal_display = graphene.String()
+    total_amount_display = graphene.String()
+    total_tax_display = graphene.String()
     total_display = graphene.String()
     percentage_display = graphene.String()
 
@@ -34,8 +36,10 @@ class FinanceExpenseNode(DjangoObjectType):
             'description',
             'amount',
             'tax',
-            'percentage',
             'subtotal',
+            'percentage',
+            'total_amount',
+            'total_tax',
             'total',
             'supplier',
             'finance_glaccount',
@@ -71,7 +75,13 @@ class FinanceExpenseNode(DjangoObjectType):
         return display_float_as_amount(self.tax)
 
     def resolve_subtotal_display(self, info):
-        return display_float_as_amount(self.total)
+        return display_float_as_amount(self.subtotal)
+
+    def resolve_total_amount_display(self, info):
+        return display_float_as_amount(self.total_amount)
+
+    def resolve_total_tax_display(self, info):
+        return display_float_as_amount(self.total_tax)
 
     def resolve_total_display(self, info):
         return display_float_as_amount(self.total)

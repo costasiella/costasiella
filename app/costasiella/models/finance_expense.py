@@ -15,12 +15,12 @@ class FinanceExpense(models.Model):
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     tax = models.DecimalField(max_digits=20, decimal_places=2)
     # total holds amount + tax
-    total = models.DecimalField(max_digits=20, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=20, decimal_places=2)
     percentage = models.DecimalField(max_digits=20, decimal_places=2, default=100)
-    percentage_amount = models.DecimalField(max_digits=20, decimal_places=2)
-    percentage_tax = models.DecimalField(max_digits=20, decimal_places=2)
-    # Subtotal holds amount + tax
-    percentage_total = models.DecimalField(max_digits=20, decimal_places=2)
+    total_amount = models.DecimalField(max_digits=20, decimal_places=2)
+    total_tax = models.DecimalField(max_digits=20, decimal_places=2)
+    # Total holds amount + tax
+    total = models.DecimalField(max_digits=20, decimal_places=2)
     supplier = models.ForeignKey(Business, on_delete=models.SET_NULL, null=True, related_name="supplier_expenses")
     # TODO: Add client field later.
     # Without client field: not billable
@@ -34,14 +34,14 @@ class FinanceExpense(models.Model):
         return model_string(self)
 
     def save(self, *args, **kwargs):
-        self.total = self._calculate_total()
-        self.percentage_amount = self._calculate_percentage(self.amount)
-        self.percentage_tax = self._calculate_percentage(self.tax)
-        self.percentage_total = self._calculate_percentage(self.total)
+        self.subtotal = self._calculate_subtotal()
+        self.total_amount = self._calculate_percentage(self.amount)
+        self.total_tax = self._calculate_percentage(self.tax)
+        self.total = self._calculate_percentage(self.subtotal)
 
         super(FinanceExpense, self).save(*args, **kwargs)
 
-    def _calculate_total(self):
+    def _calculate_subtotal(self):
         from ..dudes import FinanceDude
         finance_dude = FinanceDude()
         return finance_dude.calculate_total(
