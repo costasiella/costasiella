@@ -565,7 +565,7 @@ class FinanceExpenseFactory(factory.DjangoModelFactory):
     description = "test expense description"
     amount = 10
     tax = 2.1
-    percentage = 100
+    percentage = 90
     supplier = factory.SubFactory(BusinessSupplierFactory)
     finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)

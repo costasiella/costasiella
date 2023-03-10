@@ -105,6 +105,8 @@ class GQLFinanceExpense(TestCase):
           tax
           percentage
           subtotal
+          totalAmount
+          totalTax
           total
           supplier {
             id
@@ -262,6 +264,14 @@ class GQLFinanceExpense(TestCase):
         self.assertEqual(
             data['financeExpenses']['edges'][0]['node']['subtotal'],
             format(self.finance_expense.subtotal, ".2f")
+        )
+        self.assertEqual(
+            data['financeExpenses']['edges'][0]['node']['totalAmount'],
+            format(self.finance_expense.total_amount, ".2f")
+        )
+        self.assertEqual(
+            data['financeExpenses']['edges'][0]['node']['totalTax'],
+            format(self.finance_expense.total_tax, ".2f")
         )
         self.assertEqual(
             data['financeExpenses']['edges'][0]['node']['total'],
