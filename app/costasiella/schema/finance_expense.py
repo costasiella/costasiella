@@ -98,7 +98,7 @@ class FinanceExpenseQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeexpense')
 
-        return FinanceExpense.objects.all().order_by('date')
+        return FinanceExpense.objects.all().order_by('-date')
 
 
 def validate_create_update_input(input):
