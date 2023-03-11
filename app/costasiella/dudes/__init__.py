@@ -6,6 +6,7 @@ from .class_schedule_dude import ClassScheduleDude
 from .date_tools_dude import DateToolsDude
 
 from .finance_dude import FinanceDude
+from .finance_expense_dude import FinanceExpenseDude
 
 from .integration_mailchimp_dude import IntegrationMailChimpDude
 

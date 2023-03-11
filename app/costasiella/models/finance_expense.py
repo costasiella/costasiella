@@ -25,6 +25,7 @@ class FinanceExpense(models.Model):
     # TODO: Add client field later.
     # Without client field: not billable
     # With client field: billable - option create invoice (bill expense)
+    # When adding, also add it to the dude's duplicate method
     # client = models.ForeignKey(Business, on_delete=models.SET_NULL, null=True, related_name="client_expenses")
     finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.SET_NULL, null=True)
     finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.SET_NULL, null=True)
