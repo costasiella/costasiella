@@ -80,6 +80,12 @@ class GQLFinanceExpense(TestCase):
                 }
             }
 
+        self.variables_duplicate = {
+            "input": {
+                "id": to_global_id("FinanceExpenseNode", self.finance_expense.id),
+            }
+        }
+
         self.variables_delete = {
             "input": {
                 "id": to_global_id("FinanceExpenseNode", self.finance_expense.id),
@@ -189,6 +195,34 @@ class GQLFinanceExpense(TestCase):
         self.finance_expense_update_mutation = '''
   mutation UpdateFinanceExpense($input: UpdateFinanceExpenseInput!) {
     updateFinanceExpense(input: $input) {
+      financeExpense {
+        id
+        date
+        summary
+        description
+        amount
+        tax
+        percentage
+        subtotal
+        total
+        supplier {
+          id
+        }
+        financeGlaccount {
+          id
+        }
+        financeCostcenter {
+          id
+        }
+        document
+      }
+    }
+  }
+'''
+
+        self.finance_expense_duplicate_mutation = '''
+  mutation DuplicateFinanceExpense($input: DuplicateFinanceExpenseInput!) {
+    duplicateFinanceExpense(input: $input) {
       financeExpense {
         id
         date
@@ -614,5 +648,84 @@ class GQLFinanceExpense(TestCase):
             variables=variables
         )
         data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_duplicate_finance_expense(self):
+        """ Duplicate a finance expense """
+        query = self.finance_expense_duplicate_mutation
+        variables = self.variables_delete
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['date'], str(self.finance_expense.date))
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['summary'],
+                         self.finance_expense.summary + " (Copy)")
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['description'],
+                         self.finance_expense.description)
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['amount'],
+                         format(self.finance_expense.amount, ".2f"))
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['tax'],
+                         format(self.finance_expense.tax, ".2f"))
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['percentage'],
+                         format(self.finance_expense.percentage, ".2f"))
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['supplier']['id'],
+                         to_global_id("BusinessNode", self.finance_expense.supplier.id))
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['financeGlaccount']['id'],
+                         to_global_id("FinanceGLAccountNode", self.finance_expense.finance_glaccount.id))
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['financeCostcenter']['id'],
+                         to_global_id("FinanceCostCenterNode", self.finance_expense.finance_costcenter.id))
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['document'],
+                         "")
+
+    def test_duplicate_finance_expense_anon_user(self):
+        """ Duplicate a finance expense """
+        query = self.finance_expense_duplicate_mutation
+        variables = self.variables_delete
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_duplicate_finance_expense_permission_granted(self):
+        """ Allow duplicating finance expenses for users with permissions """
+        query = self.finance_expense_duplicate_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['duplicateFinanceExpense']['financeExpense']['date'], str(self.finance_expense.date))
+
+    def test_duplicate_finance_expense_permission_denied(self):
+        """ Check duplicate finance expense permission denied error message """
+        query = self.finance_expense_duplicate_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')

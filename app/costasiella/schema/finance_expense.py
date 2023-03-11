@@ -7,6 +7,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
+from ..dudes import FinanceExpenseDude
 from ..models import Business, FinanceExpense, FinanceGLAccount, FinanceCostCenter
 from ..modules.gql_tools import require_login_and_permission, get_rid, get_content_file_from_base64_str
 from ..modules.finance_tools import display_float_as_amount
@@ -281,8 +282,32 @@ class DeleteFinanceExpense(graphene.relay.ClientIDMutation):
 
         return DeleteFinanceExpense(ok=ok)
 
+class DuplicateFinanceExpense(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+
+    finance_expense = graphene.Field(FinanceExpenseNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.add_financeexpense')
+
+        rid = get_rid(input['id'])
+        finance_expense = FinanceExpense.objects.filter(id=rid.id).first()
+        if not finance_expense:
+            raise Exception('Invalid Finance Expense ID!')
+
+        # Duplicate finance expense
+        finance_expense_dude = FinanceExpenseDude()
+        new_finance_expense = finance_expense_dude.duplicate(finance_expense)
+
+        # Return duplicated schedule event
+        return DuplicateFinanceExpense(finance_expense=new_finance_expense)
+
 
 class FinanceExpenseMutation(graphene.ObjectType):
     delete_finance_expense = DeleteFinanceExpense.Field()
     create_finance_expense = CreateFinanceExpense.Field()
     update_finance_expense = UpdateFinanceExpense.Field()
+    duplicate_finance_expense = DuplicateFinanceExpense.Field()

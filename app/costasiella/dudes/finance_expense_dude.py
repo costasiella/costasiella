@@ -1,4 +1,4 @@
-# from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _
 
 class FinanceExpenseDude:
     def duplicate(self, finance_expense):
@@ -6,7 +6,7 @@ class FinanceExpenseDude:
 
         new_finance_expense = FinanceExpense(
             date=finance_expense.date,
-            summary=finance_expense.summary,
+            summary=finance_expense.summary + " (" + _("Copy") + ")",
             description=finance_expense.description,
             amount=finance_expense.amount,
             tax=finance_expense.tax,
