@@ -19,7 +19,8 @@ from ..modules.cs_errors import \
     CSClassBookingSubscriptionAlreadyBookedError, \
     CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
-    CSClassBookingSubscriptionNoCreditsError
+    CSClassBookingSubscriptionNoCreditsError, \
+    CSSubscriptionNotValidOnDateError
 
 logger = logging.getLogger(__name__)
 
@@ -286,6 +287,7 @@ class AccountSubscription(models.Model):
             schedule_item_id = rid.id
             schedule_item = ScheduleItem.objects.get(pk=schedule_item_id)
 
+            #TODO: Write a log warning on error except just passing
             # Try to book class, but continue on possible common errors, try to book as many as possible.
             try:
                 class_checkin_dude.class_checkin_subscription(
@@ -307,6 +309,8 @@ class AccountSubscription(models.Model):
             except CSClassBookingSubscriptionPausedError:
                 pass
             except CSClassBookingSubscriptionNoCreditsError:
+                pass
+            except CSSubscriptionNotValidOnDateError:
                 pass
 
     def cancel_booked_classes_after_enrollment_end(self, schedule_item_enrollment):

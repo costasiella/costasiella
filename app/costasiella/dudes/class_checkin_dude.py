@@ -11,7 +11,8 @@ from ..modules.cs_errors import \
     CSClassBookingSubscriptionAlreadyBookedError, \
     CSClassBookingSubscriptionBlockedError, \
     CSClassBookingSubscriptionPausedError, \
-    CSClassBookingSubscriptionNoCreditsError
+    CSClassBookingSubscriptionNoCreditsError, \
+    CSSubscriptionNotValidOnDateError
 
 
 class ClassCheckinDude:
@@ -396,7 +397,7 @@ class ClassCheckinDude:
             date_invalid_condition = (date < account_subscription.date_start)
 
         if date_invalid_condition:
-            raise Exception(_('This subscription is not valid on this date.'))
+            raise CSSubscriptionNotValidOnDateError(_('This subscription is not valid on this date.'))
 
         # Book class
         schedule_item_attendance = ScheduleItemAttendance(
