@@ -27,6 +27,8 @@ class Command(BaseCommand):
         self.help = 'Import from OpenStudio. Provide at least --db_name, --db_user and --db_password.'
         self.cursor = None  # Set later on from handle
 
+        # Costasiella media root isn't used in import. Fields already know where to store media.
+        # Can self.cs_media_root = Line below be removed?
         self.cs_media_root = settings.MEDIA_ROOT
         self.os_media_root = None
 
