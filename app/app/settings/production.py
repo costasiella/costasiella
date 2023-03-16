@@ -42,6 +42,7 @@ GRAPHQL_JWT = {
 # Static files config
 STATIC_ROOT = "/opt/static"
 MEDIA_ROOT = "/opt/media"
+MEDIA_PROTECTED_ROOT = "/opt/media_protected"
 
 # Uncomment the line below to disable user signups
 # ACCOUNT_ADAPTER = 'costasiella.allauth_adapters.account_adapter_no_signup.AccountAdapterNoSignup'

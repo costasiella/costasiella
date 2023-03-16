@@ -65,7 +65,8 @@ class FinanceExpenseNode(DjangoObjectType):
 
     def resolve_url_protected_document(self, info):
         if self.document:
-            return self.document.url.replace(settings.MEDIA_URL, settings.MEDIA_PROTECTED_URL)
+            # return self.document.url.replace(settings.MEDIA_URL, settings.MEDIA_PROTECTED_URL)
+            return self.document.url
         else:
             return ''
 

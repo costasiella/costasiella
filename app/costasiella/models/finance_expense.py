@@ -30,7 +30,7 @@ class FinanceExpense(models.Model):
     # client = models.ForeignKey(Business, on_delete=models.SET_NULL, null=True, related_name="client_expenses")
     finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.SET_NULL, null=True)
     finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.SET_NULL, null=True)
-    document = models.FileField(upload_to='finance_expense', default=None, storage=settings.PROTECTED_MEDIA_STORAGE)
+    document = models.FileField(upload_to='finance_expense', default=None, storage=settings.MEDIA_PROTECTED_STORAGE)
 
     def __str__(self):
         return model_string(self)

@@ -23,11 +23,11 @@ class AccountDocumentNodeInterface(graphene.Interface):
 
 
 class AccountDocumentNode(DjangoObjectType):
-    def resolve_url_protected_document(self, info):
-        if self.document:
-            return self.document.url.replace(settings.MEDIA_URL, settings.MEDIA_PROTECTED_URL)
-        else:
-            return ''
+    # def resolve_url_protected_document(self, info):
+    #     if self.document:
+    #         return self.document.url.replace(settings.MEDIA_URL, settings.MEDIA_PROTECTED_URL)
+    #     else:
+    #         return ''
     
     class Meta:
         model = AccountDocument

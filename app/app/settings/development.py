@@ -27,11 +27,10 @@ if 'GITHUB_WORKFLOW' in os.environ:
     MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media_test")
 
 # Protected media root
-PROTECTED_MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media_protected")
+MEDIA_PROTECTED_ROOT = os.path.join(os.getcwd(), "costasiella", "media_protected")
 if 'GITHUB_WORKFLOW' in os.environ:
-    PROTECTED_MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media_protected_test")
-PROTECTED_MEDIA_URL = "/media_protected"
-PROTECTED_MEDIA_STORAGE = FileSystemStorage(location=PROTECTED_MEDIA_ROOT, base_url=PROTECTED_MEDIA_URL)
+    MEDIA_PROTECTED_ROOT = os.path.join(os.getcwd(), "costasiella", "media_protected_test")
+MEDIA_PROTECTED_STORAGE = FileSystemStorage(location=MEDIA_PROTECTED_ROOT, base_url=MEDIA_PROTECTED_PUBLIC_URL)
 
 # Orphaned files cleanup
 ORPHANED_APPS_MEDIABASE_DIRS = {
