@@ -369,26 +369,26 @@ class ClassCheckinDude:
         if (account_subscription.get_usable_credits_total(date) - 1) < 0 and \
                 not account_subscription.organization_subscription.unlimited:
             raise CSClassBookingSubscriptionNoCreditsError(
-                _("Insufficient credits available on %s to book this class") % date)
+                _(f"Insufficient credits available on {date} to book this class"))
 
         # Check blocked:
         if account_subscription.get_blocked_on_date(date):
-            raise CSClassBookingSubscriptionBlockedError(_("This subscription is blocked on %s") % date)
+            raise CSClassBookingSubscriptionBlockedError(_(f"This subscription is blocked on {date}"))
 
         # Check paused:
         if account_subscription.get_paused_on_date(date):
-            raise CSClassBookingSubscriptionPausedError(_("This subscription is paused on %s") % date)
+            raise CSClassBookingSubscriptionPausedError(_(f"This subscription is paused on {date}"))
 
         #TODO: Put the next two checks into a general function that can be used in all check-in functions
 
         # Check full
         if self.check_class_is_full(schedule_item, date):
-            raise CSClassFullyBookedError(_("This class is fully booked on %s") % date)
+            raise CSClassFullyBookedError(_(f"This class is fully booked on {date}"))
 
         # Check class takes place
         class_schedule_dude = ClassScheduleDude()
         if not class_schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
-            raise CSClassDoesNotTakePlaceOnDateError(_("This class doesn't take place on %s") % date)
+            raise CSClassDoesNotTakePlaceOnDateError(_(f"This class doesn't take place on {date}"))
 
         # Subscription valid on date
         if account_subscription.date_end:
