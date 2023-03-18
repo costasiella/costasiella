@@ -10,6 +10,7 @@ services:
     volumes:
       - /opt/docker/mounts/costasiella/sockets:/opt/sockets
       - /opt/docker/mounts/costasiella/media:/opt/media
+      - /opt/docker/mounts/costasiella/media_protected:/opt/media_protected
       - /opt/docker/mounts/costasiella/static:/opt/static
       - /opt/docker/mounts/costasiella/logs:/opt/app/logs
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
