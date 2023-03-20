@@ -287,7 +287,8 @@ class AccountSubscription(models.Model):
             schedule_item_id = rid.id
             schedule_item = ScheduleItem.objects.get(pk=schedule_item_id)
 
-            #TODO: Write a log warning on error except just passing
+            #TODO: Write a proper log warning on error. Add some ids and useful info so the message are
+            # actually meaningful.
             # Try to book class, but continue on possible common errors, try to book as many as possible.
             try:
                 class_checkin_dude.class_checkin_subscription(
@@ -299,21 +300,28 @@ class AccountSubscription(models.Model):
                     booking_status="BOOKED"
                 )
             except CSClassDoesNotTakePlaceOnDateError:
-                pass
+                logger.warning(
+                    _(f"Enrollment class not booked - This class doesn't take place on {schedule_class_type.date}"))
             except CSClassFullyBookedError:
-                pass
+                logger.warning(
+                    _(f"Enrollment class not booked - This class is full on {schedule_class_type.date}"))
             except CSClassBookingSubscriptionAlreadyBookedError:
-                pass
+                logger.warning(_(f"Enrollment class not booked - Already booked class on {schedule_class_type.date}"))
             except CSClassBookingSubscriptionBlockedError:
-                pass
+                logger.warning(_(f"Enrollment class not booked - Subscription blocked on {schedule_class_type.date}"))
             except CSClassBookingSubscriptionPausedError:
-                pass
+                logger.warning(_(f"Enrollment class not booked - Subscription paused {schedule_class_type.date}"))
             except CSClassBookingSubscriptionNoCreditsError:
-                pass
+                logger.warning(
+                    _(f"Enrollment class not booked - No credits on {schedule_class_type.date}"))
             except CSSubscriptionNotValidOnDateError:
-                pass
+                logger.warning(
+                    _(f"Enrollment class not booked - Subscription not valid on {schedule_class_type.date}"))
 
-    def cancel_booked_classes_after_enrollment_end(self, schedule_item_enrollment):
+    def cancel_booked_classes_after_enrollment_end(self,
+           schedule_item,
+           cancel_bookings_from_date
+       ):
         """
 
         :param schedule_item_enrollment:
@@ -321,17 +329,14 @@ class AccountSubscription(models.Model):
         """
         from .schedule_item_attendance import ScheduleItemAttendance
 
-        schedule_item = schedule_item_enrollment.schedule_item
+        ScheduleItemAttendance.objects.filter(
+            schedule_item=schedule_item,
+            account_subscription=self,
+            date__gte=cancel_bookings_from_date
+        ).update(booking_status='CANCELLED')
 
-        if schedule_item_enrollment.date_end:
-            ScheduleItemAttendance.objects.filter(
-                schedule_item=schedule_item,
-                account_subscription=self,
-                date__gte=schedule_item_enrollment.date_end
-            ).update(booking_status='CANCELLED')
-
-            logger.info("Enrollment ended: cancelled classes booked after %s on subscription %s" %
-                        (schedule_item_enrollment.date_end, self.id))
+        logger.info("Enrollment ended: cancelled classes booked after %s on subscription %s" %
+                    (cancel_bookings_from_date, self.id))
 
     def get_blocked_on_date(self, date):
         """

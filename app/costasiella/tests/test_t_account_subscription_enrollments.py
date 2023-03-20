@@ -54,7 +54,11 @@ class TaskAccountSubscriptionCredits(TestCase):
             date_end=enrollment_end
         )
 
-        result = cancel_booked_classes_after_enrollment_end(schedule_item_enrollment.id)
+        result = cancel_booked_classes_after_enrollment_end(
+            account_subscription_id=schedule_item_enrollment.account_subscription.id,
+            schedule_item_id=schedule_item_enrollment.schedule_item.id,
+            cancel_bookings_from_date=schedule_item_enrollment.date_end
+        )
         self.assertEqual(result, "OK")
 
         # Refetch attendance item and check status has been set to CANCELLED
