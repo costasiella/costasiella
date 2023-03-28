@@ -2,6 +2,7 @@
 Django settings for production deployment
 """
 from os import path
+from django.core.files.storage import FileSystemStorage
 from app.settings.common import *
 
 
@@ -42,6 +43,8 @@ GRAPHQL_JWT = {
 # Static files config
 STATIC_ROOT = "/opt/static"
 MEDIA_ROOT = "/opt/media"
+MEDIA_PROTECTED_ROOT = "/opt/media_protected"
+MEDIA_PROTECTED_STORAGE = FileSystemStorage(location=MEDIA_PROTECTED_ROOT, base_url=MEDIA_PROTECTED_PUBLIC_URL)
 
 # Uncomment the line below to disable user signups
 # ACCOUNT_ADAPTER = 'costasiella.allauth_adapters.account_adapter_no_signup.AccountAdapterNoSignup'

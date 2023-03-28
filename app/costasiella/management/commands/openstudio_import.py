@@ -27,6 +27,8 @@ class Command(BaseCommand):
         self.help = 'Import from OpenStudio. Provide at least --db_name, --db_user and --db_password.'
         self.cursor = None  # Set later on from handle
 
+        # Costasiella media root isn't used in import. Fields already know where to store media.
+        # Can self.cs_media_root = Line below be removed?
         self.cs_media_root = settings.MEDIA_ROOT
         self.os_media_root = None
 
@@ -1437,6 +1439,9 @@ class Command(BaseCommand):
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
+        # Admin as default
+        default_account = m.Account.objects.get(id=1)
+
         id_map = {}
         records_imported = 0
         for record in records:
@@ -1449,7 +1454,7 @@ class Command(BaseCommand):
             try:
                 account_note = m.AccountNote(
                     account=self.auth_user_map.get(record['auth_customer_id'], None),
-                    note_by=self.auth_user_map.get(record['auth_user_id'], None),
+                    note_by=self.auth_user_map.get(record['auth_user_id'], default_account),  # map to admin when not set
                     note_type=note_type,
                     note=record['note'] or "",
                     injury=self._web2py_bool_to_python(record['injury']),
@@ -2855,7 +2860,7 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
                 finance_invoice_payment = m.FinanceInvoicePayment(
                     finance_invoice=self.invoices_map.get(record['invoices_id'], None),
                     date=record['paymentdate'],
-                    amount=record['amount'],
+                    amount=record['amount'] or 0,
                     finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
                     note=record['note'] or "",
                     online_payment_id=record['mollie_payment_id'],

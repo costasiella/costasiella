@@ -5,6 +5,8 @@ import sys
 from os import path
 from app.settings.common import *
 
+from django.core.files.storage import FileSystemStorage
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -23,6 +25,12 @@ DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
 MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media")
 if 'GITHUB_WORKFLOW' in os.environ:
     MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media_test")
+
+# Protected media root
+MEDIA_PROTECTED_ROOT = os.path.join(os.getcwd(), "costasiella", "media_protected")
+if 'GITHUB_WORKFLOW' in os.environ:
+    MEDIA_PROTECTED_ROOT = os.path.join(os.getcwd(), "costasiella", "media_protected_test")
+MEDIA_PROTECTED_STORAGE = FileSystemStorage(location=MEDIA_PROTECTED_ROOT, base_url=MEDIA_PROTECTED_PUBLIC_URL)
 
 # Orphaned files cleanup
 ORPHANED_APPS_MEDIABASE_DIRS = {

@@ -225,6 +225,8 @@ class AccountSubscription(models.Model):
 
         return enrollments
 
+    #TODO: Refactor this to accept a start & end date for more flexibility?
+    # eg. class bookings up to x days into the future?
     def find_enrolled_classes_in_month(self, year, month):
         """
 
@@ -273,9 +275,11 @@ class AccountSubscription(models.Model):
         :return:
         """
         from ..dudes import ClassCheckinDude, DateToolsDude
+        from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
         from ..modules.gql_tools import get_rid
         from .schedule_item import ScheduleItem
 
+        sih = ScheduleItemHelper()
         class_checkin_dude = ClassCheckinDude()
         date_dude = DateToolsDude()
         first_day_month = datetime.date(year, month, 1)
@@ -287,7 +291,17 @@ class AccountSubscription(models.Model):
             schedule_item_id = rid.id
             schedule_item = ScheduleItem.objects.get(pk=schedule_item_id)
 
-            #TODO: Write a log warning on error except just passing
+            subscription_name = self.organization_subscription.name
+            str_date = str(schedule_class_type.date)
+            schedule_item_with_otc_data = sih.schedule_item_with_otc_and_holiday_data(
+                schedule_item, schedule_class_type.date
+            )
+
+            schedule_item_string = f"{str_date} \
+{schedule_item_with_otc_data.organization_location_room.organization_location.name} \
+{schedule_item_with_otc_data.organization_classtype.name} \
+{str(schedule_item_with_otc_data.time_start)}"
+
             # Try to book class, but continue on possible common errors, try to book as many as possible.
             try:
                 class_checkin_dude.class_checkin_subscription(
@@ -299,21 +313,33 @@ class AccountSubscription(models.Model):
                     booking_status="BOOKED"
                 )
             except CSClassDoesNotTakePlaceOnDateError:
-                pass
+                logger.warning(
+                    _(f"Enrollment class {schedule_item_string} not booked for {self.account.email} \
+- This class doesn't take place on {schedule_class_type.date}"))
             except CSClassFullyBookedError:
-                pass
+                logger.warning(
+                    _(f"Enrollment class {schedule_item_string} not booked for {self.account.email} \
+- This class is full on {schedule_class_type.date}"))
             except CSClassBookingSubscriptionAlreadyBookedError:
-                pass
+                logger.warning(_(f"Enrollment class {schedule_item_string} not booked for {self.account.email} \
+- Already booked class on {schedule_class_type.date}"))
             except CSClassBookingSubscriptionBlockedError:
-                pass
+                logger.warning(_(f"Enrollment class {schedule_item_string} not booked for {self.account.email} \
+- Subscription is blocked on {schedule_class_type.date}"))
             except CSClassBookingSubscriptionPausedError:
-                pass
+                logger.warning(_(f"Enrollment class {schedule_item_string} not booked for {self.account.email} \
+- Subscription is paused on {schedule_class_type.date}"))
             except CSClassBookingSubscriptionNoCreditsError:
-                pass
+                logger.warning(_(f"Enrollment class {schedule_item_string} not booked for {self.account.email} \
+- No credits available on {schedule_class_type.date}"))
             except CSSubscriptionNotValidOnDateError:
-                pass
+                logger.warning(_(f"Enrollment class {schedule_item_string} not booked for {self.account.email} \
+- Subscription is not valid on {schedule_class_type.date}"))
 
-    def cancel_booked_classes_after_enrollment_end(self, schedule_item_enrollment):
+    def cancel_booked_classes_after_enrollment_end(self,
+           schedule_item,
+           cancel_bookings_from_date
+       ):
         """
 
         :param schedule_item_enrollment:
@@ -321,17 +347,14 @@ class AccountSubscription(models.Model):
         """
         from .schedule_item_attendance import ScheduleItemAttendance
 
-        schedule_item = schedule_item_enrollment.schedule_item
+        ScheduleItemAttendance.objects.filter(
+            schedule_item=schedule_item,
+            account_subscription=self,
+            date__gte=cancel_bookings_from_date
+        ).update(booking_status='CANCELLED')
 
-        if schedule_item_enrollment.date_end:
-            ScheduleItemAttendance.objects.filter(
-                schedule_item=schedule_item,
-                account_subscription=self,
-                date__gte=schedule_item_enrollment.date_end
-            ).update(booking_status='CANCELLED')
-
-            logger.info("Enrollment ended: cancelled classes booked after %s on subscription %s" %
-                        (schedule_item_enrollment.date_end, self.id))
+        logger.info("Enrollment ended: cancelled classes booked after %s on subscription %s" %
+                    (cancel_bookings_from_date, self.id))
 
     def get_blocked_on_date(self, date):
         """

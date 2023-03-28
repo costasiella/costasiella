@@ -194,7 +194,14 @@ STATICFILES_DIRS = [
 # Media files (User uploads)
 # https://docs.djangoproject.com/en/2.1/topics/files/
 MEDIA_URL = '/d/media/'
-MEDIA_PROTECTED_URL = '/d/media_protected/'
+MEDIA_PROTECTED_PUBLIC_URL = '/d/protected/'
+MEDIA_PROTECTED_INTERNAL_URL = '/d/protected_media/' ## This one should be a known location to nginx
+'''
+    location /d/protected_media/ {
+        internal;
+        alias /path/to/my/django/project/protected_media_root;
+    }
+'''
 
 # Graphene settings
 # https://docs.graphene-python.org/projects/django/en/latest/settings/

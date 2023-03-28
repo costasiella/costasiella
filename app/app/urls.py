@@ -99,10 +99,11 @@ urlpatterns = [
     path('d/mollie/webhook/', csrf_exempt(views.mollie_webhook), name="mollie_webhook"),
     path('d/update/', views.update, name="update"),
     path('d/setup/', views.setup, name="setup"),
-    re_path(r'^%s(?P<path>.*)$' % settings.MEDIA_PROTECTED_URL[1:],
-            views.serve_protected_file, {'document_root': settings.MEDIA_ROOT})
+    re_path(r'^%s(?P<path>.*)' % settings.MEDIA_PROTECTED_PUBLIC_URL[1:],
+            views.serve_protected_file, name="media_protected")
 ]
 
 # Static files through Django dev server for development environment
 if settings.DEBUG:
     urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns = urlpatterns + static(settings.MEDIA_PROTECTED_PUBLIC_URL, document_root=settings.MEDIA_PROTECTED_ROOT)

@@ -64,8 +64,10 @@ class FinanceExpenseNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
     def resolve_url_protected_document(self, info):
+        # This is here for compatibility reasons.
+        # TODO: Update frontend to query document.url field instead
         if self.document:
-            return self.document.url.replace(settings.MEDIA_URL, settings.MEDIA_PROTECTED_URL)
+            return self.document.url
         else:
             return ''
 

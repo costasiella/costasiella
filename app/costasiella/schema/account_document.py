@@ -23,12 +23,6 @@ class AccountDocumentNodeInterface(graphene.Interface):
 
 
 class AccountDocumentNode(DjangoObjectType):
-    def resolve_url_protected_document(self, info):
-        if self.document:
-            return self.document.url.replace(settings.MEDIA_URL, settings.MEDIA_PROTECTED_URL)
-        else:
-            return ''
-    
     class Meta:
         model = AccountDocument
         # Fields to include
@@ -48,6 +42,14 @@ class AccountDocumentNode(DjangoObjectType):
         require_login_and_permission(user, 'costasiella.view_accountdocument')
 
         return self._meta.model.objects.get(id=id)
+
+    def resolve_url_protected_document(self, info):
+        # This is here for compatibility reasons.
+        # TODO: Update frontend to query document.url field instead
+        if self.document:
+            return self.document.url
+        else:
+            return ''
 
 
 class AccountDocumentQuery(graphene.ObjectType):

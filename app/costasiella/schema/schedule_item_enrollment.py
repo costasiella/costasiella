@@ -212,7 +212,11 @@ class UpdateScheduleItemEnrollment(graphene.relay.ClientIDMutation):
         if schedule_item_enrollment.date_end:
             # Call background task to create batch items when we're not in CI test mode
             if 'GITHUB_WORKFLOW' not in os.environ and not getattr(settings, 'TESTING', False):
-                task = cancel_booked_classes_after_enrollment_end.delay(schedule_item_enrollment.id)
+                task = cancel_booked_classes_after_enrollment_end.delay(
+                    account_subscription_id=schedule_item_enrollment.account_subscription.id,
+                    schedule_item_id=schedule_item_enrollment.schedule_item.id,
+                    cancel_bookings_from_date=str(schedule_item_enrollment.date_end)
+                )
 
         return UpdateScheduleItemEnrollment(schedule_item_enrollment=schedule_item_enrollment)
 
@@ -236,12 +240,12 @@ class DeleteScheduleItemEnrollment(graphene.relay.ClientIDMutation):
         # Cancel all class bookings enrollment subscription after today
         # Set end date
         today = timezone.now().date()
-        schedule_item_enrollment.date_end = today
-        schedule_item_enrollment.save()
-
-        # Cancel class bookings
         if 'GITHUB_WORKFLOW' not in os.environ and not getattr(settings, 'TESTING', False):
-            task = cancel_booked_classes_after_enrollment_end.delay(schedule_item_enrollment.id)
+            task = cancel_booked_classes_after_enrollment_end.delay(
+                account_subscription_id=schedule_item_enrollment.account_subscription.id,
+                schedule_item_id=schedule_item_enrollment.schedule_item.id,
+                cancel_bookings_from_date=str(today)
+            )
 
         # Actually remove
         ok = bool(schedule_item_enrollment.delete())
