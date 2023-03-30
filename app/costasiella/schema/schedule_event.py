@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
+from graphql_relay import to_global_id
 from graphql import GraphQLError
 
 from ..dudes import ScheduleEventDude
@@ -64,8 +65,9 @@ class ScheduleEventNode(DjangoObjectType):
         try:
             scheme = info.context.scheme
             host = info.context.get_host()
+            global_event_id = to_global_id("ScheduleEventNode", self.id)
 
-            url_shop = f"{scheme}://{host}/#/shop/events/{self.id}"
+            url_shop = f"{scheme}://{host}/#/shop/events/{global_event_id}"
         except AttributeError:
             # Eg. When calling from another part piece of code instead of the API, info.context won't be available
             url_shop = ""
