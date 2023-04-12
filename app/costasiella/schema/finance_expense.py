@@ -50,7 +50,8 @@ class FinanceExpenseNode(DjangoObjectType):
         filter_fields = {
             'date': ['exact'], 
             'summary': ['icontains'], 
-            'description': ['icontains'], 
+            'description': ['icontains'],
+            'supplier': ['exact'],
             'finance_glaccount': ['exact'], 
             'finance_costcenter': ['exact']
         }
