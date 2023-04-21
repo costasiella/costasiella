@@ -34,6 +34,9 @@ from .insight.export_insight_subscriptions_stopped import export_excel_insight_s
 # Mollie
 from .integration.mollie_webhook import mollie_webhook
 
+# Schedule event exports
+from .schedule_events.activities.export import export_excel_schedule_event_activities_attendance
+
 # Schedule Item Attendance exports
 from .schedule_item_attendance.export import export_excel_schedule_item_attendance_mailinglist
 
