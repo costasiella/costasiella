@@ -271,6 +271,7 @@ ISO_COUNTRY_CODES = [{"Name": "", "Code": ""},{"Name":"Afghanistan","Code":"AF"}
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_RESULT_EXPIRES = timedelta(days=90)
 # Use system timezone by default
 # CELERY_TIMEZONE = TIME_ZONE
 
@@ -287,7 +288,7 @@ CELERY_RESULT_EXTENDED = True
 ##
 # CSRF Settings
 ##
-# CSRF_TRUSTED_ORIGINS = ['localhost']
+# CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 
 ##
