@@ -286,12 +286,6 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_RESULT_EXTENDED = True
 
 ##
-# CSRF Settings
-##
-# CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
-
-
-##
 # CORS Setttings
 ##
 CORS_ORIGIN_ALLOW_ALL = False

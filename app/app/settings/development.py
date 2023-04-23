@@ -20,6 +20,12 @@ if len(sys.argv) >= 1:
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
 
+##
+# CSRF Settings
+##
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+
+
 # Media root
 # https://docs.djangoproject.com/en/2.1/topics/files/
 MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media")
