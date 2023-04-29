@@ -242,7 +242,6 @@ ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = False  # Log in users after password reset instead of showing a "done" page.
 
 # Recaptcha settings
-ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
 RECAPTCHA_PUBLIC_KEY = '6LdrS0UdAAAAAC80ljwGI70bjhI2VE5PL7grpriJ'
 RECAPTCHA_PRIVATE_KEY = '6LdrS0UdAAAAACLiq4k8r6i4bfvCCC_afKKd0YRW'
 RECAPTCHA_REQUIRED_SCORE = 0.65
