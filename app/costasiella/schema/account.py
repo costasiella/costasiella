@@ -136,6 +136,7 @@ class AccountNode(DjangoObjectType):
             'organization_discovery',
             'organization_language',
             'invoice_to_business',
+            'mollie_customer_id',
             'created_at',
             # Reverse relations
             'classpasses',
@@ -357,6 +358,15 @@ class AccountNode(DjangoObjectType):
             ])
 
         return self.postcode
+
+    def resolve_mollie_customer_id(self, info, **kwargs):
+        user = info.context.user
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
+
+        return self.mollie_customer_id
 
     def resolve_classpasses(self, info, **kwargs):
         user = info.context.user
@@ -605,6 +615,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         organization_discovery = graphene.ID(required=False)
         organization_language = graphene.ID(required=False)
         invoice_to_business = graphene.ID(required=False)
+        mollie_customer_id = graphene.String(required=False)
         image = graphene.String(required=False)
         image_file_name = graphene.String(required=False)
 
@@ -670,6 +681,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             account.date_of_birth = input['date_of_birth']
         if 'key_number' in input:
             account.key_number = input['key_number']
+        if 'mollie_customer_id' in input:
+            account.mollie_customer_id = input['mollie_customer_id']
 
         if 'organization_discovery' in result:
             account.organization_discovery = result['organization_discovery']
