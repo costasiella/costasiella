@@ -5,4 +5,4 @@
 export COSTASIELLA_VERSION=$1
 export BUILD_ARCH=amd64
 
-docker compose -f docker-compose-build.yml build --no-cache --build-arg ARCH=$BUILD_ARCH/
+docker-compose -f docker-compose-build.yml build --build-arg ARCH=$BUILD_ARCH/

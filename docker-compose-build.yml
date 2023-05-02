@@ -2,7 +2,7 @@ version: '3'
 
 services:
   backend:
-    image: simplycode/costasiella_backend:${COSTASIELLA_VERSION}-${BUILD_ARCH}
+    image: simplycode/costasiella_backend:${COSTASIELLA_VERSION}
     restart: always
     env_file:
       - costasiella.env
@@ -32,7 +32,7 @@ services:
     ports:
       - "127.0.0.1:8200:8200"
   celery_worker:
-    image: simplycode/costasiella_celery_worker:${COSTASIELLA_VERSION}-${BUILD_ARCH}
+    image: simplycode/costasiella_celery_worker:${COSTASIELLA_VERSION}
     restart: always
     env_file:
       - costasiella.env
@@ -47,7 +47,7 @@ services:
       - vault
       - backend
   celery_beat:
-    image: simplycode/costasiella_celery_beat:${COSTASIELLA_VERSION}-${BUILD_ARCH}
+    image: simplycode/costasiella_celery_beat:${COSTASIELLA_VERSION}
     restart: always
     env_file:
       - costasiella.env
