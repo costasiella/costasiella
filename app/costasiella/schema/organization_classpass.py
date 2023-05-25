@@ -6,6 +6,7 @@ from decimal import Decimal
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
+from graphql_relay import to_global_id
 
 import validators
 
@@ -58,6 +59,7 @@ class OrganizationClasspassNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()
     validity_unit_display = graphene.String()
+    url_shop = graphene.String()
 
 
 class OrganizationClasspassNode(DjangoObjectType):   
@@ -91,6 +93,18 @@ class OrganizationClasspassNode(DjangoObjectType):
         from ..modules.validity_tools import display_validity_unit
         return display_validity_unit(self.validity_unit, self.validity)
 
+    def resolve_url_shop(self, info):
+        try:
+            scheme = info.context.scheme
+            host = info.context.get_host()
+            global_event_id = to_global_id("OrganizationClasspassNode", self.id)
+
+            url_shop = f"{scheme}://{host}/#/shop/classpass/{global_event_id}"
+        except AttributeError:
+            # Eg. When calling from another part piece of code instead of the API, info.context won't be available
+            url_shop = ""
+
+        return url_shop
     @classmethod
     def get_node(self, info, id):
         user = info.context.user

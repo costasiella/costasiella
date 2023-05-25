@@ -8,6 +8,7 @@ from decimal import Decimal
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
+from graphql_relay import to_global_id
 
 import datetime
 import validators
@@ -63,6 +64,7 @@ class OrganizationSubscriptionNodeInterface(graphene.Interface):
     account_registration_fee = graphene.Decimal()
     account_registration_fee_display = graphene.String()
     shop_payment_method = graphene.String()
+    url_shop = graphene.String()
 
 
 class OrganizationSubscriptionNode(DjangoObjectType):   
@@ -134,6 +136,19 @@ class OrganizationSubscriptionNode(DjangoObjectType):
             payment_method = 'MOLLIE'
 
         return payment_method
+
+    def resolve_url_shop(self, info):
+        try:
+            scheme = info.context.scheme
+            host = info.context.get_host()
+            global_event_id = to_global_id("OrganizationSubscriptionNode", self.id)
+
+            url_shop = f"{scheme}://{host}/#/shop/subscription/{global_event_id}"
+        except AttributeError:
+            # Eg. When calling from another part piece of code instead of the API, info.context won't be available
+            url_shop = ""
+
+        return url_shop
 
     @classmethod
     def get_node(self, info, id):
