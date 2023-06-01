@@ -48,7 +48,7 @@ class FinanceExpenseNode(DjangoObjectType):
             'document'
         )
         filter_fields = {
-            'date': ['exact'], 
+            'date': ['exact', 'gte', 'lte'],
             'summary': ['icontains'], 
             'description': ['icontains'],
             'supplier': ['exact'],
