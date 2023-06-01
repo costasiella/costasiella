@@ -361,7 +361,7 @@ LOGGING = {
         }
     },
     'root': {
-        'handlers': ['console'],
+        'handlers': ['console', 'costasiella_file', 'costasiella_error_file'],
         'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
     },
     'loggers': {

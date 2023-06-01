@@ -1086,7 +1086,7 @@ class Command(BaseCommand):
         :return: None
         """
         # Import all users, as also business accounts might have cards or subscriptions attached to them
-        query = "SELECT * FROM auth_user WHERE id > 1"
+        query = "SELECT * FROM auth_user WHERE id > 1 AND merged='F' OR merged IS NULL OR merged=''"
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
@@ -1665,12 +1665,15 @@ class Command(BaseCommand):
         :param cursor: MySQL db cursor
         :return: None
         """
+        import json
+
         query = "SELECT * FROM classes_attendance"
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
         id_map = {}
         records_imported = 0
+
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
@@ -1831,7 +1834,8 @@ class Command(BaseCommand):
 
                 id_map[record['id']] = schedule_item_weekly_otc
             else:
-                logger.error("Import error for class otc mail id: %s: Not found" % (
+                # No need to throw a warning here. If there's no otc class, no need to import this record
+                logger.info("No class OTC defined for classes_otc_mail id: %s" % (
                     record['id'],
                 ))
 
@@ -2722,40 +2726,34 @@ ORDER BY i.id
                     summary = record['description'][:254]
 
                 account = self.auth_user_map.get(record['auth_customer_id'], None)
-                if not account:
-                    logger.error("Import error for finance invoice: %s: %s" % (
-                        record['id'],
-                        "Account not found for OpenStudio customer ID: %s" % record['auth_customer_id']
-                    ))
-                else:
-                    finance_invoice = m.FinanceInvoice(
-                        account=self.auth_user_map.get(record['auth_customer_id'], None),
-                        finance_invoice_group=self.invoices_groups_map.get(record['invoices_groups_id'], None),
-                        finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
-                        instructor_payment=self._web2py_bool_to_python(record['teacherpayment']),
-                        employee_claim=self._web2py_bool_to_python(record['employeeclaim']),
-                        status=self.map_invoices_statuses.get(record['status']),
-                        summary=summary,
-                        invoice_number=record['invoiceid'],
-                        date_sent=record['datecreated'],
-                        date_due=record['datedue'],
-                        terms=record['terms'] or "",
-                        footer=record['footer'] or "",
-                        note=record['note'] or "",
-                        subtotal=record['totalprice'],
-                        tax=record['vat'],
-                        total=record['totalpricevat'],
-                        paid=record['paid'],
-                        balance=record['balance'],
-                        credit_invoice_for=credit_invoice_for
-                    )
-                    finance_invoice.save()
+                finance_invoice = m.FinanceInvoice(
+                    account=self.auth_user_map.get(record['auth_customer_id'], None),
+                    finance_invoice_group=self.invoices_groups_map.get(record['invoices_groups_id'], None),
+                    finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
+                    instructor_payment=self._web2py_bool_to_python(record['teacherpayment']),
+                    employee_claim=self._web2py_bool_to_python(record['employeeclaim']),
+                    status=self.map_invoices_statuses.get(record['status']),
+                    summary=summary,
+                    invoice_number=record['invoiceid'],
+                    date_sent=record['datecreated'],
+                    date_due=record['datedue'],
+                    terms=record['terms'] or "",
+                    footer=record['footer'] or "",
+                    note=record['note'] or "",
+                    subtotal=record['totalprice'],
+                    tax=record['vat'],
+                    total=record['totalpricevat'],
+                    paid=record['paid'],
+                    balance=record['balance'],
+                    credit_invoice_for=credit_invoice_for
+                )
+                finance_invoice.save()
 
-                    finance_invoice.invoice_number = record['invoiceid']
-                    finance_invoice.save()
-                    records_imported += 1
+                finance_invoice.invoice_number = record['invoiceid']
+                finance_invoice.save()
+                records_imported += 1
 
-                    id_map[record['id']] = finance_invoice
+                id_map[record['id']] = finance_invoice
             except django.db.utils.IntegrityError as e:
                 logger.error("Import error for finance invoice: %s: %s" % (
                     record['id'],
@@ -3116,6 +3114,8 @@ SELECT * FROM customers_orders_items ii
             record = {k.lower(): v for k, v in record.items()}
 
             try:
+                description = record['description'] or ''
+
                 account_finance_payment_batch_category_item = m.AccountFinancePaymentBatchCategoryItem(
                     account=self.auth_user_map.get(record['auth_customer_id'], None),
                     finance_payment_batch_category=self.payment_categories_map.get(
@@ -3124,7 +3124,7 @@ SELECT * FROM customers_orders_items ii
                     year=record['paymentyear'],
                     month=record['paymentmonth'],
                     amount=record['amount'],
-                    description=record['description'] or ''
+                    description=description[0:255]
                 )
                 account_finance_payment_batch_category_item.save()
                 # Increase counter
