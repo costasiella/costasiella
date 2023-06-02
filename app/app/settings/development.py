@@ -23,7 +23,7 @@ DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
 ##
 # CSRF Settings
 ##
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://dev.costasiella.com:3000']
 
 
 # Media root

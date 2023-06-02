@@ -61,11 +61,18 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         
         # Gather mollie payment info
         redirect_url = 'https://' + host + '/#/shop/checkout/complete/' + id
+        # For development
+        if "localhost" in redirect_url:
+            redirect_url = redirect_url.replace("localhost:8000", "dev.costasiella.com:8000")
+
         mollie_customer_id = mollie_dude.get_account_mollie_customer_id(
           user,
           mollie
         )
         webhook_url = mollie_dude.get_webhook_url_from_request(info.context)
+        # For development
+        if "localhost" in webhook_url:
+            webhook_url = webhook_url.replace("localhost:8000", "dev.costasiella.com:8000")
 
         # Check recurring or not
         order_contains_subscription = finance_order.items_contain_subscription()
