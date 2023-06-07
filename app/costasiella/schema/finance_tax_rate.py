@@ -29,9 +29,15 @@ class FinanceTaxRateNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
+
+        finance_tax_rate = self._meta.model.objects.get(id=id)
+
+        if info.path.typename == "FinanceInvoiceItemNode":
+            return finance_tax_rate
+
         require_login_and_permission(user, 'costasiella.view_financetaxrate')
 
-        return self._meta.model.objects.get(id=id)
+        return finance_tax_rate
 
 
 class FinanceTaxRateQuery(graphene.ObjectType):

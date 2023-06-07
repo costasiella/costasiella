@@ -30,7 +30,7 @@ class OrganizationClasspassGroupNode(DjangoObjectType):
         organization_classpass_group = self._meta.model.objects.get(id=id)
 
         # Allow returning data when coming from schedule_event_subscription_group_discount and subscription group
-        if ( info.path.typename == "OrganizationClasspassGroupClasspassNode" ):
+        if (info.path.typename == "OrganizationClasspassGroupClasspassNode"):
             return organization_classpass_group
 
         require_login_and_permission(user, 'costasiella.view_organizationclasspassgroup')
