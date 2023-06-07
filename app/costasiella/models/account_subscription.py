@@ -406,12 +406,11 @@ class AccountSubscription(models.Model):
 
     def get_credits_total(self, date):
         """
-
+        Get credit records with expiration >= date, that haven't been used yet (no schedule item attendance)
         :return: Float
         """
         from .account_subscription_credit import AccountSubscriptionCredit
 
-        # Get credit records with expiration >= today, that haven't been used yet (no schedule item attendance)
         qs = AccountSubscriptionCredit.objects.filter(
             mutation_type="SINGLE",
             account_subscription=self,
@@ -421,14 +420,40 @@ class AccountSubscription(models.Model):
 
         return qs.count()
 
+    def get_unreconciled_credits_total(self, date):
+        """
+        Get unreconciled credit records with expiration >= date, that haven't been used yet
+        (no schedule item attendance)
+        :return:
+        """
+        from .account_subscription_credit import AccountSubscriptionCredit
+
+        qs = AccountSubscriptionCredit.objects.filter(
+            mutation_type="SINGLE",
+            account_subscription=self,
+            reconciled=None
+        )
+
+        return qs.count()
+
+    def get_usable_reconcile_later_credits(self, date):
+        # Get credit records with expiration >= today, that haven't been used yet (no schedule item attendance)
+        count_unreconciled_credits = self.get_unreconciled_credits_total(date)
+
+        usable_reconciliation_credits = \
+            self.organization_subscription.reconciliation_classes - count_unreconciled_credits
+
+        return usable_reconciliation_credits
+
     def get_usable_credits_total(self, date):
         """
         Get total credits and add reconciliation credits from subscription (if any)
         :return: Float
         """
         credits_total = self.get_credits_total(date)
+        usable_reconciliation_credits = self.get_usable_reconcile_later_credits(date)
         if self.organization_subscription.reconciliation_classes:
-            return_value = credits_total + self.organization_subscription.reconciliation_classes
+            return_value = credits_total + usable_reconciliation_credits
         else:
             return_value = credits_total
 
