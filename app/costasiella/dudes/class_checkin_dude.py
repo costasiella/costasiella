@@ -366,7 +366,7 @@ class ClassCheckinDude:
             raise Exception(_("This subscription doesn't belong to this account"))
 
         # Check credits remaining if not unlimited
-        if (account_subscription.get_usable_credits_total(date) - 1) < 0 and \
+        if (account_subscription.get_usable_credits_total(date)) < 1 and \
                 not account_subscription.organization_subscription.unlimited:
             raise CSClassBookingSubscriptionNoCreditsError(
                 _(f"Insufficient credits available on {date} to book this class"))
