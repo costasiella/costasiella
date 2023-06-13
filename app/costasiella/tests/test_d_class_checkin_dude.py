@@ -52,15 +52,20 @@ class TestDudeClassCheckinDude(TestCase):
 
         class_checkin_dude = ClassCheckinDude()
 
+        # Expired credit
         account_subscription_credit_1 = f.AccountSubscriptionCreditFactory.create()
         account_subscription_credit_1.expiration = datetime.date(2020, 1, 1)
         account_subscription_credit_1.created_at = datetime.date(2020, 1, 1)
         account_subscription_credit_1.save()
+
+        # Valid credit 1
         account_subscription_credit_2 = f.AccountSubscriptionCreditFactory.create(
             account_subscription=account_subscription_credit_1.account_subscription
         )
         account_subscription_credit_2.created_at = datetime.date(2020, 1, 1)
         account_subscription_credit_2.save()
+
+        # Valid credit 2
         account_subscription_credit_3 = f.AccountSubscriptionCreditFactory.create(
             account_subscription=account_subscription_credit_1.account_subscription
         )

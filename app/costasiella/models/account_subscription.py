@@ -443,7 +443,9 @@ class AccountSubscription(models.Model):
         usable_reconciliation_credits = \
             self.organization_subscription.reconciliation_classes - count_unreconciled_credits
 
-        return usable_reconciliation_credits
+        # This function shouldn't return 0, knowing if there any usable classes is enough
+        # Returning negative integers can confuse other credit calculations.
+        return usable_reconciliation_credits if usable_reconciliation_credits >= 0 else 0
 
     def get_usable_credits_total(self, date):
         """
