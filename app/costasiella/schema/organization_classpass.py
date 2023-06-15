@@ -105,6 +105,7 @@ class OrganizationClasspassNode(DjangoObjectType):
             url_shop = ""
 
         return url_shop
+
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
@@ -112,9 +113,14 @@ class OrganizationClasspassNode(DjangoObjectType):
 
         # Return only public non-archived subscriptions without a further permission check
         organization_classpass = self._meta.model.objects.get(id=id)
+        user_has_classpass = user.classpasses.filter(organization_classpass=organization_classpass).exists()
 
-        if (not organization_classpass.display_shop and not organization_classpass.display_shop) or \
+        if user_has_classpass or info.path.typename == "AccountClasspassNode":
+            # Users can get info about classpasses they have
+            return organization_classpass
+        elif (not organization_classpass.display_public and not organization_classpass.display_shop) or \
                 organization_classpass.archived:
+            # But for all other archived or non-public ones, they need permissions
             require_login_and_permission(user, 'costasiella.view_organizationclasspass')
 
         return organization_classpass

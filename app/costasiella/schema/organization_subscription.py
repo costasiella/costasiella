@@ -159,7 +159,7 @@ class OrganizationSubscriptionNode(DjangoObjectType):
         organization_subscription = self._meta.model.objects.get(id=id)
         user_has_subscription = user.subscriptions.filter(organization_subscription=organization_subscription).exists()
 
-        if user_has_subscription:
+        if user_has_subscription or info.path.typename == "AccountSubscriptionNode":
             # Users can get info about subscriptions they have
             return organization_subscription
         elif (not organization_subscription.display_public and not organization_subscription.display_shop) or \
