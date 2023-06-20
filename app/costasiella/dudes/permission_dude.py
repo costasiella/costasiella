@@ -7,8 +7,12 @@ class PermissionDude:
         """
         self.selfcheckin_permissions = [
             'view_account',
+            'view_accountclasspass',
+            'view_accountsubscription',
+            'view_organizationclasspass',
             'view_organizationlocation',
             'view_organizationlocationroom',
+            'view_organizationsubscription',
             'view_scheduleitemattendance',
             'add_scheduleitemattendance',
             'change_scheduleitemattendance',
