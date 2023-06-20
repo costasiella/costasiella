@@ -26,6 +26,7 @@ def export_excel_insight_classpasses_active(request, year):
     wb = openpyxl.workbook.Workbook(write_only=True)
     ws_header = [
         _("Relation"),
+        _("Email"),
         _("Classpass"),
         _("Start"),
         _("Expiration"),
@@ -40,6 +41,7 @@ def export_excel_insight_classpasses_active(request, year):
         for classpass in month_data:
             data_list = [
                 classpass.account.full_name,
+                classpass.account.email,
                 classpass.organization_classpass.name,
                 classpass.date_start,
                 classpass.date_end,

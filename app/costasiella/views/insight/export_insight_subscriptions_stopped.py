@@ -26,6 +26,7 @@ def export_excel_insight_subscriptions_stopped(request, year):
     wb = openpyxl.workbook.Workbook(write_only=True)
     ws_header = [
         _("Relation"),
+        _("Email"),
         _("Subscription"),
         _("Start"),
         _("End")
@@ -39,6 +40,7 @@ def export_excel_insight_subscriptions_stopped(request, year):
         for subscription in month_data:
             data_list = [
                 subscription.account.full_name,
+                subscription.account.email,
                 subscription.organization_subscription.name,
                 subscription.date_start,
                 subscription.date_end
