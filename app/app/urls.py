@@ -40,6 +40,8 @@ urlpatterns = [
          views.CSEmailVerificationSentView.as_view(),
          name="account_emailverificationsent"),
     path('d/accounts/password/reset/', views.CSPasswordResetView.as_view(), name="account_passwordreset"),
+    path('d/accounts/password/reset/done/', views.CSPasswordResetDoneView.as_view(),
+         name="account_passwordresetdone"),
     path('d/accounts/signup/', views.CSSignUpView.as_view(), name="account_signup"),
     path('d/accounts/', include('allauth.urls')),  # allauth
     path('d/csrf/', views.csrf, name="csrf"),

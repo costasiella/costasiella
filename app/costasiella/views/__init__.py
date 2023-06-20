@@ -2,7 +2,11 @@
 from .csrf_token import csrf
 
 # All auth views
-from .cs_allauth import CSEmailVerifiedView, CSEmailVerificationSentView, CSPasswordResetView, CSSignUpView
+from .cs_allauth import CSEmailVerifiedView, \
+    CSEmailVerificationSentView, \
+    CSPasswordResetView, \
+    CSPasswordResetDoneView, \
+    CSSignUpView
 
 # GDPR Account data export
 from .account.export import export_excel_accounts_active
