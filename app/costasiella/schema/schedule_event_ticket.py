@@ -50,7 +50,7 @@ class ScheduleEventTicketNode(DjangoObjectType):
             # Reverse relations
             'ticket_schedule_items'
         )
-        filter_fields = ['schedule_event', 'full_event', 'deletable']
+        filter_fields = ['schedule_event', 'full_event', 'deletable', 'display_public']
         interfaces = (graphene.relay.Node, ScheduleEventTicketNodeInterface,)
 
     @classmethod
