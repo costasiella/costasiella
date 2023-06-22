@@ -86,6 +86,7 @@ def validate_schedule_item_price_create_update_input(input):
 
     # Check Organization Classpass Dropin
     if 'organization_classpass_dropin' in input:
+        result['organization_classpass_dropin'] = None
         if input['organization_classpass_dropin']:
             rid = get_rid(input['organization_classpass_dropin'])
             organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
@@ -95,12 +96,14 @@ def validate_schedule_item_price_create_update_input(input):
 
     # Check Organization Classpass Trial
     if 'organization_classpass_trial' in input:
+        result['organization_classpass_trial'] = None
         if input['organization_classpass_trial']:
             rid = get_rid(input['organization_classpass_trial'])
             organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
             result['organization_classpass_trial'] = organization_classpass
             if not organization_classpass:
-                raise Exception(_('Invalid Organization Classpass ID!'))   
+                raise Exception(_('Invalid Organization Classpass ID!'))
+
 
     return result
 
@@ -176,13 +179,13 @@ class UpdateScheduleItemPrice(graphene.relay.ClientIDMutation):
         if date_end:
             schedule_item_price.date_end = date_end
 
-        organization_classpass_dropin = validation_result.get('organization_classpass_dropin', None)
-        if organization_classpass_dropin:
-            schedule_item_price.organization_classpass_dropin = organization_classpass_dropin
+        if 'organization_classpass_dropin' in validation_result:
+            schedule_item_price.organization_classpass_dropin = \
+                validation_result['organization_classpass_dropin']
 
-        organization_classpass_trial = validation_result.get('organization_classpass_trial', None)
-        if organization_classpass_trial:
-            schedule_item_price.organization_classpass_trial = organization_classpass_trial
+        if 'organization_classpass_trial' in validation_result:
+            schedule_item_price.organization_classpass_trial = \
+                validation_result['organization_classpass_trial']
 
         schedule_item_price.save()
 
