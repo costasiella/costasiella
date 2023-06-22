@@ -193,6 +193,9 @@ class BaseEncryptedField(models.Field):
 
     def deconstruct(self):
         name, path, args, kwargs = super(BaseEncryptedField, self).deconstruct()
+        # Only include data_type if it's not the default
+        if self.data_type != 'string':
+            kwargs['data_type'] = self.data_type
         return name, path, args, kwargs
 
 

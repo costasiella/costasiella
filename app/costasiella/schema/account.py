@@ -5,6 +5,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
 
+import django_filters
+from django.db import models
+
+from ..modules.encrypted_fields import EncryptedTextField
+
 import graphene
 from graphql import GraphQLError
 from graphql_relay import to_global_id
@@ -15,7 +20,7 @@ from django.contrib.auth.password_validation import validate_password
 from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from django_filters import FilterSet, OrderingFilter
+from django_filters import FilterSet, OrderingFilter, CharFilter
 
 from sorl.thumbnail import get_thumbnail
 
@@ -86,6 +91,12 @@ class AccountFilter(FilterSet):
             'instructor': ['exact'],
             'employee': ['exact'],
             'invoice_to_business': ['exact'],
+            'key_number': ['exact', 'icontains', 'isnull']
+        }
+        filter_overrides = {
+            EncryptedTextField: {
+                'filter_class': CharFilter,
+            },
         }
 
     order_by = OrderingFilter(
@@ -358,6 +369,15 @@ class AccountNode(DjangoObjectType):
             ])
 
         return self.postcode
+
+    def resolve_key_number(self, info, **kwargs):
+        user = info.context.user
+        if not user.id == self.id:
+            require_login_and_one_of_permissions(user, [
+                'costasiella.view_account',
+            ])
+
+        return self.key_number
 
     def resolve_mollie_customer_id(self, info, **kwargs):
         user = info.context.user
