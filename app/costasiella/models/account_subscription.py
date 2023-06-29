@@ -556,6 +556,7 @@ class AccountSubscription(models.Model):
             date_created = today_local
 
         finance_invoice = FinanceInvoice(
+            finance_payment_method=self.finance_payment_method,
             account=self.account,
             finance_invoice_group=finance_invoice_group,
             status='SENT',
