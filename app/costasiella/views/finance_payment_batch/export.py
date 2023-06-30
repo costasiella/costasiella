@@ -30,6 +30,10 @@ def export_csv_finance_payment_batch(request, node_id, **kwargs):
     :param: POST: node_id - FinanceInvoiceNode ID
     """
     import weasyprint
+    from ...dudes import AppSettingsDude
+
+    app_settings_dude = AppSettingsDude()
+    date_format = app_settings_dude.date_format
 
     rid = get_rid(node_id)
     finance_payment_batch = FinancePaymentBatch.objects.get(id=rid.id)
@@ -74,12 +78,12 @@ def export_csv_finance_payment_batch(request, node_id, **kwargs):
             item.account_holder,
             item.account_number,
             item.account_bic,
-            item.mandate_signature_date,
+            item.mandate_signature_date.strftime(date_format),
             item.mandate_reference,
             item.currency,
             item.amount,
             item.description,
-            finance_payment_batch.execution_date,
+            finance_payment_batch.execution_date.strftime(date_format),
             # organization_location
         ])
 
