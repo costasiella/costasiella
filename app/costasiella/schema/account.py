@@ -91,7 +91,7 @@ class AccountFilter(FilterSet):
             'instructor': ['exact'],
             'employee': ['exact'],
             'invoice_to_business': ['exact'],
-            'key_number': ['exact', 'icontains', 'isnull']
+            'key_number': ['exact', 'icontains', 'isnull'],
         }
         filter_overrides = {
             EncryptedTextField: {
@@ -475,22 +475,22 @@ class AccountQuery(graphene.ObjectType):
             'costasiella.view_selfcheckin'
         ])
 
-        query_set = get_user_model().objects.filter(
+        qs = get_user_model().objects.filter(
             is_active=is_active, 
             is_superuser=False
         )
 
-        return query_set.order_by('first_name')
+        return qs.order_by('first_name')
 
     def resolve_instructors(self, info, **kwargs):
         # This endpoint allows instructors' names to be public, so they can be queried for the shop
-        query_set = get_user_model().objects.filter(
+        qs = get_user_model().objects.filter(
             is_active=True,
             is_superuser=False,
             instructor=True
         )
 
-        return query_set.order_by('first_name')
+        return qs.order_by('first_name')
 
     def resolve_groups(self, info):
         user = info.context.user
