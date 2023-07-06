@@ -1,6 +1,7 @@
 from django.utils.translation import gettext as _
 
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 from django.db import models
 from sorl.thumbnail import ImageField
 
@@ -203,3 +204,20 @@ class Account(AbstractUser):
         md5.update(str.encode(self.email.lower()))
 
         return md5.hexdigest()
+
+    # @property
+    # def has_active_subscription(self, date=None):
+    #     from .account_subscription import AccountSubscription
+    #
+    #     if not date:
+    #         now = timezone.now()
+    #         date = now.date()
+    #
+    #     qs = AccountSubscription.objects.filter(
+    #         Q(account=self),
+    #         Q(date_start__lte=date),
+    #         (Q(date_end__gte=date) | Q(date_end__isnull=True))
+    #     )
+    #
+    #     # True if account has an active subscription, false if not.
+    #     return qs.exists()
