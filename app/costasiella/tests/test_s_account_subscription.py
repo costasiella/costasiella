@@ -250,7 +250,7 @@ class GQLAccountSubscription(TestCase):
         query = self.subscriptions_query
         subscription = f.AccountSubscriptionFactory.create()
         variables = {
-            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+            'accountId': to_global_id('AccountNode', subscription.account.id)
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)

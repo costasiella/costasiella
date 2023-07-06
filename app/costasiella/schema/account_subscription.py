@@ -6,8 +6,11 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
+from django_filters import FilterSet, OrderingFilter, CharFilter
 
 import validators
+
+from ..modules.encrypted_fields import EncryptedTextField
 
 from ..dudes import SystemSettingDude
 from ..models import Account, AccountSubscription, AccountSubscriptionCredit, \
@@ -62,10 +65,34 @@ class AccountSubscriptionNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     credit_total = graphene.Float()
 
+class AccountSubscriptionFilter(FilterSet):
+    class Meta:
+        model = AccountSubscription
+        fields = {
+            'account': ['exact'],
+            'date_start': ['gte', 'lte', 'exact'],
+            'date_end': ['gte', 'lte', 'exact'],
+            'account__key_number': ['exact']
+        }
+        filter_overrides = {
+            EncryptedTextField: {
+                'filter_class': CharFilter,
+            },
+        }
+
+    # order_by = OrderingFilter(
+    #     fields=(
+    #         'date_start',
+    #     )
+    # )
+
 
 class AccountSubscriptionNode(DjangoObjectType):   
     class Meta:
         model = AccountSubscription
+        # Filterset is used to be able to detect subscriptions where an account
+        # doesn't have a key number.
+        filterset_class = AccountSubscriptionFilter
         # Fields to include
         fields = (
             'account',
@@ -78,7 +105,7 @@ class AccountSubscriptionNode(DjangoObjectType):
             'created_at',
             'updated_at',
         )
-        filter_fields = ['account', 'date_start', 'date_end']
+
         interfaces = (graphene.relay.Node, AccountSubscriptionNodeInterface,)
 
     @classmethod
@@ -107,17 +134,32 @@ class AccountSubscriptionQuery(graphene.ObjectType):
     def resolve_account_subscriptions(self, info, **kwargs):
         user = info.context.user
         require_login(user)
-        # require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
-        user = info.context.user
+        # Default filter values
+        account_id = None
+        filter_empty_key_number = False
+
+        # Check if user has permission to view other accounts & build filter
         if user.has_perm('costasiella.view_accountsubscription') and 'account' in kwargs and kwargs['account']:
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
+        if (user.has_perm('costasiella.view_accountsubscription')
+                and 'account__key_number' in kwargs
+                and kwargs['account__key_number'] == ""):
+            filter_empty_key_number = True
         else:
+            # User doesn't have permissions, set a default filter
             account_id = user.id
 
-        # Allow user to specify account
-        return AccountSubscription.objects.filter(account=account_id).order_by('-date_start')
+        # Apply filters
+        qs = AccountSubscription.objects
+        if account_id:
+            qs.filter(account=account_id)
+
+        if filter_empty_key_number:
+            qs.filter(account__key_number="")
+
+        return qs.order_by('-date_start')
 
 
 class CreateAccountSubscription(graphene.relay.ClientIDMutation):
