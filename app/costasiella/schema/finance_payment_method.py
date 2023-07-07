@@ -6,7 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import FinancePaymentMethod
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
@@ -27,9 +27,17 @@ class FinancePaymentMethodNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
+        require_login(user)
+
+        finance_payment_method = self._meta.model.objects.get(id=id)
+
+        # Allow returning data when coming from AccountSubscription
+        if (info.path.typename == "AccountSubscriptionNode"):
+            return finance_payment_method
+
         require_login_and_permission(user, 'costasiella.view_financepaymentmethod')
 
-        return self._meta.model.objects.get(id=id)
+        return finance_payment_method
 
 
 class FinancePaymentMethodQuery(graphene.ObjectType):
