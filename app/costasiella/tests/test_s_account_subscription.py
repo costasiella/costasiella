@@ -60,6 +60,9 @@ class GQLAccountSubscription(TestCase):
       edges {
         node {
           id
+          account {
+            id
+          }
           organizationSubscription {
             id
             name
@@ -279,9 +282,10 @@ class GQLAccountSubscription(TestCase):
         # Create regular user
         user = get_user_model().objects.get(pk=subscription.account.id)
         executed = execute_test_client_api_query(query, user, variables=variables)
-        errors = executed.get('errors')
+        data = executed.get('data')
 
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        for subscription_node in data['accountSubscriptions']['edges']:
+            self.assertEqual(subscription_node['node']['account']['id'], variables['accountId'])
 
     def test_query_permission_granted(self):
         """ Query list of account subscriptions with view permission """
