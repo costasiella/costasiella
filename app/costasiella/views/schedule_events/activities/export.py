@@ -59,7 +59,12 @@ def export_excel_schedule_event_activities_attendance(request, schedule_event_no
 
             # Invoice
             finance_invoice_item = schedule_item_attendance.finance_invoice_item
-            finance_invoice = finance_invoice_item.finance_invoice
+            try:
+                finance_invoice = finance_invoice_item.finance_invoice
+                finance_invoice.invoice_number
+            except AttributeError:
+                finance_invoice = None
+
 
             # Add rows to sheet
             row = [
@@ -67,9 +72,9 @@ def export_excel_schedule_event_activities_attendance(request, schedule_event_no
                 schedule_item_attendance.account.last_name,
                 schedule_item_attendance.account.email,
                 schedule_event_ticket.name,
-                finance_invoice.invoice_number,
-                finance_invoice.status,
-                finance_invoice.balance
+                finance_invoice.invoice_number if finance_invoice else "",
+                finance_invoice.status if finance_invoice else "",
+                finance_invoice.balance if finance_invoice else ""
             ]
             ws.append(row)
 
