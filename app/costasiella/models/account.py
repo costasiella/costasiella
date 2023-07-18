@@ -81,32 +81,46 @@ class Account(AbstractUser):
             self.username = self.email
         super(Account, self).save(*args, **kwargs)
 
+    def new_account_setup(self):
+        self.create_allauth_email()
+        self.create_bank_account()
+        self.create_instructor_profile()
+
     def create_allauth_email(self):
-        email_address = EmailAddress(
-            user=self,
-            email=self.email,
-            verified=True,
-            primary=True
-        )
-        email_address.save()
+        email_address = EmailAddress.objects.filter(user=self)
+
+        if not email_address:
+            email_address = EmailAddress(
+                user=self,
+                email=self.email,
+                verified=True,
+                primary=True
+            )
+            email_address.save()
 
     def create_bank_account(self):
         from .account_bank_account import AccountBankAccount
 
-        account_bank_account = AccountBankAccount(
-            account=self
-        )
-        account_bank_account.save()
+        account_bank_account = AccountBankAccount.objects.filter(account=self)
+
+        if not account_bank_account:
+            account_bank_account = AccountBankAccount(
+                account=self
+            )
+            account_bank_account.save()
 
     def create_instructor_profile(self):
         from .account_instructor_profile import AccountInstructorProfile
 
-        account_instructor_profile = AccountInstructorProfile(
-            account=self
-        )
-        account_instructor_profile.save()
+        instructor_profile = AccountInstructorProfile.objects.filter(account=self)
 
-        return account_instructor_profile
+        if not instructor_profile:
+            instructor_profile = AccountInstructorProfile(
+                account=self
+            )
+            instructor_profile.save()
+
+        return instructor_profile
 
     def has_bank_account_info(self):
         """
