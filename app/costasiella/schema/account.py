@@ -535,14 +535,8 @@ class CreateAccount(graphene.relay.ClientIDMutation):
         )
         account.save()
 
-        # Insert Allauth email address
-        account.create_allauth_email()
-
-        # Create instructor profile record
-        account.create_instructor_profile()
-
-        # Create Bank account record
-        account.create_bank_account()
+        # Setup new account
+        account.new_account_setup()
 
         return CreateAccount(account=account)
 #         return CreateAccount(user=user)

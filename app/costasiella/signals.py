@@ -32,7 +32,12 @@ def new_signup(request, user, **kwargs):
     now = timezone.now()
     today = now.date()
     client_ip = get_client_ip(request)
-    
+
+    # Do initial user account setup
+    # Add bank account & instructor profile related records
+    user.new_account_setup()
+
+    # Add accepted documents
     document_types = get_organization_document_types()
     for document_type in document_types:
         documents = OrganizationDocument.objects.filter((
