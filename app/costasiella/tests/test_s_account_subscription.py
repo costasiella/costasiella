@@ -91,6 +91,43 @@ class GQLAccountSubscription(TestCase):
   }
 '''
 
+        self.subscriptions_query_accounts_with_empty_keynumber = '''
+query AccountSubscriptions($after: String, $before: String) {
+    accountSubscriptions(first: 25, before: $before, after: $after, account_KeyNumber_Isempty: true) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          organizationSubscription {
+            id
+            name
+            unlimited
+          }
+          financePaymentMethod {
+            id
+            name
+          }
+          dateStart
+          dateEnd
+          creditTotal
+          registrationFeePaid
+          account {
+            id
+            fullName
+            keyNumber            
+          }
+          createdAt
+        }
+      }
+    }
+  }
+'''
+
         self.subscription_query = '''
   query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
     accountSubscription(id:$id) {
@@ -270,6 +307,43 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateEnd'], subscription.date_end) # Factory is set to None so no string conversion required
         self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['note'], subscription.note)
         self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['registrationFeePaid'], subscription.registration_fee_paid)
+
+    def test_query_accounts_with_empty_keynumber(self):
+        """ Query list of account subscriptions - test isempty filter for account keynumber """
+
+        # Ensure a key number is set, so any previous data doesn't show for the upcoming test
+        models.Account.objects.filter(key_number="").update(key_number="stuff here")
+
+        query = self.subscriptions_query_accounts_with_empty_keynumber
+        subscription = f.AccountSubscriptionFactory.create()
+
+        # Ensure account shows up
+        account = subscription.account
+        account.key_number = ""
+        account.save()
+
+        executed = execute_test_client_api_query(query, self.admin_user)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountSubscriptions']['edges'][0]['node']['account']['keyNumber'],
+            ""
+        )
+
+    def test_query_accounts_with_empty_keynumber(self):
+        """ Check that no accounts are found with empty key numbers """
+
+        query = self.subscriptions_query_accounts_with_empty_keynumber
+        subscription = f.AccountSubscriptionFactory.create()
+
+        # Ensure a key number is set, so any previous data doesn't show for the upcoming test
+        models.Account.objects.filter(key_number="").update(key_number="stuff here")
+
+        executed = execute_test_client_api_query(query, self.admin_user)
+
+        data = executed.get('data')
+
+        # Check that no subscriptions are returned
+        self.assertEqual(len(data['accountSubscriptions']['edges']), 0)
 
     def test_query_permission_denied(self):
         """ Query list of account subscriptions - check permission denied """
