@@ -2,6 +2,7 @@ from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db.models import Sum
 
+
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -9,6 +10,8 @@ from graphql import GraphQLError
 from django_filters import FilterSet, OrderingFilter, CharFilter
 
 import validators
+
+from .custom_filters import EmptyStringFilter
 
 from ..modules.encrypted_fields import EncryptedTextField
 
@@ -65,14 +68,17 @@ class AccountSubscriptionNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     credit_total = graphene.Float()
 
+
 class AccountSubscriptionFilter(FilterSet):
+    account__key_number__isempty = EmptyStringFilter(field_name="account__key_number")
+
     class Meta:
         model = AccountSubscription
         fields = {
             'account': ['exact'],
             'date_start': ['gte', 'lte', 'exact'],
             'date_end': ['gte', 'lte', 'exact'],
-            'account__key_number': ['exact']
+            'account__key_number': ['exact', 'gt', 'isempty']
         }
         filter_overrides = {
             EncryptedTextField: {
