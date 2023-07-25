@@ -335,11 +335,12 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         if schedule_item_attendance.account_subscription:
             # Refund subscription credit (Unlink schedule item attendance)
             if input['booking_status'] == 'CANCELLED':
-                account_subscription_credit = AccountSubscriptionCredit.objects.filter(
-                    schedule_item_attendance=schedule_item_attendance,
-                ).first()
-                account_subscription_credit.schedule_item_attendance = None
-                account_subscription_credit.save()
+                schedule_item_attendance.on_cancel()
+                # account_subscription_credit = AccountSubscriptionCredit.objects.filter(
+                #     schedule_item_attendance=schedule_item_attendance,
+                # ).first()
+                # account_subscription_credit.schedule_item_attendance = None
+                # account_subscription_credit.save()
 
             # Link schedule item attendance to a credit, if not already linked
             if input['booking_status'] == 'BOOKED' or input['booking_status'] == 'ATTENDING':

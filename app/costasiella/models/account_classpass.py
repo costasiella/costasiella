@@ -37,7 +37,7 @@ class AccountClasspass(models.Model):
             classes_taken = ScheduleItemAttendance.objects.exclude(
                 booking_status="CANCELLED"
             ).filter(
-                account_classpass = self
+                account_classpass=self
             ).count()
             self.classes_remaining = total - classes_taken
             self.save()

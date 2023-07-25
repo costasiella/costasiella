@@ -299,6 +299,12 @@ class UpdateScheduleItemWeeklyOTC(graphene.relay.ClientIDMutation):
 
         schedule_item_weekly_otc.save()
 
+        # Cancel all class bookings, when a class is cancelled.
+        if schedule_item_weekly_otc.status == 'CANCELLED':
+            # TODO: Find all attendances & refund credits
+            pass
+
+
         return UpdateScheduleItemWeeklyOTC(schedule_item_weekly_otc=schedule_item_weekly_otc)
 
 

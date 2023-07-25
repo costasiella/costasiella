@@ -79,3 +79,22 @@ class ScheduleItemAttendance(models.Model):
         delta = datetime.timedelta(hours=int(workflow_class_cancel_until))
 
         return dt_start - delta
+
+    def on_cancel(self):
+        self._on_cancel_refund_subscription_credit()
+        self._on_cancel_refund_classpass_class()
+
+
+    def _on_cancel_refund_subscription_credit(self):
+        from .account_subscription_credit import AccountSubscriptionCredit
+
+        if self.account_subscription:
+            account_subscription_credit = AccountSubscriptionCredit.objects.filter(
+                schedule_item_attendance=schedule_item_attendance,
+            ).first()
+            account_subscription_credit.schedule_item_attendance = None
+            account_subscription_credit.save()
+
+    def _on_cancel_refund_classpass_class(self):
+        if self.account_classpass:
+             self.account_classpass.update_classes_remaining()
