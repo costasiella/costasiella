@@ -80,7 +80,14 @@ class ScheduleItemAttendance(models.Model):
 
         return dt_start - delta
 
-    def on_cancel(self):
+    def cancel(self):
+        self.booking_status = "CANCELLED"
+        self.save()
+
+        self._on_cancel()
+
+
+    def _on_cancel(self):
         self._on_cancel_refund_subscription_credit()
         self._on_cancel_refund_classpass_class()
 
@@ -90,10 +97,12 @@ class ScheduleItemAttendance(models.Model):
 
         if self.account_subscription:
             account_subscription_credit = AccountSubscriptionCredit.objects.filter(
-                schedule_item_attendance=schedule_item_attendance,
+                schedule_item_attendance=self,
             ).first()
-            account_subscription_credit.schedule_item_attendance = None
-            account_subscription_credit.save()
+
+            if account_subscription_credit:
+                account_subscription_credit.schedule_item_attendance = None
+                account_subscription_credit.save()
 
     def _on_cancel_refund_classpass_class(self):
         if self.account_classpass:

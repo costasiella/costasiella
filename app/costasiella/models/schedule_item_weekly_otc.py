@@ -44,3 +44,17 @@ class ScheduleItemWeeklyOTC(models.Model):
 
     def __str__(self):
         return str(self.schedule_item) + ' otc [' + str(self.date) + ']'
+
+    def on_cancel(self):
+        self._cancel_attendances()
+
+    def _cancel_attendances(self):
+        from .schedule_item_attendance import ScheduleItemAttendance
+
+        schedule_item_attendances = ScheduleItemAttendance.objects.filter(
+            schedule_item=self.schedule_item,
+            date=self.date
+        )
+
+        for schedule_item_attendance in schedule_item_attendances:
+            schedule_item_attendance.cancel()
