@@ -222,18 +222,10 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             account_subscription.finance_payment_method = finance_payment_method
 
             # User has agreed to direct debit in Shop, create mandate signed today if it doesn't exist yet.
-            now = timezone.now()
-            today = now.date()
-
             # We can assume a bank account exits for an account (it should)
             account_bank_account = AccountBankAccount.objects.filter(account=account_subscription.account).first()
             if not account_bank_account.has_direct_debit_mandate():
-                account_bank_account_mandate = AccountBankAccountMandate(
-                    account_bank_account=account_bank_account,
-                    signature_date=today,
-                    reference=str(uuid.uuid4())
-                )
-                account_bank_account_mandate.save()
+                account_bank_account.add_mandate()
         else:
             if 'finance_payment_method' in result:
                 account_subscription.finance_payment_method = result['finance_payment_method']
