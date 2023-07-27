@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db import models
@@ -109,8 +111,8 @@ class FinancePaymentBatch(models.Model):
                 mandate_signature_date = mandate.signature_date
                 mandate_reference = mandate.reference
             else:
-                mandate_signature_date = None
-                mandate_reference = None
+                mandate_signature_date = datetime.date(1900, 1, 1)
+                mandate_reference = ""
 
             finance_payment_batch_item = FinancePaymentBatchItem(
                 finance_payment_batch=self,
