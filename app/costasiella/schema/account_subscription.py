@@ -2,7 +2,7 @@ from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db.models import Sum
 
-
+import uuid
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -16,8 +16,13 @@ from .custom_filters import EmptyStringFilter
 from ..modules.encrypted_fields import EncryptedTextField
 
 from ..dudes import SystemSettingDude
-from ..models import Account, AccountSubscription, AccountSubscriptionCredit, \
-                     FinancePaymentMethod, OrganizationSubscription
+from ..models import Account, \
+    AccountBankAccount, \
+    AccountBankAccountMandate, \
+    AccountSubscription, \
+    AccountSubscriptionCredit, \
+    FinancePaymentMethod, \
+    OrganizationSubscription
 from ..modules.gql_tools import require_login, require_login_and_permission, require_permission, get_rid
 from ..modules.messages import Messages
 
@@ -210,14 +215,22 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         if 'note' in input:
             account_subscription.note = input['note']
 
+
         if shop_payment_method == "DIRECTDEBIT" and user == result['account']:
             # Payment method should always start as direct debit
             finance_payment_method = FinancePaymentMethod.objects.get(id=103)
             account_subscription.finance_payment_method = finance_payment_method
+
+            # User has agreed to direct debit in Shop, create mandate signed today if it doesn't exist yet.
+            # We can assume a bank account exits for an account (it should)
+            account_bank_account = AccountBankAccount.objects.filter(account=account_subscription.account).first()
+            if not account_bank_account.has_direct_debit_mandate():
+                account_bank_account.add_mandate()
         else:
             if 'finance_payment_method' in result:
                 account_subscription.finance_payment_method = result['finance_payment_method']
 
+        # Save account subscription to save the payment method
         account_subscription.save()
 
         # Add credits

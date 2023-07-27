@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+import uuid
 
 from .account import Account
 
@@ -16,3 +18,18 @@ class AccountBankAccount(models.Model):
 
     def __str__(self):
         return model_string(self)
+
+    def has_direct_debit_mandate(self):
+        from .account_bank_account_mandate import AccountBankAccountMandate
+
+        return AccountBankAccountMandate.objects.filter(account_bank_account=self).exists()
+
+    def add_mandate(self):
+        from .account_bank_account_mandate import AccountBankAccountMandate
+
+        account_bank_account_mandate = AccountBankAccountMandate(
+            account_bank_account=self,
+            signature_date=timezone.now().date(),  # Today
+            reference=str(uuid.uuid4())
+        )
+        account_bank_account_mandate.save()
