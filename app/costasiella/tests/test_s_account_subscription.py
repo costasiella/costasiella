@@ -578,7 +578,8 @@ query AccountSubscriptions($after: String, $before: String) {
 
         query = self.subscription_create_mutation_shop_direct_debit
 
-        account = f.RegularUserFactory.create()
+        account_bank_account = f.AccountBankAccountFactory.create()
+        account = account_bank_account.account
         organization_subscription = f.OrganizationSubscriptionFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
@@ -599,6 +600,12 @@ query AccountSubscriptions($after: String, $before: String) {
         latest_account_subscription = models.AccountSubscription.objects.latest('id')
 
         self.assertEqual(latest_account_subscription.finance_payment_method.id, 103)
+
+        ## Check a mandate was created as well
+        self.assertEqual(
+            models.AccountBankAccountMandate.objects.filter(account_bank_account=account_bank_account).exists(),
+            True
+        )
 
     def test_create_subscription_user_shop_direct_debit_cant_start_in_past(self):
         """ Allow users to create subscriptions for their own account """
