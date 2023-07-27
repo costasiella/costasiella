@@ -16,3 +16,8 @@ class AccountBankAccount(models.Model):
 
     def __str__(self):
         return model_string(self)
+
+    def has_direct_debit_mandate(self):
+        from .account_bank_account_mandate import AccountBankAccountMandate
+
+        return AccountBankAccountMandate.objects.filter(account_bank_account=self).exists()
