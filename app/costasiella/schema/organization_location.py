@@ -32,8 +32,6 @@ class OrganizationLocationNode(DjangoObjectType):
 
         organization_location = self._meta.model.objects.get(id=id)
 
-        print(info.path.typename)
-
         if info.path.typename == 'ScheduleEventNode' or "OrganizationLocationRoomNode":
             return organization_location
 
