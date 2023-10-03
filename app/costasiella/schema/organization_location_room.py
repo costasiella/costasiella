@@ -29,6 +29,10 @@ class OrganizationLocationRoomNode(DjangoObjectType):
         user = info.context.user
 
         room = self._meta.model.objects.get(id=id)
+
+        if info.path.typename == "ScheduleItemNode":
+            return room
+
         if room.archived or not room.display_public:
             require_login_and_one_of_permissions(user, [
                 'costasiella.view_organizationlocationroom',
@@ -36,6 +40,7 @@ class OrganizationLocationRoomNode(DjangoObjectType):
             ])
 
         # Return only public non-archived location rooms
+        # if not accessing from another object
         return room
 
 

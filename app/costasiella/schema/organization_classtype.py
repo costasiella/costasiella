@@ -41,6 +41,10 @@ class OrganizationClasstypeNode(DjangoObjectType):
         user = info.context.user
         # require_login_and_permission(user, 'costasiella.view_organizationclasstype')
         organization_classtype = self._meta.model.objects.get(id=id)
+
+        if info.path.typename == "ScheduleItemNode":
+            return organization_classtype
+
         if user.has_perm('costasiella.view_organizationclasstype') or \
            (organization_classtype.display_public is True and organization_classtype.archived is False):
             return organization_classtype
