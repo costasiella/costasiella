@@ -32,7 +32,7 @@ class OrganizationLocationNode(DjangoObjectType):
 
         organization_location = self._meta.model.objects.get(id=id)
 
-        if info.path.typename == 'ScheduleEventNode' or "OrganizationLocationRoomNode":
+        if info.path.typename == 'ScheduleEventNode' or info.path.typename == "OrganizationLocationRoomNode":
             return organization_location
 
         if user.has_perm('costasiella.view_organizationlocation') or \
