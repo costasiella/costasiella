@@ -347,11 +347,16 @@ class AccountSubscription(models.Model):
         """
         from .schedule_item_attendance import ScheduleItemAttendance
 
-        ScheduleItemAttendance.objects.filter(
+        # Find attendance on this subscription after the end date
+        schedule_item_attendances = ScheduleItemAttendance.objects.filter(
             schedule_item=schedule_item,
             account_subscription=self,
             date__gte=cancel_bookings_from_date
-        ).update(booking_status='CANCELLED')
+        )
+
+        # Cancel attendance & refund credits
+        for schedule_item_attendance in schedule_item_attendances:
+            schedule_item_attendance.cancel()
 
         logger.info("Enrollment ended: cancelled classes booked after %s on subscription %s" %
                     (cancel_bookings_from_date, self.id))
