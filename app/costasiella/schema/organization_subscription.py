@@ -183,8 +183,8 @@ class OrganizationSubscriptionQuery(graphene.ObjectType):
 
         # Return only public non-archived subscriptions
         return OrganizationSubscription.objects.filter(
-            (Q(display_public=True) | Q(display_shop=True)) and
-            Q(archived=False)).order_by('name')
+            Q(display_public=True) | Q(display_shop=True)
+        ).filter(archived=False).order_by('name')
 
 
 class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):

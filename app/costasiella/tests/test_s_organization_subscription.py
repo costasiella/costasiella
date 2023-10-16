@@ -324,6 +324,7 @@ class GQLOrganizationSubscription(TestCase):
         subscription = f.OrganizationSubscriptionFactory.create()
         non_public = f.OrganizationSubscriptionFactory.create()
         non_public.display_public = False
+        non_public.display_shop = False
         non_public.save()
 
         variables = {
@@ -333,12 +334,13 @@ class GQLOrganizationSubscription(TestCase):
         # Create regular user
         user = f.RegularUserFactory.create()
         executed = execute_test_client_api_query(query, user, variables=variables)
+        # print(executed)
         data = executed.get('data')
 
         # Public subscriptions only
         non_public_found = False
         for item in data['organizationSubscriptions']['edges']:
-            if not item['node']['displayPublic']:
+            if not item['node']['displayPublic'] and not item['node']['displayShop']:
                 non_public_found = True
 
         self.assertEqual(non_public_found, False)
@@ -378,6 +380,7 @@ class GQLOrganizationSubscription(TestCase):
         query = self.subscriptions_query
         subscription = f.OrganizationSubscriptionFactory.create()
         subscription.display_public = False
+        subscription.display_shop = False
         subscription.save()
 
         variables = {
