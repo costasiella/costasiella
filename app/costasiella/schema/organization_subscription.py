@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 from django.utils import timezone
-
+from django.db.models import Q
 
 import graphene
 from decimal import Decimal
@@ -182,7 +182,9 @@ class OrganizationSubscriptionQuery(graphene.ObjectType):
             return OrganizationSubscription.objects.filter(archived=archived).order_by('name')
 
         # Return only public non-archived subscriptions
-        return OrganizationSubscription.objects.filter(display_public=True, archived=False).order_by('name')
+        return OrganizationSubscription.objects.filter(
+            (Q(display_public=True) | Q(display_shop=True)) and
+            Q(archived=False)).order_by('name')
 
 
 class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
