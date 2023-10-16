@@ -81,7 +81,7 @@ class ScheduleItemNode(DjangoObjectType):
         user = info.context.user
 
         schedule_item = self._meta.model.objects.get(id=id)
-        if schedule_item.display_public:
+        if schedule_item.display_public or info.path.typename == "ScheduleItemAttendanceNode":
             return schedule_item
         else:
             permissions = [
