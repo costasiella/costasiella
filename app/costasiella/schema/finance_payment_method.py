@@ -31,8 +31,13 @@ class FinancePaymentMethodNode(DjangoObjectType):
 
         finance_payment_method = self._meta.model.objects.get(id=id)
 
+        allowed_pathnames = [
+            "AccountSubscriptionNode",
+            "FinanceInvoicePaymentNode"
+        ]
+
         # Allow returning data when coming from AccountSubscription
-        if (info.path.typename == "AccountSubscriptionNode"):
+        if info.path.typename in allowed_pathnames:
             return finance_payment_method
 
         require_login_and_permission(user, 'costasiella.view_financepaymentmethod')
