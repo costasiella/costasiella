@@ -33,6 +33,7 @@ class FinancePaymentMethodNode(DjangoObjectType):
 
         allowed_pathnames = [
             "AccountSubscriptionNode",
+            "FinanceInvoiceNode",
             "FinanceInvoicePaymentNode"
         ]
 
