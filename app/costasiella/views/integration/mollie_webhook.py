@@ -32,8 +32,6 @@ def mollie_webhook(request):
     )
     log.save()
 
-    print(id)
-
     # try to get payment
     try:
         mollie_dude = MollieDude()
@@ -46,8 +44,6 @@ def mollie_webhook(request):
         # Fetch payment
         payment_id = id
         payment = mollie.payments.get(payment_id)
-
-        print(payment)
 
         # Log payment data
         log.payment_data = str(payment)
@@ -66,8 +62,6 @@ def mollie_webhook(request):
             payment_date = datetime.datetime.strptime(payment.paid_at.split('+')[0],
                                                       '%Y-%m-%dT%H:%M:%S').date()
 
-            print(payment_amount)
-            print(payment_date)
 
             # Process order payment
             if finance_order_id:
