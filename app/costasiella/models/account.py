@@ -29,6 +29,7 @@ class Account(AbstractUser):
             ('view_insight', _("Can view insight menu")),
             ('view_insightaccountsinactive', _("Can view insight accounts inactive")),
             ('view_insightclasspasses', _("Can view insight classpasses active")),
+            ('view_insightfinanceinvoicesopenondate', _("Can view insight finance invoices open on date")),
             ('view_insightfinancetaxratesummary', _("Can view insight finance tax rates summary")),
             ('view_insightinstructorclassesmonth', _("Can view insight instructor classes in month")),
             ('view_insightkeynumberswosubscription', _("Can view insight key numbers without subscription")),
