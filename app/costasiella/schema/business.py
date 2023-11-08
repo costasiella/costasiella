@@ -47,9 +47,19 @@ class BusinessNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
+        business = self._meta.model.objects.get(id=id)
+
+        allowed_pathnames = [
+            "FinanceInvoiceNode",
+        ]
+
+        # Allow returning data when coming from AccountSubscription
+        if info.path.typename in allowed_pathnames:
+            return business
+
         require_login_and_permission(user, 'costasiella.view_business')
 
-        return self._meta.model.objects.get(id=id)
+        return business
 
 
 class BusinessQuery(graphene.ObjectType):
