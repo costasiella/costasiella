@@ -44,7 +44,7 @@ class GQLInsightRevenue(TestCase):
         }
 
         self.variables_query_no_data = {
-            "dateStart": "2019-12-31",
+            "date": "2019-12-31",
         }
 
         self.query_open_invoices = '''
@@ -90,51 +90,49 @@ class GQLInsightRevenue(TestCase):
                          format(self.finance_invoice.balance, ".2f"))
 
 
-    # def test_query_revenue_total_no_data(self):
-    #     """ Query open invoices for a given date - no data """
-    #     query = self.query_open_invoices
-    # 
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_no_data)
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(data['insightFinanceOpenInvoices']['dateStart'], self.variables_query_no_data['dateStart'])
-    #     self.assertEqual(data['insightFinanceOpenInvoices']['dateEnd'], self.variables_query_no_data['dateEnd'])
-    #     self.assertEqual(len(data['insightFinanceOpenInvoices']['data']), 0)
-    # 
-    # 
-    # def test_query_total_permission_denied(self):
-    #     """ Query open invoices - check permission denied """
-    #     query = self.query_open_invoices
-    # 
-    #     # Create regular user
-    #     user = self.finance_invoice.account
-    #     executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-    #     errors = executed.get('errors')
-    # 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # 
-    # def test_query_total_permission_granted(self):
-    #     """ Query open invoices - check permission granted """
-    #     query = self.query_open_invoices
-    # 
-    #     # Create regular user
-    #     user = self.finance_invoice.account
-    #     permission = Permission.objects.get(codename=self.permission_view)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(data['insightFinanceOpenInvoices']['dateStart'], self.variables_query['dateStart'])
-    # 
-    # 
-    # def test_query_total_anon_user(self):
-    #     """ Query open invoices - anon user """
-    #     query = self.query_open_invoices
-    # 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
+    def test_query_revenue_total_no_data(self):
+        """ Query open invoices for a given date - no data """
+        query = self.query_open_invoices
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_no_data)
+        data = executed.get('data')
+
+        self.assertEqual(data['insightFinanceOpenInvoices']['date'], self.variables_query_no_data['date'])
+        self.assertEqual(len(data['insightFinanceOpenInvoices']['financeInvoices']), 0)
+
+
+    def test_query_total_permission_denied(self):
+        """ Query open invoices - check permission denied """
+        query = self.query_open_invoices
+
+        # Create regular user
+        user = self.finance_invoice.account
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    def test_query_total_permission_granted(self):
+        """ Query open invoices - check permission granted """
+        query = self.query_open_invoices
+
+        # Create regular user
+        user = self.finance_invoice.account
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
+        data = executed.get('data')
+
+        self.assertEqual(data['insightFinanceOpenInvoices']['date'], self.variables_query['date'])
+
+
+    def test_query_total_anon_user(self):
+        """ Query open invoices - anon user """
+        query = self.query_open_invoices
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
