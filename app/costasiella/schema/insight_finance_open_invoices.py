@@ -22,6 +22,8 @@ from ..modules.gql_tools import get_rid, require_login_and_permission
 class FinanceOpenInvoicesType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     finance_invoices = graphene.List(FinanceInvoiceNode)
+    total_open_on_date = graphene.Decimal()
+    total_open_on_date_display = graphene.String()
 
     def resolve_finance_invoices(self, info):
         insight_finance_open_invoices_dude = InsightFinanceOpenInvoicesDude()
@@ -38,6 +40,17 @@ class FinanceOpenInvoicesType(graphene.ObjectType):
         #     )
 
         return open_invoices
+
+    def resolve_total_open_on_date(self, info):
+        total_open = 0
+        for finance_invoice in self.resolve_finance_invoices(info):
+            total_open += finance_invoice.balance
+
+        return total_open
+
+    def resolve_total_open_on_date_display(self, info):
+        return display_float_as_amount(self.resolve_total_open_on_date(info))
+
 
 # def validate_input(date_start, date_end):
 #     """
