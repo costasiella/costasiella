@@ -56,14 +56,5 @@ WHERE cfi.date_sent <= %(date)s
             "date": str(date),
         }
         open_invoices = FinanceInvoice.objects.raw(query, params=params)
-        # print(open_invoices)
-
-        return_value = []
-        for finance_invoice in open_invoices:
-            print(finance_invoice)
-            # finance_invoice.paid =
-            # return_value.append(finance_invoice)
-        # for i in open_invoices:
-        #     print(i)
 
         return open_invoices
