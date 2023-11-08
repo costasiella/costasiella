@@ -22,7 +22,7 @@ cssselect2==0.2.2
 decorator==4.3.2
 defusedxml==0.7.1
 Deprecated==1.2.13
-Django==4.1.10
+Django==4.1.13
 django-allauth==0.47.0
 django-celery-beat==2.4.0
 django-celery-results==2.4.0
@@ -80,7 +80,7 @@ tblib==1.7.0
 text-unidecode==1.2
 tinycss2==1.0.2
 tzdata==2022.1
-urllib3==2.0.6
+urllib3==2.0.7
 validators==0.20.0
 vine==5.0.0
 wcwidth==0.2.5
