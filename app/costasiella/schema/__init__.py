@@ -54,6 +54,7 @@ from .insight_account_inactive import InsightAccountInactiveQuery, InsightAccoun
 from .insight_account_inactive_account import InsightAccountInactiveAccountQuery
 from .insight_classpasses import InsightClasspassesQuery
 from .insight_class_attendance import InsightClassAttendanceQuery
+from .insight_finance_open_invoices import InsightFinanceOpenInvoicesQuery
 from .insight_finance_tax_rate_summary import InsightFinanceTaxRateSummaryQuery
 from .insight_instructor_classes_month import InsightInstructorClassesMonthQuery
 from .insight_subscriptions import InsightSubscriptionsQuery
@@ -165,6 +166,7 @@ class Query(AccountQuery,
             InsightAccountInactiveAccountQuery,
             InsightClasspassesQuery,
             InsightClassAttendanceQuery,
+            InsightFinanceOpenInvoicesQuery,
             InsightFinanceTaxRateSummaryQuery,
             InsightInstructorClassesMonthQuery,
             InsightRevenueQuery,

@@ -64,7 +64,9 @@ def export_excel_finance_invoices(request, date_from, date_until, status, **kwar
     )
 
     if status != "ALL":
-        invoice_items.filter(status=status)
+        invoice_items = invoice_items.filter(
+            finance_invoice__status=status
+        )
 
     for invoice_item in invoice_items:
         finance_invoice = invoice_item.finance_invoice
