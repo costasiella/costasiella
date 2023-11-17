@@ -81,12 +81,14 @@ class ScheduleEventQuery(graphene.ObjectType):
     # Login is not required, public schedule events are well... public
     def resolve_schedule_events(self, info, archived=False, **kwargs):
         user = info.context.user
+
+        order_by = '-date_start'
         # Has permission: return everything requested
         if user.has_perm('costasiella.view_scheduleevent'):
-            return ScheduleEvent.objects.filter(archived=archived).order_by('date_start')
+            return ScheduleEvent.objects.filter(archived=archived).order_by(order_by)
 
         # Return only public non-archived events
-        return ScheduleEvent.objects.filter(display_public=True, archived=False).order_by('date_start')
+        return ScheduleEvent.objects.filter(display_public=True, archived=False).order_by(order_by)
 
 
 def validate_create_update_input(input, update=False):
