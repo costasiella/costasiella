@@ -85,7 +85,7 @@ class GQLInsightRevenue(TestCase):
         self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['total'],
                          format(self.finance_invoice.total, ".2f"))
         self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['paid'],
-                         format(self.finance_invoice.paid, ".2f"))
+                         str(self.finance_invoice.paid, ".2f"))
         self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['balance'],
                          format(self.finance_invoice.balance, ".2f"))
 
