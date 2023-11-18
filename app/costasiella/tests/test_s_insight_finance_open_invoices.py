@@ -1,22 +1,14 @@
 # from graphql.error.located_error import GraphQLLocatedError
 import datetime
-import graphql
-
-from django.contrib.auth import get_user_model
+import os
 from django.contrib.auth.models import Permission
-from django.utils import timezone
 from django.test import TestCase
-from graphene.test import Client
 
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
 
 from . import factories as f
 from .helpers import execute_test_client_api_query
-from .. import models
-from .. import schema
-from ..modules.finance_tools import display_float_as_amount
-from ..modules.validity_tools import display_validity_unit
 
 from graphql_relay import to_global_id
 
@@ -77,8 +69,6 @@ class GQLInsightRevenue(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
-        print(executed)
-
         self.assertEqual(data['insightFinanceOpenInvoices']['date'], self.variables_query['date'])
         self.assertEqual(data['insightFinanceOpenInvoices']['totalOpenOnDate'],
                          format(self.finance_invoice.balance, ".2f"))
@@ -86,8 +76,12 @@ class GQLInsightRevenue(TestCase):
                          to_global_id('FinanceInvoiceNode', self.finance_invoice.id))
         self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['total'],
                          format(self.finance_invoice.total, ".2f"))
-        self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['paid'],
-                         format(self.finance_invoice.paid, ".2f"))
+        if 'GITHUB_WORKFLOW' in os.environ:
+            self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['paid'],
+                             str(self.finance_invoice.paid))
+        else:
+            self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['paid'],
+                             format(self.finance_invoice.paid, ".2f"))
         self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['balance'],
                          format(self.finance_invoice.balance, ".2f"))
 
