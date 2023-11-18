@@ -77,6 +77,8 @@ class GQLInsightRevenue(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
+        print(executed)
+
         self.assertEqual(data['insightFinanceOpenInvoices']['date'], self.variables_query['date'])
         self.assertEqual(data['insightFinanceOpenInvoices']['totalOpenOnDate'],
                          format(self.finance_invoice.balance, ".2f"))
