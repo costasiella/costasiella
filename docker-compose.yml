@@ -3,7 +3,8 @@ version: '3'
 
 services:
   backend:
-    image: simplycode/costasiella_backend:2023.03.00
+    image: simplycode/costasiella_backend:2023.05.01
+    user: www-data:www-data
     restart: always
     env_file:
       - costasiella.env
@@ -19,10 +20,10 @@ services:
       - vault
   redis:
     restart: always
-    image: redis:alpine
+    image: redis:7.2.1-alpine3.18
   vault:
     restart: always
-    image: vault
+    image: vault:1.13.3
     command:
       - "server"
     volumes:
@@ -30,24 +31,26 @@ services:
     ports:
       - "127.0.0.1:8200:8200"
   celery_worker:
-    image: simplycode/costasiella_celery_worker:2023.03.00
+    image: simplycode/costasiella_celery_worker:2023.05.01
+    user: www-data:www-data
     restart: always
     env_file:
       - costasiella.env
     volumes:
-      - /opt/docker/mounts/costasiella/logs:/opt/app/app/logs
+      - /opt/docker/mounts/costasiella/logs:/opt/app/logs
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
       - vault
       - backend
   celery_beat:
-    image: simplycode/costasiella_celery_beat:2023.03.00
+    image: simplycode/costasiella_celery_beat:2023.05.01
+    user: www-data:www-data
     restart: always
     env_file:
       - costasiella.env
     volumes:
-      - /opt/docker/mounts/costasiella/logs:/opt/app/app/logs
+      - /opt/docker/mounts/costasiella/logs:/opt/app/logs
       - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
