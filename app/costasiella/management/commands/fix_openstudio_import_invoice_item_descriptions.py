@@ -172,7 +172,7 @@ class Command(BaseCommand):
         """
         Main import fix function
         :param self:
-        :return:
+        :return: None
         """
         # Query invoice items with invoice number
         query = """
@@ -198,24 +198,14 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
                 finance_invoice__invoice_number=record['invoiceid']
             ).first()
 
-            print("----------")
-            print(f"cs description: {finance_invoice_item.description}")
-            print(f"os description: {record['description']}")
+            if record['description']:
+                finance_invoice_item.description = record['description']
+                finance_invoice_item.save()
 
-            # finance_tax_rate = m.FinanceTaxRate(
-            #     archived=self._web2py_bool_to_python(record['archived']),
-            #     name=record['name'],
-            #     percentage=record['percentage'],
-            #     rate_type="IN",
-            #     code=record['vatcodeid'] or ""
-            # )
-            # finance_tax_rate.save()
-            records_imported += 1
-
+                records_imported += 1
+            else:
+                logger.warning(f"Could not import invoice description fix record - description can't be empty: {record}")
 
         log_message = "Fix invoice item descriptions: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logger.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
-
-
-
