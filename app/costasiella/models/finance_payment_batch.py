@@ -90,7 +90,7 @@ class FinancePaymentBatch(models.Model):
         currency = self._get_currency()
 
         invoices = FinanceInvoice.objects.filter(
-            status="SENT",
+            Q(Q(status="SENT") | Q(status="OVERDUE")),
             finance_payment_method=103  # 103 = Direct Debit
         )
 
