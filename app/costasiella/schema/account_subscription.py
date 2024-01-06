@@ -209,7 +209,7 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         )
 
         if 'date_end' in input:
-            if input['date_end']: # check if date_end actually has a value
+            if input['date_end']:  # check if date_end actually has a value
                 account_subscription.date_end = input['date_end']
 
         if 'note' in input:
@@ -221,11 +221,18 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             finance_payment_method = FinancePaymentMethod.objects.get(id=103)
             account_subscription.finance_payment_method = finance_payment_method
 
+            # Save account subscription to be able to create an invoice
+            account_subscription.save()
+
             # User has agreed to direct debit in Shop, create mandate signed today if it doesn't exist yet.
             # We can assume a bank account exits for an account (it should)
             account_bank_account = AccountBankAccount.objects.filter(account=account_subscription.account).first()
             if not account_bank_account.has_direct_debit_mandate():
                 account_bank_account.add_mandate()
+
+            # Create invoice for first month of subscription
+            account_subscription.create_invoice_for_month(account_subscription.date_start.year,
+                                                          account_subscription.date_start.month)
         else:
             if 'finance_payment_method' in result:
                 account_subscription.finance_payment_method = result['finance_payment_method']

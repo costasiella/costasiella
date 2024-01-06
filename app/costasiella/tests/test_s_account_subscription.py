@@ -19,7 +19,10 @@ from .. import schema
 
 class GQLAccountSubscription(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-    fixtures = ['finance_payment_methods.json']
+    fixtures = ['app_settings.json',
+                'finance_invoice_group.json',
+                'finance_invoice_group_defaults.json',
+                'finance_payment_methods.json']
 
     def setUp(self):
         # This is run before every test
@@ -580,12 +583,12 @@ query AccountSubscriptions($after: String, $before: String) {
 
         account_bank_account = f.AccountBankAccountFactory.create()
         account = account_bank_account.account
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        organization_subscription_price = f.OrganizationSubscriptionPriceFactory.create()
+        organization_subscription = organization_subscription_price.organization_subscription
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
         variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode',
                                                                       organization_subscription.id)
-
         executed = execute_test_client_api_query(
             query,
             account,
@@ -601,9 +604,19 @@ query AccountSubscriptions($after: String, $before: String) {
 
         self.assertEqual(latest_account_subscription.finance_payment_method.id, 103)
 
-        ## Check a mandate was created as well
+        # Check a mandate was created
         self.assertEqual(
             models.AccountBankAccountMandate.objects.filter(account_bank_account=account_bank_account).exists(),
+            True
+        )
+
+        # Check invoice item was created
+        self.assertEqual(
+            models.FinanceInvoiceItem.objects.filter(
+                account_subscription=latest_account_subscription,
+                subscription_year=latest_account_subscription.date_start.year,
+                subscription_month=latest_account_subscription.date_start.month,
+            ).exists(),
             True
         )
 
