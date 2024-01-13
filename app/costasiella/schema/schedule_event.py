@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
+from django_filters import FilterSet, OrderingFilter
 from graphql_relay import to_global_id
 from graphql import GraphQLError
 
@@ -19,9 +20,21 @@ class ScheduleEventNodeInterface(graphene.Interface):
     url_shop = graphene.String()
 
 
+class ScheduleEventFilter(FilterSet):
+    class Meta:
+        model = ScheduleEvent
+        fields = ['archived', 'display_public', 'display_shop']
+
+        order_by = OrderingFilter(
+            fields=(
+                ('date_start', 'date_start'),
+            )
+        )
+
 class ScheduleEventNode(DjangoObjectType):
     class Meta:
         model = ScheduleEvent
+        filterset_class = ScheduleEventFilter
         fields = (
             # model fields
             'archived',
@@ -48,7 +61,7 @@ class ScheduleEventNode(DjangoObjectType):
             'schedule_items',
             'tickets'
         )
-        filter_fields = ['archived', 'display_public', 'display_shop']
+        # filter_fields = ['archived', 'display_public', 'display_shop']
         interfaces = (graphene.relay.Node, ScheduleEventNodeInterface, )
 
     @classmethod
@@ -75,20 +88,27 @@ class ScheduleEventNode(DjangoObjectType):
         return url_shop
 
 class ScheduleEventQuery(graphene.ObjectType):
-    schedule_events = DjangoFilterConnectionField(ScheduleEventNode)
+    schedule_events = DjangoFilterConnectionField(ScheduleEventNode,
+                                                  orderBy=graphene.List(of_type=graphene.String))
     schedule_event = graphene.relay.Node.Field(ScheduleEventNode)
 
     # Login is not required, public schedule events are well... public
     def resolve_schedule_events(self, info, archived=False, **kwargs):
         user = info.context.user
 
-        order_by = '-date_start'
+        order_by = kwargs.get('orderBy')
+        if not order_by:
+            # Smallest date first ("oldest first" makes sense as the default.
+            # on websites, etc. we don't want to show the biggest date first, that looks strange")
+            order_by = ['date_start']
+
+        # order_by = '-date_start'
         # Has permission: return everything requested
         if user.has_perm('costasiella.view_scheduleevent'):
-            return ScheduleEvent.objects.filter(archived=archived).order_by(order_by)
+            return ScheduleEvent.objects.filter(archived=archived).order_by(*order_by)
 
         # Return only public non-archived events
-        return ScheduleEvent.objects.filter(display_public=True, archived=False).order_by(order_by)
+        return ScheduleEvent.objects.filter(display_public=True, archived=False).order_by(*order_by)
 
 
 def validate_create_update_input(input, update=False):
