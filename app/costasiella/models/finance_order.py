@@ -19,6 +19,7 @@ class FinanceOrder(models.Model):
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=255, choices=STATUSES, default="RECEIVED")
     message = models.TextField(default="")
+    delivery_error_message = models.TextField(default="")
     subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     tax = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
@@ -218,6 +219,21 @@ class FinanceOrder(models.Model):
                 )
 
             if item.organization_classpass:
+                # Check if we should deliver. Don't deliver when;
+                # schedule_item and attendance_date are set, but account is already attending the class.
+                class_checkin_dude = ClassCheckinDude()
+                account_is_attending_class = class_checkin_dude.account_is_attending_class(
+                    account=self.account,
+                    schedule_item=item.schedule_item,
+                    date=item.attendance_date
+                )
+                if account_is_attending_class:
+                    self.status = 'DELIVERY_ERROR'
+                    self.delivery_error_message = \
+                        _("Unable to deliver class pass in this order. Account is already attending the specified class")
+                    return
+
+                # Continue delivery as usual
                 account_classpass = self._deliver_classpass(
                     item.organization_classpass,
                     finance_invoice,
