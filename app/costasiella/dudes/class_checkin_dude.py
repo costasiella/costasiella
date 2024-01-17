@@ -45,11 +45,11 @@ class ClassCheckinDude:
         :param date: datetime.date object
         :return: Boolean; true if the account is already checked-in for the class, false otherwise
         """
-        qs = self._class_checkedin(account, schedule_item, date)
+        qs = self.account_is_attending_class(account, schedule_item, date)
 
         return qs.exists()
 
-    def _class_checkedin(self, account, schedule_item, date):
+    def account_is_attending_class(self, account, schedule_item, date):
         """
         :return: schedule_item_attendance object if found, so we can check for reviews
         """
@@ -96,7 +96,7 @@ class ClassCheckinDude:
         Raise error when not successful
         """
         # Check if not already signed in
-        qs = self._class_checkedin(account, schedule_item, date)
+        qs = self.account_is_attending_class(account, schedule_item, date)
         if qs.exists():
             # Already signed in, check for review check-in
             schedule_item_attendance = qs.first()
@@ -142,7 +142,7 @@ class ClassCheckinDude:
         from ..models import ScheduleItemAttendance
 
         # Check if not already signed in
-        qs = self._class_checkedin(account, schedule_item, date)
+        qs = self.account_is_attending_class(account, schedule_item, date)
         if qs.exists():
             # Already signed in, check for review check-in
             schedule_item_attendance = qs.first()
@@ -349,7 +349,7 @@ class ClassCheckinDude:
         from ..models import ScheduleItemAttendance
 
         # Check if not already signed in
-        qs = self._class_checkedin(account, schedule_item, date)
+        qs = self.account_is_attending_class(account, schedule_item, date)
         if qs.exists():
             # Already signed in, check for review check-in
             schedule_item_attendance = qs.first()
