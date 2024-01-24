@@ -40,6 +40,7 @@ class FinanceOrderNode(DjangoObjectType):
             'finance_invoice',
             'account',
             'status',
+            'delivery_error_message',
             'message',
             'subtotal',
             'tax',

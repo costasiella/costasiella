@@ -197,13 +197,20 @@ class FinanceOrder(models.Model):
         """
         from .finance_order_item import FinanceOrderItem
         # Don't deliver cancelled orders or orders that have already been delivered
-        if self.status == "DELIVERED" or self.status == "CANCELLED":
+        dont_deliver_statuses = [
+            'DELIVERED',
+            'DELIVERY_ERROR',
+            'CANCELLED'
+        ]
+
+        if self.status in dont_deliver_statuses:
             return
 
         # Don't create an invoice when there's nothing that needs to be paid
         create_invoice = False
         finance_invoice = None
 
+        #TODO: Don't create an invoice when there's an error processing one of the items
         if self.total > 0:
             create_invoice = True
             finance_invoice = self._deliver_create_invoice()
@@ -267,7 +274,7 @@ class FinanceOrder(models.Model):
         """
         Create invoice for order delivery & link invoice to order
         """
-        finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="CLASSPASSES").first()
+        finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="SHOP_SALES").first()
         finance_invoice_group = finance_invoice_group_default.finance_invoice_group
 
         finance_invoice = FinanceInvoice(
