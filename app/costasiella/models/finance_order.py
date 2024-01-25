@@ -210,7 +210,7 @@ class FinanceOrder(models.Model):
         create_invoice = False
         finance_invoice = None
 
-        #TODO: Don't create an invoice when there's an error processing one of the items
+        # The invoice object is created, but not stored in the DB yet.
         if self.total > 0:
             create_invoice = True
             finance_invoice = self._deliver_create_invoice()
@@ -237,7 +237,7 @@ class FinanceOrder(models.Model):
                 if account_is_attending_class:
                     self.status = 'DELIVERY_ERROR'
                     self.delivery_error_message = \
-                        _("Unable to deliver class pass in this order. Account is already attending the specified class")
+                        _("Unable to deliver class pass in this order. Already attending the specified class.")
                     return
 
                 # Continue delivery as usual
@@ -266,6 +266,11 @@ class FinanceOrder(models.Model):
         self.status = "DELIVERED"
         self.save()
 
+        if finance_invoice:
+            # Only save the invoice when there are no delivery errors
+            self.finance_invoice = finance_invoice
+            finance_invoice.save()
+
         return dict(
             finance_invoice=finance_invoice
         )
@@ -285,8 +290,8 @@ class FinanceOrder(models.Model):
             terms=finance_invoice_group.terms,
             footer=finance_invoice_group.footer
         )
-        finance_invoice.save()
-        self.finance_invoice = finance_invoice
+        # Don't save the invoice here.
+        # Save it in the "deliver" method when there are no delivery errors.
 
         return finance_invoice
 
