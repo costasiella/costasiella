@@ -898,18 +898,20 @@ class FinanceOrderItemClasspassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceOrderItem
 
-    class Params:
-        initial_order = factory.SubFactory(FinanceOrderFactory)
-        initial_organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
-
-    finance_order = factory.LazyAttribute(
-        lambda o: o.initial_order if o.initial_order else factory.SubFactory(FinanceOrderFactory)
-    )
-    organization_classpass = factory.LazyAttribute(
-        lambda o: o.initial_organization_classpass if o.initial_organization_classpass else factory.SubFactory(
-            OrganizationClasspassFactory
-        )
-    )
+    # class Params:
+    #     initial_order = factory.SubFactory(FinanceOrderFactory)
+    #     initial_organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
+    #
+    # finance_order = factory.LazyAttribute(
+    #     lambda o: o.initial_order if o.initial_order else factory.SubFactory(FinanceOrderFactory)
+    # )
+    # organization_classpass = factory.LazyAttribute(
+    #     lambda o: o.initial_organization_classpass if o.initial_organization_classpass else factory.SubFactory(
+    #         OrganizationClasspassFactory
+    #     )
+    # )
+    finance_order = factory.SubFactory(FinanceOrderFactory)
+    organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
     product_name = "Classpass"
     description = "Classpass description"
     quantity = 1

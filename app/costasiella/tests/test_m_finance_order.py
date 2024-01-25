@@ -163,3 +163,33 @@ class TestModelFinanceOrder(TestCase):
         self.assertEqual(second_item.finance_tax_rate, schedule_event_ticket.finance_tax_rate)
         self.assertEqual(second_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
         self.assertEqual(second_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
+
+    def test_deliver_error_on_order_with_class_booking_when_customer_is_already_attending_class(self):
+        """ Set status DELIVERY ERROR when trying to deliver an order with a class booking the customer
+        is already attending """
+
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        account = schedule_item_attendance.account
+        finance_order = f.FinanceOrderFactory.create(account=account)
+
+        organization_classpass = schedule_item_attendance.account_classpass.organization_classpass
+
+        finance_order_item = f.FinanceOrderItemClasspassFactory.create(
+            finance_order=finance_order,
+            organization_classpass=organization_classpass
+        )
+        finance_order = finance_order_item.finance_order
+
+        finance_order_item.attendance_type = "CLASSPASS"
+        finance_order_item.attendance_date = schedule_item_attendance.date
+        finance_order_item.schedule_item = schedule_item_attendance.schedule_item
+
+        finance_order_item.save()
+
+        # Deliver though set the status to "DELIVERY ERROR" and set the delivery_error_message on the field
+        finance_order.deliver()
+
+        self.assertEqual(finance_order.status, 'DELIVERY_ERROR')
+        self.assertEqual(finance_order.delivery_error_message,
+                         _("Unable to deliver class pass in this order. Already attending the specified class."))
+
