@@ -8,4 +8,5 @@ def get_finance_order_statuses():
         ('PAID', _("Paid")),
         ('DELIVERED', _("Delivered")),
         ('CANCELLED', _("Cancelled")),
+        ('DELIVERY_ERROR', _("Delivery Error")),
     )

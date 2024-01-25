@@ -127,7 +127,7 @@ def webhook_deliver_order(finance_order_id, payment_amount, payment_date, paymen
     result = finance_order.deliver()
     if result is not None:
         finance_invoice = result['finance_invoice']
-        finance_payment_method = FinancePaymentMethod.objects.get(pk=100) # Mollie
+        finance_payment_method = FinancePaymentMethod.objects.get(pk=100)  # Mollie
 
         # Add payment to invoice if an invoice is found
         if finance_invoice:
