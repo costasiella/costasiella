@@ -139,9 +139,9 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         account = self.resolve_account(info)
         schedule_item = self.resolve_schedule_item(info)
 
-        subscriptions_filter = Q(account = account) & \
-            Q(date_start__lte = self.date) & \
-            (Q(date_end__gte = self.date) | Q(date_end__isnull = True))
+        subscriptions_filter = Q(account=account) & \
+            Q(date_start__lte=self.date) & \
+            (Q(date_end__gte=self.date) | Q(date_end__isnull=True))
 
         subscriptions = AccountSubscription.objects.filter(subscriptions_filter).order_by('organization_subscription__name')
 
@@ -259,7 +259,7 @@ def validate_schedule_class_booking_options_input(account, schedule_item, date, 
     schedule_dude = ClassScheduleDude()
     if not schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
         raise GraphQLError(
-            f"This class doesn't take place on date: {date}" ,
+            f"This class doesn't take place on date: {date}",
             extensions={'code': get_error_code('CLASS_DOESNT_TAKE_PLACE_ON_DATE')})
 
     return result

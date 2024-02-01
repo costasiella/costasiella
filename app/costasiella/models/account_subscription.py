@@ -436,6 +436,7 @@ class AccountSubscription(models.Model):
         qs = AccountSubscriptionCredit.objects.filter(
             mutation_type="SINGLE",
             account_subscription=self,
+            advance=True,
             reconciled=None
         )
 
@@ -459,6 +460,7 @@ class AccountSubscription(models.Model):
         """
         credits_total = self.get_credits_total(date)
         usable_reconciliation_credits = self.get_usable_reconcile_later_credits(date)
+
         if self.organization_subscription.reconciliation_classes:
             return_value = credits_total + usable_reconciliation_credits
         else:
