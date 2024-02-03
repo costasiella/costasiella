@@ -191,40 +191,19 @@ class FinanceOrder(models.Model):
         )
         return qs.exists()
 
-    def deliver(self):
+    def is_deliverable(self):
         """
-        Deliver this order
+        Check whether is order is deliverable, if not, don't process any further and
+        set the status to delivery error
+
+        :return:
         """
         from .finance_order_item import FinanceOrderItem
-        # Don't deliver cancelled orders or orders that have already been delivered
-        dont_deliver_statuses = [
-            'DELIVERED',
-            'DELIVERY_ERROR',
-            'CANCELLED'
-        ]
 
-        if self.status in dont_deliver_statuses:
-            return
-
-        # Don't create an invoice when there's nothing that needs to be paid
-        create_invoice = False
-        finance_invoice = None
-
-        # The invoice object is created, but not stored in the DB yet.
-        if self.total > 0:
-            create_invoice = True
-            finance_invoice = self._deliver_create_invoice()
+        deliverable = True
 
         items = FinanceOrderItem.objects.filter(finance_order=self)
-
         for item in items:
-            if item.schedule_event_ticket:
-                account_schedule_event_ticket = self._deliver_schedule_event_ticket(
-                    item.schedule_event_ticket,
-                    finance_invoice,
-                    create_invoice
-                )
-
             if item.organization_classpass:
                 # Check if we should deliver. Don't deliver when;
                 # schedule_item and attendance_date are set, but account is already attending the class.
@@ -235,15 +214,56 @@ class FinanceOrder(models.Model):
                     date=item.attendance_date
                 )
                 if account_is_attending_class:
+                    deliverable = False
+
                     self.status = 'DELIVERY_ERROR'
                     self.delivery_error_message = \
                         _("Unable to deliver class pass in this order. Already attending the specified class.")
-                    return
 
+        return deliverable
+
+    def deliver(self):
+        """
+        Deliver this order
+        """
+        from .finance_order_item import FinanceOrderItem
+
+        # Don't delivery undeliverable orders
+
+        # Don't deliver cancelled orders or orders that have already been delivered
+        dont_deliver_statuses = [
+            'DELIVERED',
+            'DELIVERY_ERROR',
+            'CANCELLED'
+        ]
+
+        if self.status in dont_deliver_statuses or not self.is_deliverable():
+            return
+
+        # Don't create an invoice when there's nothing that needs to be paid
+        create_invoice = False
+        finance_invoice = None
+
+        # The invoice object is created, but not stored in the DB yet.
+        if self.total > 0:
+            create_invoice = True
+            self._deliver_create_invoice()
+
+        items = FinanceOrderItem.objects.filter(finance_order=self)
+
+        for item in items:
+            if item.schedule_event_ticket:
+                account_schedule_event_ticket = self._deliver_schedule_event_ticket(
+                    item.schedule_event_ticket,
+                    self.finance_invoice,
+                    create_invoice
+                )
+
+            if item.organization_classpass:
                 # Continue delivery as usual
                 account_classpass = self._deliver_classpass(
                     item.organization_classpass,
-                    finance_invoice,
+                    self.finance_invoice,
                     create_invoice
                 )
 
@@ -257,7 +277,7 @@ class FinanceOrder(models.Model):
             if item.organization_subscription:
                 account_subscription = self._deliver_subscription(
                     item.organization_subscription,
-                    finance_invoice,
+                    self.finance_invoice,
                     create_invoice
                 )
 
@@ -266,13 +286,8 @@ class FinanceOrder(models.Model):
         self.status = "DELIVERED"
         self.save()
 
-        if finance_invoice:
-            # Only save the invoice when there are no delivery errors
-            self.finance_invoice = finance_invoice
-            finance_invoice.save()
-
         return dict(
-            finance_invoice=finance_invoice
+            finance_invoice=self.finance_invoice
         )
 
     def _deliver_create_invoice(self):
@@ -290,8 +305,8 @@ class FinanceOrder(models.Model):
             terms=finance_invoice_group.terms,
             footer=finance_invoice_group.footer
         )
-        # Don't save the invoice here.
-        # Save it in the "deliver" method when there are no delivery errors.
+        self.finance_invoice = finance_invoice
+        finance_invoice.save()
 
         return finance_invoice
 
