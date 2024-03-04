@@ -270,7 +270,8 @@ ISO_COUNTRY_CODES = [{"Name": "", "Code": ""},{"Name":"Afghanistan","Code":"AF"}
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TASK_RESULT_EXPIRES = timedelta(days=90)
+CELERY_RESULT_PERSISTENT = True
+CELERY_RESULT_EXPIRES = None
 # Use system timezone by default
 # CELERY_TIMEZONE = TIME_ZONE
 
