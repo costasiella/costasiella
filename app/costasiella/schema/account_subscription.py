@@ -62,9 +62,12 @@ def validate_create_update_input(user, input, update=False):
         if input['finance_payment_method']:
             rid = get_rid(input['finance_payment_method'])
             finance_payment_method = FinancePaymentMethod.objects.filter(id=rid.id).first()
-            result['finance_payment_method'] = finance_payment_method
             if not finance_payment_method:
                 raise Exception(_('Invalid Finance Payment Method ID!'))
+        else:
+            finance_payment_method = None
+
+        result['finance_payment_method'] = finance_payment_method
 
     return result
 
