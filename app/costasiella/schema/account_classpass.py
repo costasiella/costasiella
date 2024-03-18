@@ -8,7 +8,7 @@ from graphql import GraphQLError
 from ..models import Account, AccountClasspass, FinancePaymentMethod, OrganizationClasspass
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
-from ..dudes.sales_dude import SalesDude
+from ..dudes import SalesDude
 
 from sorl.thumbnail import get_thumbnail
 

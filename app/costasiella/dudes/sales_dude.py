@@ -140,6 +140,7 @@ class SalesDude:
                           date_start,
                           finance_payment_method,
                           note="",
+                          date_end=None,
                           create_invoice=True):
         """
         Sell subscription to account
@@ -150,15 +151,18 @@ class SalesDude:
             account=account,
             organization_subscription=organization_subscription,
             date_start=date_start,
+            date_end=date_end,
             finance_payment_method=finance_payment_method,
             note=note
         )
 
-        # set date end & save
+        # Set date end & save
         account_subscription.save()
 
         # Add credits
         account_subscription.create_credits_for_month(date_start.year, date_start.month)
+
+        # Create invoice
         finance_invoice_item = None
         if create_invoice:
             finance_invoice_item = self._sell_subscription_create_invoice(account_subscription)
