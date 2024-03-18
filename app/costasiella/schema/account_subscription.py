@@ -233,7 +233,7 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             if 'finance_payment_method' in result:
                 finance_payment_method = result['finance_payment_method']
 
-        account_subscription = sales_dude.sell_subscription(
+        sales_dude_result = sales_dude.sell_subscription(
             account=result['account'],
             organization_subscription=result['organization_subscription'],
             date_start=input['date_start'],
@@ -241,6 +241,7 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             finance_payment_method=finance_payment_method,
             note=input['note'] if 'note' in input else "",
             create_invoice=True)
+        account_subscription = sales_dude_result['account_subscription']
 
         return CreateAccountSubscription(account_subscription=account_subscription)
 
