@@ -1,5 +1,9 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
 
+import datetime
+
+from .date_tools_dude import DateToolsDude
 
 class SalesDude:
     def sell_membership(self,
@@ -161,6 +165,19 @@ class SalesDude:
 
         # Add credits
         account_subscription.create_credits_for_month(date_start.year, date_start.month)
+
+        # Check if it's past the 15th of the month and if so, add credits for the next month as well
+        now = timezone.now()
+        day_of_month = now.date().day
+
+        if day_of_month >= 15:
+            # Get next month
+            date_tools_dude = DateToolsDude()
+
+            first_day_this_month = datetime.date(date_start.year, date_start.month, 1)
+            first_day_next_month = date_tools_dude.get_first_day_of_next_month_from_date(first_day_this_month)
+
+            account_subscription.create_credits_for_month(first_day_next_month.year, first_day_next_month.month)
 
         # Create invoice
         finance_invoice_item = None
