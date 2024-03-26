@@ -17,7 +17,7 @@ click==8.0.3
 click-didyoumean==0.0.3
 click-plugins==1.1.1
 click-repl==0.2.0
-cryptography==41.0.4
+cryptography==42.0.4
 cssselect2==0.2.2
 decorator==4.3.2
 defusedxml==0.7.1
@@ -37,7 +37,7 @@ django-webpack-loader==0.6.0
 et-xmlfile==1.0.1
 factory-boy==2.11.1
 Faker==1.0.2
-fonttools==4.34.4
+fonttools==4.43.0
 graphene==3.2.1
 graphene-django==3.0.0
 graphql-core==3.2.3
@@ -56,7 +56,7 @@ mysqlclient==2.1.1
 oauthlib==3.0.1
 openpyxl==3.0.10
 packaging==21.3
-Pillow==10.0.1
+Pillow==10.2.0
 promise==2.3
 prompt-toolkit==3.0.9
 pycparser==2.21
