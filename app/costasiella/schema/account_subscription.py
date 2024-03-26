@@ -15,7 +15,7 @@ from .custom_filters import EmptyStringFilter
 
 from ..modules.encrypted_fields import EncryptedTextField
 
-from ..dudes import SystemSettingDude
+from ..dudes import SalesDude, SystemSettingDude
 from ..models import Account, \
     AccountBankAccount, \
     AccountBankAccountMandate, \
@@ -205,47 +205,43 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             # Any online payment should go through orders instead
             require_login_and_permission(user, 'costasiella.add_accountsubscription')
 
-        account_subscription = AccountSubscription(
-            account=result['account'],
-            organization_subscription=result['organization_subscription'],
-            date_start=input['date_start'], 
-        )
+        # account_subscription = AccountSubscription(
+        #     account=result['account'],
+        #     organization_subscription=result['organization_subscription'],
+        #     date_start=input['date_start'],
+        # )
+        sales_dude = SalesDude()
 
-        if 'date_end' in input:
-            if input['date_end']:  # check if date_end actually has a value
-                account_subscription.date_end = input['date_end']
-
-        if 'note' in input:
-            account_subscription.note = input['note']
-
-
+        finance_payment_method = None
         if shop_payment_method == "DIRECTDEBIT" and user == result['account']:
             # Payment method should always start as direct debit
             finance_payment_method = FinancePaymentMethod.objects.get(id=103)
-            account_subscription.finance_payment_method = finance_payment_method
 
             # Save account subscription to be able to create an invoice
-            account_subscription.save()
+            # account_subscription.save()
 
             # User has agreed to direct debit in Shop, create mandate signed today if it doesn't exist yet.
             # We can assume a bank account exits for an account (it should)
-            account_bank_account = AccountBankAccount.objects.filter(account=account_subscription.account).first()
+            account_bank_account = AccountBankAccount.objects.filter(account=result['account']).first()
             if not account_bank_account.has_direct_debit_mandate():
                 account_bank_account.add_mandate()
 
             # Create invoice for first month of subscription
-            account_subscription.create_invoice_for_month(account_subscription.date_start.year,
-                                                          account_subscription.date_start.month)
+            # account_subscription.create_invoice_for_month(account_subscription.date_start.year,
+            #                                               account_subscription.date_start.month)
         else:
             if 'finance_payment_method' in result:
-                account_subscription.finance_payment_method = result['finance_payment_method']
+                finance_payment_method = result['finance_payment_method']
 
-        # Save account subscription to save the payment method
-        account_subscription.save()
-
-        # Add credits
-        account_subscription.create_credits_for_month(account_subscription.date_start.year,
-                                                      account_subscription.date_start.month)
+        sales_dude_result = sales_dude.sell_subscription(
+            account=result['account'],
+            organization_subscription=result['organization_subscription'],
+            date_start=input['date_start'],
+            date_end=input['date_end'] if 'date_end' in input else None,
+            finance_payment_method=finance_payment_method,
+            note=input['note'] if 'note' in input else "",
+            create_invoice=True)
+        account_subscription = sales_dude_result['account_subscription']
 
         return CreateAccountSubscription(account_subscription=account_subscription)
 

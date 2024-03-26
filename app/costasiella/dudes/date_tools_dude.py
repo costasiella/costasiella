@@ -23,6 +23,16 @@ class DateToolsDude:
         """
         return self.iso_to_gregorian(iso_year, 1, iso_weekday)
 
+    def get_first_day_of_next_month_from_date(self, date):
+        """
+        Returns the first day of the next month of date
+        :param date: datetime.date object
+        :return: datetime.date object
+        """
+        last_day_of_month = self.get_last_day_month(date)
+        return last_day_of_month + datetime.timedelta(days=1)
+
+
     @staticmethod
     def iso_year_start(iso_year):
         """

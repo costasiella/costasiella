@@ -415,8 +415,6 @@ class FinanceInvoice(models.Model):
         )
         finance_invoice_item.save()
 
-        #TODO: Check if the first 2 months need to be billed
-
         # Check if a registration fee has been paid
         self._item_add_subscription_registration_fee(
             account_subscription,

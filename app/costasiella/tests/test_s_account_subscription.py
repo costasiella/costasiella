@@ -489,7 +489,8 @@ query AccountSubscriptions($after: String, $before: String) {
         query = self.subscription_create_mutation
 
         account = f.RegularUserFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        organization_subscription_price = f.OrganizationSubscriptionPriceFactory.create()
+        organization_subscription = organization_subscription_price.organization_subscription
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
@@ -545,7 +546,8 @@ query AccountSubscriptions($after: String, $before: String) {
         query = self.subscription_create_mutation
 
         account = f.RegularUserFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        organization_subscription_price = f.OrganizationSubscriptionPriceFactory.create()
+        organization_subscription = organization_subscription_price.organization_subscription
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
