@@ -145,7 +145,8 @@ class SalesDude:
                           finance_payment_method,
                           note="",
                           date_end=None,
-                          create_invoice=True):
+                          create_invoice=True,
+                          next_month_credits_after_day=15):
         """
         Sell subscription to account
         """
@@ -170,7 +171,7 @@ class SalesDude:
         now = timezone.now()
         day_of_month = now.date().day
 
-        if day_of_month >= 15:
+        if day_of_month >= next_month_credits_after_day:
             # Get next month
             date_tools_dude = DateToolsDude()
 

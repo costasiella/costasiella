@@ -72,7 +72,7 @@ class TestDudeSalesDude(TestCase):
 
     def test_sell_schedule_event_ticket_add_schedule_item_attendances(self):
         """ Are all schedule item attendances added? """
-        from ..dudes.sales_dude import SalesDude
+        from ..dudes import SalesDude
 
         account = f.RegularUserFactory.create()
         schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
@@ -96,3 +96,48 @@ class TestDudeSalesDude(TestCase):
         schedule_item_attendance = models.ScheduleItemAttendance.objects.last()
         self.assertEqual(schedule_item_attendance.account_schedule_event_ticket, account_schedule_event_ticket)
         self.assertEqual(schedule_item_attendance.schedule_item, schedule_event_activity)
+
+    def test_sell_subscrition_add_credits_for_next_month_when_startdate_day_of_month_gte_15(self):
+        """
+        Are credits for the next month added?
+        The trick here is that next_month_credits_after_day are set to 1, when selling the subscription
+        :return:
+        """
+        from ..dudes import DateToolsDude, SalesDude
+
+        # Sell subscription
+        organization_subscription_price = f.OrganizationSubscriptionPriceFactory.create()
+        organization_subscription = organization_subscription_price.organization_subscription
+        account = f.RegularUserFactory.create()
+
+        direct_debit_payment_method = models.FinancePaymentMethod.objects.get(id=103)
+
+        today = timezone.now().date()
+        sales_dude = SalesDude()
+        result = sales_dude.sell_subscription(
+            account=account,
+            organization_subscription=organization_subscription,
+            date_start=today,
+            finance_payment_method=direct_debit_payment_method,
+            next_month_credits_after_day=1
+        )
+
+        account_subscription = result['account_subscription']
+
+        # Check if cedits were added for current and next month
+        qs_credits_current_month = models.AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription,
+            subscription_year=today.year,
+            subscription_month=today.month
+        )
+        self.assertEqual(qs_credits_current_month.exists(), True)
+
+        # Next month
+        date_tools_dude = DateToolsDude()
+        first_day_next_month = date_tools_dude.get_first_day_of_next_month_from_date(today)
+        qs_credits_next_month = models.AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription,
+            subscription_year=first_day_next_month.year,
+            subscription_month=first_day_next_month.month
+        )
+        self.assertEqual(qs_credits_next_month.exists(), True)
