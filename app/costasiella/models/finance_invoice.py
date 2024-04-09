@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 from django.utils import timezone
+
 import datetime
 
 from django.db import models
@@ -61,6 +62,9 @@ class FinanceInvoice(models.Model):
 
     def set_relation_info(self):
         """ Set relation info from linked account or business, when not custom_to """
+        from ..dudes.country_dude import CountryDude
+        country_dude = CountryDude()
+
         if not self.custom_to:
             self.relation_company = ""
             self.relation_company_registration = ""
@@ -72,7 +76,7 @@ class FinanceInvoice(models.Model):
                 self.relation_address = self.account.address
                 self.relation_postcode = self.account.postcode
                 self.relation_city = self.account.city
-                self.relation_country = self.account.country
+                self.relation_country = country_dude.iso_country_code_to_name(self.account.country)
 
             # Set default business from account on creation only (not self.id), if no other business has been set
             if self.account:
@@ -89,7 +93,7 @@ class FinanceInvoice(models.Model):
                 self.relation_address = self.business.address
                 self.relation_postcode = self.business.postcode
                 self.relation_city = self.business.city
-                self.relation_country = self.business.country
+                self.relation_country = country_dude.iso_country_code_to_name(self.business.country)
 
     def update_amounts(self):
         """ Update total amounts fields (subtotal, tax, total, paid, balance) """
