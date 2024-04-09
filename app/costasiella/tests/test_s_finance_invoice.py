@@ -13,6 +13,7 @@ from django.contrib.auth.models import AnonymousUser, Permission
 
 from . import factories as f
 from .helpers import execute_test_client_api_query
+from ..dudes import CountryDude
 from .. import models
 from .. import schema
 from ..modules.gql_tools import get_rid
@@ -26,6 +27,8 @@ class GQLFinanceInvoice(TestCase):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
+
+        self.country_dude = CountryDude()
 
         self.permission_view = 'view_financeinvoice'
         self.permission_add = 'add_financeinvoice'
@@ -609,7 +612,7 @@ class GQLFinanceInvoice(TestCase):
         self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCity'],
                          business.city)
         self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCountry'],
-                         business.country)
+                         self.country_dude.iso_country_code_to_name(business.country))
 
 
     def test_create_invoice_group_id_plus_one(self):
@@ -828,7 +831,7 @@ class GQLFinanceInvoice(TestCase):
         self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCity'],
                          business.city)
         self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCountry'],
-                         business.country)
+                         self.country_dude.iso_country_code_to_name(business.country))
         self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['invoiceNumber'],
                          variables['input']['invoiceNumber'])
         self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])

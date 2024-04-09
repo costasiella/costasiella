@@ -3,7 +3,8 @@ from django.conf import settings
 
 
 class CountryDude:
-    def iso_country_code_to_name(self, iso_country_code):
+    @staticmethod
+    def iso_country_code_to_name(iso_country_code):
         """
         Return the country name from an ISO country code
         :return: string - Country name
