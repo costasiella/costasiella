@@ -76,12 +76,8 @@ class GQLInsightRevenue(TestCase):
                          to_global_id('FinanceInvoiceNode', self.finance_invoice.id))
         self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['total'],
                          format(self.finance_invoice.total, ".2f"))
-        if 'GITHUB_WORKFLOW' in os.environ:
-            self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['paid'],
-                             str(self.finance_invoice.paid))
-        else:
-            self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['paid'],
-                             format(self.finance_invoice.paid, ".2f"))
+        self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['paid'],
+                         str(self.finance_invoice.paid))
         self.assertEqual(data['insightFinanceOpenInvoices']['financeInvoices'][0]['balance'],
                          format(self.finance_invoice.balance, ".2f"))
 

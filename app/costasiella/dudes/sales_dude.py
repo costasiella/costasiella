@@ -211,6 +211,10 @@ class SalesDude:
             footer=finance_invoice_group.footer
         )
 
+        # Use the payment method set on the account subscription, if set.
+        if account_subscription.finance_payment_method:
+            finance_invoice.finance_payment_method = account_subscription.finance_payment_method
+
         # Save invoice
         finance_invoice.save()
 
