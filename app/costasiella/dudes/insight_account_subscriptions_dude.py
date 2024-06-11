@@ -15,13 +15,15 @@ class InsightAccountSubscriptionsDude:
         data_sold = self.get_subscriptions_sold_year_summary_count(year)
         data_stopped = self.get_subscriptions_stopped_year_summary_count(year)
         data_active = self.get_subscriptions_active_year_summary_count(year)
+        data_paused = self.get_subscriptions_paused_year_summary_count(year)
 
         for i in range(0, 12):
             data.append({
                 'month': i + 1,
                 'sold': data_sold[i],
                 'stopped': data_stopped[i],
-                'active': data_active[i]
+                'active': data_active[i],
+                'paused': data_paused[i]
             })
 
         return data
@@ -170,8 +172,8 @@ class InsightAccountSubscriptionsDude:
             last_day_month = calendar.monthrange(year, i)[1]
             date_until = datetime.date(year, i, last_day_month)
 
-            sold_in_month = self.get_subscriptions_active_period_count(date_from, date_until)
-            data.append(sold_in_month)
+            active_in_month = self.get_subscriptions_active_period_count(date_from, date_until)
+            data.append(active_in_month)
 
         return data
 
@@ -203,5 +205,70 @@ class InsightAccountSubscriptionsDude:
 
             subscriptions_active_in_month = self.get_subscriptions_active_period_data(date_from, date_until)
             data[i] = subscriptions_active_in_month
+
+        return data
+
+    ###
+    # For the paused it's good to document that pauses are counted as
+    # "paused somewhere in the month"
+    ###
+
+    def get_subscriptions_paused_period_count(self, date_from, date_until):
+        """
+        Return count of paused subscriptions in a period
+        """
+        from ..models import AccountSubscriptionPause
+
+        count = AccountSubscriptionPause.objects.filter(
+            (Q(date_end__gte=date_from) | Q(date_end__isnull=True)),
+            date_start__lte=date_until,
+        ).count()
+
+        return count
+
+    def get_subscriptions_paused_year_summary_count(self, year):
+        """
+        Return monthly counts of paused subscriptions
+        """
+        data = []
+
+        for i in range(1, 13):
+            date_from = datetime.date(year, i, 1)
+            last_day_month = calendar.monthrange(year, i)[1]
+            date_until = datetime.date(year, i, last_day_month)
+
+            paused_in_month = self.get_subscriptions_paused_period_count(date_from, date_until)
+            data.append(paused_in_month)
+
+        return data
+
+    def get_subscriptions_paused_period_data(self, date_from, date_until):
+        """
+        Return data list of paused subscriptions in a period
+        """
+        from ..models import AccountSubscriptionPause
+
+        qs = AccountSubscriptionPause.objects.filter(
+            (Q(date_end__gte=date_from) | Q(date_end__isnull=True)),
+            date_start__lte=date_until,
+        ).order_by("date_start")
+
+        return qs
+
+    def get_subscriptions_paused_year_data(self, year):
+        """
+        Get subscriptions paused year data
+        """
+        from collections import OrderedDict
+
+        data = OrderedDict()
+
+        for i in range(1, 13):
+            date_from = datetime.date(year, i, 1)
+            last_day_month = calendar.monthrange(year, i)[1]
+            date_until = datetime.date(year, i, last_day_month)
+
+            subscriptions_paused_in_month = self.get_subscriptions_paused_period_data(date_from, date_until)
+            data[i] = subscriptions_paused_in_month
 
         return data
