@@ -272,3 +272,68 @@ class InsightAccountSubscriptionsDude:
             data[i] = subscriptions_paused_in_month
 
         return data
+
+    ###
+    # For the blocked it's good to document that pauses are counted as
+    # "blocked somewhere in the month"
+    ###
+
+    def get_subscriptions_blocked_period_count(self, date_from, date_until):
+        """
+        Return count of blocked subscriptions in a period
+        """
+        from ..models import AccountSubscriptionBlock
+
+        count = AccountSubscriptionBlock.objects.filter(
+            (Q(date_end__gte=date_from) | Q(date_end__isnull=True)),
+            date_start__lte=date_until,
+        ).count()
+
+        return count
+
+    def get_subscriptions_blocked_year_summary_count(self, year):
+        """
+        Return monthly counts of blocked subscriptions
+        """
+        data = []
+
+        for i in range(1, 13):
+            date_from = datetime.date(year, i, 1)
+            last_day_month = calendar.monthrange(year, i)[1]
+            date_until = datetime.date(year, i, last_day_month)
+
+            blocked_in_month = self.get_subscriptions_blocked_period_count(date_from, date_until)
+            data.append(blocked_in_month)
+
+        return data
+
+    def get_subscriptions_blocked_period_data(self, date_from, date_until):
+        """
+        Return data list of blocked subscriptions in a period
+        """
+        from ..models import AccountSubscriptionBlock
+
+        qs = AccountSubscriptionBlock.objects.filter(
+            (Q(date_end__gte=date_from) | Q(date_end__isnull=True)),
+            date_start__lte=date_until,
+        ).order_by("date_start")
+
+        return qs
+
+    def get_subscriptions_blocked_year_data(self, year):
+        """
+        Get subscriptions blocked year data
+        """
+        from collections import OrderedDict
+
+        data = OrderedDict()
+
+        for i in range(1, 13):
+            date_from = datetime.date(year, i, 1)
+            last_day_month = calendar.monthrange(year, i)[1]
+            date_until = datetime.date(year, i, last_day_month)
+
+            subscriptions_blocked_in_month = self.get_subscriptions_blocked_period_data(date_from, date_until)
+            data[i] = subscriptions_blocked_in_month
+
+        return data
