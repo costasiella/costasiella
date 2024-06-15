@@ -16,6 +16,7 @@ class InsightAccountSubscriptionsDude:
         data_stopped = self.get_subscriptions_stopped_year_summary_count(year)
         data_active = self.get_subscriptions_active_year_summary_count(year)
         data_paused = self.get_subscriptions_paused_year_summary_count(year)
+        data_blocked = self.get_subscriptions_blocked_year_summary_count(year)
 
         for i in range(0, 12):
             data.append({
@@ -23,7 +24,8 @@ class InsightAccountSubscriptionsDude:
                 'sold': data_sold[i],
                 'stopped': data_stopped[i],
                 'active': data_active[i],
-                'paused': data_paused[i]
+                'paused': data_paused[i],
+                'blocked': data_blocked[i]
             })
 
         return data
