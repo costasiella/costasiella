@@ -32,6 +32,7 @@ class GQLInsightSubscriptions(TestCase):
         sold
         active
         paused
+        blocked
       }
     }
   }
@@ -52,6 +53,12 @@ class GQLInsightSubscriptions(TestCase):
             date_end='2019-02-02'
         )
 
+        # There should be a block counted in January & February
+        account_subscription_block = f.AccountSubscriptionBlockFactory.create(
+            account_subscription=account_subscription,
+            date_end='2019-02-02'
+        )
+
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query)
         data = executed.get('data')
 
@@ -61,61 +68,73 @@ class GQLInsightSubscriptions(TestCase):
         self.assertEqual(data['insightAccountSubscriptions']['months'][0]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][0]['sold'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][0]['paused'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][0]['blocked'], 1)
         # February
         self.assertEqual(data['insightAccountSubscriptions']['months'][1]['month'], 2)
         self.assertEqual(data['insightAccountSubscriptions']['months'][1]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][1]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][1]['paused'], 1)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][1]['blocked'], 1)
         # March
         self.assertEqual(data['insightAccountSubscriptions']['months'][2]['month'], 3)
         self.assertEqual(data['insightAccountSubscriptions']['months'][2]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][2]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][2]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][2]['blocked'], 0)
         # April
         self.assertEqual(data['insightAccountSubscriptions']['months'][3]['month'], 4)
         self.assertEqual(data['insightAccountSubscriptions']['months'][3]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][3]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][3]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][3]['blocked'], 0)
         # May
         self.assertEqual(data['insightAccountSubscriptions']['months'][4]['month'], 5)
         self.assertEqual(data['insightAccountSubscriptions']['months'][4]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][4]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][4]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][4]['blocked'], 0)
         # June
         self.assertEqual(data['insightAccountSubscriptions']['months'][5]['month'], 6)
         self.assertEqual(data['insightAccountSubscriptions']['months'][5]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][5]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][5]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][5]['blocked'], 0)
         # July
         self.assertEqual(data['insightAccountSubscriptions']['months'][6]['month'], 7)
         self.assertEqual(data['insightAccountSubscriptions']['months'][6]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][6]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][6]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][6]['blocked'], 0)
         # August
         self.assertEqual(data['insightAccountSubscriptions']['months'][7]['month'], 8)
         self.assertEqual(data['insightAccountSubscriptions']['months'][7]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][7]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][7]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][7]['blocked'], 0)
         # September
         self.assertEqual(data['insightAccountSubscriptions']['months'][8]['month'], 9)
         self.assertEqual(data['insightAccountSubscriptions']['months'][8]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][8]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][8]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][8]['blocked'], 0)
         # October
         self.assertEqual(data['insightAccountSubscriptions']['months'][9]['month'], 10)
         self.assertEqual(data['insightAccountSubscriptions']['months'][9]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][9]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][9]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][9]['blocked'], 0)
         # November
         self.assertEqual(data['insightAccountSubscriptions']['months'][10]['month'], 11)
         self.assertEqual(data['insightAccountSubscriptions']['months'][10]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][10]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][10]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][10]['blocked'], 0)
         # December
         self.assertEqual(data['insightAccountSubscriptions']['months'][11]['month'], 12)
         self.assertEqual(data['insightAccountSubscriptions']['months'][11]['active'], 1)
         self.assertEqual(data['insightAccountSubscriptions']['months'][11]['sold'], 0)
         self.assertEqual(data['insightAccountSubscriptions']['months'][11]['paused'], 0)
+        self.assertEqual(data['insightAccountSubscriptions']['months'][11]['blocked'], 0)
 
     def test_query_permission_denied(self):
         """ Query list of subscriptions - check permission denied """
