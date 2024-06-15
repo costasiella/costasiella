@@ -23,7 +23,7 @@ decorator==4.3.2
 defusedxml==0.7.1
 Deprecated==1.2.13
 Django==4.1.13
-django-allauth==0.47.0
+django-allauth==0.63.3
 django-celery-beat==2.4.0
 django-celery-results==2.4.0
 django-cors-headers==3.13.0
