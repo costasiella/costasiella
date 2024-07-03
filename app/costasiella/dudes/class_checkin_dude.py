@@ -68,7 +68,6 @@ class ClassCheckinDude:
         # from ..schema.schedule_class import calculate_available_spaces_online
 
         is_full = False
-
         spaces_total = schedule_item.spaces
         qs = ScheduleItemAttendance.objects.filter(
             Q(schedule_item=schedule_item),
@@ -454,7 +453,9 @@ class ClassCheckinDude:
             account_subscription_credit.save()
         else:
             # Regular flow, get next credit in line (first in, first out)
-            account_subscription_credit = account_subscription.get_next_credit()
+            account_subscription_credit = account_subscription.get_next_credit(
+                schedule_item_attendance.date
+            )
 
         account_subscription_credit.schedule_item_attendance = schedule_item_attendance
         account_subscription_credit.save()

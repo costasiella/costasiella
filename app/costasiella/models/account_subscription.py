@@ -393,9 +393,10 @@ class AccountSubscription(models.Model):
 
         return qs.exists()
 
-    def get_next_credit(self):
+    def get_next_credit(self, date):
         """
-
+        This function has to take a date, otherwise it doesn't work for past classes.
+        For past classes an expired credit that hasn't been used, might be valid.
         :return:
         """
         from .account_subscription_credit import AccountSubscriptionCredit
@@ -403,7 +404,7 @@ class AccountSubscription(models.Model):
         available_credits = AccountSubscriptionCredit.objects.filter(
             mutation_type="SINGLE",
             account_subscription=self,
-            expiration__gte=timezone.now().date(),
+            expiration__gte=date,
             schedule_item_attendance__isnull=True
         ).order_by('created_at', 'id')
 
