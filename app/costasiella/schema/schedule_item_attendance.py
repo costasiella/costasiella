@@ -14,6 +14,7 @@ from ..models import Account, AccountClasspass, AccountSubscription, AccountSubs
 from ..modules.gql_tools import require_login, require_login_and_permission, \
                                 require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
+from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 
 from ..dudes import ClassCheckinDude, ClassScheduleDude
 
@@ -230,11 +231,18 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             # When the user doesn't have permissions; always use their own account
             validation_result['account'] = user
 
+        # Get the class OTC data if any for given date.
+        sih = ScheduleItemHelper()
+        schedule_item = sih.schedule_item_with_otc_and_holiday_data(
+            validation_result['schedule_item'],
+            input['date']
+        )
+
         class_checkin_dude = ClassCheckinDude()
         class_schedule_dude = ClassScheduleDude()
 
         class_takes_place = class_schedule_dude.schedule_item_takes_place_on_day(
-            schedule_item=validation_result['schedule_item'],
+            schedule_item=schedule_item,
             date=input['date']
         )
         
@@ -252,7 +260,7 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             schedule_item_attendance = class_checkin_dude.class_checkin_classpass(
                 account=validation_result['account'],
                 account_classpass=account_classpass,
-                schedule_item=validation_result['schedule_item'],
+                schedule_item=schedule_item,
                 date=input['date'],
                 booking_status=input['booking_status'],
                 online_booking=input['online_booking'],
@@ -268,7 +276,7 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             schedule_item_attendance = class_checkin_dude.class_checkin_subscription(
                 account=validation_result['account'],
                 account_subscription=account_subscription,
-                schedule_item=validation_result['schedule_item'],
+                schedule_item=schedule_item,
                 date=input['date'],
                 booking_status=input['booking_status'],
                 online_booking=input['online_booking'],
@@ -280,12 +288,12 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
             organization_classpass = validation_result['organization_classpass']
             result = class_checkin_dude.sell_classpass_and_class_checkin(
-                account = validation_result['account'],
-                organization_classpass = organization_classpass,
-                schedule_item = validation_result['schedule_item'],
-                date = input['date'],
-                booking_status = input['booking_status'],
-                online_booking = input['online_booking'],                    
+                account=validation_result['account'],
+                organization_classpass=organization_classpass,
+                schedule_item=schedule_item,
+                date=input['date'],
+                booking_status=input['booking_status'],
+                online_booking=input['online_booking'],
             )
 
             schedule_item_attendance = result['schedule_item_attendance']
