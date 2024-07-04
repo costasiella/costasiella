@@ -253,9 +253,9 @@ class ScheduleItemHelper:
                 schedule_item.status = schedule_item_weekly_otc.status
             if schedule_item_weekly_otc.description:
                 schedule_item.description = schedule_item_weekly_otc.description
-            if schedule_item_weekly_otc.spaces:
+            if schedule_item_weekly_otc.spaces is not None:
                 schedule_item.spaces = schedule_item_weekly_otc.spaces
-            if schedule_item_weekly_otc.walk_in_spaces:
-                schedule_item = schedule_item_weekly_otc.walk_in_spaces
+            if schedule_item_weekly_otc.walk_in_spaces is not None:
+                schedule_item.walk_in_spaces = schedule_item_weekly_otc.walk_in_spaces
 
         return schedule_item
