@@ -429,6 +429,23 @@ class FinanceInvoice(models.Model):
 
         return finance_invoice_item
 
+    def item_add_empty(self):
+        """
+        Add an empty invoice item
+        """
+        from .finance_invoice_item import FinanceInvoiceItem
+
+        finance_invoice_item = FinanceInvoiceItem(
+            finance_invoice=self,
+            line_number=self._get_item_next_line_nr(),
+            quantity=0,
+            price=0
+        )
+        finance_invoice_item.save()
+
+        return finance_invoice_item
+
+
     def _item_add_subscription_registration_fee(self, account_subscription, finance_tax_rate):
         """
         Check if a registration fee should be added to the invoice and if so, add it.
@@ -440,7 +457,7 @@ class FinanceInvoice(models.Model):
         from .finance_invoice_item import FinanceInvoiceItem
 
         qs = AccountSubscription.objects.filter(
-            account=account_subscription.account, # Could also be self.account... same same
+            account=account_subscription.account,  # Could also be self.account... same same
             registration_fee_paid=True
         )
         if qs.exists():

@@ -46,8 +46,8 @@ def validate_create_update_input(input, update=False):
         # Check if the maximum number of pauses hasn't been reached
         max_pauses = system_setting_dude.get("workflow_subscription_pauses_max_pauses_in_year") or 1
         max_pauses = int(max_pauses)
-        start_of_year = datetime.date(input['date_start'].year, 1 , 1)
-        end_of_year = datetime.date(input['date_start'].year, 12 , 31)
+        start_of_year = datetime.date(input['date_start'].year, 1, 1)
+        end_of_year = datetime.date(input['date_start'].year, 12, 31)
         qs = AccountSubscriptionPause.objects.filter(
             account_subscription=account_subscription,
             date_start__gte=start_of_year,

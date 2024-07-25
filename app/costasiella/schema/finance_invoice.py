@@ -273,6 +273,9 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
                 validation_result['subscription_month']
             )
 
+        # Add empty invoice item when creating an invoice manually
+        finance_invoice.item_add_empty()
+
         return CreateFinanceInvoice(finance_invoice=finance_invoice)
 
 

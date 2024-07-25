@@ -558,6 +558,29 @@ class GQLFinanceInvoice(TestCase):
         self.assertEqual(data['createFinanceInvoice']['financeInvoice']['relationCountry'],
                          account.country)
 
+    def test_create_invoice_empty_invoice_item_added(self):
+        """ Create an account invoice - check that an empty item is added on creation"""
+        query = self.invoice_create_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Get invoice
+        rid = get_rid(data['createFinanceInvoice']['financeInvoice']['id'])
+        finance_invoice = models.FinanceInvoice.objects.get(pk=rid.id)
+
+        nr_of_invoice_items = models.FinanceInvoiceItem.objects.filter(finance_invoice=finance_invoice).count()
+
+        self.assertEqual(nr_of_invoice_items, 1)
+
     def test_create_invoice_for_business(self):
         """ Create an invoice for a b2b relation"""
         query = self.invoice_create_mutation
