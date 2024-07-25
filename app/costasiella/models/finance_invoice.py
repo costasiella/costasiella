@@ -734,6 +734,7 @@ class FinanceInvoice(models.Model):
 
         credit_invoice = FinanceInvoice(
             account=self.account,
+            business=self.business,
             finance_invoice_group=self.finance_invoice_group,
             finance_payment_method=self.finance_payment_method,
             instructor_payment=self.instructor_payment,
