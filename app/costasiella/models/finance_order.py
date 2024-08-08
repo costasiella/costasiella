@@ -1,3 +1,5 @@
+import logging
+
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db import models
@@ -10,6 +12,7 @@ from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 from ..dudes.class_checkin_dude import ClassCheckinDude
 
 now = timezone.now()
+logger = logging.getLogger(__name__)
 
 
 class FinanceOrder(models.Model):
@@ -216,9 +219,13 @@ class FinanceOrder(models.Model):
                 if account_is_attending_class:
                     deliverable = False
 
+                    logger.error("Unable to deliver order %s: Account already attending specified class.",
+                                 self.id)
+
                     self.status = 'DELIVERY_ERROR'
                     self.delivery_error_message = \
                         _("Unable to deliver class pass in this order. Already attending the specified class.")
+                    self.save()
 
         return deliverable
 
@@ -228,8 +235,6 @@ class FinanceOrder(models.Model):
         """
         from .finance_order_item import FinanceOrderItem
 
-        # Don't delivery undeliverable orders
-
         # Don't deliver cancelled orders or orders that have already been delivered
         dont_deliver_statuses = [
             'DELIVERED',
@@ -237,7 +242,11 @@ class FinanceOrder(models.Model):
             'CANCELLED'
         ]
 
-        if self.status in dont_deliver_statuses or not self.is_deliverable():
+        if self.status in dont_deliver_statuses:
+            return
+
+        # Don't delivery undeliverable orders
+        if not self.is_deliverable():
             return
 
         # Don't create an invoice when there's nothing that needs to be paid

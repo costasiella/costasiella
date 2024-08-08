@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from django.utils.translation import gettext as _
 from django.utils import timezone
@@ -20,15 +21,19 @@ from mollie.api.client import Client
 from mollie.api.error import Error as MollieError
 
 
+logger = logging.getLogger(__name__)
+
+
 def mollie_webhook(request):
     """
     Webhook called by mollie
     """
-    id = request.POST.get('id', None)
+    mollie_id = request.POST.get('id', None)
+    logger.info("Mollie webhook called with id %s", mollie_id)
 
     log = IntegrationLogMollie(
         log_source="WEBHOOK",
-        mollie_payment_id=id,
+        mollie_payment_id=mollie_id,
     )
     log.save()
 
@@ -42,7 +47,7 @@ def mollie_webhook(request):
         mollie.set_api_key(mollie_api_key)
 
         # Fetch payment
-        payment_id = id
+        payment_id = mollie_id
         payment = mollie.payments.get(payment_id)
 
         # Log payment data
@@ -58,13 +63,14 @@ def mollie_webhook(request):
             # At this point you'd probably want to start the process of delivering the
             # product to the customer.
             #
+            logger.info("Mollie payment %s is paid", payment_id)
             payment_amount = float(payment.amount['value'])
             payment_date = datetime.datetime.strptime(payment.paid_at.split('+')[0],
                                                       '%Y-%m-%dT%H:%M:%S').date()
 
-
             # Process order payment
             if finance_order_id:
+                logger.info("Mollie payment %s is for order %s", payment_id, finance_order_id)
                 webhook_deliver_order(
                     finance_order_id=finance_order_id,
                     payment_amount=payment_amount,
@@ -73,6 +79,7 @@ def mollie_webhook(request):
                 )
 
             if finance_invoice_id:
+                logger.info("Mollie payment %s is for invoice %s", payment_id, finance_invoice_id)
                 webhook_invoice_paid(
                     finance_invoice_id=finance_invoice_id,
                     payment_amount=payment_amount,
@@ -82,6 +89,7 @@ def mollie_webhook(request):
 
             # Process refunds
             if payment.refunds:
+                logger.info("Mollie payment %s contains refunds", payment_id)
                 webhook_payment_is_paid_process_refunds(
                     finance_invoice_id,
                     finance_order_id,
@@ -90,6 +98,7 @@ def mollie_webhook(request):
 
             # Process chargebacks
             if payment.chargebacks:
+                logger.info("Mollie payment %s contains chargebacks", payment_id)
                 webhook_payment_is_paid_process_chargebacks(
                     finance_invoice_id,
                     finance_order_id,
@@ -101,18 +110,22 @@ def mollie_webhook(request):
             #
             # The payment has started but is not complete yet.
             #
+            logger.info("Mollie payment %s is pending", payment_id)
             return HttpResponse('Pending')
         elif payment.is_open():
             #
             # The payment has not started yet. Wait for it.
             #
+            logger.info("Mollie payment %s is open", payment_id)
             return HttpResponse('Open')
         else:
             #
             # The payment isn't paid, pending nor open. We can assume it was aborted.
             #
+            logger.info("Mollie payment %s is cancelled", payment_id)
             return HttpResponse('Cancelled')
     except MollieError as e:
+        logger.error("Mollie payment %s error: %s", payment_id, str(e))
         return HttpResponse('API call failed: {error}'.format(error=e))
 
 
