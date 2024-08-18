@@ -304,7 +304,7 @@ LOGGING = {
     'disable_existing_loggers': False,  # retain the default loggers
     'formatters': {
         'verbose': {
-            'format': '{asctime}: {name} {levelname} {module} {message}',
+            'format': '{asctime}: {levelname} {name} {module} {message}',
             'style': '{',
         },
         'simple': {
