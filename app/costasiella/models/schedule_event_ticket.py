@@ -81,8 +81,10 @@ class ScheduleEventTicket(models.Model):
 
         sold_out = False
 
+        # Only process items included with this ticket
         ticket_schedule_items = ScheduleEventTicketScheduleItem.objects.filter(
-            schedule_event_ticket=self
+            schedule_event_ticket=self,
+            included=True
         )
         for ticket_schedule_item in ticket_schedule_items:
             schedule_item = ticket_schedule_item.schedule_item
@@ -90,7 +92,6 @@ class ScheduleEventTicket(models.Model):
                 Q(schedule_item=schedule_item) &
                 ~Q(booking_status="cancelled")
             ).count()
-
             if count_attendance >= schedule_item.spaces:
                 sold_out = True
                 break
