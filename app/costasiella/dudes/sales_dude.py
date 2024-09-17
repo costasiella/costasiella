@@ -286,11 +286,16 @@ class SalesDude:
         :return: None
         """
         from ..models.schedule_item_attendance import ScheduleItemAttendance
+        from ..models.schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItem
 
         account = account_schedule_event_ticket.account
         schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
 
-        for schedule_item in schedule_event_ticket.schedule_items.all():
+        for schedule_event_ticket_schedule_item in ScheduleEventTicketScheduleItem.objects.filter(
+            schedule_event_ticket=schedule_event_ticket,
+            included=True
+        ):
+            schedule_item = schedule_event_ticket_schedule_item.schedule_item
             schedule_item_attendance = ScheduleItemAttendance(
                 account=account,
                 schedule_item=schedule_item,
