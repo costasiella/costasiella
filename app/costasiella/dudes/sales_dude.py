@@ -237,7 +237,12 @@ class SalesDude:
         mail_dude = MailDude(account=account,
                              email_template="event_info_mail",
                              account_schedule_event_ticket=account_schedule_event_ticket)
-        mail_dude.send()
+        success = mail_dude.send()
+
+        if success:
+            account_schedule_event_ticket.info_mail_sent = True
+            account_schedule_event_ticket.save()
+
 
     def sell_schedule_event_ticket(self,
                                    account,

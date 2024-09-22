@@ -46,7 +46,8 @@ class MailDude:
             return
 
         # Send mail
-        send_mail(
+        # https://docs.djangoproject.com/en/5.1/topics/email/#send-mail
+        sent_messages = send_mail(
             subject=template['subject'],  # Later from template
             message=message,
             html_message=template['html_message'],
@@ -54,3 +55,7 @@ class MailDude:
             recipient_list=[self.account.email],
             fail_silently=False
         )
+
+        # sent_messages = 0 on fail
+        # or 1 on success
+        return bool(sent_messages)
