@@ -203,6 +203,14 @@ class MailTemplateDude:
         if not mail_content:
             error = True
             error_message = _("No mail content defined, no need to send a mail.")
+            # Log this action, that no mail is sent
+
+        # Render title
+        title_context = Context({
+            "schedule_event": schedule_event,
+        })
+        title_template = Template(mail_template.title)
+        title = title_template.render(title_context)
 
         # Render description
         description_context = Context({
@@ -222,7 +230,7 @@ class MailTemplateDude:
 
         return dict(
             subject=mail_template.subject,
-            title=mail_template.title,
+            title=title,
             description=description,
             content=content,
             comments=mail_template.comments,
