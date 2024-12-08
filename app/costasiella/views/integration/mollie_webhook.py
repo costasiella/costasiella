@@ -75,7 +75,7 @@ def mollie_webhook(request):
                     finance_order_id=finance_order_id,
                     payment_amount=payment_amount,
                     payment_date=payment_date,
-                    payment_id=id
+                    payment_id=payment_id
                 )
 
             if finance_invoice_id:
@@ -84,7 +84,7 @@ def mollie_webhook(request):
                     finance_invoice_id=finance_invoice_id,
                     payment_amount=payment_amount,
                     payment_date=payment_date,
-                    payment_id=id
+                    payment_id=payment_id
                 )
 
             # Process refunds
