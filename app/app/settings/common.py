@@ -380,11 +380,11 @@ LOGGING = {
         },
         'costasiella': {
             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-            'handlers': ['console', 'costasiella_file', 'costasiella_error_file'],
+            'handlers': [   'costasiella_file', 'costasiella_error_file'],
         },
         'costasiella.tasks': {
             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-            'handlers': ['console', 'tasks_file', 'tasks_error_file'],
+            'handlers': ['tasks_file', 'tasks_error_file'],
             'propagate': False
         },
         'graphql.execution.utils': {
