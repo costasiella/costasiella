@@ -17,10 +17,6 @@ Costasiella will help you manage customers, subscriptions, class passes, schedul
 
 Online payments are provided through [Mollie](https://www.mollie.com/en). Please refer to their website & support for current rates and questions about availability in your region. The Costasiella Mollie integration handles single payments for classes, class passes and event tickets. Recurring payments are supported for subscriptions. 
 
-## Support
-
-To request commercial support, please use the contact form at [costasiella.com](https://costasiella.com/contact)
-
 ## Setup
 
 Please refer to the manual found [here](https://costasiella-docs.readthedocs.io/en/latest/).
