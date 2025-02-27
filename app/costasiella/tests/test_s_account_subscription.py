@@ -36,8 +36,8 @@ class GQLAccountSubscription(TestCase):
 
         self.variables_create = {
             "input": {
-                "dateStart": "2025-01-01",
-                "dateEnd": "2025-12-31",
+                "dateStart": "2029-01-01",
+                "dateEnd": "2029-12-31",
                 "note": "creation note"
             }
         }
