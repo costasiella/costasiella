@@ -11,6 +11,7 @@ from .cs_allauth import CSEmailVerifiedView, \
 # GDPR Account data export
 from .account.export import export_excel_accounts_active
 from .account.export_account_data import export_account_data
+from .account.export_sportbit_manager import export_excel_sportbit_manager
 
 # Document exports
 from .organization_document import privacy_policy, terms_and_conditions
