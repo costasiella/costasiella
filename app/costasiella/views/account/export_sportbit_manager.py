@@ -101,6 +101,15 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             account.invoice_to_business.tax_registration, # BTWnummer
             account.invoice_to_business.registration, # Extern relatienummer
             # IBAN
+            account.bank_accounts.first().number, # IBAN
+            account.bank_accounts.first().bic, # IBAN
+            account.bank_accounts.first().holder, # IBAN
+            account.bank_accounts.first().mandates.first().reference, # Mandaat ID
+            "", # Blessure/Lichamelijke klachten
+            "", # Startdatum blessure
+
+
+
 
 
 
