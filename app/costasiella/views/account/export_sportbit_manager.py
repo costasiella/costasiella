@@ -1,4 +1,5 @@
 import io
+import re
 
 from django.db.models import Q
 from django.http import Http404, FileResponse
@@ -78,18 +79,19 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
     accounts = Account.objects.filter(is_active=True)
 
     for account in accounts:
+        # print(account.invoice_to_business)
         # Active accounts list
         ws_info.append([
             "J" if account.is_active else "N", # Login gegevens versturen
-            account.created_at, # Datum inschrijving
+            str(account.created_at), # Datum inschrijving
             _get_initials(account.first_name), # Voorletters
             account.first_name, # Voornaam
             "", # Tussenvoegsel
             account.last_name, # Achternaam
-            account.date_of_birth, # Geboortedatum
+            str(account.date_of_birth), # Geboortedatum
             account.gender, # Geboortedatum
-            account.address, # Straat
-            "", # Huisnummer
+            _strip_housenumber_from_address(account.address), # Straat
+            _get_housenumber(account.address), # Huisnummer
             account.postcode, # Postcode
             account.city, # Woonplaats
             account.country, # Country
@@ -97,24 +99,16 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             account.phone, # Telefoonnummer vast
             account.mobile, # Telefoonnummer mobiel
             account.emergency, # Noodnummer
-            account.invoice_to_business.name, # Bedrijfsnaam
-            account.invoice_to_business.tax_registration, # BTWnummer
-            account.invoice_to_business.registration, # Extern relatienummer
+            account.invoice_to_business.name if account.invoice_to_business else "", # Bedrijfsnaam
+            account.invoice_to_business.tax_registration if account.invoice_to_business else "", # BTWnummer
+            account.invoice_to_business.registration if account.invoice_to_business else "", # Extern relatienummer
             # IBAN
-            account.bank_accounts.first().number, # IBAN
-            account.bank_accounts.first().bic, # IBAN
-            account.bank_accounts.first().holder, # IBAN
-            account.bank_accounts.first().mandates.first().reference, # Mandaat ID
+            account.bank_accounts.first().number if account.bank_accounts.first() else "",  # IBAN
+            account.bank_accounts.first().bic if account.bank_accounts.first() else "", # IBAN
+            account.bank_accounts.first().holder if account.bank_accounts.first() else "", # IBAN
+            account.bank_accounts.first().mandates.first().reference if account.bank_accounts.first() and account.bank_accounts.first().mandates.first() else "", # Mandaat ID
             "", # Blessure/Lichamelijke klachten
             "", # Startdatum blessure
-
-
-
-
-
-
-
-            account.key_number
         ])
 
     # # Create a file-like buffer to receive xlsx data.
@@ -130,9 +124,30 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
     return FileResponse(buffer, as_attachment=True, filename=filename)
 
 def _get_initials(first_name: str) -> str:
+    if not first_name:
+        return ""
+
     names = first_name.split(" ")
     initials = []
     for name in names:
         initials.append(name[0].upper())
 
     return " ".join(initials)
+
+def _get_housenumber(address: str) -> str:
+    housenumber = ""
+    if not address:
+        return housenumber
+
+    # Look for one or more digits in the string
+    match = re.search(r'\d+[a-zA-Z]?', address)
+    if match:
+        housenumber = match.group()
+
+    return housenumber
+
+def _strip_housenumber_from_address(address: str) -> str:
+    return_value = ""
+    if address:
+        return_value = re.sub(r'\d+[a-zA-Z]?', '', address).strip()
+    return return_value
