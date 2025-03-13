@@ -1,3 +1,4 @@
+import datetime
 import io
 import re
 
@@ -6,7 +7,7 @@ from django.http import Http404, FileResponse
 from django.utils.translation import gettext as _
 import openpyxl
 
-from ...models import Account
+from ...models import Account, AccountSubscription
 from ...modules.graphql_jwt_tools import get_user_from_cookie
 from ...modules.gql_tools import get_rid
 
@@ -80,6 +81,10 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
 
     for account in accounts:
         # print(account.invoice_to_business)
+        latest_subscription = _get_latest_subscription(account)
+        print(account.email)
+        print(latest_subscription)
+        print("---")
         # Active accounts list
         ws_info.append([
             "J" if account.is_active else "N", # Login gegevens versturen
@@ -109,6 +114,25 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             account.bank_accounts.first().mandates.first().reference if account.bank_accounts.first() and account.bank_accounts.first().mandates.first() else "", # Mandaat ID
             "", # Blessure/Lichamelijke klachten
             "", # Startdatum blessure
+            "", # Product nummer abonnment
+            str(latest_subscription.date_start if latest_subscription else ""), # Start abonnement
+            str(latest_subscription.date_end) if latest_subscription and latest_subscription.date_end else "", # Einde abonnement
+            "", # Opzegreden
+            "", # Verloopdatum contract termijn
+            latest_subscription.get_credits_total(datetime.date.today()) if latest_subscription else "", # Resterende credits
+            "", # Start pauze
+            "", # Evt. Activatiedatum Gepauzeerd Termijn Abonnement
+            "", # Pauze reden
+            "", # Kortings %
+            "", # Abonnement reeds betaald tm
+            "Incasso", # Betaalwijze abonnement
+            "", # Productnume rittenkaart
+            "", # Start rittenkaart
+            "", # verloop datum rittenkaart
+            "", # Openstaande ritten
+            "", # Familie account
+            "", # Vaste les
+            "", # Notities klantenkaart lid
         ])
 
     # # Create a file-like buffer to receive xlsx data.
@@ -151,3 +175,12 @@ def _strip_housenumber_from_address(address: str) -> str:
     if address:
         return_value = re.sub(r'\d+[a-zA-Z]?', '', address).strip()
     return return_value
+
+def _get_latest_subscription(account: Account) -> AccountSubscription:
+    qs = AccountSubscription.objects.filter(
+        Q(date_end__gte=datetime.date.today()) | Q(date_end__isnull=True),
+        account=account,
+    )
+
+    return qs.first()
+
