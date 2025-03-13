@@ -46,6 +46,8 @@ def _export_excel_accounts_active_get_header_info() -> list[str]:
         'Productnummer Abonnement',
         'Startdatum Abonnement',
         'Evt. Stopdatum Abonnement bij opzegging',
+        'Evt. reden opzegging',
+        'Evt. Verloopdatum contracttermijn',
         'Aantal reseterende credits van abonnementen waarop de credits niet wekelijks of maandelijks maar in 1x worden afgegeven',
         'Evt. Startdatum gepauzeerd termijn abonnement',
         'Evt. Activatiedatum Gepauzeerd Termijn Abonnement',
@@ -114,7 +116,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             account.bank_accounts.first().mandates.first().reference if account.bank_accounts.first() and account.bank_accounts.first().mandates.first() else "", # Mandaat ID
             "", # Blessure/Lichamelijke klachten
             "", # Startdatum blessure
-            "", # Product nummer abonnment
+            map_costasiella_subscription_id_to_sportbit_id(latest_subscription.organization_subscription.id) if latest_subscription else "", # Product nummer abonnment
             str(latest_subscription.date_start if latest_subscription else ""), # Start abonnement
             str(latest_subscription.date_end) if latest_subscription and latest_subscription.date_end else "", # Einde abonnement
             "", # Opzegreden
@@ -184,3 +186,31 @@ def _get_latest_subscription(account: Account) -> AccountSubscription:
 
     return qs.first()
 
+def map_costasiella_subscription_id_to_sportbit_id(organization_subscription_id):
+    # dict keyed by costasiella subscription id
+
+    """
++----+-------------------+
+| id | name              |
++----+-------------------+
+|  1 | BASIC             |
+|  2 | MEDIUM            |
+|  3 | BASIC (6 maanden) |
+|  4 | Docent            |
+|  5 | Xustom 2x         |
+|  6 | PREMIUM           |
+|  7 | Xustom 1x         |
+|  8 | Xustom 0x         |
++----+-------------------+
+
+    """
+    subscriptions_map = {
+        1: 3, # Basic
+        2: 4, # Medium
+        6: 5, # Premium
+        4: 6, # Docent
+        7: 7, # Xustom 1x
+        5: 8  # Xustom 2x
+    }
+
+    return subscriptions_map.get(organization_subscription_id, "")
