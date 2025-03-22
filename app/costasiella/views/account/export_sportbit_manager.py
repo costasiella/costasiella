@@ -96,7 +96,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             "", # Tussenvoegsel
             account.last_name, # Achternaam
             str(account.date_of_birth), # Geboortedatum
-            account.gender, # Geboortedatum
+            _map_costasiella_gender_to_sportbit_gender(account.gender), # Geboortedatum
             _strip_housenumber_from_address(account.address), # Straat
             _get_housenumber(account.address), # Huisnummer
             account.postcode, # Postcode
@@ -185,6 +185,17 @@ def _get_latest_subscription(account: Account) -> AccountSubscription:
     )
 
     return qs.first()
+
+def _map_costasiella_gender_to_sportbit_gender(gender):
+    # dict keyed by costasiella gender options
+
+    gender_map = {
+        "F": "vrouw",
+        "M": "man",
+        "X": "X"
+    }
+
+    return gender_map.get(gender, "")
 
 def map_costasiella_subscription_id_to_sportbit_id(organization_subscription_id):
     # dict keyed by costasiella subscription id
