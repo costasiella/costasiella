@@ -7,7 +7,7 @@ from django.http import Http404, FileResponse
 from django.utils.translation import gettext as _
 import openpyxl
 
-from ...models import Account, AccountSubscription
+from ...models import Account, AccountSubscription, AccountSubscriptionPause
 from ...modules.graphql_jwt_tools import get_user_from_cookie
 from ...modules.gql_tools import get_rid
 
@@ -85,6 +85,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
     for account in accounts:
         # print(account.invoice_to_business)
         latest_subscription = _get_latest_subscription(account)
+        latest_pause = _get_current_or_upcoming_pause(latest_subscription)
         print(account.email)
         print(latest_subscription)
         print("---")
@@ -123,9 +124,9 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             "", # Opzegreden
             "", # Verloopdatum contract termijn
             latest_subscription.get_credits_total(datetime.date.today()) if latest_subscription else "", # Resterende credits
-            "", # Start pauze
-            "", # Evt. Activatiedatum Gepauzeerd Termijn Abonnement
-            "", # Pauze reden
+            latest_pause.date_start.strftime(date_format) if latest_pause else "", # Start pauze
+            latest_pause.date_end.strftime(date_format) if latest_pause else "", # Evt. Activatiedatum Gepauzeerd Termijn Abonnement
+            latest_pause.description if latest_pause else "" # Pauze reden
             "", # Kortings %
             "", # Abonnement reeds betaald tm
             "Incasso", # Betaalwijze abonnement
@@ -183,6 +184,14 @@ def _get_latest_subscription(account: Account) -> AccountSubscription:
     qs = AccountSubscription.objects.filter(
         Q(date_end__gte=datetime.date.today()) | Q(date_end__isnull=True),
         account=account,
+    )
+
+    return qs.first()
+
+def _get_current_or_upcoming_pause(account_subscription):
+    qs = AccountSubscriptionPause.objects.filter(
+        Q(date_end__gte=datetime.date.today()),
+        account_subscription=account_subscription
     )
 
     return qs.first()
