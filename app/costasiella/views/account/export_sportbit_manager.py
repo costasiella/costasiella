@@ -79,6 +79,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
     ws_info = wb.create_sheet(_("Active accounts"))
     ws_info.append(_export_excel_accounts_active_get_header_info())
 
+    date_format = "%d-%m-%Y"
     accounts = Account.objects.filter(is_active=True)
 
     for account in accounts:
@@ -95,7 +96,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             account.first_name, # Voornaam
             "", # Tussenvoegsel
             account.last_name, # Achternaam
-            str(account.date_of_birth), # Geboortedatum
+            account.date_of_birth.strftime(date_format) if account.date_of_birth else "", # Geboortedatum
             _map_costasiella_gender_to_sportbit_gender(account.gender), # Geboortedatum
             _strip_housenumber_from_address(account.address), # Straat
             _get_housenumber(account.address), # Huisnummer
@@ -117,8 +118,8 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             "", # Blessure/Lichamelijke klachten
             "", # Startdatum blessure
             map_costasiella_subscription_id_to_sportbit_id(latest_subscription.organization_subscription.id) if latest_subscription else "", # Product nummer abonnment
-            str(latest_subscription.date_start if latest_subscription else ""), # Start abonnement
-            str(latest_subscription.date_end) if latest_subscription and latest_subscription.date_end else "", # Einde abonnement
+            latest_subscription.date_start.strftime(date_format) if latest_subscription else "", # Start abonnement
+            latest_subscription.date_end.strftime(date_format) if latest_subscription and latest_subscription.date_end else "", # Einde abonnement
             "", # Opzegreden
             "", # Verloopdatum contract termijn
             latest_subscription.get_credits_total(datetime.date.today()) if latest_subscription else "", # Resterende credits
