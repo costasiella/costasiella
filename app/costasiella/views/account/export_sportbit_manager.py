@@ -3,14 +3,23 @@ import io
 import re
 
 from django.db.models import Q
+from django.conf import settings
 from django.http import Http404, FileResponse
 from django.utils.translation import gettext as _
 import openpyxl
 
 from ...models import Account, AccountSubscription, AccountSubscriptionPause
 from ...modules.graphql_jwt_tools import get_user_from_cookie
-from ...modules.gql_tools import get_rid
 
+
+def _check_export_prerequisites() -> tuple:
+    ok = True
+    error_msg = ""
+    if not hasattr(settings, "SPORTBIT_MAP_SUBSCRIPTIONS"):
+        ok = False
+        error_msg = "SPORTBIT_MAP_SUBSCRIPTIONS not found in settings"
+
+    return ok, error_msg
 
 def _export_excel_accounts_active_get_header_info() -> list[str]:
     # This header isn't translatable, as it's always supposed to be in Dutch.
@@ -75,6 +84,10 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
     if not user.has_perm('costasiella.view_account'):
         raise Http404("Permission denied")
 
+    export_prereqs_ok, error_msg = _check_export_prerequisites()
+    if not export_prereqs_ok:
+        raise Http404(error_msg)
+
     wb = openpyxl.Workbook(write_only=True)
     ws_info = wb.create_sheet(_("Active accounts"))
     ws_info.append(_export_excel_accounts_active_get_header_info())
@@ -113,8 +126,8 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             account.invoice_to_business.registration if account.invoice_to_business else "", # Extern relatienummer
             # IBAN
             account.bank_accounts.first().number if account.bank_accounts.first() else "",  # IBAN
-            account.bank_accounts.first().bic if account.bank_accounts.first() else "", # IBAN
-            account.bank_accounts.first().holder if account.bank_accounts.first() else "", # IBAN
+            account.bank_accounts.first().bic if account.bank_accounts.first() else "", # BIC
+            account.bank_accounts.first().holder if account.bank_accounts.first() else "", # Renkening houser
             account.bank_accounts.first().mandates.first().reference if account.bank_accounts.first() and account.bank_accounts.first().mandates.first() else "", # Mandaat ID
             "", # Blessure/Lichamelijke klachten
             "", # Startdatum blessure
@@ -126,7 +139,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             latest_subscription.get_credits_total(datetime.date.today()) if latest_subscription else "", # Resterende credits
             latest_pause.date_start.strftime(date_format) if latest_pause else "", # Start pauze
             latest_pause.date_end.strftime(date_format) if latest_pause else "", # Evt. Activatiedatum Gepauzeerd Termijn Abonnement
-            latest_pause.description if latest_pause else "" # Pauze reden
+            latest_pause.description if latest_pause else "", # evt. Pauze reden
             "", # Kortings %
             "", # Abonnement reeds betaald tm
             "Incasso", # Betaalwijze abonnement
@@ -210,28 +223,6 @@ def _map_costasiella_gender_to_sportbit_gender(gender):
 def map_costasiella_subscription_id_to_sportbit_id(organization_subscription_id):
     # dict keyed by costasiella subscription id
 
-    """
-+----+-------------------+
-| id | name              |
-+----+-------------------+
-|  1 | BASIC             |
-|  2 | MEDIUM            |
-|  3 | BASIC (6 maanden) |
-|  4 | Docent            |
-|  5 | Xustom 2x         |
-|  6 | PREMIUM           |
-|  7 | Xustom 1x         |
-|  8 | Xustom 0x         |
-+----+-------------------+
-
-    """
-    subscriptions_map = {
-        1: 3, # Basic
-        2: 4, # Medium
-        6: 5, # Premium
-        4: 6, # Docent
-        7: 7, # Xustom 1x
-        5: 8  # Xustom 2x
-    }
+    subscriptions_map = settings.SPORTBIT_MAP_SUBSCRIPTIONS
 
     return subscriptions_map.get(organization_subscription_id, "")
