@@ -96,12 +96,8 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
     accounts = Account.objects.filter(is_active=True)
 
     for account in accounts:
-        # print(account.invoice_to_business)
         latest_subscription = _get_latest_subscription(account)
         latest_pause = _get_current_or_upcoming_pause(latest_subscription)
-        print(account.email)
-        print(latest_subscription)
-        print("---")
         # Active accounts list
         ws_info.append([
             "J" if account.is_active else "N", # Login gegevens versturen
@@ -237,12 +233,7 @@ def _get_enrollments(account_subscription):
     if qs:
         for i, enrollment in enumerate(qs):
             sportbit_class = _map_costasiella_schedule_item_id_to_sportbit_id(enrollment.schedule_item_id)
-            print(enrollment)
-            print(sportbit_class)
             sportbit_vaste_les += str(sportbit_class)
-            print("***")
-            print(i)
-            print(len(qs))
             if i+1 < len(qs) and len(qs) > 1 and sportbit_class != "":
                 sportbit_vaste_les += ","
 
