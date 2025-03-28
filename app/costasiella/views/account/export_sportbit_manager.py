@@ -8,7 +8,7 @@ from django.http import Http404, FileResponse
 from django.utils.translation import gettext as _
 import openpyxl
 
-from ...models import Account, AccountSubscription, AccountSubscriptionPause
+from ...models import Account, AccountSubscription, AccountSubscriptionPause, ScheduleItemEnrollment
 from ...modules.graphql_jwt_tools import get_user_from_cookie
 
 
@@ -148,7 +148,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             "", # verloop datum rittenkaart
             "", # Openstaande ritten
             "", # Familie account
-            "", # Vaste les
+            _get_enrollments(latest_subscription), # Vaste les
             "", # Notities klantenkaart lid
         ])
 
@@ -220,9 +220,36 @@ def _map_costasiella_gender_to_sportbit_gender(gender):
 
     return gender_map.get(gender, "")
 
-def map_costasiella_subscription_id_to_sportbit_id(organization_subscription_id):
+def map_costasiella_subscription_id_to_sportbit_id(organization_subscription_id: int):
     # dict keyed by costasiella subscription id
 
     subscriptions_map = settings.SPORTBIT_MAP_SUBSCRIPTIONS
 
     return subscriptions_map.get(organization_subscription_id, "")
+
+def _get_enrollments(account_subscription):
+    sportbit_vaste_les = ""
+    qs = ScheduleItemEnrollment.objects.filter(
+        Q(date_end__gte=datetime.date.today()) | Q(date_end__isnull=True),
+        account_subscription=account_subscription
+    )
+
+    if qs:
+        for i, enrollment in enumerate(qs):
+            sportbit_class = _map_costasiella_schedule_item_id_to_sportbit_id(enrollment.schedule_item_id)
+            print(enrollment)
+            print(sportbit_class)
+            sportbit_vaste_les += str(sportbit_class)
+            print("***")
+            print(i)
+            print(len(qs))
+            if i+1 < len(qs) and len(qs) > 1 and sportbit_class != "":
+                sportbit_vaste_les += ","
+
+    return sportbit_vaste_les
+
+def _map_costasiella_schedule_item_id_to_sportbit_id(schedule_item_id: int):
+    # dict keyed by costasiella schedule_item_id
+    classes_map = settings.SPORTBIT_MAP_CLASSES
+
+    return classes_map.get(schedule_item_id, "")

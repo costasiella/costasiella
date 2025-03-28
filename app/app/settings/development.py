@@ -74,3 +74,71 @@ GRAPHQL_JWT = {
 # Django-defender & celery use
 DEFENDER_REDIS_URL = 'redis://localhost:6379/0'
 CELERY_BROKER_URL = "redis://localhost:6379/1"
+
+"""
+Sportbit Mapping for subscriptions
++----+-------------------+
+| id | name              |
++----+-------------------+
+|  1 | BASIC             |
+|  2 | MEDIUM            |
+|  3 | BASIC (6 maanden) |
+|  4 | Docent            |
+|  5 | Xustom 2x         |
+|  6 | PREMIUM           |
+|  7 | Xustom 1x         |
+|  8 | Xustom 0x         |
++----+-------------------+
+"""
+SPORTBIT_MAP_SUBSCRIPTIONS = {
+        1: 3, # Basic
+        2: 4, # Medium
+        6: 5, # Premium
+        4: 6, # Docent
+        7: 7, # Xustom 1x
+        5: 8  # Xustom 2x
+    }
+
+"""
+Sportbit mapping for clases
++----+-----------+-----------------+-----------------+---------+-----------------+
+| id | day_name  | time_start      | time_end        | name    | name            |
++----+-----------+-----------------+-----------------+---------+-----------------+
+|  7 | Monday    | 09:30:00.000000 | 10:45:00.000000 | YogaWrt | Yin Yoga        |
+|  4 | Monday    | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Yin Yoga        |
+|  2 | Monday    | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Power Yoga      |
+| 36 | Monday    | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Yin Yoga        |
+|  5 | Tuesday   | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Power Yoga      |
+|  1 | Tuesday   | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Yin Yoga        |
+| 28 | Tuesday   | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Yin Yoga        |
+| 40 | Wednesday | 09:00:00.000000 | 10:15:00.000000 | YogaWrt | Power Yoga      |
+|  3 | Wednesday | 10:30:00.000000 | 11:45:00.000000 | YogaWrt | Yin Yoga        |
+| 11 | Wednesday | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Power Yoga      |
+| 37 | Wednesday | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Yin Yoga        |
+| 13 | Wednesday | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Yin Yoga        |
+| 12 | Wednesday | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Power Yoga      |
+| 38 | Thursday  | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Yin Yoga        |
+| 44 | Thursday  | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Hatha Flow Yoga |
+| 16 | Saturday  | 09:00:00.000000 | 10:15:00.000000 | YogaWrt | Power Yoga      |
+| 17 | Saturday  | 10:30:00.000000 | 11:45:00.000000 | YogaWrt | Yin Yoga        |
++----+-----------+-----------------+-----------------+---------+-----------------+
+"""
+SPORTBIT_MAP_CLASSES = {
+    7: 18,
+    4: 8,
+    2: 9,
+    36: 11,
+    5: 12,
+    1: 10,
+    28: 13,
+    40: 2,
+    3: 3,
+    11: 16,
+    37: 15,
+    13: 14,
+    12: 17,
+    38: 7,
+    44: 6,
+    16: 4,
+    17: 5
+}
