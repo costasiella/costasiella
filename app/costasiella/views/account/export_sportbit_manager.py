@@ -3,14 +3,23 @@ import io
 import re
 
 from django.db.models import Q
+from django.conf import settings
 from django.http import Http404, FileResponse
 from django.utils.translation import gettext as _
 import openpyxl
 
-from ...models import Account, AccountSubscription, AccountSubscriptionPause
+from ...models import Account, AccountSubscription, AccountSubscriptionPause, ScheduleItemEnrollment
 from ...modules.graphql_jwt_tools import get_user_from_cookie
-from ...modules.gql_tools import get_rid
 
+
+def _check_export_prerequisites() -> tuple:
+    ok = True
+    error_msg = ""
+    if not hasattr(settings, "SPORTBIT_MAP_SUBSCRIPTIONS"):
+        ok = False
+        error_msg = "SPORTBIT_MAP_SUBSCRIPTIONS not found in settings"
+
+    return ok, error_msg
 
 def _export_excel_accounts_active_get_header_info() -> list[str]:
     # This header isn't translatable, as it's always supposed to be in Dutch.
@@ -75,6 +84,10 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
     if not user.has_perm('costasiella.view_account'):
         raise Http404("Permission denied")
 
+    export_prereqs_ok, error_msg = _check_export_prerequisites()
+    if not export_prereqs_ok:
+        raise Http404(error_msg)
+
     wb = openpyxl.Workbook(write_only=True)
     ws_info = wb.create_sheet(_("Active accounts"))
     ws_info.append(_export_excel_accounts_active_get_header_info())
@@ -83,12 +96,8 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
     accounts = Account.objects.filter(is_active=True)
 
     for account in accounts:
-        # print(account.invoice_to_business)
         latest_subscription = _get_latest_subscription(account)
         latest_pause = _get_current_or_upcoming_pause(latest_subscription)
-        print(account.email)
-        print(latest_subscription)
-        print("---")
         # Active accounts list
         ws_info.append([
             "J" if account.is_active else "N", # Login gegevens versturen
@@ -113,8 +122,8 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             account.invoice_to_business.registration if account.invoice_to_business else "", # Extern relatienummer
             # IBAN
             account.bank_accounts.first().number if account.bank_accounts.first() else "",  # IBAN
-            account.bank_accounts.first().bic if account.bank_accounts.first() else "", # IBAN
-            account.bank_accounts.first().holder if account.bank_accounts.first() else "", # IBAN
+            account.bank_accounts.first().bic if account.bank_accounts.first() else "", # BIC
+            account.bank_accounts.first().holder if account.bank_accounts.first() else "", # Renkening houser
             account.bank_accounts.first().mandates.first().reference if account.bank_accounts.first() and account.bank_accounts.first().mandates.first() else "", # Mandaat ID
             "", # Blessure/Lichamelijke klachten
             "", # Startdatum blessure
@@ -126,7 +135,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             latest_subscription.get_credits_total(datetime.date.today()) if latest_subscription else "", # Resterende credits
             latest_pause.date_start.strftime(date_format) if latest_pause else "", # Start pauze
             latest_pause.date_end.strftime(date_format) if latest_pause else "", # Evt. Activatiedatum Gepauzeerd Termijn Abonnement
-            latest_pause.description if latest_pause else "" # Pauze reden
+            latest_pause.description if latest_pause else "", # evt. Pauze reden
             "", # Kortings %
             "", # Abonnement reeds betaald tm
             "Incasso", # Betaalwijze abonnement
@@ -135,7 +144,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             "", # verloop datum rittenkaart
             "", # Openstaande ritten
             "", # Familie account
-            "", # Vaste les
+            _get_enrollments(latest_subscription), # Vaste les
             "", # Notities klantenkaart lid
         ])
 
@@ -207,31 +216,31 @@ def _map_costasiella_gender_to_sportbit_gender(gender):
 
     return gender_map.get(gender, "")
 
-def map_costasiella_subscription_id_to_sportbit_id(organization_subscription_id):
+def map_costasiella_subscription_id_to_sportbit_id(organization_subscription_id: int):
     # dict keyed by costasiella subscription id
 
-    """
-+----+-------------------+
-| id | name              |
-+----+-------------------+
-|  1 | BASIC             |
-|  2 | MEDIUM            |
-|  3 | BASIC (6 maanden) |
-|  4 | Docent            |
-|  5 | Xustom 2x         |
-|  6 | PREMIUM           |
-|  7 | Xustom 1x         |
-|  8 | Xustom 0x         |
-+----+-------------------+
-
-    """
-    subscriptions_map = {
-        1: 3, # Basic
-        2: 4, # Medium
-        6: 5, # Premium
-        4: 6, # Docent
-        7: 7, # Xustom 1x
-        5: 8  # Xustom 2x
-    }
+    subscriptions_map = settings.SPORTBIT_MAP_SUBSCRIPTIONS
 
     return subscriptions_map.get(organization_subscription_id, "")
+
+def _get_enrollments(account_subscription):
+    sportbit_vaste_les = ""
+    qs = ScheduleItemEnrollment.objects.filter(
+        Q(date_end__gte=datetime.date.today()) | Q(date_end__isnull=True),
+        account_subscription=account_subscription
+    )
+
+    if qs:
+        for i, enrollment in enumerate(qs):
+            sportbit_class = _map_costasiella_schedule_item_id_to_sportbit_id(enrollment.schedule_item_id)
+            sportbit_vaste_les += str(sportbit_class)
+            if i+1 < len(qs) and len(qs) > 1 and sportbit_class != "":
+                sportbit_vaste_les += ","
+
+    return sportbit_vaste_les
+
+def _map_costasiella_schedule_item_id_to_sportbit_id(schedule_item_id: int):
+    # dict keyed by costasiella schedule_item_id
+    classes_map = settings.SPORTBIT_MAP_CLASSES
+
+    return classes_map.get(schedule_item_id, "")
