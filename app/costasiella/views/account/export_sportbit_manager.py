@@ -137,7 +137,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             latest_pause.date_end.strftime(date_format) if latest_pause else "", # Evt. Activatiedatum Gepauzeerd Termijn Abonnement
             latest_pause.description if latest_pause else "", # evt. Pauze reden
             "", # Kortings %
-            "", # Abonnement reeds betaald tm
+            "31-05-2025", # Abonnement reeds betaald tm
             "Incasso", # Betaalwijze abonnement
             "", # Productnume rittenkaart
             "", # Start rittenkaart
