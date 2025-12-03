@@ -164,9 +164,10 @@ def _get_initials(first_name: str) -> str:
     if not first_name:
         return ""
 
-    names = first_name.split(" ")
+    names = first_name.strip().replace("&", "").replace("  ", " ").split(" ")
     initials = []
     for name in names:
+        print(name)
         initials.append(name[0].upper())
 
     return " ".join(initials)
