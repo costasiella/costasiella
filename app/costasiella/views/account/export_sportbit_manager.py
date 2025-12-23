@@ -8,7 +8,7 @@ from django.http import Http404, FileResponse
 from django.utils.translation import gettext as _
 import openpyxl
 
-from ...models import Account, AccountSubscription, AccountSubscriptionPause, ScheduleItemEnrollment
+from ...models import Account, AccountClasspass, AccountSubscription, AccountSubscriptionPause, ScheduleItemEnrollment
 from ...modules.graphql_jwt_tools import get_user_from_cookie
 
 
@@ -96,12 +96,18 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
     accounts = Account.objects.filter(is_active=True)
 
     for account in accounts:
+        # Account subscription info
         latest_subscription = _get_latest_subscription(account)
         latest_pause = _get_current_or_upcoming_pause(latest_subscription)
+        # Account classpass info
+        latest_classpass = _get_latest_classpass(account)
+        # Bank account
+        bankaccount = account.bank_accounts.first() if account.bank_accounts.first() else ""
+
         # Active accounts list
         ws_info.append([
             "J" if account.is_active else "N", # Login gegevens versturen
-            str(account.created_at), # Datum inschrijving
+            account.created_at.strftime(date_format), # Datum inschrijving
             _get_initials(account.first_name), # Voorletters
             account.first_name, # Voornaam
             "", # Tussenvoegsel
@@ -121,7 +127,7 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             account.invoice_to_business.tax_registration if account.invoice_to_business else "", # BTWnummer
             account.invoice_to_business.registration if account.invoice_to_business else "", # Extern relatienummer
             # IBAN
-            account.bank_accounts.first().number if account.bank_accounts.first() else "",  # IBAN
+            bankaccount.number if bankaccount != "" and bankaccount.number != "None" else "",  # IBAN
             account.bank_accounts.first().bic if account.bank_accounts.first() else "", # BIC
             account.bank_accounts.first().holder if account.bank_accounts.first() else "", # Renkening houser
             account.bank_accounts.first().mandates.first().reference if account.bank_accounts.first() and account.bank_accounts.first().mandates.first() else "", # Mandaat ID
@@ -137,14 +143,16 @@ def export_excel_sportbit_manager(request,**kwargs) -> FileResponse:
             latest_pause.date_end.strftime(date_format) if latest_pause else "", # Evt. Activatiedatum Gepauzeerd Termijn Abonnement
             latest_pause.description if latest_pause else "", # evt. Pauze reden
             "", # Kortings %
-            "31-05-2025", # Abonnement reeds betaald tm
-            "Incasso", # Betaalwijze abonnement
-            "", # Productnume rittenkaart
-            "", # Start rittenkaart
-            "", # verloop datum rittenkaart
-            "", # Openstaande ritten
+            "31-12-2025" if latest_subscription else "", # Abonnement reeds betaald tm
+            "Incasso" if latest_subscription else "", # Betaalwijze abonnement
+            map_costasiella_classpass_id_to_sportbit_id(
+                latest_classpass.organization_classpass.id) if latest_classpass else "", # Product nummer rittenkaart
+            latest_classpass.date_start.strftime(date_format) if latest_classpass else "",  # Start rittenkaart
+            latest_classpass.date_end.strftime(
+                date_format) if latest_classpass and latest_classpass.date_end else "",  # verloop datum rittenkaart
+            latest_classpass.classes_remaining if latest_classpass else "",  # Openstaande ritten
             "", # Familie account
-            _get_enrollments(latest_subscription), # Vaste les
+            "", # Vaste les
             "", # Notities klantenkaart lid
         ])
 
@@ -192,7 +200,8 @@ def _strip_housenumber_from_address(address: str) -> str:
 
 def _get_latest_subscription(account: Account) -> AccountSubscription:
     qs = AccountSubscription.objects.filter(
-        Q(date_end__gte=datetime.date.today()) | Q(date_end__isnull=True),
+        Q(date_end__gte="2026-01-01") | Q(date_end__isnull=True),
+        organization_subscription__archived=0,
         account=account,
     )
 
@@ -202,6 +211,15 @@ def _get_current_or_upcoming_pause(account_subscription):
     qs = AccountSubscriptionPause.objects.filter(
         Q(date_end__gte=datetime.date.today()),
         account_subscription=account_subscription
+    )
+
+    return qs.first()
+
+def _get_latest_classpass(account: Account) -> AccountClasspass:
+    qs = AccountClasspass.objects.filter(
+        Q(date_end__gte="2026-01-01") | Q(date_end__isnull=True),
+        classes_remaining__gt=0,
+        account=account,
     )
 
     return qs.first()
@@ -216,6 +234,13 @@ def _map_costasiella_gender_to_sportbit_gender(gender):
     }
 
     return gender_map.get(gender, "")
+
+def map_costasiella_classpass_id_to_sportbit_id(organization_classpass_id: int):
+    # dict keyed by costasiella classpass id
+
+    classpasses_map = settings.SPORTBIT_MAP_CLASSPASSES
+
+    return classpasses_map.get(organization_classpass_id, "")
 
 def map_costasiella_subscription_id_to_sportbit_id(organization_subscription_id: int):
     # dict keyed by costasiella subscription id

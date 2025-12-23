@@ -77,68 +77,76 @@ CELERY_BROKER_URL = "redis://localhost:6379/1"
 
 """
 Sportbit Mapping for subscriptions
-+----+-------------------+
-| id | name              |
-+----+-------------------+
-|  1 | BASIC             |
-|  2 | MEDIUM            |
-|  3 | BASIC (6 maanden) |
-|  4 | Docent            |
-|  5 | Xustom 2x         |
-|  6 | PREMIUM           |
-|  7 | Xustom 1x         |
-|  8 | Xustom 0x         |
-+----+-------------------+
++----+--------------------------------------------+------------+
+| id | name                                       | YogiBit ID |
++----+--------------------------------------------+------------+
+| 41 | Yoga Basis                                 |            |
+| 42 | Yoga Royaal                                |            |
+| 68 | Yoga BONUS                                 |            |
+| 92 | Yoga Divine                                |            |
+| 94 | TTC 2024-2025 Early Bird | 24 Installments |            |
+| 95 | TTC 2024-2025 | 24 Installments            |            |
++----+--------------------------------------------+------------+
+
 """
 SPORTBIT_MAP_SUBSCRIPTIONS = {
-        1: 3, # Basic
-        2: 4, # Medium
-        6: 5, # Premium
-        4: 6, # Docent
-        7: 7, # Xustom 1x
-        5: 8  # Xustom 2x
-    }
+    41: 3,
+    42: 6,
+    68: 8,
+    92: 7
+}
+
+"""
+Sportbit Mapping for classpasses
++----+---------------------+------------+
+| id | name                | YogiBit ID |
++----+---------------------+------------+
+| 64 | Class card Enjoy    |            |
+| 77 | Introduction card   |            |
+| 79 | Extra lessen pakket |            |
+| 80 | Drop-in class       |            |
++----+---------------------+------------+
+"""
+SPORTBIT_MAP_CLASSPASSES = {
+    64: 3,
+    77: 6,
+    79: 2,
+    80: 4,
+}
 
 """
 Sportbit mapping for clases
-+----+-----------+-----------------+-----------------+---------+-----------------+
-| id | day_name  | time_start      | time_end        | name    | name            |
-+----+-----------+-----------------+-----------------+---------+-----------------+
-|  7 | Monday    | 09:30:00.000000 | 10:45:00.000000 | YogaWrt | Yin Yoga        |
-|  4 | Monday    | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Yin Yoga        |
-|  2 | Monday    | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Power Yoga      |
-| 36 | Monday    | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Yin Yoga        |
-|  5 | Tuesday   | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Power Yoga      |
-|  1 | Tuesday   | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Yin Yoga        |
-| 28 | Tuesday   | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Yin Yoga        |
-| 40 | Wednesday | 09:00:00.000000 | 10:15:00.000000 | YogaWrt | Power Yoga      |
-|  3 | Wednesday | 10:30:00.000000 | 11:45:00.000000 | YogaWrt | Yin Yoga        |
-| 11 | Wednesday | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Power Yoga      |
-| 37 | Wednesday | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Yin Yoga        |
-| 13 | Wednesday | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Yin Yoga        |
-| 12 | Wednesday | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Power Yoga      |
-| 38 | Thursday  | 19:00:00.000000 | 20:15:00.000000 | YogaWrt | Yin Yoga        |
-| 44 | Thursday  | 20:30:00.000000 | 21:45:00.000000 | YogaWrt | Hatha Flow Yoga |
-| 16 | Saturday  | 09:00:00.000000 | 10:15:00.000000 | YogaWrt | Power Yoga      |
-| 17 | Saturday  | 10:30:00.000000 | 11:45:00.000000 | YogaWrt | Yin Yoga        |
-+----+-----------+-----------------+-----------------+---------+-----------------+
++-----+-----------+-----------------+-----------------+-------------+----------------------+------------+
+| id  | day_name  | time_start      | time_end        | name        | name                 | YogiBit ID |
++-----+-----------+-----------------+-----------------+-------------+----------------------+------------+
+| 291 | Monday    | 18:00:00.000000 | 20:30:00.000000 | Lounge      | NULL                 |            |
+| 259 | Monday    | 19:00:00.000000 | 20:15:00.000000 | Yoga studio | Yin Yoga             |            |
+| 258 | Monday    | 19:00:00.000000 | 20:15:00.000000 | Online      | Online Yin Yoga      |            |
+| 292 | Tuesday   | 08:45:00.000000 | 17:15:00.000000 | Lounge      | NULL                 |            |
+| 229 | Tuesday   | 17:30:00.000000 | 18:45:00.000000 | Online      | Online Mindful Hatha |            |
+| 255 | Tuesday   | 17:30:00.000000 | 18:45:00.000000 | Yoga studio | Mindful Hatha Yoga   |            |
+| 297 | Wednesday | 08:30:00.000000 | 10:30:00.000000 | Yoga studio | NULL                 |            |
+| 681 | Wednesday | 09:00:00.000000 | 10:15:00.000000 | Yoga studio | Online Morning Glow  |            |
+| 266 | Wednesday | 09:00:00.000000 | 10:15:00.000000 | Yoga studio | Morning Glow Hatha   |            |
+| 288 | Wednesday | 18:00:00.000000 | 20:30:00.000000 | Lounge      | NULL                 |            |
+| 702 | Wednesday | 19:30:00.000000 | 20:45:00.000000 | Yoga studio | Energetic Hatha Yoga |            |
+| 293 | Thursday  | 08:45:00.000000 | 17:15:00.000000 | Lounge      | NULL                 |            |
+| 295 | Thursday  | 16:30:00.000000 | 18:45:00.000000 | Yoga studio | NULL                 |            |
+| 679 | Thursday  | 19:30:00.000000 | 20:45:00.000000 | Yoga studio | Evening Bliss Hatha  |            |
+| 693 | Thursday  | 19:30:00.000000 | 20:45:00.000000 | Online      | Online Evening Bliss |            |
+| 294 | Friday    | 08:45:00.000000 | 12:45:00.000000 | Lounge      | NULL                 |            |
+| 248 | Friday    | 09:15:00.000000 | 10:30:00.000000 | Yoga studio | Morning Glow Hatha   |            |
+| 237 | Friday    | 09:15:00.000000 | 10:30:00.000000 | Online      | Online Morning Glow  |            |
+| 290 | Saturday  | 08:45:00.000000 | 11:15:00.000000 | Lounge      | NULL                 |            |
+| 249 | Saturday  | 09:15:00.000000 | 10:30:00.000000 | Yoga studio | Energetic Hatha Yoga |            |
+| 250 | Saturday  | 10:45:00.000000 | 12:00:00.000000 | Yoga studio | Yin Yoga             |            |
+| 239 | Saturday  | 10:45:00.000000 | 12:00:00.000000 | Online      | Online Yin Yoga      |            |
+| 289 | Sunday    | 08:45:00.000000 | 11:15:00.000000 | Lounge      | NULL                 |            |
+| 251 | Sunday    | 09:15:00.000000 | 10:30:00.000000 | Yoga studio | Yin Yoga             |            |
+| 240 | Sunday    | 09:15:00.000000 | 10:30:00.000000 | Online      | Online Yin Yoga      |            |
+| 252 | Sunday    | 11:00:00.000000 | 12:15:00.000000 | Yoga studio | Hatha Yoga           |            |
+| 241 | Sunday    | 11:00:00.000000 | 12:15:00.000000 | Online      | Online Hatha Yoga    |            |
++-----+-----------+-----------------+-----------------+-------------+----------------------+------------+
+
 """
-SPORTBIT_MAP_CLASSES = {
-    7: 18,
-    4: 8,
-    2: 9,
-    36: 11,
-    5: 12,
-    1: 10,
-    28: 13,
-    40: 2,
-    3: 3,
-    11: 16,
-    37: 15,
-    13: 14,
-    12: 17,
-    38: 7,
-    44: 6,
-    16: 4,
-    17: 5
-}
+SPORTBIT_MAP_CLASSES = {}
