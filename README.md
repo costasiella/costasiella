@@ -1,3 +1,5 @@
+# As of 01-01-2026 all development has been stopped and this repository will be archived.
+
 # Costasiella
 
 ![Build Status](https://github.com/costasiella/costasiella/actions/workflows/django_ci.yml/badge.svg)
